@@ -14,6 +14,9 @@
     "assetBundlePatterns": [
       "**/*"
     ],
+    "experiments": {
+      "baseUrl": "/web-client"
+    },
     "ios": {
       "supportsTablet": true
     },

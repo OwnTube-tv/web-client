@@ -22,12 +22,34 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  # Single deploy job since we're just deploying
+  build_info:
+    runs-on: ubuntu-latest
+    outputs:
+      GITHUB_SHA_SHORT: ${{ steps.create.outputs.GITHUB_SHA_SHORT }}
+      COMMIT_URL: ${{ steps.create.outputs.COMMIT_URL }}
+      BUILD_TIMESTAMP: ${{ steps.create.outputs.BUILD_TIMESTAMP }}
+    steps:
+      - id: create
+        name: "@${{ github.actor }} initiated GitHub Pages deployment, prepare build info"
+        run: |
+          # Create short Git SHA equivalent to `$(git rev-parse --short HEAD)` e.g. "d1f5cfd"
+          GITHUB_SHA_SHORT="${GITHUB_SHA::7}"
+          echo "GITHUB_SHA_SHORT=$GITHUB_SHA_SHORT" && echo "GITHUB_SHA_SHORT=$GITHUB_SHA_SHORT" >> "$GITHUB_OUTPUT"
+
+          # Create commit URL, e.g. "https://github.com/OwnTube-tv/web-client/commit/d1f5cfd"
+          COMMIT_URL="https://github.com/${{ github.repository }}/commit/$GITHUB_SHA_SHORT"
+          echo "COMMIT_URL=$COMMIT_URL" && echo "COMMIT_URL=$COMMIT_URL" >> "$GITHUB_OUTPUT"
+
+          # Create ISO format build timestamp in UTC, e.g. "2024-02-19T13:12:52Z"
+          BUILD_TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+          echo "BUILD_TIMESTAMP=$BUILD_TIMESTAMP" && echo "BUILD_TIMESTAMP=$BUILD_TIMESTAMP" >> "$GITHUB_OUTPUT"
+
   deploy:
+    needs: build_info
+    runs-on: ubuntu-latest
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
-    runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -37,8 +59,18 @@ jobs:
           node-version: 20.x
       - name: Install Dependencies
         run: cd OwnTube.tv/ && npm install
-      - name: Build Web App
-        run: cd OwnTube.tv/ && npx expo export --platform web
+      - name: Inject Build Info
+        run: |
+          # Overwrite build-info.json in source root dir
+          cat <<EOF > ./OwnTube.tv/build-info.json
+          {
+            "GITHUB_SHA_SHORT": "${{ needs.build_info.outputs.GITHUB_SHA_SHORT }}",
+            "COMMIT_URL": "${{ needs.build_info.outputs.COMMIT_URL }}",            
+            "BUILD_TIMESTAMP": "${{ needs.build_info.outputs.BUILD_TIMESTAMP }}"
+          }
+          EOF
+      - name: "Build Web App by @${{ github.actor }}"
+        run: cd OwnTube.tv/ && cat build-info.json && npx expo export --platform web
       - name: Setup Pages
         uses: actions/configure-pages@v4
       - name: Upload artifact

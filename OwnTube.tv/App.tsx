@@ -1,9 +1,11 @@
 import { StatusBar } from "expo-status-bar";
 import { StyleSheet, Text, View } from "react-native";
 import VideoDataService from './Services/VideoDataService';
-import React, {useEffect} from 'react';
+import React from 'react';
 
 import build_info from "./build-info.json";
+
+
 
 export default function App() {
   return (

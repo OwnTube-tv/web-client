@@ -1,18 +1,58 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { StyleSheet, Text, View, FlatList, Image, Dimensions } from 'react-native';
+import VideoService from './src/components/Services/videoServices'; 
+import { Video } from './src/components/VideoTypes';
+import MainPageComponent from './src/components/MainPageComponent';
 
-import build_info from './build-info.json';
+const videoService = new VideoService();
 
-export default function App() {
+const App: React.FC = () => {
+  const [videos, setVideos] = useState<Video[]>([]);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchAndSetVideos = async () => {
+      try {
+        await videoService.fetchVideos();
+        // Här används den första kategorin som exempel
+        const categories = videoService.getVideoCategoryLabels();
+        if (categories.length > 0) {
+          const categoryVideos = videoService.getVideosForCategory(categories[0]);
+          setVideos(categoryVideos);
+        }
+      } catch (error) {
+        setError(error instanceof Error ? error.message : String(error));
+      }
+    };
+
+    fetchAndSetVideos();
+  }, []);
+
+  if (error) {
+    return (
+      <View style={styles.errorContainer}>
+        <Text>Error: {error}</Text>
+      </View>
+    );
+  }
+
   return (
+
     <View style={styles.container}>
-      <Text>Open up App.tsx to start working on your app, current deployed revision is <a href={build_info.COMMIT_URL} target="_blank">{build_info.GITHUB_SHA_SHORT}</a> built at {build_info.BUILD_TIMESTAMP}.</Text>
-      <hr></hr>
-      <Text>(Your friendly <a href={"https://github.com/" + build_info.GITHUB_ACTOR} target="_blank"><code>{build_info.GITHUB_ACTOR}</code></a> 🙋‍♀️ was here!)</Text>
-      <StatusBar style="auto" />
+      
+      {/* Conditional rendering*/}
+      {videos.length > 0 ? (
+        <MainPageComponent videos={videos} />
+      ) : (
+        <Text>Loading videos...</Text>
+      )}
+      
     </View>
   );
-}
+};
+
+const screenWidth = Dimensions.get('window').width;
+
 
 const styles = StyleSheet.create({
   container: {
@@ -21,4 +61,38 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  heading: {
+    marginTop: 20,
+    fontSize: 22,
+    fontWeight: 'bold',
+  },
+  videoItem: {
+    margin: 10,
+    width: screenWidth / 2 - 20, // Halva skärmbredden minus marginalen
+    alignItems: 'center',
+  },
+  videoImage: {
+    width: '100%',
+    aspectRatio: 16 / 9,
+    borderRadius: 4,
+  },
+  videoTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginTop: 8,
+  },
+  videoCategory: {
+    fontSize: 14,
+    color: '#666',
+  },
+  errorContainer: { // Lägg till denna stil för errorContainer
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 20,
+  },
+  videoListContainer: { // Lägg till denna stil för videoListContainer
+    paddingBottom: 20,
+  },
 });
+
+export default App;

@@ -24,4 +24,4 @@ npm install
 npm run web
 ```
 
-To get _Continuous Delivery_ from main branch working with GitHub Pages, open your fork _"Settings" > "Pages" > "Build and deployment"_ and select _"Source: GitHub Actions"_.
+To get _Continuous Delivery_ from main branch working with GitHub Pages, open your fork _"Settings" > "Pages" > "Build and deployment"_ and select _"Source: GitHub Actions"_, then go to your fork _"Actions"_ tab and select _"I understand my workflows, go ahead and enable them"_.

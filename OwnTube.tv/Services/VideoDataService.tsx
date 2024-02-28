@@ -15,7 +15,7 @@ interface Category {
 
 interface VideoServiceState {
   videos: Video[];
-  categories: CategoryLabel[]; // Update to CategoryLabel
+  categories: Category[];
   error: string | null;
 }
 

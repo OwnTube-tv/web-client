@@ -44,12 +44,11 @@ class VideoService {
   // New method to load videos from a local JSON file
   public async loadVideosFromJson(): Promise<void> {
     try {
-      const response = await fetch('testData.json'); // Assuming testData.json is in the same directory
+      const response = require('./testData.json'); // Assuming testData.json is in the same directory
 
       if (!response.ok) {
         throw new Error(`Failed to load videos from JSON file: ${response.statusText}`);
       }
-
       const responseData = await response.json();
       this.videos = responseData.data || [];
     } catch (error) {

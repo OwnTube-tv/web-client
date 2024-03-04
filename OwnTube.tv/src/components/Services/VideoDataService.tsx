@@ -1,8 +1,14 @@
 
 import React, { useState, useEffect } from 'react';
-import { Video } from '../VideoTypes';
+
 import VideoService from './videoServices';
 
+interface Video {
+  id: number;
+  name: string;
+  category: { id: number; label: string };
+  thumbnailPath: string;
+}
 
 interface Category {
   id: number;

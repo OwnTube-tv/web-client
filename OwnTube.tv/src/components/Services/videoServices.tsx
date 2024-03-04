@@ -19,7 +19,9 @@ interface CategoryLabel {
 class VideoService {
   private videos: Video[] = [];
   private categories: Category[] = [];
-
+  public getVideos(): Video[] {
+    return this.videos;
+}
   // Helper method to extract category labels from private videos list
   private extractCategoryLabels(): CategoryLabel[] {
     return this.videos.map((video) => video.category)

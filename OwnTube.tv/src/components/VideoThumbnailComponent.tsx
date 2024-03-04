@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, Image, StyleSheet } from 'react-native';
+import { View, Text, Image, StyleSheet, Dimensions } from 'react-native';
 import { Video } from './VideoTypes';
 
 interface VideoThumbnailProps {
@@ -7,43 +7,46 @@ interface VideoThumbnailProps {
 }
 
 const VideoThumbnailComponent: React.FC<VideoThumbnailProps> = ({ video }) => {
+  const screenWidth = Dimensions.get('window').width;
+  const imageWidth = screenWidth * 0.25; 
+  const imageHeight = imageWidth * (9 / 16); 
 
-  const imageUrl = video.thumbnailPath.startsWith('http')
-    ? video.thumbnailPath
-    : `https://peertube2.cpy.re${video.thumbnailPath}`;
+  const imageUrl = video.thumbnailPath.startsWith('http') ? video.thumbnailPath : `https://peertube2.cpy.re${video.thumbnailPath}`;
 
   return (
-    <View style={styles.videoThumbnailContainer}>
-      <Image source={{ uri: imageUrl }} style={styles.videoImage} />
-      <Text style={styles.videoTitle}>{video.name}</Text>
-      <Text style={styles.videoCategory}>{video.category.label}</Text>
+    <View style={[styles.videoThumbnailContainer, { width: imageWidth }]}>
+      <Image source={{ uri: imageUrl }} style={[styles.videoImage, { width: imageWidth, height: imageHeight }]} />
+      <View style={styles.textContainer}>
+        <Text style={styles.videoTitle}>{video.name}</Text>
+        <Text style={styles.videoCategory}>{video.category.label}</Text>
+      </View>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   videoThumbnailContainer: {
-    width: 200,
-    marginRight: 15,
+    marginBottom: 20,
     alignItems: 'center',
-    backgroundColor: '#2C2C2C', 
-    borderRadius: 8, 
-    overflow: 'hidden', 
-    marginBottom: 20, 
+    backgroundColor: '#2C2C2C',
+    borderRadius: 8,
+    overflow: 'hidden',
   },
   videoImage: {
-    width: '100%', 
-    height: 200, 
-    borderRadius: 4, 
+    borderRadius: 4,
+  },
+  textContainer: {
+    padding: 10, 
   },
   videoTitle: {
     fontWeight: 'bold',
-    color: '#FFFFFF', 
-    marginTop: 8, 
+    color: '#FFFFFF',
+    fontSize: 50, 
+    marginBottom: 5, 
   },
   videoCategory: {
-    color: '#CCCCCC', 
-    marginBottom: 8, 
+    color: '#CCCCCC',
+    fontSize: 14, 
   },
 });
 

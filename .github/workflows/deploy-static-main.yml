@@ -75,7 +75,7 @@ jobs:
           }
           EOF
       - name: Copy testData.json
-        run: cp testData.json ./OwnTube.tv/dist/
+        run: cp testData.json ./OwnTube.tv/
       - name: "Build Web App by @${{ github.actor }}"
         run: cd OwnTube.tv/ && cat build-info.json && npx expo export --platform web
       - name: Setup Pages

@@ -74,10 +74,8 @@ jobs:
             "BUILD_TIMESTAMP": "${{ needs.build_info.outputs.BUILD_TIMESTAMP }}"
           }
           EOF
-      - name: Create dist directory
-          run: mkdir OwnTube.tv/dist
       - name: Copy testData.json
-        run: cp OwnTube.tv/testData.json OwnTube.tv/dist/
+        run: cp OwnTube.tv/testData.json OwnTube.tv
       - name: "Build Web App by @${{ github.actor }}"
         run: cd OwnTube.tv/ && cat build-info.json && npx expo export --platform web
       - name: Setup Pages

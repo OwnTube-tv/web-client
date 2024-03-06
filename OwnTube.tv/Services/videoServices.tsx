@@ -1,5 +1,5 @@
 import testData from "../testData.json"
-
+import * as fs from 'fs/promises';
 interface Video {
   id: number;
   name: string;
@@ -42,17 +42,12 @@ class VideoService {
   }
 
   // New method to load videos from a local JSON file
-  public async loadVideosFromJson(): Promise<void> {
+  public loadVideosFromJson(): void {
     try {
-      const Data = await fetch('./testData.json'); // Assuming testData.json is in the same directory
-
-      if (!Data.ok) {
-        throw new Error(`Failed to load videos from JSON file: ${Data.statusText}`);
-      }
-      const DataData = await Data.json();
-      this.videos = DataData.data || [];
-    } catch (error) {
-      throw error;
+      const data = require('../testData.json');
+      this.videos = data.data || [];
+    } catch (error: any) {
+      throw new Error(`Failed to load videos from JSON file: ${error.message}`);
     }
   }
 }

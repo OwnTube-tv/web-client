@@ -6,6 +6,7 @@
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
+    "Data": "./testData.json",
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
@@ -29,5 +30,6 @@
     "web": {
       "favicon": "./assets/favicon.png"
     }
+    
   }
 }

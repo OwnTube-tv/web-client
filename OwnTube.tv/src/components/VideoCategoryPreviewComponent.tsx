@@ -67,12 +67,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   scrollButton: {
-    padding: 20,
+    padding: 10,
     backgroundColor: '#ddd',
     borderRadius: 10,
   },
   buttonText: {
-    fontSize: 24,
+    fontSize: 15,
     color: '#333',
   },
 });

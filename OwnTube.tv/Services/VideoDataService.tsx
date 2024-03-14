@@ -4,12 +4,12 @@ import VideoService from './videoServices'; // Import the CategoryLabel interfac
 interface Video {
   id: number;
   name: string;
-  category: { id: number; label: string };
+  category: { id: number | null; label: string };
   thumbnailPath: string;
 }
 
 interface Category {
-  id: number;
+  id: number | null;
   label: string;
 }
 
@@ -30,10 +30,11 @@ const useVideoService = () => {
         await videoService.loadVideosFromJson(); // Use the new method to load videos from local JSON
 
         // Use VideoService methods to get data
-        const categoryLabels = videoService.getVideoCategoryLabels();
-        const videos = videoService.getVideosForCategory(categoryLabels[0]); // Replace with the desired category label
-
-        setState({ videos, categories: categoryLabels, error: null });
+        videoService.loadVideosFromJson();
+        const categoryLabels = videoService.extractCategoryLabels();
+        const videosWithThumbnails = videoService.completeThumbnailUrls();
+        const videos = videoService.getVideosForCategory(categoryLabels[2]); // Replace with the desired category label
+        setState({ videos: videosWithThumbnails, categories: categoryLabels, error: null });
       } catch (error: any) {
         console.error('Error fetching videos:', error.message);
         setState((prev) => ({ ...prev, error: error.message }));
@@ -42,8 +43,8 @@ const useVideoService = () => {
 
     fetchVideos();
   }, []);
-
   return state;
+  
 };
 
 const VideoDataService: React.FC = () => {
@@ -73,7 +74,7 @@ const VideoDataService: React.FC = () => {
                 <strong>Category Label:</strong> {video.category.label}
               </div>
               <div>
-                <img src={video.thumbnailPath} alt={video.name} />
+                <img src={video.thumbnailPath} alt={video.name}/>
               </div>
             </li>
           ))

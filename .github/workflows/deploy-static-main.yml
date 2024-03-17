@@ -63,6 +63,10 @@ jobs:
           node-version: 20.x
       - name: Install Dependencies
         run: cd OwnTube.tv/ && npm install
+      - name: Check ESLint Code Style
+        run: cd OwnTube.tv/ && npx eslint .
+      - name: Check Prettier Formatting
+        run: cd OwnTube.tv/ && npx prettier --check ../
       - name: Inject Build Info
         run: |
           # Overwrite build-info.json in source root dir
@@ -82,7 +86,7 @@ jobs:
         uses: actions/upload-pages-artifact@v3
         with:
           # Upload Expo build output
-          path: './OwnTube.tv/dist/'
+          path: "./OwnTube.tv/dist/"
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4

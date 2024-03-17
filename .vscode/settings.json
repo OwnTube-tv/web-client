@@ -1,0 +1,8 @@
+{
+  "terminal.integrated.cwd": "OwnTube.tv/",
+  "editor.renderWhitespace": "all",
+  "editor.formatOnSave": true,
+  "editor.trimAutoWhitespace": true,
+  "editor.tabSize": 2,
+  "editor.detectIndentation": false
+}

@@ -67,6 +67,8 @@ jobs:
         run: cd OwnTube.tv/ && npx eslint .
       - name: Check Prettier Formatting
         run: cd OwnTube.tv/ && npx prettier --check ../
+      - name: Run Tests
+        run: cd OwnTube.tv/ && npm run test
       - name: Inject Build Info
         run: |
           # Overwrite build-info.json in source root dir

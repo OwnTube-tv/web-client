@@ -12,9 +12,21 @@ export default function App() {
 
   return (
     <View style={styles.container}>
-      <Text>Open up App.tsx to start working on your app, current deployed revision is <a href={build_info.COMMIT_URL} target="_blank">{build_info.GITHUB_SHA_SHORT}</a> built at {build_info.BUILD_TIMESTAMP}.</Text>
+      <Text>
+        Open up App.tsx to start working on your app, current deployed revision is{" "}
+        <a href={build_info.COMMIT_URL} target="_blank" rel="noreferrer">
+          {build_info.GITHUB_SHA_SHORT}
+        </a>{" "}
+        built at {build_info.BUILD_TIMESTAMP}.
+      </Text>
       <hr></hr>
-      <Text>(Your friendly <a href={"https://github.com/" + build_info.GITHUB_ACTOR} target="_blank"><code>{build_info.GITHUB_ACTOR}</code></a> 🙋‍♀️ was here!)</Text>
+      <Text>
+        (Your friendly{" "}
+        <a href={"https://github.com/" + build_info.GITHUB_ACTOR} target="_blank" rel="noreferrer">
+          <code>{build_info.GITHUB_ACTOR}</code>
+        </a>{" "}
+        🙋‍♀️ was here!)
+      </Text>
       <StatusBar style="auto" />
       <VideoDataService></VideoDataService>
     </View>
@@ -27,6 +39,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     alignItems: 'center',
     overflow: 'scroll',
-    
+    justifyContent: 'center',
   },
 });

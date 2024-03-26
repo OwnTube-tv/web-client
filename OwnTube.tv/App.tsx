@@ -1,9 +1,15 @@
-import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Text, View } from "react-native";
+import { StatusBar } from 'expo-status-bar';
+import { StyleSheet, Text, View } from 'react-native';
+import VideoDataService from './Services/VideoDataService';
+import React from 'react';
 
-import build_info from "./build-info.json";
+
+import build_info from './build-info.json';
+
+
 
 export default function App() {
+
   return (
     <View style={styles.container}>
       <Text>
@@ -22,14 +28,17 @@ export default function App() {
         🙋‍♀️ was here!)
       </Text>
       <StatusBar style="auto" />
+      <VideoDataService></VideoDataService>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    alignItems: "center",
     flex: 1,
-    justifyContent: "center",
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    overflow: 'scroll',
+    justifyContent: 'center',
   },
 });

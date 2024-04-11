@@ -1,54 +1,52 @@
-import testData from "../testData.json"
-import * as fs from 'fs/promises';
+import * as testData from "../testData.json";
+
 interface Video {
-  id: number;
-  name: string;
-  category: { id: number; label: string };
-  thumbnailPath: string;
+  readonly id: number;
+  readonly name: string;
+  readonly category: { id: number | null; label: string };
+  readonly thumbnailPath: string;
+  readonly description?: string | null;
 }
 
 interface Category {
-  id: number;
-  label: string;
+  readonly id: number;
+  readonly label: string;
 }
 
-interface CategoryLabel {
-  id: number;
-  label: string;
-}
+const BaseThumbnailUrl = "https://peertube2.cpy.re";
 
 class VideoService {
   private videos: Video[] = [];
   private categories: Category[] = [];
 
-  // Helper method to extract category labels from private videos list
-  private extractCategoryLabels(): CategoryLabel[] {
-    return this.videos.map((video) => video.category)
-      .filter((category, index, array) => array.findIndex(c => c.id === category.id) === index)
-      .map(({ id, label }) => ({ id, label }));
+  constructor() {
+    this.loadVideosFromJson();
   }
 
-  // Public method to get video category labels
-  public getVideoCategoryLabels(): CategoryLabel[] {
-    if (this.categories.length === 0) {
-      this.categories = this.extractCategoryLabels();
-    }
-    return this.categories;
+  public getVideoCategoryLabels(): string[] {
+    return this.categories.map(({ id, label }) => label);
   }
 
-  // Public method to get videos for a specific category
-  public getVideosForCategory(categoryLabel: CategoryLabel): Video[] {
-    return this.videos.filter(video => video.category.id === categoryLabel.id);
+  public completeThumbnailUrls(): Video[] {
+    return this.videos.map((video) => ({
+      ...video,
+      thumbnailUrl: `${BaseThumbnailUrl}${video.thumbnailPath}`,
+    }));
   }
 
-  // New method to load videos from a local JSON file
+  public getVideosForCategory(categoryLabel: string): Video[] {
+    return this.videos.filter(
+      (video) => video.category.label === categoryLabel
+    );
+  }
+
   public loadVideosFromJson(): void {
-    try {
-      const data = require('../testData.json');
-      this.videos = data.data || [];
-    } catch (error: any) {
-      throw new Error(`Failed to load videos from JSON file: ${error.message}`);
-    }
+    const data = testData;
+    this.videos = data.data;
+    const uniqueCategories: Category[] = Array.from(
+      new Set(this.videos.map((video) => video.category.label))
+    ).map((label, index) => ({ id: index + 1, label }));
+    this.categories = uniqueCategories;
   }
 }
 

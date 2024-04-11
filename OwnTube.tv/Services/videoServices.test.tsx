@@ -45,10 +45,6 @@ describe("VideoService", () => {
 
   it("returns a total 15 videos with from testData.json, all with id, name, category, description, and thumbnailPath", () => {
     const videoService = new VideoService();
-    type Category = {
-      id: number;
-      label: string;
-    }
     const allVideos = [];
     for (const label of videoService.getVideoCategoryLabels()) {
       const categoryVideos = videoService.getVideosForCategory(label);

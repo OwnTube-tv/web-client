@@ -1,7 +1,6 @@
 import VideoService from "./videoServices";
 
 describe("VideoService", () => {
-
   it("returns a list of unique category label names from testData.json", () => {
     const videoService = new VideoService();
 
@@ -21,7 +20,7 @@ describe("VideoService", () => {
     const gamingVideos = videoService.getVideosForCategory("Gaming");
     expect(gamingVideos).toBeInstanceOf(Array);
     expect(gamingVideos.length).toBe(6);
-    
+
     const entertainmentVideos = videoService.getVideosForCategory("Entertainment");
     expect(entertainmentVideos).toBeInstanceOf(Array);
     expect(entertainmentVideos.length).toBe(1);
@@ -52,14 +51,14 @@ describe("VideoService", () => {
     }
 
     expect(allVideos.length).toBe(15);
-  
+
     for (const video of allVideos) {
       expect(Number.isInteger(video.id)).toBe(true);
       expect(typeof video.name).toBe("string");
       if (video.category.id) {
-        expect(video.category).toMatchObject({ "id": expect.any(Number), "label": expect.any(String) });
+        expect(video.category).toMatchObject({ id: expect.any(Number), label: expect.any(String) });
       } else {
-        expect(video.category).toMatchObject({ "id": null, "label": expect.any(String) });
+        expect(video.category).toMatchObject({ id: null, label: expect.any(String) });
       }
       if (video.description) {
         expect(typeof video.description).toBe("string");

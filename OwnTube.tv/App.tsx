@@ -1,11 +1,9 @@
 import { StatusBar } from "expo-status-bar";
 import { StyleSheet, Text, View } from "react-native";
-import VideoDataService from './Services/VideoDataService';
-import React from 'react';
+import VideoDataService from "./components/videosOverview";
+import React from "react";
 
 import build_info from "./build-info.json";
-
-
 
 export default function App() {
   return (
@@ -35,8 +33,8 @@ const styles = StyleSheet.create({
   container: {
     alignItems: "center",
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
     justifyContent: "center",
-    overflow: 'scroll',
+    overflow: "scroll",
   },
 });

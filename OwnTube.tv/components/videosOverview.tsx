@@ -1,19 +1,6 @@
 import React, { useState, useEffect } from "react";
-import VideoService from "./videoServices"; // Import the CategoryLabel interface
-
-interface Video {
-  id: number;
-  name: string;
-  category: { id: number | null; label: string };
-  thumbnailPath: string;
-  thumbnailUrl?: string;
-}
-
-interface VideoServiceState {
-  videos: Video[];
-  categories: string[];
-  error: string | null;
-}
+import VideoService from "../lib/videoServices";
+import { VideoServiceState } from "../types";
 
 const useVideoService = () => {
   const [state, setState] = useState<VideoServiceState>({
@@ -27,7 +14,6 @@ const useVideoService = () => {
 
     const fetchVideos = async () => {
       try {
-        // Use VideoService methods to get data
         videoService.loadVideosFromJson();
         const categoryLabels = videoService.getVideoCategoryLabels();
         const videosWithThumbnails = videoService.completeThumbnailUrls();

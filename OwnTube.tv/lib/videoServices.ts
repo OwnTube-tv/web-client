@@ -1,5 +1,5 @@
 import * as testData from "../testData.json";
-import { Video, Category } from "../types";
+import { Video, Category } from "../VideoTypes";
 
 class VideoService {
   private videos: Video[] = [];

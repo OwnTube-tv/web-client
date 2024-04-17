@@ -1,35 +1,151 @@
-import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Text, View } from "react-native";
+import React, { useState, useEffect } from 'react';
+import { StyleSheet, View, Text, Dimensions, ScrollView, TouchableOpacity, Modal, ScaledSize } from 'react-native';
+import VideoService from './src/components/Services/videoServices';
+import MainPageComponent from './src/components/MainPageComponent';
+import { Video, CategoryLabel } from './src/components/VideoTypes';
 
 import build_info from "./build-info.json";
 
-export default function App() {
+const App = () => {
+  const [videos, setVideos] = useState<Video[]>([]);
+  const [categories, setCategories] = useState<CategoryLabel[]>([]);
+  const [error, setError] = useState<string | null>(null);
+  const [screenSize, setScreenSize] = useState(Dimensions.get('window'));
+  const [showBuildInfoModal, setShowBuildInfoModal] = useState(false);
+  
+  useEffect(() => {
+    const videoService = new VideoService();
+
+    const fetchData = async () => {
+      try {
+        videoService.loadVideosFromJson();
+        const categoriesData = videoService.getVideoCategoryLabels();
+        setCategories(categoriesData.map((label, index) => ({ id: index, label })));
+        const videosData = videoService.completeThumbnailUrls();
+        setVideos(videosData);
+      } catch (error) {
+        setError(error instanceof Error ? error.message : String(error));
+      }
+    };
+
+    fetchData();
+
+    const onChange = ({ window }: { window: ScaledSize }) => {
+      setScreenSize(window);
+    };
+
+    const subscription = Dimensions.addEventListener('change', onChange);
+    return () => subscription.remove();
+  }, []);
+
+  const showBuildInfo = () => {
+    setShowBuildInfoModal(true);
+  };
+
+  if (error) {
+    return <View style={styles.errorContainer}><Text>Error: {error}</Text></View>;
+  }
+
   return (
-    <View style={styles.container}>
-      <Text>
-        Open up App.tsx to start working on your app, current deployed revision is{" "}
-        <a href={build_info.COMMIT_URL} target="_blank" rel="noreferrer">
-          {build_info.GITHUB_SHA_SHORT}
-        </a>{" "}
-        built at {build_info.BUILD_TIMESTAMP}.
-      </Text>
-      <hr></hr>
-      <Text>
-        (Your friendly{" "}
-        <a href={"https://github.com/" + build_info.GITHUB_ACTOR} target="_blank" rel="noreferrer">
-          <code>{build_info.GITHUB_ACTOR}</code>
-        </a>{" "}
-        🙋‍♀️ was here!)
-      </Text>
-      <StatusBar style="auto" />
-    </View>
+    <>
+      <ScrollView style={[styles.container, { padding: screenSize.width * 0.00 }]}>
+        {categories.length > 0 ? (
+          <MainPageComponent videos={videos} categories={categories} />
+        ) : (
+          <Text style={styles.loadingText}>Loading videos...</Text>
+        )}
+      </ScrollView>
+      <TouchableOpacity style={styles.infoButton} onPress={showBuildInfo}>
+        <Text style={styles.infoButtonText}>ℹ️</Text>
+      </TouchableOpacity>
+      <Modal
+        visible={showBuildInfoModal}
+        animationType="slide"
+        transparent={true}
+        onRequestClose={() => setShowBuildInfoModal(false)}
+      >
+        <View style={styles.modalContainer}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalText}>
+              Build Information:
+            </Text>
+            <Text style={styles.modalText}>
+              GITHUB_ACTOR: {build_info.GITHUB_ACTOR}
+            </Text>
+            <Text style={styles.modalText}>
+              GITHUB_SHA_SHORT: {build_info.GITHUB_SHA_SHORT}
+            </Text>
+            <Text style={styles.modalText}>
+              COMMIT_URL: {build_info.COMMIT_URL}
+            </Text>
+            <Text style={styles.modalText}>
+              BUILD_TIMESTAMP: {build_info.BUILD_TIMESTAMP}
+            </Text>
+            <TouchableOpacity style={styles.modalCloseButton} onPress={() => setShowBuildInfoModal(false)}>
+              <Text style={styles.modalCloseButtonText}>Close</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+    </>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
-    alignItems: "center",
     flex: 1,
-    justifyContent: "center",
+    backgroundColor: '#fff',
+  },
+  errorContainer: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 20,
+  },
+  loadingText: {
+    fontSize: 20,
+    textAlign: 'center',
+    margin: 10,
+  },
+  infoButton: {
+    backgroundColor: 'rgba(0,0,0,0.7)', // TODO: Replace with color constant
+    borderRadius: 20,
+    bottom: 10,
+    padding: 10,
+    position: 'absolute',
+    right: 10,
+  },
+  infoButtonText: {
+    color: '#fff',
+    fontSize: 20,
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  modalContent: {
+    backgroundColor: '#fff',
+    padding: 20,
+    borderRadius: 10,
+    alignItems: 'center',
+  },
+  modalText: {
+    marginBottom: 10,
+    fontSize: 16,
+  },
+  modalCloseButton: {
+    backgroundColor: 'rgba(0,0,0,0.7)', // TODO: Replace with color constant
+    borderRadius: 10,
+    marginTop: 20,
+    padding: 10,
+  },
+  modalCloseButtonText: {
+    color: '#fff',
+    fontSize: 16,
   },
 });
+
+
+export default App;

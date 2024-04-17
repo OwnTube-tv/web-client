@@ -11,7 +11,7 @@ class VideoService {
   }
 
   public getVideoCategoryLabels(): string[] {
-    return this.categories.map(({ id, label }) => label);
+    return this.categories.map(({ label }) => label);
   }
 
   public completeThumbnailUrls(): Video[] {

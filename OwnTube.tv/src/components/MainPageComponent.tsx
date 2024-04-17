@@ -1,20 +1,23 @@
 import React from 'react';
 import { View, Text, Image, StyleSheet, ScrollView, Dimensions } from 'react-native';
 import VideosByCategoryComponent from './VideosByCategoryComponent';
+import { MainPageProps } from './VideoTypes'; // Ensure this import path is correct
 
 const { width } = Dimensions.get('window');
 
-const MainPageComponent: React.FC = () => {
+const MainPageComponent: React.FC<MainPageProps> = ({ videos, categories }) => {
   return (
     <ScrollView style={styles.scrollContainer} contentContainerStyle={styles.mainPageContainer}>
       <View style={styles.logoContainer}>
         <Image 
           source={{ uri: 'https://example.com/owntube-logo.png' }}
-          style={styles.logo} // Adjusted style to match the exact dimensions and styles as the first snippet
+          style={styles.logo}
         />
         <Text style={styles.logoText}>OwnTube</Text>
       </View>
-      <VideosByCategoryComponent />
+      {categories.map((category) => (
+        <VideosByCategoryComponent key={category.id} category={category} videos={videos.filter(video => video.category.label === category.label)} />
+      ))}
     </ScrollView>
   );
 };

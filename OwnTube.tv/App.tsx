@@ -1,10 +1,17 @@
-import React, { useState, useEffect } from 'react';
+import  { useState, useEffect } from 'react';
 import { StyleSheet, View, Text, Dimensions, ScrollView, TouchableOpacity, Modal, ScaledSize } from 'react-native';
 import VideoService from './src/components/Services/videoServices';
 import MainPageComponent from './src/components/MainPageComponent';
 import { Video, CategoryLabel } from './src/components/VideoTypes';
 
 import build_info from "./build-info.json";
+
+// Define color constants to avoid literals
+const COLORS = {
+  white: '#fff',
+  modalBackground: 'rgba(0,0,0,0.7)',
+  overlay: 'rgba(0, 0, 0, 0.5)'
+};
 
 const App = () => {
   const [videos, setVideos] = useState<Video[]>([]);
@@ -93,22 +100,17 @@ const App = () => {
 
 const styles = StyleSheet.create({
   container: {
+    backgroundColor: COLORS.white,
     flex: 1,
-    backgroundColor: '#fff',
   },
   errorContainer: {
-    flex: 1,
     alignItems: 'center',
+    flex: 1,
     justifyContent: 'center',
     padding: 20,
   },
-  loadingText: {
-    fontSize: 20,
-    textAlign: 'center',
-    margin: 10,
-  },
   infoButton: {
-    backgroundColor: 'rgba(0,0,0,0.7)', // TODO: Replace with color constant
+    backgroundColor: COLORS.modalBackground,
     borderRadius: 20,
     bottom: 10,
     padding: 10,
@@ -116,36 +118,40 @@ const styles = StyleSheet.create({
     right: 10,
   },
   infoButtonText: {
-    color: '#fff',
+    color: COLORS.white,
     fontSize: 20,
   },
-  modalContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-  },
-  modalContent: {
-    backgroundColor: '#fff',
-    padding: 20,
-    borderRadius: 10,
-    alignItems: 'center',
-  },
-  modalText: {
-    marginBottom: 10,
-    fontSize: 16,
+  loadingText: {
+    fontSize: 20,
+    margin: 10,
+    textAlign: 'center',
   },
   modalCloseButton: {
-    backgroundColor: 'rgba(0,0,0,0.7)', // TODO: Replace with color constant
+    backgroundColor: COLORS.modalBackground,
     borderRadius: 10,
     marginTop: 20,
     padding: 10,
   },
   modalCloseButtonText: {
-    color: '#fff',
+    color: COLORS.white,
     fontSize: 16,
   },
+  modalContainer: {
+    alignItems: 'center',
+    backgroundColor: COLORS.overlay,
+    flex: 1,
+    justifyContent: 'center',
+  },
+  modalContent: {
+    alignItems: 'center',
+    backgroundColor: COLORS.white,
+    borderRadius: 10,
+    padding: 20,
+  },
+  modalText: {
+    fontSize: 16,
+    marginBottom: 10,
+  },
 });
-
 
 export default App;

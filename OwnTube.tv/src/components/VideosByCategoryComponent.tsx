@@ -1,69 +1,55 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable react-native/no-unused-styles */
 import React, { useRef, useEffect, useState } from 'react';
 import { View, Text, ScrollView, StyleSheet, TouchableOpacity, Dimensions } from 'react-native';
 import VideoThumbnailComponent from './VideoThumbnailComponent';
-import useVideoService from '../components/Services/useVideoService';
+import { Video, CategoryLabel } from './VideoTypes';  // Ensure this import path is correct
 
-// Definiera färgkonstanter
+// Define color constants
 const COLOR_DARK = '#333';
 const COLOR_LIGHT_GRAY = '#CCC';
 const COLOR_GRAY = '#ddd';
 const COLOR_WHITE = '#FFF';
 
-const VideosByCategoryComponent: React.FC = () => {
-  const { videos, categories, error } = useVideoService();
+interface VideosByCategoryComponentProps {
+  category: CategoryLabel;  
+  videos: Video[];
+}
+
+const VideosByCategoryComponent: React.FC<VideosByCategoryComponentProps> = ({ category, videos }) => {
   const scrollRefs = useRef<Array<ScrollView | null>>([]);
   const [windowWidth, setWindowWidth] = useState(Dimensions.get('window').width);
 
   useEffect(() => {
-    const updateWindowWidth = () => {
-      setWindowWidth(Dimensions.get('window').width);
-    };
+    const subscription = Dimensions.addEventListener('change', ({ window }) => {
+      setWindowWidth(window.width);
+    });
 
-    Dimensions.addEventListener('change', updateWindowWidth);
-
-    return () => {
-    };
+    return () => subscription.remove();  // Proper cleanup on unmount
   }, []);
 
-  if (error) {
-    return <View style={styles.errorContainer}><Text>Error: {error}</Text></View>;
-  }
-
-  const scrollLeft = (index: number) => {
-    scrollRefs.current[index]?.scrollTo({ x: 0, animated: true });
-  };
-
-  const scrollRight = (index: number) => {
-    scrollRefs.current[index]?.scrollToEnd({ animated: true });
-  };
-
   return (
-    <ScrollView style={styles.scrollContainer} contentContainerStyle={styles.mainPageContainer}>
-      {categories.map((categoryLabel, index) => (
-        <View key={index} style={styles.videoCategoryPreviewContainer}>
-          <Text style={styles.categoryTitle}>{categoryLabel}</Text>
-          <View style={styles.horizontalScrollContainer}>
-            <TouchableOpacity onPress={() => scrollLeft(index)} style={styles.scrollButton}>
-              <Text style={styles.buttonText}>{'<'}</Text>
-            </TouchableOpacity>
-            <ScrollView
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              ref={el => (scrollRefs.current[index] = el)}
-              contentContainerStyle={{ ...styles.videoThumbnailsContainer, width: windowWidth }}
-              style={styles.scrollViewStyle}> 
-              {videos.filter(video => video.category.label === categoryLabel).map((video) => (
-                <VideoThumbnailComponent key={video.id} video={video} />
-              ))}
-            </ScrollView>
-            <TouchableOpacity onPress={() => scrollRight(index)} style={styles.scrollButton}>
-              <Text style={styles.buttonText}>{'>'}</Text>
-            </TouchableOpacity>
-          </View>
-          {index < categories.length - 1 && <View style={styles.categorySeparator} />}
-        </View>
-      ))}
-    </ScrollView>
+    <View style={styles.videoCategoryPreviewContainer}>
+      <Text style={styles.categoryTitle}>{category.label}</Text>
+      <View style={styles.horizontalScrollContainer}>
+        <TouchableOpacity onPress={() => scrollRefs.current[0]?.scrollTo({ x: 0, animated: true })} style={styles.scrollButton}>
+          <Text style={styles.buttonText}>{'<'}</Text>
+        </TouchableOpacity>
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          ref={ref => scrollRefs.current[0] = ref}
+          contentContainerStyle={[styles.videoThumbnailsContainer, { width: windowWidth }]}
+          style={styles.scrollViewStyle}>
+          {videos.filter(video => video.category.label === category.label).map(video => (
+            <VideoThumbnailComponent key={video.id} video={video} />
+          ))}
+        </ScrollView>
+        <TouchableOpacity onPress={() => scrollRefs.current[0]?.scrollToEnd({ animated: true })} style={styles.scrollButton}>
+          <Text style={styles.buttonText}>{'>'}</Text>
+        </TouchableOpacity>
+      </View>
+    </View>
   );
 };
 
@@ -71,13 +57,6 @@ const styles = StyleSheet.create({
   buttonText: {
     color: COLOR_DARK,
     fontSize: 15,
-  },
-  categorySeparator: {
-    alignSelf: 'center',
-    backgroundColor: COLOR_LIGHT_GRAY,
-    height: 1,
-    marginVertical: 20,
-    width: '90%',
   },
   categoryTitle: {
     color: COLOR_WHITE,
@@ -94,7 +73,7 @@ const styles = StyleSheet.create({
   horizontalScrollContainer: {
     alignItems: 'center',
     flexDirection: 'row',
-    flex: 1, 
+    flex: 1,
   },
   mainPageContainer: {
     alignItems: 'center',

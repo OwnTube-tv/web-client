@@ -1,22 +1,10 @@
 import * as testData from "../testData.json";
-
-interface Video {
-  readonly id: number;
-  readonly name: string;
-  readonly category: { id: number | null; label: string };
-  readonly thumbnailPath: string;
-  readonly description?: string | null;
-}
-
-interface Category {
-  readonly label: string;
-}
-
-const BaseThumbnailUrl = "https://peertube2.cpy.re";
+import { Video, CategoryLabel }  from '../VideoTypes'
 
 class VideoService {
   private videos: Video[] = [];
-  private categories: Category[] = [];
+  private categories: CategoryLabel[] = [];
+  private readonly baseThumbnailUrl = "https://peertube2.cpy.re";
 
   constructor() {
     this.loadVideosFromJson();
@@ -29,7 +17,7 @@ class VideoService {
   public completeThumbnailUrls(): Video[] {
     return this.videos.map((video) => ({
       ...video,
-      thumbnailUrl: `${BaseThumbnailUrl}${video.thumbnailPath}`,
+      thumbnailUrl: `${this.baseThumbnailUrl}${video.thumbnailPath}`,
     }));
   }
 
@@ -40,7 +28,7 @@ class VideoService {
   public loadVideosFromJson(): void {
     const data = testData;
     this.videos = data.data;
-    const uniqueCategories: Category[] = Array.from(new Set(this.videos.map((video) => video.category.label))).map(
+    const uniqueCategories: CategoryLabel[] = Array.from(new Set(this.videos.map((video) => video.category.label))).map(
       (label, index) => ({ id: index + 1, label }),
     );
     this.categories = uniqueCategories;

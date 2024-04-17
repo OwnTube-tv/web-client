@@ -3,7 +3,11 @@ export interface CategoryLabel {
    id: number | null;
    label: string;
  }
- 
+ export interface Category {
+  readonly label: string;
+  readonly id: number;
+}
+
  export interface Video {
    id: number;
    name: string;
@@ -32,3 +36,4 @@ export interface CategoryLabel {
  }
 
 
+ 

@@ -1,25 +1,25 @@
-import  { useState, useEffect } from 'react';
-import { StyleSheet, View, Text, Dimensions, ScrollView, TouchableOpacity, Modal, ScaledSize } from 'react-native';
-import VideoService from './src/components/Services/videoServices';
-import MainPageComponent from './src/components/MainPageComponent';
-import { Video, CategoryLabel } from './src/components/VideoTypes';
+import { useState, useEffect } from "react";
+import { StyleSheet, View, Text, Dimensions, ScrollView, TouchableOpacity, Modal, ScaledSize } from "react-native";
+import VideoService from "./src/components/Services/videoServices";
+import MainPageComponent from "./src/components/MainPageComponent";
+import { Video, CategoryLabel } from "./src/components/VideoTypes";
 
 import build_info from "./build-info.json";
 
 // Define color constants to avoid literals
 const COLORS = {
-  white: '#fff',
-  modalBackground: 'rgba(0,0,0,0.7)',
-  overlay: 'rgba(0, 0, 0, 0.5)'
+  white: "#fff",
+  modalBackground: "rgba(0,0,0,0.7)",
+  overlay: "rgba(0, 0, 0, 0.5)",
 };
 
 const App = () => {
   const [videos, setVideos] = useState<Video[]>([]);
   const [categories, setCategories] = useState<CategoryLabel[]>([]);
   const [error, setError] = useState<string | null>(null);
-  const [screenSize, setScreenSize] = useState(Dimensions.get('window'));
+  const [screenSize, setScreenSize] = useState(Dimensions.get("window"));
   const [showBuildInfoModal, setShowBuildInfoModal] = useState(false);
-  
+
   useEffect(() => {
     const videoService = new VideoService();
 
@@ -41,7 +41,7 @@ const App = () => {
       setScreenSize(window);
     };
 
-    const subscription = Dimensions.addEventListener('change', onChange);
+    const subscription = Dimensions.addEventListener("change", onChange);
     return () => subscription.remove();
   }, []);
 
@@ -50,12 +50,16 @@ const App = () => {
   };
 
   if (error) {
-    return <View style={styles.errorContainer}><Text>Error: {error}</Text></View>;
+    return (
+      <View style={styles.errorContainer}>
+        <Text>Error: {error}</Text>
+      </View>
+    );
   }
 
   return (
     <>
-      <ScrollView style={[styles.container, { padding: screenSize.width * 0.00 }]}>
+      <ScrollView style={[styles.container, { padding: screenSize.width * 0.0 }]}>
         {categories.length > 0 ? (
           <MainPageComponent videos={videos} categories={categories} />
         ) : (
@@ -73,21 +77,11 @@ const App = () => {
       >
         <View style={styles.modalContainer}>
           <View style={styles.modalContent}>
-            <Text style={styles.modalText}>
-              Build Information:
-            </Text>
-            <Text style={styles.modalText}>
-              GITHUB_ACTOR: {build_info.GITHUB_ACTOR}
-            </Text>
-            <Text style={styles.modalText}>
-              GITHUB_SHA_SHORT: {build_info.GITHUB_SHA_SHORT}
-            </Text>
-            <Text style={styles.modalText}>
-              COMMIT_URL: {build_info.COMMIT_URL}
-            </Text>
-            <Text style={styles.modalText}>
-              BUILD_TIMESTAMP: {build_info.BUILD_TIMESTAMP}
-            </Text>
+            <Text style={styles.modalText}>Build Information:</Text>
+            <Text style={styles.modalText}>GITHUB_ACTOR: {build_info.GITHUB_ACTOR}</Text>
+            <Text style={styles.modalText}>GITHUB_SHA_SHORT: {build_info.GITHUB_SHA_SHORT}</Text>
+            <Text style={styles.modalText}>COMMIT_URL: {build_info.COMMIT_URL}</Text>
+            <Text style={styles.modalText}>BUILD_TIMESTAMP: {build_info.BUILD_TIMESTAMP}</Text>
             <TouchableOpacity style={styles.modalCloseButton} onPress={() => setShowBuildInfoModal(false)}>
               <Text style={styles.modalCloseButtonText}>Close</Text>
             </TouchableOpacity>
@@ -104,9 +98,9 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   errorContainer: {
-    alignItems: 'center',
+    alignItems: "center",
     flex: 1,
-    justifyContent: 'center',
+    justifyContent: "center",
     padding: 20,
   },
   infoButton: {
@@ -114,7 +108,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     bottom: 10,
     padding: 10,
-    position: 'absolute',
+    position: "absolute",
     right: 10,
   },
   infoButtonText: {
@@ -124,7 +118,7 @@ const styles = StyleSheet.create({
   loadingText: {
     fontSize: 20,
     margin: 10,
-    textAlign: 'center',
+    textAlign: "center",
   },
   modalCloseButton: {
     backgroundColor: COLORS.modalBackground,
@@ -137,13 +131,13 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   modalContainer: {
-    alignItems: 'center',
+    alignItems: "center",
     backgroundColor: COLORS.overlay,
     flex: 1,
-    justifyContent: 'center',
+    justifyContent: "center",
   },
   modalContent: {
-    alignItems: 'center',
+    alignItems: "center",
     backgroundColor: COLORS.white,
     borderRadius: 10,
     padding: 20,

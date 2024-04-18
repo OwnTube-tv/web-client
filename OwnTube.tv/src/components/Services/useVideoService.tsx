@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react';
-import VideoService from './videoServices';
-import { Video } from '../VideoTypes';
+import { useState, useEffect } from "react";
+import VideoService from "./videoServices";
+import { Video } from "../VideoTypes";
 
 interface VideoServiceState {
   videos: Video[];
@@ -33,7 +33,7 @@ const useVideoService = (): VideoServiceState => {
       });
     } catch (error) {
       console.error("Error fetching videos:", error);
-      setState(prevState => ({
+      setState((prevState) => ({
         ...prevState,
         error: error instanceof Error ? error.message : String(error),
         isLoading: false,

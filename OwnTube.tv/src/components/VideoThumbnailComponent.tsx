@@ -1,5 +1,5 @@
-import React from 'react';
-import { View, Text, Image, StyleSheet, Dimensions } from 'react-native';
+import React from "react";
+import { View, Text, Image, StyleSheet, Dimensions } from "react-native";
 
 interface Video {
   id: number;
@@ -12,16 +12,16 @@ interface VideoThumbnailProps {
   video: Video;
 }
 
-const COLOR_DARK_GRAY = '#2C2C2C';
-const COLOR_WHITE = '#FFFFFF';
-const COLOR_LIGHT_GRAY = '#CCCCCC';
+const COLOR_DARK_GRAY = "#2C2C2C";
+const COLOR_WHITE = "#FFFFFF";
+const COLOR_LIGHT_GRAY = "#CCCCCC";
 
 const VideoThumbnailComponent: React.FC<VideoThumbnailProps> = ({ video }) => {
-  const screenWidth = Dimensions.get('window').width;
+  const screenWidth = Dimensions.get("window").width;
   const imageWidth = screenWidth * 0.25;
   const imageHeight = imageWidth * (9 / 16);
 
-  const imageUrl = video.thumbnailUrl || 'https://peertube2.cpy.re/default-thumbnail.jpg';
+  const imageUrl = video.thumbnailUrl || "https://peertube2.cpy.re/default-thumbnail.jpg";
 
   return (
     <View style={[styles.videoThumbnailContainer, { width: imageWidth }]}>
@@ -44,20 +44,20 @@ const styles = StyleSheet.create({
   },
   videoImage: {
     borderRadius: 2,
-    width: '80%', 
+    width: "80%",
   },
   videoThumbnailContainer: {
-    alignItems: 'center',
+    alignItems: "center",
     backgroundColor: COLOR_DARK_GRAY,
     borderRadius: 3,
     marginBottom: 18,
-    overflow: 'hidden',
-    width: '80%' 
+    overflow: "hidden",
+    width: "80%",
   },
   videoTitle: {
     color: COLOR_WHITE,
     fontSize: 15,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 5,
   },
 });

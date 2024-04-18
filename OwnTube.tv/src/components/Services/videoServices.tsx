@@ -1,6 +1,5 @@
 import * as testData from "../testData.json";
 import { Video, CategoryLabel } from "../VideoTypes";
-
 class VideoService {
   private videos: Video[] = [];
   private categories: CategoryLabel[] = [];

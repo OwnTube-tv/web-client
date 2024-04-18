@@ -3,7 +3,7 @@ import { Video, CategoryLabel } from "../VideoTypes";
 class VideoService {
   private videos: Video[] = [];
   private categories: CategoryLabel[] = [];
-  private readonly baseThumbnailUrl = "https://peertube2.cpy.re";
+  private  baseThumbnailUrl = "https://peertube2.cpy.re";
 
   constructor() {
     this.loadVideosFromJson();

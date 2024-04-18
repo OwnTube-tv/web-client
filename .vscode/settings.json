@@ -4,5 +4,8 @@
   "editor.formatOnSave": true,
   "editor.trimAutoWhitespace": true,
   "editor.tabSize": 2,
-  "editor.detectIndentation": false
+  "editor.detectIndentation": false,
+  "githubPullRequests.ignoredPullRequestBranches": [
+    "main"
+  ]
 }

@@ -1,8 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { View, Text, Image } from "react-native";
 import VideoService from "../lib/videoServices";
-import { VideoServiceState } from "../types";
+import { Video } from "../types";
 
+export interface VideoServiceState {
+  videos: Video[];
+  categories: string[];
+  error: string | null;
+}
 const useVideoService = () => {
   const [state, setState] = useState<VideoServiceState>({
     videos: [],
@@ -60,7 +65,7 @@ const VideoDataService: React.FC = () => {
                   <Text>Name: {video.name}</Text>
                   <Text>Category ID: {video.category.id}</Text>
                   <Text>Category Label: {video.category.label}</Text>
-                  <Image source={{ uri: video.thumbnailUrl }} />
+                  <Image source={{ uri: video.thumbnailUrl }} style={{ width: 200, height: 180 }} />
                 </View>
               ))}
           </View>

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, Image } from "react-native";
+import { View, Text, Image, StyleSheet } from "react-native";
 import VideoService from "../lib/videoServices";
 import { Video } from "../types";
 
@@ -65,7 +65,7 @@ const VideoDataService: React.FC = () => {
                   <Text>Name: {video.name}</Text>
                   <Text>Category ID: {video.category.id}</Text>
                   <Text>Category Label: {video.category.label}</Text>
-                  <Image source={{ uri: video.thumbnailUrl }} style={{ width: 200, height: 180 }} />
+                  <Image source={{ uri: video.thumbnailUrl }} style={styles.image} />
                 </View>
               ))}
           </View>
@@ -75,4 +75,10 @@ const VideoDataService: React.FC = () => {
   );
 };
 
+const styles = StyleSheet.create({
+  image: {
+    height: 180,
+    width: 200,
+  },
+});
 export default VideoDataService;

@@ -1,5 +1,6 @@
 import { StatusBar } from "expo-status-bar";
 import { StyleSheet, Text, View } from "react-native";
+import VideoDataService from "./components/videosOverview";
 
 import build_info from "./build-info.json";
 
@@ -22,6 +23,7 @@ export default function App() {
         🙋‍♀️ was here!)
       </Text>
       <StatusBar style="auto" />
+      <VideoDataService></VideoDataService>
     </View>
   );
 }
@@ -31,5 +33,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     flex: 1,
     justifyContent: "center",
+    overflow: "scroll",
   },
 });

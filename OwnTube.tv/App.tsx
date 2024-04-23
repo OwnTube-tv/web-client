@@ -40,8 +40,8 @@ const styles = StyleSheet.create({
     overflow: "scroll",
   },
   icon: {
-    width: 50,
     height: 50,
     marginBottom: 10,
+    width: 50,
   },
 });

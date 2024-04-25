@@ -1,23 +1,18 @@
 import * as testData from "../testData.json";
-import { Video, Category } from "../types";
+import type { Video, Category, SOURCES } from "../types";
 
 class VideoService {
   private videos: Video[] = [];
   private categories: Category[] = [];
-  private readonly baseThumbnailUrl = "https://peertube2.cpy.re";
-
-  constructor() {
-    this.loadVideosFromJson();
-  }
 
   public getVideoCategoryLabels(): string[] {
     return this.categories.map(({ label }) => label);
   }
 
-  public completeThumbnailUrls(): Video[] {
+  public completeThumbnailUrls(sourceUrl: SOURCES): Video[] {
     return this.videos.map((video) => ({
       ...video,
-      thumbnailUrl: `${this.baseThumbnailUrl}${video.thumbnailPath}`,
+      thumbnailUrl: `${sourceUrl}${video.thumbnailPath}`,
     }));
   }
 

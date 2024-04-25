@@ -32,5 +32,10 @@
     "prettier": "3.2.5",
     "typescript": "^5.1.3"
   },
+  "overrides": {
+    "expo": {
+      "@expo/cli": "^0.18.3"
+    }
+  },
   "private": false
 }

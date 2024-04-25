@@ -1,5 +1,5 @@
 import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View, Image } from "react-native";
 import VideoDataService from "./components/videosOverview";
 
 import build_info from "./build-info.json";
@@ -7,6 +7,8 @@ import build_info from "./build-info.json";
 export default function App() {
   return (
     <View style={styles.container}>
+      {/* Using the SVG component */}
+      <Image source={require("./assets/Logo300x100.png")} />
       <Text>
         Open up App.tsx to start working on your app, current deployed revision is{" "}
         <a href={build_info.COMMIT_URL} target="_blank" rel="noreferrer">
@@ -23,7 +25,7 @@ export default function App() {
         🙋‍♀️ was here!)
       </Text>
       <StatusBar style="auto" />
-      <VideoDataService></VideoDataService>
+      <VideoDataService />
     </View>
   );
 }
@@ -32,7 +34,6 @@ const styles = StyleSheet.create({
   container: {
     alignItems: "center",
     flex: 1,
-    justifyContent: "center",
     overflow: "scroll",
   },
 });

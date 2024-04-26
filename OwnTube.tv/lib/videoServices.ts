@@ -1,5 +1,6 @@
 import * as testData from "../testData.json";
 import { Video, Category } from "../types";
+import axios from 'axios'
 
 class VideoService {
   private videos: Video[] = [];
@@ -8,6 +9,7 @@ class VideoService {
 
   constructor() {
     this.loadVideosFromJson();
+    this.loadVideosFromApi();
   }
 
   public getVideoCategoryLabels(): string[] {
@@ -25,6 +27,7 @@ class VideoService {
     return this.videos.filter((video) => video.category.label === categoryLabel);
   }
 
+
   public loadVideosFromJson(): void {
     const data = testData;
     this.videos = data.data;
@@ -32,6 +35,17 @@ class VideoService {
       (label, index) => ({ id: index + 1, label }),
     );
     this.categories = uniqueCategories;
+  }
+
+  private async loadVideosFromApi(): Promise<void> {
+    try {
+      const response = await axios.get("https://peertube.example.com/api/v1/videos");
+      this.videos = response.data;
+
+    } catch (error) {
+      console.error("Error fetching videos from PeerTube API:", error);
+
+    }
   }
 }
 

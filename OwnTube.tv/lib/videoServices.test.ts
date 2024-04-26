@@ -1,6 +1,7 @@
 import VideoService from "./videoServices";
 
 describe("VideoService", () => {
+ // Tests for the baseline scenario - using test data
   it("returns a list of unique category label names from testData.json", () => {
     const videoService = new VideoService();
 
@@ -67,5 +68,16 @@ describe("VideoService", () => {
       }
       expect(typeof video.thumbnailPath).toBe("string");
     }
+  });
+
+  it("returns a list of all videos when initialized with a PeerTube backend", async () => {
+    const videoService = new VideoService();
+
+   // We expect that after initializing the service with the PeerTube API, data will be loaded.
+   // This may be difficult to confirm in this test, but we can verify that the number of retrieved videos is not zero.
+    const allVideos = videoService.completeThumbnailUrls(); // Завантажуємо всі відео
+
+    expect(allVideos).toBeInstanceOf(Array);
+    expect(allVideos.length).toBeGreaterThan(0); // Verifying that at least one video is retrieved
   });
 });

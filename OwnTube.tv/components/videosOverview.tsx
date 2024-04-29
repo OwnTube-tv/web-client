@@ -20,9 +20,8 @@ const useVideoService = () => {
 
     const fetchVideos = async () => {
       try {
-        videoService.loadVideosFromJson();
-        const categoryLabels = videoService.getVideoCategoryLabels();
-        const videosWithThumbnails = videoService.completeThumbnailUrls();
+        const categoryLabels = await videoService.getVideoCategoryLabels();
+        const videosWithThumbnails = await videoService.completeThumbnailUrls();
         setState({
           videos: videosWithThumbnails,
           categories: categoryLabels,

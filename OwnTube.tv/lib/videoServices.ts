@@ -1,51 +1,55 @@
 import * as testData from "../testData.json";
 import { Video, Category } from "../types";
-import axios from 'axios'
+import { PeertubeVideosApi } from "./peertubeVideosApi";
 
 class VideoService {
   private videos: Video[] = [];
+  private videosLoaded: Promise<void>;
   private categories: Category[] = [];
   private readonly baseThumbnailUrl = "https://peertube2.cpy.re";
 
-  constructor() {
-    this.loadVideosFromJson();
-    this.loadVideosFromApi();
+  constructor(useTestData: boolean = false) {
+    if (useTestData) {
+      this.videosLoaded = this.loadVideosFromJson();
+    } else {
+      this.videosLoaded = this.loadVideosFromApi();
+    }
   }
 
-  public getVideoCategoryLabels(): string[] {
+  public async getVideoCategoryLabels(): Promise<string[]> {
+    await this.videosLoaded;
     return this.categories.map(({ label }) => label);
   }
 
-  public completeThumbnailUrls(): Video[] {
+  public async completeThumbnailUrls(): Promise<Video[]> {
+    await this.videosLoaded;
     return this.videos.map((video) => ({
       ...video,
       thumbnailUrl: `${this.baseThumbnailUrl}${video.thumbnailPath}`,
     }));
   }
 
-  public getVideosForCategory(categoryLabel: string): Video[] {
+  public async getVideosForCategory(categoryLabel: string): Promise<Video[]> {
+    await this.videosLoaded;
     return this.videos.filter((video) => video.category.label === categoryLabel);
   }
 
-
-  public loadVideosFromJson(): void {
-    const data = testData;
-    this.videos = data.data;
-    const uniqueCategories: Category[] = Array.from(new Set(this.videos.map((video) => video.category.label))).map(
+  private extractCategories(videos: Video[]) {
+    const uniqueCategories: Category[] = Array.from(new Set(videos.map((video) => video.category.label))).map(
       (label, index) => ({ id: index + 1, label }),
     );
     this.categories = uniqueCategories;
   }
 
+  private async loadVideosFromJson(): Promise<void> {
+    const data = testData;
+    this.videos = data.data;
+    this.extractCategories(this.videos);
+  }
   private async loadVideosFromApi(): Promise<void> {
-    try {
-      const response = await axios.get("https://peertube.example.com/api/v1/videos");
-      this.videos = response.data;
-
-    } catch (error) {
-      console.error("Error fetching videos from PeerTube API:", error);
-
-    }
+    const api = new PeertubeVideosApi("peertube2.cpy.re");
+    this.videos = await api.getVideos();
+    this.extractCategories(this.videos);
   }
 }
 

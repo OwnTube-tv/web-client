@@ -1,11 +1,10 @@
 import VideoService from "./videoServices";
 
 describe("VideoService", () => {
- // Tests for the baseline scenario - using test data
-  it("returns a list of unique category label names from testData.json", () => {
-    const videoService = new VideoService();
+  it("returns a list of unique category label names from testData.json", async () => {
+    const videoService = new VideoService(true);
 
-    const categoryLabels = videoService.getVideoCategoryLabels();
+    const categoryLabels = await videoService.getVideoCategoryLabels();
     expect(categoryLabels).toBeInstanceOf(Array);
     expect(categoryLabels.length).toBe(5);
     expect(categoryLabels).toContain("Gaming");
@@ -15,39 +14,39 @@ describe("VideoService", () => {
     expect(categoryLabels).toContain("Education");
   });
 
-  it("returns a list with the correct number of videos from testData.json, for each label", () => {
-    const videoService = new VideoService();
+  it("returns a list with the correct number of videos from testData.json, for each label", async () => {
+    const videoService = new VideoService(true);
 
-    const gamingVideos = videoService.getVideosForCategory("Gaming");
+    const gamingVideos = await videoService.getVideosForCategory("Gaming");
     expect(gamingVideos).toBeInstanceOf(Array);
     expect(gamingVideos.length).toBe(6);
 
-    const entertainmentVideos = videoService.getVideosForCategory("Entertainment");
+    const entertainmentVideos = await videoService.getVideosForCategory("Entertainment");
     expect(entertainmentVideos).toBeInstanceOf(Array);
     expect(entertainmentVideos.length).toBe(1);
 
-    const unknownVideos = videoService.getVideosForCategory("Unknown");
+    const unknownVideos = await videoService.getVideosForCategory("Unknown");
     expect(unknownVideos).toBeInstanceOf(Array);
     expect(unknownVideos.length).toBe(6);
 
-    const artVideos = videoService.getVideosForCategory("Art");
+    const artVideos = await videoService.getVideosForCategory("Art");
     expect(artVideos).toBeInstanceOf(Array);
     expect(artVideos.length).toBe(1);
 
-    const educationVideos = videoService.getVideosForCategory("Education");
+    const educationVideos = await videoService.getVideosForCategory("Education");
     expect(educationVideos).toBeInstanceOf(Array);
     expect(educationVideos.length).toBe(1);
 
-    const undefinedLabelVideos = videoService.getVideosForCategory("Undefined, just made up from nowhere!");
+    const undefinedLabelVideos = await videoService.getVideosForCategory("Undefined, just made up from nowhere!");
     expect(undefinedLabelVideos).toBeInstanceOf(Array);
     expect(undefinedLabelVideos.length).toBe(0);
   });
 
-  it("returns a total 15 videos with from testData.json, all with id, name, category, description, and thumbnailPath", () => {
-    const videoService = new VideoService();
+  it("returns a total 15 videos from testData.json, all with id, name, category, description, and thumbnailPath", async () => {
+    const videoService = new VideoService(true);
     const allVideos = [];
-    for (const label of videoService.getVideoCategoryLabels()) {
-      const categoryVideos = videoService.getVideosForCategory(label);
+    for (const label of await videoService.getVideoCategoryLabels()) {
+      const categoryVideos = await videoService.getVideosForCategory(label);
       allVideos.push(...categoryVideos);
     }
 
@@ -70,12 +69,12 @@ describe("VideoService", () => {
     }
   });
 
-  it("returns a list of all videos when initialized with a PeerTube backend", async () => {
+  it("returns a list of all videos from a PeerTube external API, when not initialized with test data", async () => {
     const videoService = new VideoService();
 
-   // We expect that after initializing the service with the PeerTube API, data will be loaded.
-   // This may be difficult to confirm in this test, but we can verify that the number of retrieved videos is not zero.
-    const allVideos = videoService.completeThumbnailUrls(); // Завантажуємо всі відео
+    // We expect that after initializing the service with the PeerTube API, data will be loaded.
+    // This may be difficult to confirm in this test, but we can verify that the number of retrieved videos is not zero.
+    const allVideos = await videoService.completeThumbnailUrls();
 
     expect(allVideos).toBeInstanceOf(Array);
     expect(allVideos.length).toBeGreaterThan(0); // Verifying that at least one video is retrieved

@@ -33,7 +33,6 @@ export const VideoServiceContextProvider = ({ children }: PropsWithChildren) => 
 
     const fetchVideos = async () => {
       try {
-        videoService.loadVideosFromJson();
         const categoryLabels = videoService.getVideoCategoryLabels();
         const videosWithThumbnails = videoService.completeThumbnailUrls(source as SOURCES);
         setState({

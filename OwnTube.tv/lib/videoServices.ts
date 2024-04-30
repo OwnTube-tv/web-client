@@ -5,6 +5,10 @@ class VideoService {
   private videos: Video[] = [];
   private categories: Category[] = [];
 
+  constructor() {
+    this.loadVideosFromJson();
+  }
+
   public getVideoCategoryLabels(): string[] {
     return this.categories.map(({ label }) => label);
   }

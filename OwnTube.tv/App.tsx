@@ -1,38 +1,32 @@
-import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Text, View } from "react-native";
-import VideoDataService from "./components/videosOverview";
+import { useEffect, useState } from "react";
+import { EventRegister } from "react-native-event-listeners";
+import themeContext from "./theme/themeContext";
+import theme from "./theme/theme";
+import { DarkTheme, DefaultTheme, NavigationContainer } from "@react-navigation/native";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import Home from "./Screens/Home";
 
-import build_info from "./build-info.json";
+const Stack = createNativeStackNavigator();
 
 export default function App() {
+  const [darkmode, setDarkMode] = useState(false);
+  useEffect(() => {
+    const listener = EventRegister.addEventListener("ChangeTheme", (data) => {
+      setDarkMode(data);
+      console.log(data);
+    });
+    return () => {
+      EventRegister.removeAllListeners(listener);
+    };
+  }, [darkmode]);
+
   return (
-    <View style={styles.container}>
-      <Text>
-        Open up App.tsx to start working on your app, current deployed revision is{" "}
-        <a href={build_info.COMMIT_URL} target="_blank" rel="noreferrer">
-          {build_info.GITHUB_SHA_SHORT}
-        </a>{" "}
-        built at {build_info.BUILD_TIMESTAMP}.
-      </Text>
-      <hr></hr>
-      <Text>
-        (Your friendly{" "}
-        <a href={"https://github.com/" + build_info.GITHUB_ACTOR} target="_blank" rel="noreferrer">
-          <code>{build_info.GITHUB_ACTOR}</code>
-        </a>{" "}
-        🙋‍♀️ was here!)
-      </Text>
-      <StatusBar style="auto" />
-      <VideoDataService></VideoDataService>
-    </View>
+    <themeContext.Provider value={darkmode === true ? theme.dark : theme.light}>
+      <NavigationContainer theme={darkmode === true ? DarkTheme : DefaultTheme}>
+        <Stack.Navigator>
+          <Stack.Screen name="Home" component={Home} />
+        </Stack.Navigator>
+      </NavigationContainer>
+    </themeContext.Provider>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    alignItems: "center",
-    flex: 1,
-    justifyContent: "center",
-    overflow: "scroll",
-  },
-});

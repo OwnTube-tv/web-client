@@ -1,7 +1,9 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { View, Text, Image, StyleSheet } from "react-native";
 import VideoService from "../lib/videoServices";
 import { Video } from "../types";
+
+import themeContext from "../theme/themeContext";
 
 export interface VideoServiceState {
   videos: Video[];
@@ -41,7 +43,10 @@ const useVideoService = () => {
 
 const VideoDataService: React.FC = () => {
   const { videos, categories, error } = useVideoService();
-
+  const theme = useContext(themeContext);
+  const textColor = {
+    color: theme.color,
+  };
   if (error) {
     return (
       <View>
@@ -49,22 +54,21 @@ const VideoDataService: React.FC = () => {
       </View>
     );
   }
-
   return (
     <View>
       {/* Display Category Labels */}
       {categories.map((category) => (
         <View key={category}>
-          <Text>Category: {category}</Text>
+          <Text style={textColor}>Category: {category}</Text>
           <View>
             {videos
               .filter((video) => video.category.label === category)
               .map((video) => (
                 <View key={video.id}>
-                  <Text>ID: {video.id}</Text>
-                  <Text>Name: {video.name}</Text>
-                  <Text>Category ID: {video.category.id}</Text>
-                  <Text>Category Label: {video.category.label}</Text>
+                  <Text style={textColor}>ID: {video.id}</Text>
+                  <Text style={textColor}>Name: {video.name}</Text>
+                  <Text style={textColor}>Category ID: {video.category.id}</Text>
+                  <Text style={textColor}>Category Label: {video.category.label}</Text>
                   <Image source={{ uri: video.thumbnailUrl }} style={styles.image} />
                 </View>
               ))}

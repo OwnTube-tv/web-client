@@ -1,5 +1,6 @@
 import React from "react";
-import { View, Text, Image, StyleSheet, Dimensions } from "react-native";
+import { View, Text, Image, StyleSheet, Dimensions, TouchableOpacity } from "react-native";
+import { theme } from "../colors";
 
 interface Video {
   id: number;
@@ -12,53 +13,58 @@ interface VideoThumbnailProps {
   video: Video;
 }
 
-const COLOR_DARK_GRAY = "#2C2C2C";
-const COLOR_WHITE = "#FFFFFF";
-const COLOR_LIGHT_GRAY = "#CCCCCC";
-
 const VideoThumbnailComponent: React.FC<VideoThumbnailProps> = ({ video }) => {
   const screenWidth = Dimensions.get("window").width;
-  const imageWidth = screenWidth * 0.25;
-  const imageHeight = imageWidth * (9 / 16);
+  const imageWidth = screenWidth * 0.25; 
+  const imageHeight = imageWidth * 0.60; 
 
   const imageUrl = video.thumbnailUrl || "https://peertube2.cpy.re/default-thumbnail.jpg";
 
   return (
-    <View style={[styles.videoThumbnailContainer, { width: imageWidth }]}>
-      <Image source={{ uri: imageUrl }} style={[styles.videoImage, { width: imageWidth, height: imageHeight }]} />
+    <TouchableOpacity style={[styles.videoThumbnailContainer, { width: imageWidth, height: imageHeight + 50 }]} onPress={() => console.log("Video Pressed", video.name)}>
+      <Image
+        source={{ uri: imageUrl }}
+        style={styles.videoImage}
+      />
       <View style={styles.textContainer}>
         <Text style={styles.videoTitle}>{video.name}</Text>
         <Text style={styles.videoCategory}>{video.category.label}</Text>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 };
 
 const styles = StyleSheet.create({
   textContainer: {
     padding: 10,
+    backgroundColor: theme.colors.darkGray,
+    alignItems: 'center', 
   },
   videoCategory: {
-    color: COLOR_LIGHT_GRAY,
-    fontSize: 10,
+    fontSize: 12, 
+    color: theme.colors.lightGray,
+    marginTop: 5, // Adds space between the title and the category
   },
   videoImage: {
-    borderRadius: 2,
-    width: "80%",
+    borderTopLeftRadius: 10, // Rounded corners for the top of the image
+    borderTopRightRadius: 10,
+    width: "100%",
+    height: "85%",
+    resizeMode: "cover",
   },
   videoThumbnailContainer: {
+    flexDirection: "column",
     alignItems: "center",
-    backgroundColor: COLOR_DARK_GRAY,
-    borderRadius: 3,
-    marginBottom: 18,
-    overflow: "hidden",
-    width: "80%",
+    backgroundColor: theme.colors.darkGray,
+    marginBottom: 20,
+    borderRadius: 10,
+    shadowOpacity: 0.6,
+    shadowRadius: 3,
+    elevation: 4,
   },
   videoTitle: {
-    color: COLOR_WHITE,
-    fontSize: 15,
-    fontWeight: "bold",
-    marginBottom: 5,
+    fontSize: 20,
+    color: theme.colors.white,
   },
 });
 

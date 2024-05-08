@@ -2,6 +2,7 @@ import { View, Text, Switch } from "react-native";
 import { SourceSelect } from "../../components";
 import { useAppConfigContext } from "../../contexts";
 import { styles } from "./styles";
+import React from "react";
 
 export const SettingsScreen = () => {
   const { isDebugMode, setIsDebugMode } = useAppConfigContext();

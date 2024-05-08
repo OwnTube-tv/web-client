@@ -3,6 +3,7 @@ import { Text, View, StyleSheet } from "react-native";
 import { colors } from "../colors";
 import { useAppConfigContext } from "../contexts";
 import { SOURCES } from "../types";
+import React from "react";
 
 export const SourceSelect = () => {
   const { source, switchSource } = useAppConfigContext();

@@ -7,27 +7,34 @@ interface ErrorComponentProps {
   errorMessage: string;
 }
 
-
 const ErrorComponent = ({ errorMessage }: ErrorComponentProps) => (
   <View style={styles.errorContainer}>
     <Text style={styles.errorText}>Error: {errorMessage}</Text>
   </View>
 );
 
-export const MainPageC = () => {
-  const { videos, categories, error,  } = useVideoServiceContext();
+export const VideoListComponent = () => {
+  const { videos, categories, error } = useVideoServiceContext();
 
   if (error) return <ErrorComponent errorMessage={error} />;
 
-  const categoryObjects = useMemo(() => categories.map((category, index) => ({
-    id: index,
-    label: category
-  })), [categories]);
+  const categoryObjects = useMemo(
+    () =>
+      categories.map((category, index) => ({
+        id: index,
+        label: category,
+      })),
+    [categories],
+  );
 
-  const videosByCategory = useMemo(() => categoryObjects.map(category => ({
-    ...category,
-    videos: videos.filter(video => video.category.label === category.label)
-  })), [videos, categoryObjects]);
+  const videosByCategory = useMemo(
+    () =>
+      categoryObjects.map((category) => ({
+        ...category,
+        videos: videos.filter((video) => video.category.label === category.label),
+      })),
+    [videos, categoryObjects],
+  );
 
   if (!categories.length || !videos.length) {
     return (
@@ -47,23 +54,23 @@ export const MainPageC = () => {
 };
 
 const styles = StyleSheet.create({
+  centeredContainer: {
+    alignItems: "center",
+    flex: 1,
+    justifyContent: "center",
+  },
   container: {
     flex: 1,
     padding: 10,
   },
   errorContainer: {
+    alignItems: "center",
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
     padding: 20,
   },
   errorText: {
-    color: 'red',
+    color: "red",
     fontSize: 16,
-  },
-  centeredContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
   },
 });

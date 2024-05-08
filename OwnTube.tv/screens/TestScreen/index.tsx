@@ -3,10 +3,5 @@ import { SourceSelect } from "../../components";
 import { useAppConfigContext } from "../../contexts";
 
 export const TestScreen = () => {
-
-  return (
-    <View >
-      
-    </View>
-  );
+  return <View></View>;
 };

@@ -15,17 +15,17 @@ interface VideoThumbnailProps {
 
 const VideoThumbnailComponent: React.FC<VideoThumbnailProps> = ({ video }) => {
   const screenWidth = Dimensions.get("window").width;
-  const imageWidth = screenWidth * 0.25; 
-  const imageHeight = imageWidth * 0.60; 
+  const imageWidth = screenWidth * 0.25;
+  const imageHeight = imageWidth * 0.6;
 
   const imageUrl = video.thumbnailUrl || "https://peertube2.cpy.re/default-thumbnail.jpg";
 
   return (
-    <TouchableOpacity style={[styles.videoThumbnailContainer, { width: imageWidth, height: imageHeight + 50 }]} onPress={() => console.log("Video Pressed", video.name)}>
-      <Image
-        source={{ uri: imageUrl }}
-        style={styles.videoImage}
-      />
+    <TouchableOpacity
+      style={[styles.videoThumbnailContainer, { width: imageWidth, height: imageHeight + 50 }]}
+      onPress={() => console.log("Video Pressed", video.name)}
+    >
+      <Image source={{ uri: imageUrl }} style={styles.videoImage} />
       <View style={styles.textContainer}>
         <Text style={styles.videoTitle}>{video.name}</Text>
         <Text style={styles.videoCategory}>{video.category.label}</Text>
@@ -36,13 +36,13 @@ const VideoThumbnailComponent: React.FC<VideoThumbnailProps> = ({ video }) => {
 
 const styles = StyleSheet.create({
   textContainer: {
-    padding: 10,
+    alignItems: "center",
     backgroundColor: theme.colors.darkGray,
-    alignItems: 'center', 
+    padding: 10,
   },
   videoCategory: {
-    fontSize: 12, 
     color: theme.colors.lightGray,
+    fontSize: 12,
     marginTop: 5, // Adds space between the title and the category
   },
   videoImage: {
@@ -53,18 +53,18 @@ const styles = StyleSheet.create({
     resizeMode: "cover",
   },
   videoThumbnailContainer: {
-    flexDirection: "column",
     alignItems: "center",
     backgroundColor: theme.colors.darkGray,
-    marginBottom: 20,
     borderRadius: 10,
+    elevation: 4,
+    flexDirection: "column",
+    marginBottom: 20,
     shadowOpacity: 0.6,
     shadowRadius: 3,
-    elevation: 4,
   },
   videoTitle: {
-    fontSize: 20,
     color: theme.colors.white,
+    fontSize: 20,
   },
 });
 

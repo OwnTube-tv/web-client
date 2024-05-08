@@ -1,7 +1,7 @@
 import React from "react";
 import { StyleSheet, Text, View, Linking } from "react-native";
 import build_info from "../build-info.json";
-import { colors, theme } from "../colors";
+import { colors } from "../colors";
 
 export const Header = () => {
   return (
@@ -26,30 +26,24 @@ export const Header = () => {
 };
 
 const styles = StyleSheet.create({
+  boldText: {
+    fontWeight: "bold",
+  },
   container: {
     borderBottomWidth: 1,
-    paddingVertical: 20,
-    paddingHorizontal: 20,
-    backgroundColor: "#fff",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 1.41,
+
     elevation: 2,
   },
-  mainText: {
-    fontSize: 16,
-    lineHeight: 24,
-  },
-  boldText: {
-    fontWeight: 'bold',
+  footnote: {
+    fontSize: 14,
+    marginTop: 10,
   },
   link: {
     color: colors.blue,
     textDecorationLine: "underline",
   },
-  footnote: {
-    marginTop: 10,
-    fontSize: 14,
+  mainText: {
+    fontSize: 16,
+    lineHeight: 24,
   },
 });

@@ -35,7 +35,7 @@ const VideosByCategoryComponent: React.FC<VideosByCategoryComponentProps> = ({ c
           showsHorizontalScrollIndicator={false}
           ref={(ref) => (scrollRefs.current[0] = ref)}
           contentContainerStyle={styles.videoThumbnailsContainer}
-          style={[styles.scrollView, { width: windowWidth - 120 }]} // Adapt width dynamically
+          style={[styles.scrollView, { width: windowWidth - 120 }]} 
         >
           {videos
             .filter((video) => video.category.label === category.label)
@@ -57,10 +57,10 @@ const VideosByCategoryComponent: React.FC<VideosByCategoryComponentProps> = ({ c
 const styles = StyleSheet.create({
   buttonText: {
     color: theme.colors.dark,
-    fontSize: 16, // Slightly smaller for better proportion
+    fontSize: 16,
   },
   categoryTitle: {
-    fontSize: 24, // Reduced to ensure better fit and balance
+    fontSize: 24, 
     fontWeight: "bold",
     marginBottom: 10,
     color: theme.colors.white,
@@ -68,31 +68,31 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingVertical: 10,
-    paddingHorizontal: 5, // Reduced padding for better space utilization
-    backgroundColor: theme.colors.darkGray, // Consistent background with the theme
+    paddingHorizontal: 5, 
+    backgroundColor: theme.colors.darkGray,
   },
   horizontalScrollContainer: {
-    flexDirection: "row",
     alignItems: "center",
+    flexDirection: "row",
     justifyContent: "space-between",
   },
   scrollButton: {
-    width: 40, // Slightly reduced for aesthetic balance
-    height: 40, // Matching width for symmetry
+    alignItems: "center",
     backgroundColor: theme.colors.gray,
-    borderRadius: 20, // Fully rounded corners
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginHorizontal: 5, // Reduced for tighter layout
+    borderRadius: 20,
+    height: 40,
+    justifyContent: "center",
+    marginHorizontal: 5,
+    width: 40, 
   },
   scrollView: {
     flexGrow: 0,
-    overflow: 'visible',
+    overflow: "visible",
   },
   videoThumbnailsContainer: {
     alignItems: "center",
     flexDirection: "row",
-    paddingRight: 10, // Consistent right padding
+    paddingRight: 10, 
   },
 });
 

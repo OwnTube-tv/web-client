@@ -1,4 +1,4 @@
-import { useState, createContext, PropsWithChildren } from "react";
+import React, { useState, createContext, PropsWithChildren } from "react";
 import { colors } from "../styles/colors";
 import { typography } from "../styles/typography";
 
@@ -29,7 +29,7 @@ const ThemeProvider = ({ children }: PropsWithChildren) => {
     isLightTheme,
   };
 
-  return <ThemeContext.Provider value={theme}>{children}</ThemeContext.Provider>;
+  return <ThemeContext.Provider value={theme}> {children} </ThemeContext.Provider>;
 };
 
 export default ThemeProvider;

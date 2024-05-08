@@ -35,7 +35,7 @@ const VideosByCategoryComponent: React.FC<VideosByCategoryComponentProps> = ({ c
           showsHorizontalScrollIndicator={false}
           ref={(ref) => (scrollRefs.current[0] = ref)}
           contentContainerStyle={styles.videoThumbnailsContainer}
-          style={[styles.scrollView, { width: windowWidth - 120 }]} 
+          style={[styles.scrollView, { width: windowWidth - 120 }]}
         >
           {videos
             .filter((video) => video.category.label === category.label)
@@ -60,16 +60,16 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   categoryTitle: {
-    fontSize: 24, 
+    color: theme.colors.white,
+    fontSize: 24,
     fontWeight: "bold",
     marginBottom: 10,
-    color: theme.colors.white,
   },
   container: {
-    flex: 1,
-    paddingVertical: 10,
-    paddingHorizontal: 5, 
     backgroundColor: theme.colors.darkGray,
+    flex: 1,
+    paddingHorizontal: 5,
+    paddingVertical: 10,
   },
   horizontalScrollContainer: {
     alignItems: "center",
@@ -83,7 +83,7 @@ const styles = StyleSheet.create({
     height: 40,
     justifyContent: "center",
     marginHorizontal: 5,
-    width: 40, 
+    width: 40,
   },
   scrollView: {
     flexGrow: 0,
@@ -92,7 +92,7 @@ const styles = StyleSheet.create({
   videoThumbnailsContainer: {
     alignItems: "center",
     flexDirection: "row",
-    paddingRight: 10, 
+    paddingRight: 10,
   },
 });
 

@@ -1,7 +1,7 @@
 import { Feather } from "@expo/vector-icons";
 import { Pressable } from "react-native";
 import type { TRoutes } from "./";
-import { HomeScreen, SettingsScreen } from "../screens";
+import { HomeScreen, SettingsScreen } from "../src/screens";
 
 export const routes: TRoutes = [
   {

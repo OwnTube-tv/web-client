@@ -1,6 +1,6 @@
 import { useCallback } from "react";
 import { Text, View, StyleSheet } from "react-native";
-import { colors } from "../colors";
+import { colors } from "../src/styles/colors";
 import { useAppConfigContext } from "../contexts";
 import { SOURCES } from "../types";
 

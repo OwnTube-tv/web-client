@@ -1,6 +1,6 @@
 import { StyleSheet, Text, View, Linking } from "react-native";
 import build_info from "../build-info.json";
-import { colors } from "../colors";
+import { colors } from "../src/styles/colors";
 
 export const Header = () => {
   return (

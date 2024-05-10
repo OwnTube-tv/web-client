@@ -1,6 +1,7 @@
-import { StyleSheet } from "react-native";
+import { StyleSheet, TextStyle, ViewStyle } from "react-native";
+import { Theme } from "../../styles/styleTypes";
 
-export const styles = (theme: any) =>
+export const styles = (theme: Theme) =>
   StyleSheet.create({
     container: {
       alignItems: "center",

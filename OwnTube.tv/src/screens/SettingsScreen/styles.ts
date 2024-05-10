@@ -4,9 +4,9 @@ import { Theme } from "../../styles/styleTypes";
 export const styles = (theme: Theme) =>
   StyleSheet.create({
     container: {
+      backgroundColor: theme.colors.BACKGROUND,
       gap: 10,
       padding: 20,
-      backgroundColor: theme.colors.BACKGROUND,
     },
     option: {
       alignItems: "center",

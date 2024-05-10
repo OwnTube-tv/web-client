@@ -1,6 +1,3 @@
-const BLUE = "#0000FF";
-const GHOST_WHITE = "F8F8FF";
-const GAINSBORO = "#DCDCDC";
 const MIDNIGHT_BLUE = "#2c3e50";
 const CLOUDS = "#ecf0f1";
 const BLACK = "#000000";

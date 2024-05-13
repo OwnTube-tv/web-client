@@ -1,14 +1,17 @@
-import { ScrollView, View } from "react-native";
+import { Image, ScrollView, View } from "react-native";
 import { Header, VideoDataService } from "../../../components";
 import { styles } from "./styles";
-import useThemedStyles from "../../theme/useThemedStyles";
+import { useTheme } from "@react-navigation/native";
 
 export const HomeScreen = () => {
-  const style = useThemedStyles(styles);
+  const theme = useTheme();
+
+  const logoUri = theme.dark ? "../../assets/logoDark-160x160.png" : "../../assets/Logo160x160.png";
 
   return (
     <ScrollView>
-      <View style={style.container}>
+      <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
+        <Image source={{ uri: logoUri }} style={styles.logo} />
         <Header />
         <VideoDataService />
       </View>

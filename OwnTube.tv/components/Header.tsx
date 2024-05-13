@@ -1,25 +1,31 @@
-import { StyleSheet, Text, View, Linking } from "react-native";
+import { StyleSheet, View, Linking } from "react-native";
 import build_info from "../build-info.json";
-import { colors } from "../src/styles/colors";
+import { useTheme } from "@react-navigation/native";
+import { Typography } from "./Typography";
 
 export const Header = () => {
+  const theme = useTheme();
+
   return (
     <View style={styles.container}>
-      <Text>
+      <Typography>
         Open up App.tsx to start working on your app, current deployed revision is{" "}
-        <Text style={styles.link} onPress={() => Linking.openURL(build_info.COMMIT_URL)}>
+        <Typography color={theme.colors.primary} onPress={() => Linking.openURL(build_info.COMMIT_URL)}>
           {build_info.GITHUB_SHA_SHORT}
-        </Text>{" "}
+        </Typography>{" "}
         built at {build_info.BUILD_TIMESTAMP}.
-      </Text>
+      </Typography>
 
-      <Text>
+      <Typography>
         (Your friendly{" "}
-        <Text style={styles.link} onPress={() => Linking.openURL("https://github.com/" + build_info.GITHUB_ACTOR)}>
+        <Typography
+          color={theme.colors.primary}
+          onPress={() => Linking.openURL("https://github.com/" + build_info.GITHUB_ACTOR)}
+        >
           {build_info.GITHUB_ACTOR}
-        </Text>{" "}
+        </Typography>{" "}
         🙋‍♀️ was here!)
-      </Text>
+      </Typography>
     </View>
   );
 };
@@ -30,8 +36,5 @@ const styles = StyleSheet.create({
     gap: 10,
     marginVertical: 10,
     padding: 10,
-  },
-  link: {
-    color: colors.blue,
   },
 });

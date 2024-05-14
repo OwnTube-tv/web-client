@@ -1,12 +1,15 @@
-import { ScrollView, View } from "react-native";
-import { Header, VideoDataService } from "../../components";
+import { Header, VideoList } from "../../components";
+import { useThemedStyles } from "../../hooks";
+import { Screen } from "../../layouts";
 import { styles } from "./styles";
 
-export const HomeScreen = () => (
-  <ScrollView>
-    <View style={styles.container}>
+export const HomeScreen = () => {
+  const style = useThemedStyles(styles);
+
+  return (
+    <Screen style={style.container}>
       <Header />
-      <VideoDataService />
-    </View>
-  </ScrollView>
-);
+      <VideoList />
+    </Screen>
+  );
+};

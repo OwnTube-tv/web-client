@@ -1,17 +1,18 @@
 import { useCallback } from "react";
 import { Text, View, StyleSheet } from "react-native";
-import { colors } from "../colors";
 import { useAppConfigContext } from "../contexts";
-import { SOURCES } from "../types";
+import { useThemedStyles } from "../hooks";
+import { SOURCES, Theme } from "../types";
 
 export const SourceSelect = () => {
   const { source, switchSource } = useAppConfigContext();
+  const styles = useThemedStyles(style);
 
   const renderItem = useCallback(
     (item: SOURCES) => (
       <Text
         key={item}
-        style={StyleSheet.flatten([styles.source, item === source ? styles.sourceActive : {}])}
+        style={[styles.source, item === source ? styles.sourceActive : {}]}
         onPress={() => switchSource(item)}
       >
         {item}
@@ -28,13 +29,17 @@ export const SourceSelect = () => {
   );
 };
 
-const styles = StyleSheet.create({
-  list: {},
-  source: {
-    backgroundColor: colors.ghostwhite,
-    padding: 5,
-  },
-  sourceActive: {
-    backgroundColor: colors.gainsboro,
-  },
-});
+export const style = (theme: Theme) => {
+  const styles = StyleSheet.create({
+    source: {
+      color: theme.colors.TEXT_SECONDARY,
+      opacity: 0.5,
+      padding: 5,
+    },
+    sourceActive: {
+      color: theme.colors.TEXT,
+      opacity: 1,
+    },
+  });
+  return styles;
+};

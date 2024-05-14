@@ -17,7 +17,9 @@
     "sourceType": "module"
   },
   "plugins": ["@typescript-eslint", "react", "react-native"],
-  "rules": {},
+  "rules": {
+    "react/prop-types": "off"
+  },
   "settings": {
     "react": {
       "version": "18"

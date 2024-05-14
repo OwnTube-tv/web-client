@@ -1,5 +1,5 @@
 import { StyleSheet } from "react-native";
-import { Theme } from "../../types";
+import { Theme } from "../../styles/styleTypes";
 
 export const styles = (theme: Theme) =>
   StyleSheet.create({
@@ -17,7 +17,7 @@ export const styles = (theme: Theme) =>
       textAlign: "justify",
     },
     title: {
-      // color: theme.colors.PRIMARY,
+      color: theme.colors.PRIMARY,
       fontSize: theme.typography.size.L,
       fontWeight: "bold",
       letterSpacing: theme.typography.letterSpacing.M,

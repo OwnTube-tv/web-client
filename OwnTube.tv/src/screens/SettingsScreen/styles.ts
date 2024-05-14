@@ -1,17 +1,17 @@
 import { StyleSheet } from "react-native";
-import { Theme } from "../../types";
+import { Theme } from "../../styles/styleTypes";
 
 export const styles = (theme: Theme) =>
   StyleSheet.create({
     container: {
-      alignItems: "flex-start",
       backgroundColor: theme.colors.BACKGROUND,
       gap: 10,
       padding: 20,
     },
     option: {
+      alignItems: "center",
       flexDirection: "row",
-      gap: 5,
+      justifyContent: "space-between",
     },
     text: {
       color: theme.colors.TEXT,

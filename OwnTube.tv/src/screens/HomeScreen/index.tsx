@@ -3,15 +3,20 @@ import { Header, VideoDataService } from "../../../components";
 import { styles } from "./styles";
 import { useTheme } from "@react-navigation/native";
 
+const images = {
+  dark: require("../../../assets/logoDark-160x160.png"),
+  light: require("../../../assets/Logo160x160.png"),
+};
+
 export const HomeScreen = () => {
   const theme = useTheme();
 
-  const logoUri = theme.dark ? "../../assets/logoDark-160x160.png" : "../../assets/Logo160x160.png";
+  const logoSource = theme.dark ? images.dark : images.light;
 
   return (
     <ScrollView>
       <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
-        <Image source={{ uri: logoUri }} style={styles.logo} />
+        <Image source={logoSource} style={styles.logo} />
         <Header />
         <VideoDataService />
       </View>

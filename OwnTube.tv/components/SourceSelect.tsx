@@ -7,23 +7,19 @@ import { useTheme } from "@react-navigation/native";
 
 export const SourceSelect = () => {
   const { source, switchSource } = useAppConfigContext();
-  const theme = useTheme();
+  const { colors } = useTheme();
 
   const renderItem = useCallback(
-    (item: SOURCES) => {
-      const isSelected = item === source;
-
-      return (
-        <Typography
-          key={item}
-          style={styles.source}
-          color={isSelected ? theme.colors.primary : undefined}
-          onPress={() => switchSource(item)}
-        >
-          {item}
-        </Typography>
-      );
-    },
+    (item: SOURCES) => (
+      <Typography
+        key={item}
+        style={styles.source}
+        color={item === source ? colors.primary : undefined}
+        onPress={() => switchSource(item)}
+      >
+        {item}
+      </Typography>
+    ),
     [source],
   );
 
@@ -37,6 +33,7 @@ export const SourceSelect = () => {
 
 const styles = StyleSheet.create({
   source: {
+    opacity: 0.5,
     padding: 5,
   },
 });

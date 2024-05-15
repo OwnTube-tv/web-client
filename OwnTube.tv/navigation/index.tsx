@@ -1,9 +1,10 @@
 import { DarkTheme, DefaultTheme, NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { useColorSchemeContext } from "../contexts";
-import { HomeScreen, SettingsScreen } from "../src/screens";
 import { Pressable } from "react-native";
 import { Feather } from "@expo/vector-icons";
+import { HomeScreen, SettingsScreen } from "../screens";
+import { ROUTES } from "../types";
 
 const Stack = createNativeStackNavigator();
 
@@ -15,18 +16,18 @@ export const Navigation = () => {
     <NavigationContainer theme={theme}>
       <Stack.Navigator>
         <Stack.Screen
-          name={"Home"}
+          name={ROUTES.HOME}
           component={HomeScreen}
           options={({ navigation }) => ({
             title: "Home",
             headerRight: () => (
-              <Pressable onPress={() => navigation.navigate("Settings")}>
+              <Pressable onPress={() => navigation.navigate(ROUTES.SETTINGS)}>
                 <Feather name="settings" size={24} color={theme.colors.primary} />
               </Pressable>
             ),
           })}
         />
-        <Stack.Screen name={"Settings"} component={SettingsScreen} />
+        <Stack.Screen name={ROUTES.SETTINGS} component={SettingsScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

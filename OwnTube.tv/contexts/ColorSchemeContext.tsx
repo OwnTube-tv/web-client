@@ -1,6 +1,6 @@
 import { createContext, PropsWithChildren, useContext, useEffect, useState } from "react";
 import { Appearance, ColorSchemeName } from "react-native";
-import { readFromAsyncStorage, writeToAsyncStorage } from "../utils/storage";
+import { readFromAsyncStorage, writeToAsyncStorage } from "../utils";
 
 const ColorSchemeContext = createContext<{ scheme: ColorSchemeName | null; toggleScheme?: () => void }>({
   scheme: null,

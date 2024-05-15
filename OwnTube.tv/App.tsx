@@ -1,12 +1,12 @@
-import { SafeAreaView, StyleSheet } from "react-native";
 import { StatusBar } from "expo-status-bar";
 import { AppConfigContextProvider, VideoServiceContextProvider } from "./contexts";
+import { SafeAreaWrapper } from "./layouts";
 import { Navigation } from "./navigation";
 import { ColorSchemeContextProvider } from "./contexts";
 
 export default function App() {
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaWrapper>
       <AppConfigContextProvider>
         <VideoServiceContextProvider>
           <ColorSchemeContextProvider>
@@ -15,12 +15,6 @@ export default function App() {
           </ColorSchemeContextProvider>
         </VideoServiceContextProvider>
       </AppConfigContextProvider>
-    </SafeAreaView>
+    </SafeAreaWrapper>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-});

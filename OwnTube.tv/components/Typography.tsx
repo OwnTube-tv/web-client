@@ -1,7 +1,7 @@
 import { PropsWithChildren } from "react";
 import { Text, TextProps } from "react-native";
 import { useTheme } from "@react-navigation/native";
-import { typography } from "../src/styles/typography";
+import { typography } from "../theme";
 
 export const Typography = (
   props: PropsWithChildren<

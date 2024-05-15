@@ -1,23 +1,24 @@
 import { Feather } from "@expo/vector-icons";
-import { Pressable } from "react-native";
+import { HomeScreen, SettingsScreen } from "../screens";
+import { Button } from "../components";
+import { ROUTES } from "../types";
 import type { TRoutes } from "./";
-import { HomeScreen, SettingsScreen } from "../src/screens";
 
 export const routes: TRoutes = [
   {
-    name: "Home",
+    name: ROUTES.HOME,
     component: HomeScreen,
     options: ({ navigation }) => ({
       title: "Home",
       headerRight: () => (
-        <Pressable onPress={() => navigation.navigate("Settings")}>
+        <Button onPress={() => navigation.navigate(ROUTES.SETTINGS)}>
           <Feather name="settings" size={24} color="black" />
-        </Pressable>
+        </Button>
       ),
     }),
   },
   {
-    name: "Settings",
+    name: ROUTES.SETTINGS,
     component: SettingsScreen,
   },
 ];

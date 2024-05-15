@@ -1,6 +1,6 @@
+import { ComponentProps } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { ComponentProps } from "react";
 import { routes } from "./routes";
 
 const Stack = createNativeStackNavigator();

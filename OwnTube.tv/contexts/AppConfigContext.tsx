@@ -1,5 +1,5 @@
 import { createContext, PropsWithChildren, useContext, useEffect, useState, Dispatch, SetStateAction } from "react";
-import { readFromAsyncStorage, writeToAsyncStorage } from "../utils/storage";
+import { readFromAsyncStorage, writeToAsyncStorage } from "../utils";
 import { SOURCES, STORAGE } from "../types";
 
 interface IAppConfigContext {

@@ -1,5 +1,5 @@
-import { View, Text, StyleSheet } from "react-native";
-import { ErrorMessage, VideosByCategory } from "./";
+import { View, StyleSheet } from "react-native";
+import { ErrorMessage, Typography, VideosByCategory } from "./";
 import { useVideoServiceContext } from "../contexts";
 import { useCategoryFilter } from "../hooks";
 
@@ -14,7 +14,7 @@ export const VideoList = () => {
   if (isEmpty) {
     return (
       <View style={styles.centeredContainer}>
-        <Text>No videos or categories found.</Text>
+        <Typography>No videos or categories found.</Typography>
       </View>
     );
   }

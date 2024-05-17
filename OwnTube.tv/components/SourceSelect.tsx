@@ -1,45 +1,39 @@
 import { useCallback } from "react";
-import { Text, View, StyleSheet } from "react-native";
+import { View, StyleSheet } from "react-native";
 import { useAppConfigContext } from "../contexts";
-import { useThemedStyles } from "../hooks";
-import { SOURCES, Theme } from "../types";
+import { SOURCES } from "../types";
+import { Typography } from "./Typography";
+import { useTheme } from "@react-navigation/native";
 
 export const SourceSelect = () => {
   const { source, switchSource } = useAppConfigContext();
-  const styles = useThemedStyles(style);
+  const { colors } = useTheme();
 
   const renderItem = useCallback(
     (item: SOURCES) => (
-      <Text
+      <Typography
         key={item}
-        style={[styles.source, item === source ? styles.sourceActive : {}]}
+        style={styles.source}
+        color={item === source ? colors.primary : undefined}
         onPress={() => switchSource(item)}
       >
         {item}
-      </Text>
+      </Typography>
     ),
     [source],
   );
 
   return (
-    <View style={styles.list}>
-      <Text>Select source:</Text>
+    <View>
+      <Typography>Select source:</Typography>
       {Object.values(SOURCES).map(renderItem)}
     </View>
   );
 };
 
-export const style = (theme: Theme) => {
-  const styles = StyleSheet.create({
-    source: {
-      color: theme.colors.TEXT_SECONDARY,
-      opacity: 0.5,
-      padding: 5,
-    },
-    sourceActive: {
-      color: theme.colors.TEXT,
-      opacity: 1,
-    },
-  });
-  return styles;
-};
+const styles = StyleSheet.create({
+  source: {
+    opacity: 0.5,
+    padding: 5,
+  },
+});

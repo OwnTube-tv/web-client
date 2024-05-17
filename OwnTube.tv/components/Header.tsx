@@ -1,24 +1,29 @@
-import { StyleSheet, Text, View, Linking } from "react-native";
+import { StyleSheet, View, Linking } from "react-native";
 import build_info from "../build-info.json";
+import { Typography } from "./Typography";
 
 export const Header = () => {
   return (
     <View style={styles.container}>
-      <Text style={styles.mainText}>
-        Open up <Text style={styles.boldText}>App.tsx</Text> to start working on your app, current deployed revision is{" "}
-        <Text style={styles.link} onPress={() => Linking.openURL(build_info.COMMIT_URL)}>
+      <Typography style={styles.mainText}>
+        Open up <Typography style={styles.boldText}>App.tsx</Typography> to start working on your app, current deployed
+        revision is{" "}
+        <Typography style={styles.link} onPress={() => Linking.openURL(build_info.COMMIT_URL)}>
           {build_info.GITHUB_SHA_SHORT}
-        </Text>{" "}
+        </Typography>{" "}
         built at {build_info.BUILD_TIMESTAMP}.
-      </Text>
+      </Typography>
 
-      <Text style={styles.footnote}>
+      <Typography style={styles.footnote}>
         (Your friendly{" "}
-        <Text style={styles.link} onPress={() => Linking.openURL("https://github.com/" + build_info.GITHUB_ACTOR)}>
+        <Typography
+          style={styles.link}
+          onPress={() => Linking.openURL("https://github.com/" + build_info.GITHUB_ACTOR)}
+        >
           {build_info.GITHUB_ACTOR}
-        </Text>{" "}
+        </Typography>{" "}
         🙋‍♀️ was here!)
-      </Text>
+      </Typography>
     </View>
   );
 };
@@ -37,7 +42,6 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   link: {
-    // color: theme.colors.blue,
     textDecorationLine: "underline",
   },
   mainText: {

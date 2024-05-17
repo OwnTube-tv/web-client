@@ -1,3 +1,3 @@
 export * from "./VideoServiceContext";
 export * from "./AppConfigContext";
-export * from "./ThemeProvider";
+export * from "./ColorSchemeContext";

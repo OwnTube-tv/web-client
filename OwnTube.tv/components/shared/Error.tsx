@@ -1,15 +1,23 @@
 import { FC } from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { View, StyleSheet } from "react-native";
+import { Typography } from "../Typography";
+import { useTheme } from "@react-navigation/native";
 
 interface ErrorMessageProps {
   message: string;
 }
 
-export const ErrorMessage: FC<ErrorMessageProps> = ({ message }) => (
-  <View style={styles.container}>
-    <Text style={styles.text}>Error: {message}</Text>
-  </View>
-);
+export const ErrorMessage: FC<ErrorMessageProps> = ({ message }) => {
+  const { notification } = useTheme().colors;
+
+  return (
+    <View style={styles.container}>
+      <Typography style={styles.text} color={notification}>
+        Error: {message}
+      </Typography>
+    </View>
+  );
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -19,7 +27,6 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   text: {
-    // color: theme.colors.red,
     fontSize: 16,
   },
 });

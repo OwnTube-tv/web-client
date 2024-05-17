@@ -1,7 +1,9 @@
-import { View, Text, Image, StyleSheet, TouchableOpacity } from "react-native";
+import { View, Image, StyleSheet, TouchableOpacity } from "react-native";
 import { getThumbnailDimensions } from "../utils";
 import { useAppConfigContext } from "../contexts";
 import type { Video } from "../types";
+import { Typography } from "./Typography";
+import { useTheme } from "@react-navigation/native";
 
 interface VideoThumbnailProps {
   video: Video;
@@ -12,15 +14,16 @@ export const VideoThumbnail: React.FC<VideoThumbnailProps> = ({ video }) => {
 
   const imageUrl = video.thumbnailUrl || `${source}/default-thumbnail.jpg`;
   const { width, height } = getThumbnailDimensions();
+  const { colors } = useTheme();
 
   return (
     <TouchableOpacity
-      style={[styles.videoThumbnailContainer, { height, width }]}
+      style={[styles.videoThumbnailContainer, { height, width }, { backgroundColor: colors.card }]}
       onPress={() => console.log("Video Pressed", video.name)}
     >
       <Image source={{ uri: imageUrl }} style={styles.videoImage} />
       <View style={styles.textContainer}>
-        <Text style={styles.videoTitle}>{video.name}</Text>
+        <Typography style={styles.videoTitle}>{video.name}</Typography>
       </View>
     </TouchableOpacity>
   );
@@ -29,7 +32,6 @@ export const VideoThumbnail: React.FC<VideoThumbnailProps> = ({ video }) => {
 const styles = StyleSheet.create({
   textContainer: {
     alignItems: "center",
-    // backgroundColor: theme.colors.darkGray,
     padding: 10,
   },
   videoImage: {
@@ -41,7 +43,6 @@ const styles = StyleSheet.create({
   },
   videoThumbnailContainer: {
     alignItems: "center",
-    // backgroundColor: theme.colors.darkGray,
     borderRadius: 10,
     elevation: 4,
     flexDirection: "column",
@@ -50,7 +51,6 @@ const styles = StyleSheet.create({
     shadowRadius: 3,
   },
   videoTitle: {
-    // color: theme.colors.white,
     fontSize: 20,
   },
 });

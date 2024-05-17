@@ -1,24 +1,24 @@
-import { View, Text, Switch } from "react-native";
-import { SourceSelect } from "../../components";
-import { useAppConfigContext, useTheme } from "../../contexts";
-import { useThemedStyles } from "../../hooks";
+import { View, Switch } from "react-native";
+import { SourceSelect, Typography } from "../../components";
+import { useAppConfigContext, useColorSchemeContext } from "../../contexts";
 import { Screen } from "../../layouts";
 import { styles } from "./styles";
+import { useTheme } from "@react-navigation/native";
 
 export const SettingsScreen = () => {
   const { isDebugMode, setIsDebugMode } = useAppConfigContext();
-  const { toggleTheme, isLightTheme } = useTheme();
-  const style = useThemedStyles(styles);
+  const { scheme, toggleScheme } = useColorSchemeContext();
+  const { colors } = useTheme();
 
   return (
-    <Screen style={style.container}>
-      <View style={style.option}>
-        <Text>Debug logging</Text>
+    <Screen style={{ ...styles.container, backgroundColor: colors.background }}>
+      <View style={styles.option}>
+        <Typography>Debug logging</Typography>
         <Switch value={isDebugMode} onValueChange={setIsDebugMode} />
       </View>
-      <View style={style.option}>
-        <Text>Toggle Theme</Text>
-        <Switch value={isLightTheme} onValueChange={toggleTheme} />
+      <View style={styles.option}>
+        <Typography>Toggle Theme</Typography>
+        <Switch value={scheme === "light"} onValueChange={toggleScheme} />
       </View>
       <SourceSelect />
     </Screen>

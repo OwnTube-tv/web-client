@@ -1,5 +1,5 @@
-import { View, Text, StyleSheet } from "react-native";
-import { CategoryScroll, VideoThumbnail } from "./";
+import { View, StyleSheet } from "react-native";
+import { CategoryScroll, Typography, VideoThumbnail } from "./";
 import type { VideoCategory } from "../types";
 
 interface VideosByCategoryProps {
@@ -9,7 +9,7 @@ interface VideosByCategoryProps {
 export const VideosByCategory: React.FC<VideosByCategoryProps> = ({ category }) => {
   return (
     <View style={styles.container}>
-      <Text style={styles.categoryTitle}>{category.label}</Text>
+      <Typography style={styles.categoryTitle}>{category.label}</Typography>
 
       <CategoryScroll>
         {category.videos.map((video) => (
@@ -22,14 +22,12 @@ export const VideosByCategory: React.FC<VideosByCategoryProps> = ({ category }) 
 
 const styles = StyleSheet.create({
   categoryTitle: {
-    // color: theme.colors.white,
     fontSize: 24,
     fontWeight: "bold",
     padding: 20,
     paddingLeft: 50,
   },
   container: {
-    // backgroundColor: theme.colors.darkGray,
     paddingBottom: 20,
   },
 });

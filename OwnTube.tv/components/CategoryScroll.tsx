@@ -3,14 +3,16 @@ import { View, ScrollView, StyleSheet } from "react-native";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import { useCategoryScroll } from "../hooks";
 import { Button } from "./";
+import { useTheme } from "@react-navigation/native";
 
 export const CategoryScroll: FC<PropsWithChildren> = ({ children }) => {
   const { ref, scrollLeft, scrollRight, windowWidth } = useCategoryScroll();
+  const { colors } = useTheme();
 
   return (
     <View style={styles.horizontalScrollContainer}>
-      <Button onPress={scrollLeft} style={styles.scrollButton}>
-        <AntDesign name="left" size={20} color="black" />
+      <Button onPress={scrollLeft} style={[styles.scrollButton, { backgroundColor: colors.card }]}>
+        <AntDesign name="left" size={20} color={colors.text} />
       </Button>
 
       <ScrollView
@@ -23,8 +25,8 @@ export const CategoryScroll: FC<PropsWithChildren> = ({ children }) => {
         {children}
       </ScrollView>
 
-      <Button onPress={scrollRight} style={styles.scrollButton}>
-        <AntDesign name="right" size={20} color="black" />
+      <Button onPress={scrollRight} style={[styles.scrollButton, { backgroundColor: colors.card }]}>
+        <AntDesign name="right" size={20} color={colors.text} />
       </Button>
     </View>
   );
@@ -38,7 +40,6 @@ const styles = StyleSheet.create({
   },
   scrollButton: {
     alignItems: "center",
-    // backgroundColor: theme.colors.gray,
     borderRadius: 20,
     height: 40,
     justifyContent: "center",

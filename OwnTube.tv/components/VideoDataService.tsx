@@ -1,5 +1,6 @@
-import { View, Text, Image, StyleSheet } from "react-native";
+import { View, Image, StyleSheet } from "react-native";
 import { useVideoServiceContext } from "../contexts";
+import { Typography } from "./Typography";
 
 export const VideoDataService = () => {
   const { videos, categories, error } = useVideoServiceContext();
@@ -7,7 +8,7 @@ export const VideoDataService = () => {
   if (error) {
     return (
       <View>
-        <Text>Error: {error}</Text>
+        <Typography>Error: {error}</Typography>
       </View>
     );
   }
@@ -17,16 +18,16 @@ export const VideoDataService = () => {
       {/* Display Category Labels */}
       {categories.map((category) => (
         <View key={category}>
-          <Text>Category: {category}</Text>
+          <Typography>Category: {category}</Typography>
           <View>
             {videos
               .filter((video) => video.category.label === category)
               .map((video) => (
                 <View key={video.id}>
-                  <Text>ID: {video.id}</Text>
-                  <Text>Name: {video.name}</Text>
-                  <Text>Category ID: {video.category.id}</Text>
-                  <Text>Category Label: {video.category.label}</Text>
+                  <Typography>ID: {video.id}</Typography>
+                  <Typography>Name: {video.name}</Typography>
+                  <Typography>Category ID: {video.category.id}</Typography>
+                  <Typography>Category Label: {video.category.label}</Typography>
                   <Image source={{ uri: video.thumbnailUrl }} style={styles.image} />
                 </View>
               ))}

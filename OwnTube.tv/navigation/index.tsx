@@ -3,7 +3,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { useColorSchemeContext } from "../contexts";
 import { Pressable } from "react-native";
 import { Feather } from "@expo/vector-icons";
-import { HomeScreen, SettingsScreen } from "../screens";
+import { HomeScreen, SettingsScreen, VideoScreen } from "../screens";
 import { ROUTES } from "../types";
 
 const Stack = createNativeStackNavigator();
@@ -27,8 +27,15 @@ export const Navigation = () => {
             ),
           })}
         />
-        <Stack.Screen name={ROUTES.SETTINGS} component={SettingsScreen} />
+        <Stack.Screen options={{ title: "Settings" }} name={ROUTES.SETTINGS} component={SettingsScreen} />
+        <Stack.Screen options={{ title: "Video" }} name={ROUTES.VIDEO} component={VideoScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );
+};
+
+export type RootStackParams = {
+  [ROUTES.HOME]: undefined;
+  [ROUTES.SETTINGS]: undefined;
+  [ROUTES.VIDEO]: undefined;
 };

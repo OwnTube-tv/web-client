@@ -1,15 +1,19 @@
 import { View, Image, StyleSheet, TouchableOpacity } from "react-native";
 import { getThumbnailDimensions } from "../utils";
 import { useAppConfigContext } from "../contexts";
-import type { Video } from "../types";
+import { ROUTES, Video } from "../types";
 import { Typography } from "./Typography";
-import { useTheme } from "@react-navigation/native";
+import { useNavigation, useTheme } from "@react-navigation/native";
+import { FC } from "react";
+import { RootStackParams } from "../navigation";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
 interface VideoThumbnailProps {
   video: Video;
 }
 
-export const VideoThumbnail: React.FC<VideoThumbnailProps> = ({ video }) => {
+export const VideoThumbnail: FC<VideoThumbnailProps> = ({ video }) => {
+  const navigation = useNavigation<NativeStackNavigationProp<RootStackParams>>();
   const { source } = useAppConfigContext();
 
   const imageUrl = video.thumbnailUrl || `${source}/default-thumbnail.jpg`;
@@ -19,7 +23,7 @@ export const VideoThumbnail: React.FC<VideoThumbnailProps> = ({ video }) => {
   return (
     <TouchableOpacity
       style={[styles.videoThumbnailContainer, { height, width }, { backgroundColor: colors.card }]}
-      onPress={() => console.log("Video Pressed", video.name)}
+      onPress={() => navigation.navigate(ROUTES.VIDEO)}
     >
       <Image source={{ uri: imageUrl }} style={styles.videoImage} />
       <View style={styles.textContainer}>

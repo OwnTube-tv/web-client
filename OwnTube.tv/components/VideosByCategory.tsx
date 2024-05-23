@@ -1,16 +1,16 @@
 import { View, StyleSheet } from "react-native";
 import { CategoryScroll, Typography, VideoThumbnail } from "./";
 import type { VideoCategory } from "../types";
+import { FC } from "react";
 
 interface VideosByCategoryProps {
   category: VideoCategory;
 }
 
-export const VideosByCategory: React.FC<VideosByCategoryProps> = ({ category }) => {
+export const VideosByCategory: FC<VideosByCategoryProps> = ({ category }) => {
   return (
     <View style={styles.container}>
       <Typography style={styles.categoryTitle}>{category.label}</Typography>
-
       <CategoryScroll>
         {category.videos.map((video) => (
           <VideoThumbnail key={video.id} video={video} />

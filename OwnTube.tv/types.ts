@@ -10,9 +10,9 @@ export enum STORAGE {
 }
 
 export enum ROUTES {
-  HOME = "Home",
-  SETTINGS = "Settings",
-  PROFILE = "Profile",
+  HOME = "home",
+  SETTINGS = "settings",
+  VIDEO = "video",
 }
 
 export type Theme = {

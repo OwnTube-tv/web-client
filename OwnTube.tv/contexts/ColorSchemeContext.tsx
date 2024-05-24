@@ -14,17 +14,7 @@ export const ColorSchemeContextProvider = ({ children }: PropsWithChildren) => {
       const deviceScheme = Appearance.getColorScheme();
 
       readFromAsyncStorage("colorScheme").then((scheme: ColorSchemeName) => {
-        if (scheme) {
-          setSelectedColorScheme(scheme);
-          return;
-        }
-
-        if (deviceScheme) {
-          setSelectedColorScheme(deviceScheme);
-          return;
-        }
-
-        setSelectedColorScheme("light");
+        setSelectedColorScheme(scheme || deviceScheme || "light");
       });
 
       return;

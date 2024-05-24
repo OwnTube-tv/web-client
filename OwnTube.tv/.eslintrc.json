@@ -18,7 +18,7 @@
   },
   "plugins": ["@typescript-eslint", "react", "react-native"],
   "rules": {
-    "react-native/no-raw-text": ["error", { "skip": ["Typography"] }],
+    "react-native/no-raw-text": ["error", { "skip": ["Typography", "title"] }],
     "react/prop-types": "off",
     "react-native/no-inline-styles": "off"
   },

@@ -2,7 +2,7 @@ import VideoService from "./videoServices";
 
 describe("VideoService", () => {
   it("returns a list of unique category label names from testData.json", async () => {
-    const videoService = new VideoService(true);
+    const videoService = new VideoService('testData.json');
 
     const categoryLabels = await videoService.getVideoCategoryLabels();
     expect(categoryLabels).toBeInstanceOf(Array);
@@ -15,7 +15,7 @@ describe("VideoService", () => {
   });
 
   it("returns a list with the correct number of videos from testData.json, for each label", async () => {
-    const videoService = new VideoService(true);
+    const videoService = new VideoService('testData.json');
 
     const gamingVideos = await videoService.getVideosForCategory("Gaming");
     expect(gamingVideos).toBeInstanceOf(Array);
@@ -43,7 +43,7 @@ describe("VideoService", () => {
   });
 
   it("returns a total 15 videos from testData.json, all with id, name, category, description, and thumbnailPath", async () => {
-    const videoService = new VideoService(true);
+    const videoService = new VideoService('testData.json');
     const allVideos = [];
     for (const label of await videoService.getVideoCategoryLabels()) {
       const categoryVideos = await videoService.getVideosForCategory(label);
@@ -69,14 +69,20 @@ describe("VideoService", () => {
     }
   });
 
-  it("returns a list of all videos from a PeerTube external API, when not initialized with test data", async () => {
-    const videoService = new VideoService();
+  it("returns a list of videos from the PeerTube Nightly external API, when not initialized with test data", async () => {
+    const videoService = new VideoService('peertube2.cpy.re');
 
-    // We expect that after initializing the service with the PeerTube API, data will be loaded.
+    // We expect that after initializing the service with the PeerTube Nightly API, data will be loaded.
     // This may be difficult to confirm in this test, but we can verify that the number of retrieved videos is not zero.
-    const allVideos = await videoService.completeThumbnailUrls(); // Завантажуємо всі відео
+    const allVideos = await videoService.getVideosForCategory("Unknown");
 
     expect(allVideos).toBeInstanceOf(Array);
     expect(allVideos.length).toBeGreaterThan(0); // Verifying that at least one video is retrieved
+  });
+
+  it("can first return videos from testData.json and then from a external API", async () => {
+    const videoService = new VideoService('testData.json');
+
+    
   });
 });

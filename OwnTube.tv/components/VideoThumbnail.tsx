@@ -3,27 +3,33 @@ import { getThumbnailDimensions } from "../utils";
 import { useAppConfigContext } from "../contexts";
 import { ROUTES, Video } from "../types";
 import { Typography } from "./Typography";
-import { useNavigation, useTheme } from "@react-navigation/native";
+import { useTheme } from "@react-navigation/native";
 import { FC } from "react";
-import { RootStackParams } from "../navigation";
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { useRouter } from "expo-router";
 
 interface VideoThumbnailProps {
   video: Video;
 }
 
 export const VideoThumbnail: FC<VideoThumbnailProps> = ({ video }) => {
-  const navigation = useNavigation<NativeStackNavigationProp<RootStackParams>>();
   const { source } = useAppConfigContext();
+  const router = useRouter();
 
   const imageUrl = video.thumbnailUrl || `${source}/default-thumbnail.jpg`;
   const { width, height } = getThumbnailDimensions();
   const { colors } = useTheme();
 
+  const goToVideo = () => {
+    router.navigate({
+      pathname: `/${ROUTES.VIDEO}`,
+      params: { id: "8803fdd3-4ac9-49d0-8dcf-ff1586e9e458" },
+    });
+  };
+
   return (
     <TouchableOpacity
       style={[styles.videoThumbnailContainer, { height, width }, { backgroundColor: colors.card }]}
-      onPress={() => navigation.navigate(ROUTES.VIDEO)}
+      onPress={goToVideo}
     >
       <Image source={{ uri: imageUrl }} style={styles.videoImage} />
       <View style={styles.textContainer}>
@@ -39,7 +45,7 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   videoImage: {
-    borderTopLeftRadius: 10, // Rounded corners for the top of the image
+    borderTopLeftRadius: 10,
     borderTopRightRadius: 10,
     height: "85%",
     resizeMode: "cover",

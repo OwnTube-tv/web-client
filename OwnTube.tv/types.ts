@@ -10,7 +10,7 @@ export enum STORAGE {
 }
 
 export enum ROUTES {
-  HOME = "home",
+  INDEX = "index",
   SETTINGS = "settings",
   VIDEO = "video",
 }

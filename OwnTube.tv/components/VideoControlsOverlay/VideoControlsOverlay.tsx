@@ -11,8 +11,9 @@ interface VideoControlsOverlayProps {
   handlePlayPause: () => void;
   handleRW: () => void;
   handleFF: () => void;
-  percentageAvailable: number;
-  percentagePosition: number;
+  duration?: number;
+  availableDuration?: number;
+  position?: number;
   toggleMute: () => void;
   isMute?: boolean;
   shouldReplay?: boolean;
@@ -27,8 +28,9 @@ export const VideoControlsOverlay = ({
   handlePlayPause,
   handleRW,
   handleFF,
-  percentageAvailable,
-  percentagePosition,
+  duration = 1,
+  availableDuration = 0,
+  position = 0,
   toggleMute,
   isMute = false,
   shouldReplay,
@@ -46,6 +48,13 @@ export const VideoControlsOverlay = ({
   const centralIconName = useMemo(() => {
     return isPlaying ? "pause" : shouldReplay ? "reload" : "play";
   }, [isPlaying, shouldReplay]);
+
+  const { percentageAvailable, percentagePosition } = useMemo(() => {
+    return {
+      percentageAvailable: (availableDuration / duration) * 100,
+      percentagePosition: (position / duration) * 100,
+    };
+  }, [availableDuration, duration, position]);
 
   return (
     <Pressable style={styles.overlay} onPress={onOverlayPress}>

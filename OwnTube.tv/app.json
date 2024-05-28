@@ -2,6 +2,7 @@
   "expo": {
     "name": "OwnTube.tv",
     "slug": "OwnTube.tv",
+    "scheme": "owntube",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -25,7 +26,10 @@
       }
     },
     "web": {
+      "output": "static",
+      "bundler": "metro",
       "favicon": "assets/faviconDark-48x48.png"
-    }
+    },
+    "plugins": ["expo-router"]
   }
 }

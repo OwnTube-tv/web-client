@@ -3,6 +3,7 @@ import { colors, typography } from "./theme";
 export enum SOURCES {
   PEERTUBE = "https://peertube2.cpy.re",
   REBELLION = "https://tube.rebellion.global",
+  TEST_DATA = "Test Data",
 }
 
 export enum STORAGE {

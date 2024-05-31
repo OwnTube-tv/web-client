@@ -1,6 +1,7 @@
 import { StyleSheet, View, Linking } from "react-native";
 import build_info from "../build-info.json";
 import { Typography } from "./Typography";
+import { format } from "date-fns";
 
 export const Header = () => {
   return (
@@ -11,7 +12,7 @@ export const Header = () => {
         <Typography style={styles.link} onPress={() => Linking.openURL(build_info.COMMIT_URL)}>
           {build_info.GITHUB_SHA_SHORT}
         </Typography>{" "}
-        built at {build_info.BUILD_TIMESTAMP}.
+        built at {format(build_info.BUILD_TIMESTAMP, "EEEE, MMM do y hh:mm")}.
       </Typography>
 
       <Typography style={styles.footnote}>

@@ -52,6 +52,10 @@ export const VideoView = ({ videoID }: VideoViewProps) => {
     return Platform.OS === "web" ? mp4 : hls;
   }, [videoID, quality]);
 
+  const handleJumpTo = (position: number) => {
+    videoRef.current?.setPositionAsync(position);
+  };
+
   return (
     <View style={styles.container}>
       <VideoControlsOverlay
@@ -68,6 +72,7 @@ export const VideoView = ({ videoID }: VideoViewProps) => {
         isMute={playbackStatus?.isMuted}
         shouldReplay={playbackStatus?.didJustFinish}
         handleReplay={handleReplay}
+        handleJumpTo={handleJumpTo}
       >
         <Video
           shouldPlay

@@ -8,10 +8,11 @@ export const Typography = (
     TextProps & {
       color?: string;
       fontSize?: number;
+      hasOuterGlow?: boolean;
     }
   >,
 ) => {
-  const color = useTheme().colors.text;
+  const { colors } = useTheme();
 
   return (
     <Text
@@ -19,8 +20,10 @@ export const Typography = (
       style={[
         props.style,
         {
-          color: props.color ?? color,
+          color: props.color ?? colors.text,
           fontSize: props.fontSize || typography.size.M,
+          textShadowColor: props.hasOuterGlow ? colors.background : undefined,
+          textShadowRadius: props.hasOuterGlow ? 10 : undefined,
         },
       ]}
     >

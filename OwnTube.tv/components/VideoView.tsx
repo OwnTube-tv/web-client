@@ -1,14 +1,14 @@
 import { AVPlaybackStatus, AVPlaybackStatusSuccess, ResizeMode, Video } from "expo-av";
-import { useMemo, useRef, useState } from "react";
-import { Platform, StyleSheet, View } from "react-native";
+import { useRef, useState } from "react";
+import { StyleSheet, View } from "react-native";
 import { VideoControlsOverlay } from "./VideoControlsOverlay";
 
 interface VideoViewProps {
-  videoID?: string;
+  uri: string;
+  testID: string;
 }
-const quality = 720;
 
-export const VideoView = ({ videoID }: VideoViewProps) => {
+export const VideoView = ({ uri, testID }: VideoViewProps) => {
   const videoRef = useRef<Video>(null);
   const [isControlsVisible, setIsControlsVisible] = useState(false);
   const [playbackStatus, setPlaybackStatus] = useState<AVPlaybackStatusSuccess | null>(null);
@@ -45,13 +45,6 @@ export const VideoView = ({ videoID }: VideoViewProps) => {
     videoRef.current?.playFromPositionAsync(0);
   };
 
-  const uri = useMemo(() => {
-    const hls = `https://tube.extinctionrebellion.fr/static/streaming-playlists/hls/${videoID}/1663f4f5-bb3d-44ec-8a21-6195e6407ba8-master.m3u8`;
-    const mp4 = `https://tube.extinctionrebellion.fr/download/videos/${videoID}-${quality}.mp4`;
-
-    return Platform.OS === "web" ? mp4 : hls;
-  }, [videoID, quality]);
-
   const handleJumpTo = (position: number) => {
     videoRef.current?.setPositionAsync(position);
   };
@@ -75,6 +68,7 @@ export const VideoView = ({ videoID }: VideoViewProps) => {
         handleJumpTo={handleJumpTo}
       >
         <Video
+          testID={`${testID}-video-playback`}
           shouldPlay
           resizeMode={ResizeMode.CONTAIN}
           ref={videoRef}

@@ -1,5 +1,5 @@
 import { useCallback } from "react";
-import { View, StyleSheet } from "react-native";
+import { StyleSheet, View } from "react-native";
 import { useAppConfigContext } from "../contexts";
 import { SOURCES } from "../types";
 import { Typography } from "./Typography";

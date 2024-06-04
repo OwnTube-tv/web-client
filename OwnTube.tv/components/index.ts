@@ -7,3 +7,4 @@ export * from "./VideosByCategory";
 export * from "./CategoryScroll";
 export * from "./VideoThumbnail";
 export * from "./VideoView";
+export * from "./VideoControlsOverlay";

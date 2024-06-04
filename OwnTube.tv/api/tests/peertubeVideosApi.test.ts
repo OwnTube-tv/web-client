@@ -17,18 +17,36 @@ describe("peertubeVideosApi", () => {
     expect(videos.length).toBeLessThanOrEqual(2);
   });
 
-  // it("should return a list of videos, but not more than the total available videos", async () => {
-  //   const peertubeVideosApi = new PeertubeVideosApi();
-  //   const totalVideos = await peertubeVideosApi.getTotalVideos("http://peertube2.cpy.re");
-  //
-  //   peertubeVideosApi.maxChunkSize = Math.floor(totalVideos / 2) - 1;
-  //   let videos = await peertubeVideosApi.getVideos("http://peertube2.cpy.re", totalVideos + 1);
-  //   expect(videos).toBeDefined();
-  //   expect(videos.length).toBe(totalVideos);
-  //
-  //   peertubeVideosApi.maxChunkSize = totalVideos + 5;
-  //   videos = await peertubeVideosApi.getVideos("http://peertube2.cpy.re", totalVideos + 1);
-  //   expect(videos).toBeDefined();
-  //   expect(videos.length).toBe(totalVideos);
-  // });
+  it("should return total number of videos", async () => {
+    const peertubeVideosApi = new PeertubeVideosApi();
+    const total = await peertubeVideosApi.getTotalVideos("http://peertube2.cpy.re");
+
+    expect(total).toBe(4);
+  });
+
+  it("should return a list of videos, but not more than the total available videos", async () => {
+    const peertubeVideosApi = new PeertubeVideosApi();
+    const totalVideos = await peertubeVideosApi.getTotalVideos("http://peertube2.cpy.re");
+
+    peertubeVideosApi.maxChunkSize = Math.floor(totalVideos / 2) - 1;
+    let videos = await peertubeVideosApi.getVideos("http://peertube2.cpy.re", totalVideos + 1);
+    expect(videos).toBeDefined();
+    expect(videos.length).toBe(totalVideos);
+
+    peertubeVideosApi.maxChunkSize = totalVideos + 5;
+    videos = await peertubeVideosApi.getVideos("http://peertube2.cpy.re", totalVideos + 1);
+    expect(videos).toBeDefined();
+    expect(videos.length).toBe(totalVideos);
+  });
+
+  it("should get video info by uuid", async () => {
+    const peertubeVideosApi = new PeertubeVideosApi();
+    const videoInfo = await peertubeVideosApi.getVideo(
+      "http://peertube2.cpy.re",
+      "04af977f-4201-4697-be67-a8d8cae6fa7a",
+    );
+
+    expect(videoInfo).toBeDefined();
+    expect(videoInfo.name).toBe("The Internet's Own Boy");
+  });
 });

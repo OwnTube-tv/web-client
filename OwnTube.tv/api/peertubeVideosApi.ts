@@ -71,7 +71,10 @@ export class PeertubeVideosApi {
    */
   async getTotalVideos(baseURL: string): Promise<number> {
     try {
-      const response = await this.instance.get("videos", { params: { ...this.commonQueryParams, count: 0 }, baseURL });
+      const response = await this.instance.get("videos", {
+        params: { ...this.commonQueryParams, count: undefined },
+        baseURL: `${baseURL}/api/v1`,
+      });
       return response.data.total as number;
     } catch (error: unknown) {
       throw new Error(`Failed to fetch total number of videos from PeerTube API: ${(error as Error).message}`);
@@ -124,6 +127,7 @@ export class PeertubeVideosApi {
         try {
           const response = await this.instance.get("videos", {
             params: { ...this.commonQueryParams, count: fetchCount, start: offset },
+            baseURL: `${baseURL}/api/v1`,
           });
           rawTotal = response.data.total as number;
           if (rawTotal < limit) {

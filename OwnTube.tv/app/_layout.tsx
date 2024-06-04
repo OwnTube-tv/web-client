@@ -3,12 +3,9 @@ import { Pressable } from "react-native";
 import { ROUTES } from "../types";
 import { Feather } from "@expo/vector-icons";
 import { DarkTheme, DefaultTheme, NavigationProp, ThemeProvider } from "@react-navigation/native";
-import {
-  AppConfigContextProvider,
-  ColorSchemeContextProvider,
-  useColorSchemeContext,
-  VideoServiceContextProvider,
-} from "../contexts";
+import { AppConfigContextProvider, ColorSchemeContextProvider, useColorSchemeContext } from "../contexts";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
 const RootStack = () => {
   const { scheme } = useColorSchemeContext();
@@ -36,15 +33,18 @@ const RootStack = () => {
   );
 };
 
+const queryClient = new QueryClient();
+
 export default function RootLayout() {
   return (
-    <AppConfigContextProvider>
-      <VideoServiceContextProvider>
+    <QueryClientProvider client={queryClient}>
+      <AppConfigContextProvider>
+        <ReactQueryDevtools initialIsOpen={false} />
         <ColorSchemeContextProvider>
           <RootStack />
         </ColorSchemeContextProvider>
-      </VideoServiceContextProvider>
-    </AppConfigContextProvider>
+      </AppConfigContextProvider>
+    </QueryClientProvider>
   );
 }
 

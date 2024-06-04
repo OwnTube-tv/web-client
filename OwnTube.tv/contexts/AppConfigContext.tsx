@@ -1,13 +1,14 @@
 import { createContext, PropsWithChildren, useContext, useEffect, useState, Dispatch, SetStateAction } from "react";
 import { readFromAsyncStorage, writeToAsyncStorage } from "../utils";
 import { SOURCES, STORAGE } from "../types";
+import { useQueryClient } from "@tanstack/react-query";
+import { QUERY_KEYS } from "../api";
 
 interface IAppConfigContext {
   isDebugMode: boolean;
   setIsDebugMode: Dispatch<SetStateAction<boolean>>;
   source: SOURCES | undefined;
   switchSource: (source: SOURCES) => void;
-  isSourceFetchedFromStorage: boolean;
 }
 
 const AppConfigContext = createContext<IAppConfigContext>({
@@ -15,25 +16,24 @@ const AppConfigContext = createContext<IAppConfigContext>({
   setIsDebugMode: () => {},
   source: undefined,
   switchSource: () => {},
-  isSourceFetchedFromStorage: false,
 });
 
 export const AppConfigContextProvider = ({ children }: PropsWithChildren) => {
+  const queryClient = useQueryClient();
   const [isDebugMode, setIsDebugMode] = useState(false);
 
   const [source, setSource] = useState<SOURCES | undefined>();
-  const [isSourceFetchedFromStorage, setIsSourceFetchedFromStorage] = useState(false);
 
-  const switchSource = (source: SOURCES) => {
-    writeToAsyncStorage(STORAGE.DATASOURCE, source);
+  const switchSource = async (source: SOURCES) => {
     setSource(source);
+    await writeToAsyncStorage(STORAGE.DATASOURCE, source);
+    queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.videos], refetchType: "all" });
   };
 
   useEffect(() => {
     (async () => {
       const storedSource = await readFromAsyncStorage(STORAGE.DATASOURCE);
       setSource(storedSource || SOURCES.PEERTUBE);
-      setIsSourceFetchedFromStorage(true);
     })();
   }, []);
 
@@ -44,7 +44,6 @@ export const AppConfigContextProvider = ({ children }: PropsWithChildren) => {
         setIsDebugMode,
         source,
         switchSource,
-        isSourceFetchedFromStorage,
       }}
     >
       {children}

@@ -1,19 +1,20 @@
 import { View, StyleSheet } from "react-native";
 import { CategoryScroll, Typography, VideoThumbnail } from "./";
-import type { VideoCategory } from "../types";
 import { FC } from "react";
+import { GetVideosVideo } from "../api/peertubeVideosApi";
 
 interface VideosByCategoryProps {
-  category: VideoCategory;
+  title: string;
+  videos: GetVideosVideo[];
 }
 
-export const VideosByCategory: FC<VideosByCategoryProps> = ({ category }) => {
+export const VideosByCategory: FC<VideosByCategoryProps> = ({ title, videos }) => {
   return (
     <View style={styles.container}>
-      <Typography style={styles.categoryTitle}>{category.label}</Typography>
+      <Typography style={styles.categoryTitle}>{title}</Typography>
       <CategoryScroll>
-        {category.videos.map((video) => (
-          <VideoThumbnail key={video.id} video={video} />
+        {videos.map((video) => (
+          <VideoThumbnail key={video.uuid} video={video} />
         ))}
       </CategoryScroll>
     </View>

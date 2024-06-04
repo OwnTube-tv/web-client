@@ -1,17 +1,37 @@
-import { View, StyleSheet } from "react-native";
+import { View, StyleSheet, ActivityIndicator } from "react-native";
 import { ErrorMessage, Typography, VideosByCategory } from "./";
-import { useVideoServiceContext } from "../contexts";
-import { useCategoryFilter } from "../hooks";
+import { useGetVideosQuery } from "../api";
+import { GetVideosVideo } from "../api/peertubeVideosApi";
+
+type CategorizedVideos = Record<string, GetVideosVideo[]>;
 
 export const VideoList = () => {
-  const { error } = useVideoServiceContext();
-  const { videosByCategory, isEmpty } = useCategoryFilter();
+  const { data, error, isFetching } = useGetVideosQuery<{
+    videos: GetVideosVideo[];
+    videosByCategory: CategorizedVideos;
+  }>({
+    select: (data) => ({
+      videos: data,
+      videosByCategory: data.reduce<CategorizedVideos>((acc, cur) => {
+        acc[cur.category.label] = [...(acc[cur.category.label] || []), cur];
+        return acc;
+      }, {}),
+    }),
+  });
 
   if (error) {
-    return <ErrorMessage message={error} />;
+    return <ErrorMessage message={error.message} />;
   }
 
-  if (isEmpty) {
+  if (isFetching) {
+    return (
+      <View style={{ flex: 1 }}>
+        <ActivityIndicator size="large" />
+      </View>
+    );
+  }
+
+  if (data?.videos.length === 0) {
     return (
       <View style={styles.centeredContainer}>
         <Typography>No videos or categories found.</Typography>
@@ -21,8 +41,8 @@ export const VideoList = () => {
 
   return (
     <View style={styles.container}>
-      {videosByCategory.map((category) => (
-        <VideosByCategory key={category.id} category={category} />
+      {Object.entries(data?.videosByCategory || {}).map(([category, videos]) => (
+        <VideosByCategory key={category} title={category} videos={videos} />
       ))}
     </View>
   );

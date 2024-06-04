@@ -1,28 +1,34 @@
 import { View, Image, StyleSheet, TouchableOpacity } from "react-native";
 import { getThumbnailDimensions } from "../utils";
-import { useAppConfigContext } from "../contexts";
-import { ROUTES, Video } from "../types";
+import { useColorSchemeContext } from "../contexts";
+import { ROUTES } from "../types";
 import { Typography } from "./Typography";
 import { useTheme } from "@react-navigation/native";
 import { FC } from "react";
 import { useRouter } from "expo-router";
+import { GetVideosVideo } from "../api/peertubeVideosApi";
 
 interface VideoThumbnailProps {
-  video: Video;
+  video: GetVideosVideo;
 }
 
-export const VideoThumbnail: FC<VideoThumbnailProps> = ({ video }) => {
-  const { source } = useAppConfigContext();
-  const router = useRouter();
+const defaultImagePaths = {
+  dark: require("./../assets/logoDark-400x400.png"),
+  light: require("./../assets/Logo400x400.png"),
+};
 
-  const imageUrl = video.thumbnailUrl || `${source}/default-thumbnail.jpg`;
+export const VideoThumbnail: FC<VideoThumbnailProps> = ({ video }) => {
+  const router = useRouter();
+  const { scheme } = useColorSchemeContext();
+
+  const imageSource = video.thumbnailPath ? { uri: video.thumbnailPath } : defaultImagePaths[scheme ?? "dark"];
   const { width, height } = getThumbnailDimensions();
   const { colors } = useTheme();
 
   const goToVideo = () => {
     router.navigate({
       pathname: `/${ROUTES.VIDEO}`,
-      params: { id: "8803fdd3-4ac9-49d0-8dcf-ff1586e9e458" },
+      params: { id: video.uuid },
     });
   };
 
@@ -31,7 +37,7 @@ export const VideoThumbnail: FC<VideoThumbnailProps> = ({ video }) => {
       style={[styles.videoThumbnailContainer, { height, width }, { backgroundColor: colors.card }]}
       onPress={goToVideo}
     >
-      <Image source={{ uri: imageUrl }} style={styles.videoImage} />
+      <Image source={imageSource} style={styles.videoImage} />
       <View style={styles.textContainer}>
         <Typography style={styles.videoTitle}>{video.name}</Typography>
       </View>

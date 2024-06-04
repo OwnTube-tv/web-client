@@ -1,0 +1,165 @@
+{
+  "id": 1,
+  "uuid": "bef90eb2-f09e-4da8-b5d6-ba34b8f7018d",
+  "shortUUID": "pzLkyE5mwLikhFTDV4sQzT",
+  "url": "https://tube.rebellion.global/videos/watch/bef90eb2-f09e-4da8-b5d6-ba34b8f7018d",
+  "name": "CHANGE IS COMING",
+  "category": {
+    "id": 14,
+    "label": "Activism"
+  },
+  "licence": {
+    "id": 5,
+    "label": "Attribution - Non Commercial - Share Alike"
+  },
+  "language": {
+    "id": "en",
+    "label": "English"
+  },
+  "privacy": {
+    "id": 1,
+    "label": "Public"
+  },
+  "nsfw": false,
+  "truncatedDescription": null,
+  "description": null,
+  "isLocal": true,
+  "duration": 153,
+  "views": 65,
+  "viewers": 0,
+  "likes": 0,
+  "dislikes": 0,
+  "thumbnailPath": "/static/thumbnails/bef90eb2-f09e-4da8-b5d6-ba34b8f7018d.jpg",
+  "previewPath": "/lazy-static/previews/bef90eb2-f09e-4da8-b5d6-ba34b8f7018d.jpg",
+  "embedPath": "/videos/embed/bef90eb2-f09e-4da8-b5d6-ba34b8f7018d",
+  "createdAt": "2019-10-08T18:19:02.941Z",
+  "updatedAt": "2024-04-13T22:34:24.189Z",
+  "publishedAt": "2019-10-08T18:19:02.940Z",
+  "originallyPublishedAt": null,
+  "isLive": false,
+  "account": {
+    "url": "https://tube.rebellion.global/accounts/xrglobal",
+    "name": "xrglobal",
+    "host": "tube.rebellion.global",
+    "avatars": [
+      {
+        "width": null,
+        "path": "/lazy-static/avatars/d7581c5e-bdb8-4f0e-a712-6b35824a6bbe.png",
+        "createdAt": "2019-10-10T14:26:01.162Z",
+        "updatedAt": "2019-10-10T14:26:01.162Z"
+      }
+    ],
+    "avatar": {
+      "width": null,
+      "path": "/lazy-static/avatars/d7581c5e-bdb8-4f0e-a712-6b35824a6bbe.png",
+      "createdAt": "2019-10-10T14:26:01.162Z",
+      "updatedAt": "2019-10-10T14:26:01.162Z"
+    },
+    "id": 3,
+    "hostRedundancyAllowed": false,
+    "followingCount": -2,
+    "followersCount": 175,
+    "createdAt": "2019-10-08T18:16:22.669Z",
+    "banners": [],
+    "displayName": "xrglobal",
+    "description": "Global XR Tube account. Join the rebellion and rebel for life. \n\n> Do you want to upload your XR video? Write to tube@organise.earth",
+    "updatedAt": "2022-03-19T17:48:21.007Z",
+    "userId": 2
+  },
+  "channel": {
+    "url": "https://tube.rebellion.global/video-channels/xrglobal_channel",
+    "name": "xrglobal_channel",
+    "host": "tube.rebellion.global",
+    "avatars": [
+      {
+        "width": 48,
+        "path": "/lazy-static/avatars/4092087b-f365-4da2-8efc-5f54964f6e1b.png",
+        "createdAt": "2023-06-14T07:42:54.335Z",
+        "updatedAt": "2023-06-14T07:42:54.335Z"
+      },
+      {
+        "width": 120,
+        "path": "/lazy-static/avatars/8890377a-ac32-4c2f-829c-d6c965bfb84e.png",
+        "createdAt": "2023-06-14T07:42:54.333Z",
+        "updatedAt": "2023-06-14T07:42:54.333Z"
+      }
+    ],
+    "avatar": {
+      "width": 48,
+      "path": "/lazy-static/avatars/4092087b-f365-4da2-8efc-5f54964f6e1b.png",
+      "createdAt": "2023-06-14T07:42:54.335Z",
+      "updatedAt": "2023-06-14T07:42:54.335Z"
+    },
+    "id": 2,
+    "hostRedundancyAllowed": false,
+    "followingCount": 0,
+    "followersCount": 56,
+    "createdAt": "2019-10-08T18:16:22.681Z",
+    "banners": [],
+    "displayName": "XR Global",
+    "description": "XR Global channel. Join the rebellion and rebel for life.\n\nSUPPORT THE REBELLION: \nhttps://chuffed.org/project/xrgs-we-are-the-mycelium",
+    "support": "tube@rebellion.global",
+    "isLocal": true,
+    "updatedAt": "2023-06-14T07:42:31.288Z",
+    "ownerAccount": {
+      "url": "https://tube.rebellion.global/accounts/xrglobal",
+      "name": "xrglobal",
+      "host": "tube.rebellion.global",
+      "avatars": [
+        {
+          "width": null,
+          "path": "/lazy-static/avatars/d7581c5e-bdb8-4f0e-a712-6b35824a6bbe.png",
+          "createdAt": "2019-10-10T14:26:01.162Z",
+          "updatedAt": "2019-10-10T14:26:01.162Z"
+        }
+      ],
+      "avatar": {
+        "width": null,
+        "path": "/lazy-static/avatars/d7581c5e-bdb8-4f0e-a712-6b35824a6bbe.png",
+        "createdAt": "2019-10-10T14:26:01.162Z",
+        "updatedAt": "2019-10-10T14:26:01.162Z"
+      },
+      "id": 3,
+      "hostRedundancyAllowed": false,
+      "followingCount": -2,
+      "followersCount": 175,
+      "createdAt": "2019-10-08T18:16:22.669Z",
+      "banners": [],
+      "displayName": "xrglobal",
+      "description": "Global XR Tube account. Join the rebellion and rebel for life. \n\n> Do you want to upload your XR video? Write to tube@organise.earth",
+      "updatedAt": "2022-03-19T17:48:21.007Z",
+      "userId": 2
+    }
+  },
+  "blacklisted": false,
+  "blacklistedReason": null,
+  "streamingPlaylists": [],
+  "files": [
+    {
+      "id": 1,
+      "resolution": {
+        "id": 720,
+        "label": "720p"
+      },
+      "magnetUri": "magnet:?xs=https%3A%2F%2Ftube.rebellion.global%2Flazy-static%2Ftorrents%2Fbef90eb2-f09e-4da8-b5d6-ba34b8f7018d-720.torrent&xt=urn:btih:2391fa6a746f5ebdc25afb6a66596c7599b0b474&dn=CHANGE+IS+COMING&tr=https%3A%2F%2Ftube.rebellion.global%2Ftracker%2Fannounce&tr=wss%3A%2F%2Ftube.rebellion.global%3A443%2Ftracker%2Fsocket&ws=https%3A%2F%2Ftube.rebellion.global%2Fstatic%2Fwebseed%2Fbef90eb2-f09e-4da8-b5d6-ba34b8f7018d-720.mp4",
+      "size": 39912393,
+      "fps": 30,
+      "torrentUrl": "https://tube.rebellion.global/lazy-static/torrents/bef90eb2-f09e-4da8-b5d6-ba34b8f7018d-720.torrent",
+      "torrentDownloadUrl": "https://tube.rebellion.global/download/torrents/bef90eb2-f09e-4da8-b5d6-ba34b8f7018d-720.torrent",
+      "fileUrl": "https://tube.rebellion.global/static/webseed/bef90eb2-f09e-4da8-b5d6-ba34b8f7018d-720.mp4",
+      "fileDownloadUrl": "https://tube.rebellion.global/download/videos/bef90eb2-f09e-4da8-b5d6-ba34b8f7018d-720.mp4",
+      "metadataUrl": "https://tube.rebellion.global/api/v1/videos/bef90eb2-f09e-4da8-b5d6-ba34b8f7018d/metadata/1"
+    }
+  ],
+  "support": null,
+  "descriptionPath": "/api/v1/videos/bef90eb2-f09e-4da8-b5d6-ba34b8f7018d/description",
+  "tags": [],
+  "commentsEnabled": true,
+  "downloadEnabled": true,
+  "waitTranscoding": false,
+  "state": {
+    "id": 1,
+    "label": "Published"
+  },
+  "trackerUrls": ["https://tube.rebellion.global/tracker/announce", "wss://tube.rebellion.global:443/tracker/socket"]
+}

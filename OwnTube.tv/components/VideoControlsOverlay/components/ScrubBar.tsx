@@ -6,7 +6,7 @@ import {
   GestureHandlerRootView,
   PanGestureHandlerEventPayload,
 } from "react-native-gesture-handler";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 interface ScrubBarProps {
   percentageAvailable: number;
@@ -15,18 +15,26 @@ interface ScrubBarProps {
   duration: number;
 }
 
-const INDICATOR_SIZE = 11;
+const INDICATOR_SIZE = 16;
 
 export const ScrubBar = ({ percentageAvailable, percentagePosition, onDrag, duration }: ScrubBarProps) => {
   const { colors } = useTheme();
   const [visibleWidth, setVisibleWidth] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
+  const [scrubberPosition, setScrubberPosition] = useState(0);
 
   const handlePan = (event: PanGestureHandlerEventPayload) => {
     if (visibleWidth < event.x || event.x < 0) {
       return;
     }
-    const newPositionRelation = event.x / visibleWidth;
+
+    setScrubberPosition(event.x - INDICATOR_SIZE / 2);
+  };
+
+  const setPosition = (event: PanGestureHandlerEventPayload) => {
+    const newX = visibleWidth <= event.x ? visibleWidth : event.x < 0 ? 0 : event.x;
+
+    const newPositionRelation = (newX - INDICATOR_SIZE / 2) / visibleWidth;
 
     onDrag(Math.floor(newPositionRelation * duration));
   };
@@ -34,9 +42,16 @@ export const ScrubBar = ({ percentageAvailable, percentagePosition, onDrag, dura
   const pan = Gesture.Pan()
     .onUpdate(handlePan)
     .onStart(() => setIsDragging(true))
-    .onEnd(() => setIsDragging(false));
+    .onEnd((event) => {
+      setPosition(event);
+      setIsDragging(false);
+    });
 
-  const scrubberPositionPercentage = percentagePosition - (INDICATOR_SIZE / 2 / visibleWidth) * 100;
+  useEffect(() => {
+    if (!isDragging) {
+      setScrubberPosition((visibleWidth / 100) * percentagePosition);
+    }
+  }, [percentagePosition]);
 
   return (
     <GestureHandlerRootView style={styles.gestureHandlerContainer}>
@@ -58,7 +73,7 @@ export const ScrubBar = ({ percentageAvailable, percentagePosition, onDrag, dura
                 {
                   backgroundColor: isDragging ? colors.text : colors.primary,
                   borderColor: colors.background,
-                  left: `${scrubberPositionPercentage}%`,
+                  left: scrubberPosition,
                 },
               ]}
             />
@@ -76,7 +91,7 @@ export const ScrubBar = ({ percentageAvailable, percentagePosition, onDrag, dura
                 styles.percentagePositionBar,
                 {
                   backgroundColor: colors.primary,
-                  width: `${percentagePosition}%`,
+                  width: scrubberPosition,
                 },
               ]}
             />
@@ -95,11 +110,11 @@ const styles = StyleSheet.create({
     width: "80%",
   },
   indicator: {
-    borderRadius: 12,
+    borderRadius: INDICATOR_SIZE,
     borderWidth: 1,
     height: INDICATOR_SIZE,
     position: "absolute",
-    top: -3.5,
+    top: -6,
     width: INDICATOR_SIZE,
     zIndex: 4,
   },

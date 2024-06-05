@@ -1,14 +1,15 @@
 import { AVPlaybackStatus, AVPlaybackStatusSuccess, ResizeMode, Video } from "expo-av";
 import { useRef, useState } from "react";
-import { StyleSheet, View } from "react-native";
-import { VideoControlsOverlay } from "./VideoControlsOverlay";
+import { View } from "react-native";
+import { VideoControlsOverlay } from "../VideoControlsOverlay";
+import { styles } from "./styles";
 
-interface VideoViewProps {
+export interface VideoViewProps {
   uri: string;
   testID: string;
 }
 
-export const VideoView = ({ uri, testID }: VideoViewProps) => {
+const VideoView = ({ uri, testID }: VideoViewProps) => {
   const videoRef = useRef<Video>(null);
   const [isControlsVisible, setIsControlsVisible] = useState(false);
   const [playbackStatus, setPlaybackStatus] = useState<AVPlaybackStatusSuccess | null>(null);
@@ -81,10 +82,4 @@ export const VideoView = ({ uri, testID }: VideoViewProps) => {
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    alignItems: "center",
-    flex: 1,
-    justifyContent: "center",
-  },
-});
+export default VideoView;

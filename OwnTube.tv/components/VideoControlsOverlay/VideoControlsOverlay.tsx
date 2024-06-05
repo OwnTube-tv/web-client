@@ -117,9 +117,12 @@ const styles = StyleSheet.create({
   },
   contentContainer: { flex: 1, height: "100%", left: 0, position: "absolute", top: 0, width: "100%", zIndex: 1 },
   overlay: {
+    alignItems: "center",
     alignSelf: "center",
-    maxHeight: "100%",
-    maxWidth: "100%",
+    display: "flex",
+    height: "100%",
+    justifyContent: "center",
+    width: "100%",
   },
   playbackControlsContainer: {
     alignItems: "center",

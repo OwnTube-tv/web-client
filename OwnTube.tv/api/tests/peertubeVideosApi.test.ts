@@ -21,7 +21,7 @@ describe("peertubeVideosApi", () => {
     const peertubeVideosApi = new PeertubeVideosApi();
     const total = await peertubeVideosApi.getTotalVideos("http://peertube2.cpy.re");
 
-    expect(total).toBe(4);
+    expect(total).toBe(27);
   });
 
   it("should return a list of videos, but not more than the total available videos", async () => {

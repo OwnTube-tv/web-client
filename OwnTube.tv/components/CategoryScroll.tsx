@@ -1,9 +1,9 @@
 import { PropsWithChildren, FC } from "react";
 import { View, ScrollView, StyleSheet } from "react-native";
-import AntDesign from "@expo/vector-icons/AntDesign";
 import { useCategoryScroll } from "../hooks";
 import { Button } from "./";
 import { useTheme } from "@react-navigation/native";
+import { Ionicons } from "@expo/vector-icons";
 
 export const CategoryScroll: FC<PropsWithChildren> = ({ children }) => {
   const { ref, scrollLeft, scrollRight, windowWidth } = useCategoryScroll();
@@ -12,7 +12,7 @@ export const CategoryScroll: FC<PropsWithChildren> = ({ children }) => {
   return (
     <View style={styles.horizontalScrollContainer}>
       <Button onPress={scrollLeft} style={[styles.scrollButton, { backgroundColor: colors.card }]}>
-        <AntDesign name="left" size={20} color={colors.text} />
+        <Ionicons name="chevron-back" size={20} color={colors.text} />
       </Button>
 
       <ScrollView
@@ -26,7 +26,7 @@ export const CategoryScroll: FC<PropsWithChildren> = ({ children }) => {
       </ScrollView>
 
       <Button onPress={scrollRight} style={[styles.scrollButton, { backgroundColor: colors.card }]}>
-        <AntDesign name="right" size={20} color={colors.text} />
+        <Ionicons name="chevron-forward" size={20} color={colors.text} />
       </Button>
     </View>
   );

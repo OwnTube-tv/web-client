@@ -1,11 +1,12 @@
 import { Stack, useNavigation } from "expo-router";
 import { Platform, Pressable } from "react-native";
 import { ROUTES } from "../types";
-import { Feather } from "@expo/vector-icons";
+import { Ionicons } from "@expo/vector-icons";
 import { DarkTheme, DefaultTheme, NavigationProp, ThemeProvider } from "@react-navigation/native";
 import { AppConfigContextProvider, ColorSchemeContextProvider, useColorSchemeContext } from "../contexts";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import { useFonts } from "expo-font";
 
 const RootStack = () => {
   const { scheme } = useColorSchemeContext();
@@ -21,7 +22,7 @@ const RootStack = () => {
             title: "Home",
             headerRight: () => (
               <Pressable onPress={() => navigation.navigate(ROUTES.SETTINGS)}>
-                <Feather name="settings" size={24} color={theme.colors.primary} />
+                <Ionicons name="settings-outline" size={24} color={theme.colors.primary} />
               </Pressable>
             ),
           }}
@@ -37,6 +38,12 @@ const queryClient = new QueryClient();
 
 export default function RootLayout() {
   const isWeb = Platform.OS === "web";
+
+  const [fontsLoaded, fontError] = useFonts(Ionicons.font);
+
+  if (!fontsLoaded && !fontError) {
+    return null;
+  }
 
   return (
     <QueryClientProvider client={queryClient}>

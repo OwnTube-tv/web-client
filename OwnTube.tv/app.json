@@ -28,11 +28,8 @@
     "web": {
       "output": "static",
       "bundler": "metro",
-      "favicon": "assets/faviconDark-48x48.png"
+      "favicon": "assets/faviconLight-48x48.png"
     },
-    "plugins": [
-      "expo-router",
-      "expo-font"
-    ]
+    "plugins": ["expo-router", "expo-font"]
   }
 }

@@ -72,7 +72,7 @@ export class PeertubeVideosApi {
     try {
       const response = await this.instance.get("videos", {
         params: { ...this.commonQueryParams, count: undefined },
-        baseURL: `${baseURL}/api/v1`,
+        baseURL: `https://${baseURL}/api/v1`,
       });
       return response.data.total as number;
     } catch (error: unknown) {
@@ -94,7 +94,7 @@ export class PeertubeVideosApi {
         rawVideos = (
           await this.instance.get("videos", {
             params: { ...this.commonQueryParams, count: limit },
-            baseURL: `${baseURL}/api/v1`,
+            baseURL: `https://${baseURL}/api/v1`,
           })
         ).data.data as Required<GetVideosVideo>[];
       } catch (error: unknown) {
@@ -126,7 +126,7 @@ export class PeertubeVideosApi {
         try {
           const response = await this.instance.get("videos", {
             params: { ...this.commonQueryParams, count: fetchCount, start: offset },
-            baseURL: `${baseURL}/api/v1`,
+            baseURL: `https://${baseURL}/api/v1`,
           });
           rawTotal = response.data.total as number;
           if (rawTotal < limit) {
@@ -161,7 +161,7 @@ export class PeertubeVideosApi {
   async getVideo(baseURL: string, id: string) {
     try {
       const response = await this.instance.get<Video>(`videos/${id}`, {
-        baseURL: `${baseURL}/api/v1`,
+        baseURL: `https://${baseURL}/api/v1`,
       });
 
       return response.data;

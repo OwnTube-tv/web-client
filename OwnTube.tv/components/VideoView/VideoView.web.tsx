@@ -19,7 +19,7 @@ const VideoView = ({ uri, testID }: VideoViewProps) => {
   const [playbackStatus, setPlaybackStatus] = useState({
     didJustFinish: false,
     isMuted: false,
-    isPlaying: true,
+    isPlaying: false,
     position: 0,
     duration: 1,
     playableDuration: 0,

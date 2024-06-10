@@ -1,4 +1,4 @@
-import { SettingsScreen } from "../screens";
+import { SettingsScreen } from "../../screens";
 import Head from "expo-router/head";
 
 export default function settings() {

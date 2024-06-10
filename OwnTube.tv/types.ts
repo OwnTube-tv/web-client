@@ -1,8 +1,6 @@
-import { colors, typography } from "./theme";
-
 export enum SOURCES {
-  PEERTUBE = "https://peertube2.cpy.re",
-  REBELLION = "https://tube.rebellion.global",
+  PEERTUBE = "peertube2.cpy.re",
+  REBELLION = "tube.rebellion.global",
   TEST_DATA = "Test Data",
 }
 
@@ -15,11 +13,6 @@ export enum ROUTES {
   SETTINGS = "settings",
   VIDEO = "video",
 }
-
-export type Theme = {
-  colors: typeof colors.light;
-  typography: typeof typography;
-};
 
 export interface Category {
   label: string;

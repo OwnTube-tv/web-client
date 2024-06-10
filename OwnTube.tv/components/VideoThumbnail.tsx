@@ -1,12 +1,12 @@
-import { View, Image, StyleSheet, TouchableOpacity } from "react-native";
+import { View, Image, StyleSheet } from "react-native";
 import { getThumbnailDimensions } from "../utils";
 import { useColorSchemeContext } from "../contexts";
-import { ROUTES } from "../types";
 import { Typography } from "./Typography";
 import { useTheme } from "@react-navigation/native";
 import { FC } from "react";
-import { useRouter } from "expo-router";
+import { Link, useLocalSearchParams } from "expo-router";
 import { GetVideosVideo } from "../api/peertubeVideosApi";
+import { ROUTES } from "../types";
 
 interface VideoThumbnailProps {
   video: GetVideosVideo;
@@ -18,30 +18,27 @@ const defaultImagePaths = {
 };
 
 export const VideoThumbnail: FC<VideoThumbnailProps> = ({ video }) => {
-  const router = useRouter();
   const { scheme } = useColorSchemeContext();
+  const { backend } = useLocalSearchParams();
 
   const imageSource = video.thumbnailPath ? { uri: video.thumbnailPath } : defaultImagePaths[scheme ?? "dark"];
   const { width, height } = getThumbnailDimensions();
   const { colors } = useTheme();
 
-  const goToVideo = () => {
-    router.navigate({
-      pathname: `/${ROUTES.VIDEO}`,
-      params: { id: video.uuid },
-    });
-  };
+  if (!backend) {
+    return null;
+  }
 
   return (
-    <TouchableOpacity
+    <Link
       style={[styles.videoThumbnailContainer, { height, width }, { backgroundColor: colors.card }]}
-      onPress={goToVideo}
+      href={{ pathname: `/${ROUTES.VIDEO}`, params: { id: video.uuid, backend } }}
     >
       <Image source={imageSource} style={styles.videoImage} />
       <View style={styles.textContainer}>
         <Typography style={styles.videoTitle}>{video.name}</Typography>
       </View>
-    </TouchableOpacity>
+    </Link>
   );
 };
 

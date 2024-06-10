@@ -1,5 +1,5 @@
-import { View, StyleSheet, ActivityIndicator } from "react-native";
-import { ErrorMessage, Typography, VideosByCategory } from "./";
+import { View, StyleSheet } from "react-native";
+import { ErrorMessage, Loader, Typography, VideosByCategory } from "./";
 import { useGetVideosQuery } from "../api";
 import { GetVideosVideo } from "../api/peertubeVideosApi";
 
@@ -24,11 +24,7 @@ export const VideoList = () => {
   }
 
   if (isFetching) {
-    return (
-      <View style={{ flex: 1 }}>
-        <ActivityIndicator size="large" />
-      </View>
-    );
+    return <Loader />;
   }
 
   if (data?.videos.length === 0) {

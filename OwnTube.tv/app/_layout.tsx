@@ -1,5 +1,5 @@
 import { Stack, useNavigation } from "expo-router";
-import { Pressable } from "react-native";
+import { Platform, Pressable } from "react-native";
 import { ROUTES } from "../types";
 import { Feather } from "@expo/vector-icons";
 import { DarkTheme, DefaultTheme, NavigationProp, ThemeProvider } from "@react-navigation/native";
@@ -36,10 +36,12 @@ const RootStack = () => {
 const queryClient = new QueryClient();
 
 export default function RootLayout() {
+  const isWeb = Platform.OS === "web";
+
   return (
     <QueryClientProvider client={queryClient}>
       <AppConfigContextProvider>
-        <ReactQueryDevtools initialIsOpen={false} />
+        {isWeb && <ReactQueryDevtools initialIsOpen={false} />}
         <ColorSchemeContextProvider>
           <RootStack />
         </ColorSchemeContextProvider>

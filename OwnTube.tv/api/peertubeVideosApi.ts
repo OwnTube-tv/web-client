@@ -42,7 +42,6 @@ export class PeertubeVideosApi {
     nsfw: "false",
     isLocal: true,
     isLive: false,
-    hasWebVideoFiles: true,
     skipCount: false,
   };
 

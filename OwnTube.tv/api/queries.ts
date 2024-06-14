@@ -1,9 +1,10 @@
 import { useQuery } from "@tanstack/react-query";
 import { ApiServiceImpl, GetVideosVideo } from "./peertubeVideosApi";
-import { useAppConfigContext } from "../contexts";
 import { SOURCES } from "../types";
 import { getLocalData } from "./helpers";
 import { Video } from "@peertube/peertube-types/peertube-models/videos/video.model";
+import { useLocalSearchParams } from "expo-router";
+import { RootStackParams } from "../app/_layout";
 
 export enum QUERY_KEYS {
   videos = "videos",
@@ -17,37 +18,38 @@ export const useGetVideosQuery = <TResult = GetVideosVideo[]>({
   enabled?: boolean;
   select?: (data: GetVideosVideo[]) => TResult;
 }) => {
-  const { source } = useAppConfigContext();
+  const { backend } = useLocalSearchParams<RootStackParams["index"]>();
 
   return useQuery({
-    queryKey: [QUERY_KEYS.videos],
+    queryKey: [QUERY_KEYS.videos, backend],
     queryFn: async () => {
-      if (source === SOURCES.TEST_DATA) {
+      if (backend === SOURCES.TEST_DATA) {
         return getLocalData<{ data: GetVideosVideo[] }>("videos").data;
       }
 
-      const data = await ApiServiceImpl.getVideos(source!);
-      return data.map((video) => ({ ...video, thumbnailPath: `${source}${video.thumbnailPath}` }));
+      const data = await ApiServiceImpl.getVideos(backend!);
+      return data.map((video) => ({ ...video, thumbnailPath: `https://${backend}${video.thumbnailPath}` }));
     },
-    enabled: enabled && !!source,
+    enabled: enabled && !!backend,
     refetchOnWindowFocus: false,
     select,
   });
 };
 
-export const useGetVideoQuery = (id?: string) => {
-  const { source } = useAppConfigContext();
+export const useGetVideoQuery = <TResult = Video>(id?: string, select?: (data: Video) => TResult) => {
+  const { backend } = useLocalSearchParams<RootStackParams["index"]>();
 
   return useQuery({
-    queryKey: [QUERY_KEYS.video],
+    queryKey: [QUERY_KEYS.video, id],
     queryFn: async () => {
-      if (source === SOURCES.TEST_DATA) {
+      if (backend === SOURCES.TEST_DATA) {
         return getLocalData<Video>("video");
       }
 
-      return await ApiServiceImpl.getVideo(source!, id!);
+      return await ApiServiceImpl.getVideo(backend!, id!);
     },
     refetchOnWindowFocus: false,
-    enabled: !!source && !!id,
+    enabled: !!backend && !!id,
+    select,
   });
 };

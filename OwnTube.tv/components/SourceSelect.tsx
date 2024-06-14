@@ -1,32 +1,41 @@
 import { useCallback } from "react";
 import { StyleSheet, View } from "react-native";
-import { useAppConfigContext } from "../contexts";
-import { SOURCES } from "../types";
+import { SOURCES, STORAGE } from "../types";
 import { Typography } from "./Typography";
 import { useTheme } from "@react-navigation/native";
+import { useLocalSearchParams, useRouter } from "expo-router";
+import { writeToAsyncStorage } from "../utils";
+import { RootStackParams } from "../app/_layout";
 
 export const SourceSelect = () => {
-  const { source, switchSource } = useAppConfigContext();
+  const { backend } = useLocalSearchParams<RootStackParams["settings"]>();
+  const router = useRouter();
   const { colors } = useTheme();
 
+  const handleSelectSource = (backend: string) => () => {
+    router.setParams({ backend });
+    writeToAsyncStorage(STORAGE.DATASOURCE, backend);
+  };
+
   const renderItem = useCallback(
-    (item: SOURCES) => (
+    (item: string) => (
       <Typography
         key={item}
         style={styles.source}
-        color={item === source ? colors.primary : undefined}
-        onPress={() => switchSource(item)}
+        color={item === backend ? colors.primary : undefined}
+        onPress={handleSelectSource(item)}
       >
         {item}
       </Typography>
     ),
-    [source],
+    [backend, handleSelectSource],
   );
 
   return (
     <View>
       <Typography>Select source:</Typography>
       {Object.values(SOURCES).map(renderItem)}
+      {backend && backend in SOURCES && renderItem(backend)}
     </View>
   );
 };

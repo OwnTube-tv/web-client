@@ -1,5 +1,5 @@
 import { AVPlaybackStatus, AVPlaybackStatusSuccess, ResizeMode, Video } from "expo-av";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { View } from "react-native";
 import { VideoControlsOverlay } from "../VideoControlsOverlay";
 import { styles } from "./styles";
@@ -7,9 +7,10 @@ import { styles } from "./styles";
 export interface VideoViewProps {
   uri: string;
   testID: string;
+  handleSetTimeStamp: (timestamp: number) => void;
 }
 
-const VideoView = ({ uri, testID }: VideoViewProps) => {
+const VideoView = ({ uri, testID, handleSetTimeStamp }: VideoViewProps) => {
   const videoRef = useRef<Video>(null);
   const [isControlsVisible, setIsControlsVisible] = useState(false);
   const [playbackStatus, setPlaybackStatus] = useState<AVPlaybackStatusSuccess | null>(null);
@@ -49,6 +50,17 @@ const VideoView = ({ uri, testID }: VideoViewProps) => {
   const handleJumpTo = (position: number) => {
     videoRef.current?.setPositionAsync(position);
   };
+
+  useEffect(() => {
+    if (!playbackStatus) return;
+
+    const { positionMillis } = playbackStatus;
+    const positionFormatted = positionMillis / 1000;
+
+    if (positionFormatted % 10 === 0) {
+      handleSetTimeStamp(positionFormatted);
+    }
+  }, [playbackStatus?.positionMillis]);
 
   return (
     <View style={styles.container}>

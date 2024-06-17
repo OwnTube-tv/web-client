@@ -6,6 +6,7 @@ export enum SOURCES {
 
 export enum STORAGE {
   DATASOURCE = "data_source",
+  VIEW_HISTORY = "view_history",
 }
 
 export enum ROUTES {

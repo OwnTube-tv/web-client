@@ -32,7 +32,7 @@ export const SourceSelect = () => {
   );
 
   return (
-    <View>
+    <View style={styles.container}>
       <Typography>Select source:</Typography>
       {Object.values(SOURCES).map(renderItem)}
       {backend && backend in SOURCES && renderItem(backend)}
@@ -41,6 +41,9 @@ export const SourceSelect = () => {
 };
 
 const styles = StyleSheet.create({
+  container: {
+    marginTop: 8,
+  },
   source: {
     opacity: 0.5,
     padding: 5,

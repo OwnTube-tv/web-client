@@ -51,7 +51,7 @@ export const ScrubBar = ({ percentageAvailable, percentagePosition, onDrag, dura
     if (!isDragging) {
       setScrubberPosition((visibleWidth / 100) * percentagePosition);
     }
-  }, [percentagePosition]);
+  }, [percentagePosition, isDragging, visibleWidth]);
 
   return (
     <GestureHandlerRootView style={styles.gestureHandlerContainer}>

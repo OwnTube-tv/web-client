@@ -11,7 +11,7 @@ declare const window: {
   videojs: typeof videojs;
 } & Window;
 
-const VideoView = ({ uri, testID }: VideoViewProps) => {
+const VideoView = ({ uri, testID, handleSetTimeStamp }: VideoViewProps) => {
   const { videojs } = window;
   const videoRef = useRef<HTMLDivElement>(null);
   const playerRef = useRef<Player | null>(null);
@@ -135,6 +135,13 @@ const VideoView = ({ uri, testID }: VideoViewProps) => {
       }
     };
   }, []);
+
+  useEffect(() => {
+    const { position } = playbackStatus;
+    const positionFormatted = position / 1000;
+
+    handleSetTimeStamp(positionFormatted);
+  }, [playbackStatus.position]);
 
   return (
     <View style={styles.container}>

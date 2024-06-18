@@ -1,22 +1,12 @@
 import { renderHook, waitFor } from "@testing-library/react-native";
 import { useGetVideoQuery, useGetVideosQuery } from "../queries";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { PropsWithChildren } from "react";
 import { SOURCES } from "../../types";
 import { getLocalData } from "../helpers";
 import { ApiServiceImpl } from "../peertubeVideosApi";
 import { useLocalSearchParams } from "expo-router";
+import { createQueryClientWrapper } from "../../utils/testing";
 
-const wrapper = ({ children }: PropsWithChildren) => {
-  const queryClient = new QueryClient({
-    defaultOptions: {
-      queries: {
-        retry: false,
-      },
-    },
-  });
-  return <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>;
-};
+const wrapper = createQueryClientWrapper();
 
 jest.mock("../helpers", () => ({
   getLocalData: jest.fn(() => ({ data: { foo: "bar" } })),

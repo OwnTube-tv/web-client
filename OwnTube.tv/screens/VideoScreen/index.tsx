@@ -3,13 +3,32 @@ import { useLocalSearchParams } from "expo-router";
 import { RootStackParams } from "../../app/_layout";
 import { ROUTES } from "../../types";
 import { useGetVideoQuery } from "../../api";
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { Loader } from "../../components";
+import { useViewHistory } from "../../hooks";
 
 export const VideoScreen = () => {
   const params = useLocalSearchParams<RootStackParams[ROUTES.VIDEO]>();
 
   const { data, isFetching } = useGetVideoQuery(params?.id);
+  const { updateHistory } = useViewHistory();
+
+  useEffect(() => {
+    if (data && params?.backend) {
+      const updateData = {
+        uuid: data.uuid,
+        name: data.name,
+        thumbnailPath: `https://${params.backend}${data.thumbnailPath}`,
+        backend: params.backend,
+        lastViewedAt: new Date().getTime(),
+        category: data.category,
+        description: data.description,
+        duration: data.duration,
+      };
+
+      updateHistory({ data: updateData });
+    }
+  }, [data, params?.backend]);
 
   const uri = useMemo(() => {
     if (!params?.id || !data) {
@@ -28,6 +47,14 @@ export const VideoScreen = () => {
     return files?.[0].fileUrl;
   }, [params, data]);
 
+  const handleSetTimeStamp = (timestamp: number) => {
+    if (!params?.id) {
+      return;
+    }
+
+    updateHistory({ data: { uuid: params.id, timestamp, lastViewedAt: new Date().getTime() } });
+  };
+
   if (isFetching) {
     return <Loader />;
   }
@@ -36,5 +63,5 @@ export const VideoScreen = () => {
     return null;
   }
 
-  return <VideoView testID={`${params.id}-video-view`} uri={uri} />;
+  return <VideoView handleSetTimeStamp={handleSetTimeStamp} testID={`${params.id}-video-view`} uri={uri} />;
 };

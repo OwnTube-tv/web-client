@@ -4,6 +4,7 @@ import { useAppConfigContext, useColorSchemeContext } from "../../contexts";
 import { Screen } from "../../layouts";
 import { styles } from "./styles";
 import { useTheme } from "@react-navigation/native";
+import { ViewHistory } from "../../components/ViewHistory";
 
 export const SettingsScreen = () => {
   const { isDebugMode, setIsDebugMode } = useAppConfigContext();
@@ -21,6 +22,7 @@ export const SettingsScreen = () => {
         <Switch value={scheme === "light"} onValueChange={toggleScheme} />
       </View>
       <SourceSelect />
+      <ViewHistory />
     </Screen>
   );
 };

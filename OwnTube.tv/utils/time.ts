@@ -1,4 +1,4 @@
-export const getHumanReadableDuration = (ms: number) => {
+export const getHumanReadableDuration = (ms: number = 0) => {
   const seconds = Math.floor((ms / 1000) % 60);
   const minutes = Math.floor((ms / 1000 / 60) % 60);
   const hours = Math.floor((ms / 1000 / 3600) % 24);

@@ -30,7 +30,7 @@ export const useDeviceCapabilities = () => {
   const brandOrManufacturer = Device.brand || Device.manufacturer;
 
   const deviceCapabilities: DeviceCapabilities = {
-    OS: `${Device.osName} version ${Device.osVersion}`,
+    OS: `${Platform.OS === "android" ? "Android" : Device.osName} version ${Device.osVersion}`,
     dimensions: Platform.select({
       web: `${window?.screen?.width} x ${window?.screen?.height}`,
       default: `${Math.round(width)} x ${Math.round(height)}`,

@@ -6,6 +6,7 @@ import { VideoViewProps } from "./VideoView";
 import { styles } from "./styles";
 import "./styles.web.css";
 import videojs from "video.js";
+import { useAppConfigContext } from "../../contexts";
 
 declare const window: {
   videojs: typeof videojs;
@@ -24,6 +25,7 @@ const VideoView = ({ uri, testID, handleSetTimeStamp }: VideoViewProps) => {
     duration: 1,
     playableDuration: 0,
   });
+  const { setPlayerImplementation } = useAppConfigContext();
 
   const updatePlaybackStatus = (updatedStatus: Partial<typeof playbackStatus>) => {
     setPlaybackStatus((prev) => ({ ...prev, ...updatedStatus }));
@@ -66,6 +68,7 @@ const VideoView = ({ uri, testID, handleSetTimeStamp }: VideoViewProps) => {
   const options = {
     autoplay: true,
     controls: false,
+    playsinline: true,
     html5: {
       vhs: {
         overrideNative: true,
@@ -108,6 +111,7 @@ const VideoView = ({ uri, testID, handleSetTimeStamp }: VideoViewProps) => {
 
   useEffect(() => {
     if (!videojs) return;
+    setPlayerImplementation("Web video.js");
 
     if (!playerRef.current) {
       const videoElement = document.createElement("video-js");

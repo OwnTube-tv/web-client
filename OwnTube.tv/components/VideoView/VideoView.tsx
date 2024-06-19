@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { View } from "react-native";
 import { VideoControlsOverlay } from "../VideoControlsOverlay";
 import { styles } from "./styles";
+import { useAppConfigContext } from "../../contexts";
 
 export interface VideoViewProps {
   uri: string;
@@ -14,6 +15,7 @@ const VideoView = ({ uri, testID, handleSetTimeStamp }: VideoViewProps) => {
   const videoRef = useRef<Video>(null);
   const [isControlsVisible, setIsControlsVisible] = useState(false);
   const [playbackStatus, setPlaybackStatus] = useState<AVPlaybackStatusSuccess | null>(null);
+  const { setPlayerImplementation } = useAppConfigContext();
 
   const toggleControls = () => {
     setIsControlsVisible((prev) => !prev);
@@ -26,6 +28,9 @@ const VideoView = ({ uri, testID, handleSetTimeStamp }: VideoViewProps) => {
   const handlePlaybackStatusUpdate = (status: AVPlaybackStatus) => {
     if (status.isLoaded) {
       setPlaybackStatus(status);
+      setPlayerImplementation(
+        status.androidImplementation ? `Android ${status.androidImplementation}` : "iOS Native player",
+      );
     } else if (status.error) {
       console.error(status.error);
     }

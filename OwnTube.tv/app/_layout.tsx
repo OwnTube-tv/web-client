@@ -7,6 +7,7 @@ import { AppConfigContextProvider, ColorSchemeContextProvider, useColorSchemeCon
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { useFonts } from "expo-font";
+import { DeviceCapabilitiesModal } from "../components";
 
 const RootStack = () => {
   const { backend } = useLocalSearchParams();
@@ -37,7 +38,10 @@ const RootStack = () => {
           }}
           name={`(home)/${ROUTES.SETTINGS}`}
         />
-        <Stack.Screen options={{ title: "Video" }} name={`(home)/video`} />
+        <Stack.Screen
+          options={{ title: "Video", headerRight: () => <DeviceCapabilitiesModal /> }}
+          name={`(home)/video`}
+        />
       </Stack>
     </ThemeProvider>
   );

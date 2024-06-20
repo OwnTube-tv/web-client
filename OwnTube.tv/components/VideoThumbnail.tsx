@@ -12,7 +12,7 @@ import { ViewHistoryEntry } from "../hooks";
 interface VideoThumbnailProps {
   video: GetVideosVideo & Partial<ViewHistoryEntry>;
   backend?: string;
-  percentageWatched?: number;
+  timestamp?: number;
 }
 
 const defaultImagePaths = {
@@ -20,12 +20,14 @@ const defaultImagePaths = {
   light: require("./../assets/Logo400x400.png"),
 };
 
-export const VideoThumbnail: FC<VideoThumbnailProps> = ({ video, backend, percentageWatched }) => {
+export const VideoThumbnail: FC<VideoThumbnailProps> = ({ video, backend, timestamp }) => {
   const { scheme } = useColorSchemeContext();
 
   const imageSource = video.thumbnailPath ? { uri: video.thumbnailPath } : defaultImagePaths[scheme ?? "dark"];
   const { width, height } = getThumbnailDimensions();
   const { colors } = useTheme();
+
+  const percentageWatched = timestamp ? (timestamp / video.duration) * 100 : 0;
 
   if (!backend) {
     return null;
@@ -34,7 +36,7 @@ export const VideoThumbnail: FC<VideoThumbnailProps> = ({ video, backend, percen
   return (
     <Link
       style={[styles.videoThumbnailContainer, { height, width }, { backgroundColor: colors.card }]}
-      href={{ pathname: `/${ROUTES.VIDEO}`, params: { id: video.uuid, backend } }}
+      href={{ pathname: `/${ROUTES.VIDEO}`, params: { id: video.uuid, backend, timestamp } }}
     >
       <Image source={imageSource} style={styles.videoImage} />
       <View style={styles.textContainer}>

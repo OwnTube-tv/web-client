@@ -12,12 +12,7 @@ interface ViewHistoryListItemProps {
 export const ViewHistoryListItem = ({ video }: ViewHistoryListItemProps) => {
   return (
     <View style={styles.container}>
-      <VideoThumbnail
-        percentageWatched={(video.timestamp / video.duration) * 100}
-        video={video}
-        backend={video.backend}
-        key={video.uuid}
-      />
+      <VideoThumbnail video={video} backend={video.backend} key={video.uuid} timestamp={video.timestamp} />
       <View>
         <Typography>Last playback timestamp: {getHumanReadableDuration(video.timestamp * 1000)}</Typography>
         <Typography>Video duration: {getHumanReadableDuration(video.duration * 1000)}</Typography>

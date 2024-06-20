@@ -63,5 +63,12 @@ export const VideoScreen = () => {
     return null;
   }
 
-  return <VideoView handleSetTimeStamp={handleSetTimeStamp} testID={`${params.id}-video-view`} uri={uri} />;
+  return (
+    <VideoView
+      timestamp={params?.timestamp}
+      handleSetTimeStamp={handleSetTimeStamp}
+      testID={`${params.id}-video-view`}
+      uri={uri}
+    />
+  );
 };

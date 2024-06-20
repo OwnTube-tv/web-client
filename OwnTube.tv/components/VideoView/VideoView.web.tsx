@@ -12,7 +12,7 @@ declare const window: {
   videojs: typeof videojs;
 } & Window;
 
-const VideoView = ({ uri, testID, handleSetTimeStamp }: VideoViewProps) => {
+const VideoView = ({ uri, testID, handleSetTimeStamp, timestamp }: VideoViewProps) => {
   const { videojs } = window;
   const videoRef = useRef<HTMLDivElement>(null);
   const playerRef = useRef<Player | null>(null);
@@ -101,7 +101,10 @@ const VideoView = ({ uri, testID, handleSetTimeStamp }: VideoViewProps) => {
     });
 
     player.on("timeupdate", () => {
-      updatePlaybackStatus({ position: Math.floor(playerRef.current?.currentTime() ?? 0) * 1000 });
+      updatePlaybackStatus({
+        position: Math.floor(playerRef.current?.currentTime() ?? 0) * 1000,
+        didJustFinish: false,
+      });
     });
 
     player.on("ended", () => {
@@ -139,6 +142,12 @@ const VideoView = ({ uri, testID, handleSetTimeStamp }: VideoViewProps) => {
       }
     };
   }, []);
+
+  useEffect(() => {
+    if (timestamp) {
+      playerRef.current?.currentTime(Number(timestamp));
+    }
+  }, [timestamp]);
 
   useEffect(() => {
     const { position } = playbackStatus;

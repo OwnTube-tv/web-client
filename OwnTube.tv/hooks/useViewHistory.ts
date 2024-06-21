@@ -2,6 +2,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { deleteFromAsyncStorage, multiGetFromAsyncStorage, readFromAsyncStorage, writeToAsyncStorage } from "../utils";
 import { STORAGE } from "../types";
 import { GetVideosVideo } from "../api/peertubeVideosApi";
+import type { DefaultError } from "@tanstack/query-core";
 
 export type ViewHistoryEntry = GetVideosVideo & {
   firstViewedAt?: number;
@@ -10,21 +11,24 @@ export type ViewHistoryEntry = GetVideosVideo & {
   timestamp: number;
 };
 type UpdateHistoryMutationFnArg = { data: Partial<ViewHistoryEntry> & { uuid: string } };
+type ViewHistoryBase = Record<string, ViewHistoryEntry>;
 
 export const useViewHistory = (maxItems: number = 50) => {
   const queryClient = useQueryClient();
 
-  const { data: viewHistory, isFetching } = useQuery<Array<ViewHistoryEntry>>({
+  const { data: viewHistory, isFetching } = useQuery<ViewHistoryBase, DefaultError, Array<ViewHistoryEntry>>({
     queryKey: ["viewHistory"],
     queryFn: async () => {
-      const history: string[] = await readFromAsyncStorage(STORAGE.VIEW_HISTORY);
+      const history: string[] | undefined = await readFromAsyncStorage(STORAGE.VIEW_HISTORY);
 
-      const entries = await multiGetFromAsyncStorage(history);
+      const entries = await multiGetFromAsyncStorage(history || []);
 
-      return entries?.map?.((entry) => JSON.parse(entry[1] || "")) || [];
+      return Object.fromEntries((entries || []).map(([key, value]) => [key, JSON.parse(value || "")]));
     },
     select: (data) =>
-      data.sort((a: ViewHistoryEntry, b: ViewHistoryEntry) => b.lastViewedAt - a.lastViewedAt).slice(0, maxItems),
+      Object.values(data)
+        .sort((a: ViewHistoryEntry, b: ViewHistoryEntry) => b.lastViewedAt - a.lastViewedAt)
+        .slice(0, maxItems),
   });
 
   const { mutateAsync: updateHistory } = useMutation({
@@ -67,5 +71,11 @@ export const useViewHistory = (maxItems: number = 50) => {
     },
   });
 
-  return { viewHistory, isFetching, clearHistory, updateHistory };
+  const getViewHistoryEntryByUuid = (uuid: string) => {
+    const history = queryClient.getQueryData<ViewHistoryBase>(["viewHistory"]);
+
+    return history?.[uuid];
+  };
+
+  return { viewHistory, isFetching, clearHistory, updateHistory, getViewHistoryEntryByUuid };
 };

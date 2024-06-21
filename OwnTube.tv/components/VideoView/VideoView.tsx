@@ -9,9 +9,10 @@ export interface VideoViewProps {
   uri: string;
   testID: string;
   handleSetTimeStamp: (timestamp: number) => void;
+  timestamp?: string;
 }
 
-const VideoView = ({ uri, testID, handleSetTimeStamp }: VideoViewProps) => {
+const VideoView = ({ uri, testID, handleSetTimeStamp, timestamp }: VideoViewProps) => {
   const videoRef = useRef<Video>(null);
   const [isControlsVisible, setIsControlsVisible] = useState(false);
   const [playbackStatus, setPlaybackStatus] = useState<AVPlaybackStatusSuccess | null>(null);
@@ -26,12 +27,12 @@ const VideoView = ({ uri, testID, handleSetTimeStamp }: VideoViewProps) => {
   };
 
   const handlePlaybackStatusUpdate = (status: AVPlaybackStatus) => {
-    if (status.isLoaded) {
+    if (status?.isLoaded) {
       setPlaybackStatus(status);
       setPlayerImplementation(
         status.androidImplementation ? `Android ${status.androidImplementation}` : "iOS Native player",
       );
-    } else if (status.error) {
+    } else if (status?.error) {
       console.error(status.error);
     }
   };
@@ -66,6 +67,10 @@ const VideoView = ({ uri, testID, handleSetTimeStamp }: VideoViewProps) => {
       handleSetTimeStamp(positionFormatted);
     }
   }, [playbackStatus?.positionMillis]);
+
+  useEffect(() => {
+    videoRef.current?.setPositionAsync(Number(timestamp) * 1000);
+  }, [timestamp]);
 
   return (
     <View style={styles.container}>

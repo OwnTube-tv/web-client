@@ -77,7 +77,7 @@ export const unstable_settings = {
 export type RootStackParams = {
   [ROUTES.INDEX]: { backend: string };
   [ROUTES.SETTINGS]: { backend: string };
-  [ROUTES.VIDEO]: { backend: string; id: string };
+  [ROUTES.VIDEO]: { backend: string; id: string; timestamp?: string };
 };
 
 const styles = StyleSheet.create({

@@ -10,3 +10,4 @@ export * from "./VideoView/VideoView";
 export * from "./VideoControlsOverlay";
 export * from "./Loader";
 export * from "./DeviceCapabilitiesModal";
+export * from "./ResumeWatching";

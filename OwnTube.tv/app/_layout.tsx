@@ -7,7 +7,8 @@ import { AppConfigContextProvider, ColorSchemeContextProvider, useColorSchemeCon
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { useFonts } from "expo-font";
-import { DeviceCapabilitiesModal } from "../components";
+import Toast from "react-native-toast-message";
+import { BuildInfoToast, ClickableHeaderText, DeviceCapabilitiesModal } from "../components";
 
 const RootStack = () => {
   const { backend } = useLocalSearchParams();
@@ -16,7 +17,11 @@ const RootStack = () => {
 
   return (
     <ThemeProvider value={theme}>
-      <Stack>
+      <Stack
+        screenOptions={{
+          headerTitle: ({ children }) => <ClickableHeaderText>{children}</ClickableHeaderText>,
+        }}
+      >
         <Stack.Screen
           name={"(home)/index"}
           options={{
@@ -31,7 +36,7 @@ const RootStack = () => {
             title: "Settings",
             headerBackVisible: false,
             headerLeft: () => (
-              <Link style={styles.headerButton} href={{ pathname: "/", params: { backend } }}>
+              <Link style={styles.headerButtonLeft} href={{ pathname: "/", params: { backend } }}>
                 <Ionicons name="home" size={24} color={theme.colors.primary} />
               </Link>
             ),
@@ -43,6 +48,7 @@ const RootStack = () => {
           name={`(home)/video`}
         />
       </Stack>
+      <Toast config={{ buildInfo: () => <BuildInfoToast /> }} />
     </ThemeProvider>
   );
 };
@@ -81,7 +87,7 @@ export type RootStackParams = {
 };
 
 const styles = StyleSheet.create({
-  headerButton: {
-    paddingHorizontal: 11,
+  headerButtonLeft: {
+    paddingLeft: 11,
   },
 });

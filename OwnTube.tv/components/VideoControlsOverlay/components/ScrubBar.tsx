@@ -1,12 +1,9 @@
 import { StyleSheet, View } from "react-native";
 import { useTheme } from "@react-navigation/native";
-import {
-  Gesture,
-  GestureDetector,
-  GestureHandlerRootView,
-  PanGestureHandlerEventPayload,
-} from "react-native-gesture-handler";
-import { useEffect, useState } from "react";
+import { Gesture, GestureDetector, GestureHandlerRootView } from "react-native-gesture-handler";
+import { useEffect, useMemo, useState } from "react";
+import { Typography } from "../../Typography";
+import { getHumanReadableDuration } from "../../../utils";
 
 interface ScrubBarProps {
   percentageAvailable: number;
@@ -23,16 +20,16 @@ export const ScrubBar = ({ percentageAvailable, percentagePosition, onDrag, dura
   const [isDragging, setIsDragging] = useState(false);
   const [scrubberPosition, setScrubberPosition] = useState(0);
 
-  const handlePan = (event: PanGestureHandlerEventPayload) => {
-    if (visibleWidth < event.x || event.x < 0) {
+  const handleTapOrPan = (x: number) => {
+    if (visibleWidth < x || x < 0) {
       return;
     }
 
-    setScrubberPosition(event.x - INDICATOR_SIZE / 2);
+    setScrubberPosition(x - INDICATOR_SIZE / 2);
   };
 
-  const setPosition = (event: PanGestureHandlerEventPayload) => {
-    const newX = visibleWidth <= event.x ? visibleWidth : event.x < 0 ? 0 : event.x;
+  const setPosition = (x: number) => {
+    const newX = visibleWidth <= x ? visibleWidth : x < 0 ? 0 : x;
 
     const newPositionRelation = (newX - INDICATOR_SIZE / 2) / visibleWidth;
 
@@ -40,18 +37,25 @@ export const ScrubBar = ({ percentageAvailable, percentagePosition, onDrag, dura
   };
 
   const pan = Gesture.Pan()
-    .onUpdate(handlePan)
+    .onUpdate(({ x }) => {
+      handleTapOrPan(x);
+    })
     .onStart(() => setIsDragging(true))
-    .onEnd((event) => {
-      setPosition(event);
+    .onEnd(({ x }) => {
+      setPosition(x);
       setIsDragging(false);
-    });
+    })
+    .minDistance(0);
 
   useEffect(() => {
     if (!isDragging) {
       setScrubberPosition((visibleWidth / 100) * percentagePosition);
     }
-  }, [percentagePosition, isDragging, visibleWidth]);
+  }, [percentagePosition, visibleWidth]);
+
+  const seekHint = useMemo(() => {
+    return getHumanReadableDuration(duration * (scrubberPosition / visibleWidth));
+  }, [scrubberPosition, visibleWidth, duration]);
 
   return (
     <GestureHandlerRootView style={styles.gestureHandlerContainer}>
@@ -67,6 +71,19 @@ export const ScrubBar = ({ percentageAvailable, percentagePosition, onDrag, dura
             ]}
             onLayout={(event) => setVisibleWidth(event.nativeEvent.layout.width)}
           >
+            {isDragging && (
+              <View
+                style={[
+                  styles.seekTime,
+                  {
+                    backgroundColor: colors.card,
+                    left: scrubberPosition,
+                  },
+                ]}
+              >
+                <Typography>{seekHint}</Typography>
+              </View>
+            )}
             <View
               style={[
                 styles.indicator,
@@ -144,5 +161,11 @@ const styles = StyleSheet.create({
     height: "100%",
     justifyContent: "center",
     width: "100%",
+  },
+  seekTime: {
+    borderRadius: 8,
+    padding: 8,
+    position: "absolute",
+    top: -50,
   },
 });

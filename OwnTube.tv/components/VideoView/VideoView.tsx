@@ -38,12 +38,12 @@ const VideoView = ({ uri, testID, handleSetTimeStamp, timestamp }: VideoViewProp
     }
   };
 
-  const handleRW = () => {
-    videoRef.current?.setPositionAsync((playbackStatus?.positionMillis ?? 0) - 10_000);
+  const handleRW = (seconds: number) => {
+    videoRef.current?.setPositionAsync((playbackStatus?.positionMillis ?? 0) - seconds * 1000);
   };
 
-  const handleFF = () => {
-    videoRef.current?.setPositionAsync((playbackStatus?.positionMillis ?? 0) + 10_000);
+  const handleFF = (seconds: number) => {
+    videoRef.current?.setPositionAsync((playbackStatus?.positionMillis ?? 0) + seconds * 1000);
   };
 
   const toggleMute = () => {

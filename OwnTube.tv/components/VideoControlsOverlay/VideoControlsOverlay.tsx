@@ -12,8 +12,8 @@ interface VideoControlsOverlayProps {
   onOverlayPress: () => void;
   isPlaying?: boolean;
   handlePlayPause: () => void;
-  handleRW: () => void;
-  handleFF: () => void;
+  handleRW: (s: number) => void;
+  handleFF: (s: number) => void;
   duration?: number;
   availableDuration?: number;
   position?: number;
@@ -72,14 +72,24 @@ export const VideoControlsOverlay = ({
           </View>
           <View style={styles.playbackControlsContainer}>
             <View style={{ flexDirection: "row", gap: 48 * uiScale }}>
-              <Pressable onPress={handleRW}>
-                <Ionicons name={"play-back"} size={96 * uiScale} color={colors.primary} />
+              <Pressable onPress={() => handleRW(15)}>
+                <View style={styles.skipTextContainer}>
+                  <Typography color={colors.primary} fontSize={32} style={styles.skipText}>
+                    {15}
+                  </Typography>
+                </View>
+                <Ionicons name={"reload"} size={96 * uiScale} color={colors.primary} style={styles.skipLeft} />
               </Pressable>
               <Pressable onPress={shouldReplay ? handleReplay : handlePlayPause}>
                 <Ionicons name={centralIconName} size={96 * uiScale} color={colors.primary} />
               </Pressable>
-              <Pressable onPress={handleFF}>
-                <Ionicons name={"play-forward"} size={96 * uiScale} color={colors.primary} />
+              <Pressable onPress={() => handleFF(30)}>
+                <View style={styles.skipTextContainer}>
+                  <Typography color={colors.primary} fontSize={32} style={styles.skipText}>
+                    {30}
+                  </Typography>
+                </View>
+                <Ionicons name={"reload"} size={96 * uiScale} color={colors.primary} style={styles.skipRight} />
               </Pressable>
             </View>
           </View>
@@ -130,6 +140,23 @@ const styles = StyleSheet.create({
     height: "100%",
     justifyContent: "center",
     width: "100%",
+  },
+  skipLeft: {
+    transform: [{ rotateZ: "45deg" }, { scaleX: -1 }],
+  },
+  skipRight: {
+    transform: [{ rotateZ: "-45deg" }],
+  },
+  skipText: { fontWeight: "bold", marginTop: 4, userSelect: "none" },
+  skipTextContainer: {
+    alignItems: "center",
+    bottom: 0,
+    justifyContent: "center",
+    left: 0,
+    position: "absolute",
+    right: 0,
+    top: 0,
+    zIndex: 1,
   },
   timeBlockLeft: {
     left: "3%",

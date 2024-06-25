@@ -13,7 +13,7 @@ export const BuildInfoToast = () => {
         <Typography fontSize={14} style={styles.link} onPress={() => Linking.openURL(build_info.COMMIT_URL)}>
           {build_info.GITHUB_SHA_SHORT}
         </Typography>{" "}
-        built at {build_info.BUILD_TIMESTAMP} by{" "}
+        built at {`${build_info.BUILD_TIMESTAMP.slice(0, build_info.BUILD_TIMESTAMP.lastIndexOf(":"))}Z`} by{" "}
         <Typography
           fontSize={14}
           style={styles.link}

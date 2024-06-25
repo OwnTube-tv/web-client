@@ -2,6 +2,7 @@ import { Linking, StyleSheet, View } from "react-native";
 import { Typography } from "./Typography";
 import build_info from "../build-info.json";
 import { useTheme } from "@react-navigation/native";
+import { removeSecondsFromISODate } from "../utils";
 
 export const BuildInfoToast = () => {
   const { colors } = useTheme();
@@ -13,7 +14,7 @@ export const BuildInfoToast = () => {
         <Typography fontSize={14} style={styles.link} onPress={() => Linking.openURL(build_info.COMMIT_URL)}>
           {build_info.GITHUB_SHA_SHORT}
         </Typography>{" "}
-        built at {`${build_info.BUILD_TIMESTAMP.slice(0, build_info.BUILD_TIMESTAMP.lastIndexOf(":"))}Z`} by{" "}
+        built at {removeSecondsFromISODate(build_info.BUILD_TIMESTAMP)} by{" "}
         <Typography
           fontSize={14}
           style={styles.link}

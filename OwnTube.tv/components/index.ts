@@ -9,6 +9,8 @@ export * from "./VideoView/VideoView";
 export * from "./VideoControlsOverlay";
 export * from "./Loader";
 export * from "./DeviceCapabilitiesModal";
+export * from "./DeviceCapabilities";
 export * from "./BuildInfoToast";
 export * from "./ClickableHeaderText";
 export * from "./ResumeWatching";
+export * from "./ViewHistory";

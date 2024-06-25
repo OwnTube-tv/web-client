@@ -7,3 +7,7 @@ export const getHumanReadableDuration = (ms: number = 0) => {
 
   return hours > 0 ? `${String(hours).padStart(2, "0")}:${mmss}` : mmss;
 };
+
+export const removeSecondsFromISODate = (isoDate: string) => {
+  return `${isoDate.slice(0, isoDate.lastIndexOf(":"))}Z`;
+};

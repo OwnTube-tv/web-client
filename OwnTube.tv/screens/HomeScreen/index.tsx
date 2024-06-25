@@ -1,4 +1,4 @@
-import { Header, ResumeWatching, VideoList } from "../../components";
+import { ResumeWatching, VideoList } from "../../components";
 import { Screen } from "../../layouts";
 import { styles } from "./styles";
 import { useTheme } from "@react-navigation/native";
@@ -17,7 +17,6 @@ export const HomeScreen = () => {
   return (
     <Screen style={{ ...styles.container, backgroundColor: theme.colors.background }}>
       <Image source={logoSource} width={160} height={160} />
-      <Header />
       <ResumeWatching />
       <VideoList />
     </Screen>

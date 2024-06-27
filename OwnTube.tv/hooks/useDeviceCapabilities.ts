@@ -3,6 +3,7 @@ import * as Device from "expo-device";
 import { DeviceType } from "expo-device";
 import { Platform, useWindowDimensions } from "react-native";
 import UAParser from "ua-parser-js";
+import { capitalize } from "../utils";
 
 export interface DeviceCapabilities {
   playerImplementation: string;
@@ -15,7 +16,12 @@ export interface DeviceCapabilities {
 }
 
 export const useDeviceCapabilities = () => {
-  const [playerImplementation, setPlayerImplementation] = useState("");
+  const [playerImplementation, setPlayerImplementation] = useState(
+    Platform.select({
+      web: "Web video.js",
+      default: capitalize(Platform.OS),
+    }),
+  );
   const { height, width } = useWindowDimensions();
 
   const getBrowserInfo = () => {

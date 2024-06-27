@@ -29,9 +29,10 @@ const VideoView = ({ uri, testID, handleSetTimeStamp, timestamp }: VideoViewProp
   const handlePlaybackStatusUpdate = (status: AVPlaybackStatus) => {
     if (status?.isLoaded) {
       setPlaybackStatus(status);
-      setPlayerImplementation(
-        status.androidImplementation ? `Android ${status.androidImplementation}` : "iOS Native player",
-      );
+
+      if (status.androidImplementation) {
+        setPlayerImplementation(`Android ${status.androidImplementation}`);
+      }
     } else if (status?.error) {
       console.error(status.error);
     }

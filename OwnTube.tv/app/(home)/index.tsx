@@ -1,13 +1,13 @@
 import { Link, useFocusEffect, useLocalSearchParams, useNavigation, useRouter } from "expo-router";
 import { ROUTES, SOURCES, STORAGE } from "../../types";
 import { readFromAsyncStorage, writeToAsyncStorage } from "../../utils";
-import { Loader } from "../../components";
+import { DeviceCapabilitiesModal, Loader } from "../../components";
 import { useCallback, useState } from "react";
 import Head from "expo-router/head";
 import { HomeScreen } from "../../screens";
 import { Feather } from "@expo/vector-icons";
 import { useTheme } from "@react-navigation/native";
-import { StyleSheet } from "react-native";
+import { StyleSheet, View } from "react-native";
 
 export default function index() {
   const router = useRouter();
@@ -38,9 +38,12 @@ export default function index() {
         navigation.setOptions({
           title: `OwnTube.tv@${backend}`,
           headerRight: () => (
-            <Link style={styles.headerButton} href={{ pathname: `/${ROUTES.SETTINGS}`, params: { backend } }}>
-              <Feather name="settings" size={24} color={theme.colors.primary} />
-            </Link>
+            <View style={styles.headerControls}>
+              <Link style={styles.headerButton} href={{ pathname: `/${ROUTES.SETTINGS}`, params: { backend } }}>
+                <Feather name="settings" size={24} color={theme.colors.primary} />
+              </Link>
+              <DeviceCapabilitiesModal />
+            </View>
           ),
         });
       }
@@ -68,4 +71,5 @@ const styles = StyleSheet.create({
   headerButton: {
     paddingHorizontal: 11,
   },
+  headerControls: { alignItems: "center", flexDirection: "row", paddingRight: 11 },
 });

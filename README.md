@@ -33,3 +33,7 @@ When a improvement is ready to be contributed in a pull request, please review t
 4. Ensure that the changes adhere to the project code style and formatting rules by running `npx eslint .` and `npx prettier --check ../` from the `./OwnTube.tv/` directory (without errors/warnings)
 5. Include links and illustrations in your pull request to make it easy to review
 6. Request a review by @ar9708, @OGTor, @tryklick and @mblomdahl
+
+## Documentation
+
+Refer to [documentation](docs/index.md) for additional info.

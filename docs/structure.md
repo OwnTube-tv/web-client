@@ -1,14 +1,14 @@
-## Folder structure 
+## Folder structure
 
 For convenience, we will consider all folder names prefixed by `./OwnTube.tv/`
 
-### 📁`/__mocks__/`: 
+### 📁`/__mocks__/`:
 
 This is a utility folder where you can put mocks for modules that you are sure will be used in all tests across the app.
 
 File structure: `/__mocks__/<moduleName>/<fileToMockName>.js`
 
-This is quite handy for react-native projects as some native modules will never render in a test renderer (e.g. *Camera*).
+This is quite handy for react-native projects as some native modules will never render in a test renderer (e.g. _Camera_).
 Some libraries have instructions for creating such mock files.
 
 Alternative: 1 large `jest.setup.js` file with all the mocks.

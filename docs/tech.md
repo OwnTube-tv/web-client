@@ -1,4 +1,4 @@
-## Technologies used 
+## Technologies used
 
 ### Framework 🖼️
 
@@ -6,8 +6,8 @@ This app uses Expo which is a framework of React Native which simplifies the DX 
 
 ### Data Fetching ⬇️
 
-The project uses `tanstack-query` library for its simplified data handling, automatic background refetching, and performance optimization 
-through built-in caching. Its powerful DevTools and flexibility in supporting various use cases enhance our development 
+The project uses `tanstack-query` library for its simplified data handling, automatic background refetching, and performance optimization
+through built-in caching. Its powerful DevTools and flexibility in supporting various use cases enhance our development
 efficiency, while an active community ensures we stay updated with the best practices.
 
 ### Navigation 🧭
@@ -47,9 +47,9 @@ You can skip 10 seconds in each direction, seek through the video, play/pause, m
 
 ### Testing
 
-Jest is used throughout the app for testing, both for component tests and unit tests. For testing React components, the 
+Jest is used throughout the app for testing, both for component tests and unit tests. For testing React components, the
 `@testing-library/react-native` package is used, which allows us to test components as real functioning entities,
-with state changes, user interactions etc. which in turn allows us to write tests similar to integration tests (e.g. user 
-clicks X button and sees Y result). 
+with state changes, user interactions etc. which in turn allows us to write tests similar to integration tests (e.g. user
+clicks X button and sees Y result).
 
 Data fetching is tested against a real peertube nightly instance, without mocking the API response.

@@ -8,7 +8,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { useFonts } from "expo-font";
 import Toast from "react-native-toast-message";
-import { BuildInfoToast, ClickableHeaderText, DeviceCapabilitiesModal } from "../components";
+import { BuildInfoToast, ClickableHeaderText } from "../components";
 
 const RootStack = () => {
   const { backend } = useLocalSearchParams();
@@ -43,10 +43,7 @@ const RootStack = () => {
           }}
           name={`(home)/${ROUTES.SETTINGS}`}
         />
-        <Stack.Screen
-          options={{ title: "Video", headerRight: () => <DeviceCapabilitiesModal /> }}
-          name={`(home)/video`}
-        />
+        <Stack.Screen options={{ title: "Video", headerShown: false }} name={`(home)/video`} />
       </Stack>
       <Toast config={{ buildInfo: () => <BuildInfoToast /> }} />
     </ThemeProvider>

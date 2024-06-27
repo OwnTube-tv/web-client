@@ -10,9 +10,10 @@ export interface VideoViewProps {
   testID: string;
   handleSetTimeStamp: (timestamp: number) => void;
   timestamp?: string;
+  title?: string;
 }
 
-const VideoView = ({ uri, testID, handleSetTimeStamp, timestamp }: VideoViewProps) => {
+const VideoView = ({ uri, testID, handleSetTimeStamp, timestamp, title }: VideoViewProps) => {
   const videoRef = useRef<Video>(null);
   const [isControlsVisible, setIsControlsVisible] = useState(false);
   const [playbackStatus, setPlaybackStatus] = useState<AVPlaybackStatusSuccess | null>(null);
@@ -90,6 +91,7 @@ const VideoView = ({ uri, testID, handleSetTimeStamp, timestamp }: VideoViewProp
         shouldReplay={playbackStatus?.didJustFinish}
         handleReplay={handleReplay}
         handleJumpTo={handleJumpTo}
+        title={title}
       >
         <Video
           testID={`${testID}-video-playback`}

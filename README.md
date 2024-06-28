@@ -32,8 +32,8 @@ When a improvement is ready to be contributed in a pull request, please review t
 3. Sign your commits, as this is required by the automated GitHub PR checks
 4. Ensure that the changes adhere to the project code style and formatting rules by running `npx eslint .` and `npx prettier --check ../` from the `./OwnTube.tv/` directory (without errors/warnings)
 5. Include links and illustrations in your pull request to make it easy to review
-6. Request a review by @ar9708, @OGTor, @tryklick and @mblomdahl
+6. Request a review by @mykhailodanilenko, @ar9708, and @mblomdahl
 
-## Documentation
+## Architecture
 
-Refer to [documentation](docs/index.md) for additional info.
+Refer to the [architecture documentation](docs/README.md) for additional information.

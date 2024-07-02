@@ -11,7 +11,7 @@ declare const window: {
   videojs: typeof videojs;
 } & Window;
 
-const VideoView = ({ uri, testID, handleSetTimeStamp, timestamp }: VideoViewProps) => {
+const VideoView = ({ uri, testID, handleSetTimeStamp, timestamp, title }: VideoViewProps) => {
   const { videojs } = window;
   const videoRef = useRef<HTMLDivElement>(null);
   const playerRef = useRef<Player | null>(null);
@@ -41,12 +41,12 @@ const VideoView = ({ uri, testID, handleSetTimeStamp, timestamp }: VideoViewProp
     }
   };
 
-  const handleRW = () => {
-    playerRef.current?.currentTime(playbackStatus.position / 1000 - 10);
+  const handleRW = (seconds: number) => {
+    playerRef.current?.currentTime(playbackStatus.position / 1000 - seconds);
   };
 
-  const handleFF = () => {
-    playerRef.current?.currentTime(playbackStatus.position / 1000 + 10);
+  const handleFF = (seconds: number) => {
+    playerRef.current?.currentTime(playbackStatus.position / 1000 + seconds);
   };
 
   const toggleMute = () => {
@@ -153,6 +153,27 @@ const VideoView = ({ uri, testID, handleSetTimeStamp, timestamp }: VideoViewProp
     handleSetTimeStamp(positionFormatted);
   }, [playbackStatus.position]);
 
+  useEffect(() => {
+    const handleKeyboard = (e: KeyboardEvent) => {
+      if (e.code === "Space") {
+        handlePlayPause();
+      }
+      if (e.code === "ArrowRight") {
+        handleFF(30);
+      }
+      if (e.code === "ArrowLeft") {
+        handleRW(15);
+      }
+      if (e.code === "KeyM") {
+        toggleMute();
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyboard);
+
+    return () => window.removeEventListener("keydown", handleKeyboard);
+  }, [handleFF, handleRW, handlePlayPause, toggleMute]);
+
   return (
     <View style={styles.container}>
       <VideoControlsOverlay
@@ -170,6 +191,7 @@ const VideoView = ({ uri, testID, handleSetTimeStamp, timestamp }: VideoViewProp
         shouldReplay={playbackStatus?.didJustFinish}
         handleReplay={handleReplay}
         handleJumpTo={handleJumpTo}
+        title={title}
       >
         <div style={{ position: "relative" }} ref={videoRef} data-testid={`${testID}-video-playback`} />
       </VideoControlsOverlay>

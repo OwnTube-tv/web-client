@@ -1,11 +1,11 @@
 import { View, StyleSheet } from "react-native";
 import { CategoryScroll, Typography, VideoThumbnail } from "./";
 import { FC } from "react";
-import { GetVideosVideo } from "../api/peertubeVideosApi";
 import { useLocalSearchParams } from "expo-router";
 import { RootStackParams } from "../app/_layout";
 import { ROUTES } from "../types";
 import { useViewHistory } from "../hooks";
+import { GetVideosVideo } from "../api/models";
 
 interface VideosByCategoryProps {
   title: string;

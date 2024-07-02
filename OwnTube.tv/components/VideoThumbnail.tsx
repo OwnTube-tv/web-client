@@ -5,9 +5,9 @@ import { Typography } from "./Typography";
 import { useTheme } from "@react-navigation/native";
 import { FC } from "react";
 import { Link } from "expo-router";
-import { GetVideosVideo } from "../api/peertubeVideosApi";
 import { ROUTES } from "../types";
 import { ViewHistoryEntry } from "../hooks";
+import { GetVideosVideo } from "../api/models";
 
 interface VideoThumbnailProps {
   video: GetVideosVideo & Partial<ViewHistoryEntry>;

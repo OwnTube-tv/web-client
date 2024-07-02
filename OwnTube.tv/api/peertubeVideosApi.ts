@@ -1,13 +1,7 @@
 import axios, { AxiosInstance } from "axios";
 import { VideosCommonQuery } from "@peertube/peertube-types";
-import { VideoModel } from "@peertube/peertube-types/server/core/models/video/video";
 import { Video } from "@peertube/peertube-types/peertube-models/videos/video.model";
-
-// Subset of a video object from the PeerTube backend API, https://github.com/Chocobozzz/PeerTube/blob/develop/server/core/models/video/video.ts#L460
-export type GetVideosVideo = Pick<VideoModel, "uuid" | "name" | "description" | "duration"> & {
-  thumbnailPath: string;
-  category: { id: number | null; label: string };
-};
+import { GetVideosVideo } from "./models";
 
 /**
  * Get videos from the PeerTube backend `/api/v1/videos` API

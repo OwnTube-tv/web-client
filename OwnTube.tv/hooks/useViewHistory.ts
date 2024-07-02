@@ -1,8 +1,8 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { deleteFromAsyncStorage, multiGetFromAsyncStorage, readFromAsyncStorage, writeToAsyncStorage } from "../utils";
 import { STORAGE } from "../types";
-import { GetVideosVideo } from "../api/peertubeVideosApi";
 import type { DefaultError } from "@tanstack/query-core";
+import { GetVideosVideo } from "../api/models";
 
 export type ViewHistoryEntry = GetVideosVideo & {
   firstViewedAt?: number;

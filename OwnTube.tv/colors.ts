@@ -3,4 +3,5 @@ export const colors = {
   ghostwhite: "#F8F8FF",
   gainsboro: "#DCDCDC",
   _50percentBlackTint: "rgba(0, 0, 0, 0.5)",
+  sepia: "#704214",
 };

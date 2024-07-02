@@ -1,14 +1,17 @@
 import { useQuery } from "@tanstack/react-query";
-import { ApiServiceImpl, GetVideosVideo } from "./peertubeVideosApi";
+import { ApiServiceImpl } from "./peertubeVideosApi";
 import { SOURCES } from "../types";
 import { getLocalData } from "./helpers";
 import { Video } from "@peertube/peertube-types/peertube-models/videos/video.model";
 import { useLocalSearchParams } from "expo-router";
 import { RootStackParams } from "../app/_layout";
+import { InstanceSearchServiceImpl } from "./instanceSearchApi";
+import { GetVideosVideo } from "./models";
 
 export enum QUERY_KEYS {
   videos = "videos",
   video = "video",
+  instances = "instances",
 }
 
 export const useGetVideosQuery = <TResult = GetVideosVideo[]>({
@@ -51,5 +54,16 @@ export const useGetVideoQuery = <TResult = Video>(id?: string, select?: (data: V
     refetchOnWindowFocus: false,
     enabled: !!backend && !!id,
     select,
+  });
+};
+
+export const useGetInstancesQuery = () => {
+  return useQuery({
+    queryKey: [QUERY_KEYS.instances],
+    queryFn: async () => {
+      return await InstanceSearchServiceImpl.searchInstances();
+    },
+    refetchOnWindowFocus: false,
+    select: ({ data }) => data,
   });
 };

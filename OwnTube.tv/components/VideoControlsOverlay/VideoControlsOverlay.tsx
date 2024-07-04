@@ -152,6 +152,7 @@ const styles = StyleSheet.create({
   overlay: {
     alignItems: "center",
     alignSelf: "center",
+    cursor: "auto",
     display: "flex",
     height: "100%",
     justifyContent: "center",

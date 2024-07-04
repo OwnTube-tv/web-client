@@ -9,6 +9,7 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { useFonts } from "expo-font";
 import Toast from "react-native-toast-message";
 import { BuildInfoToast, ClickableHeaderText } from "../components";
+import "../i18n";
 
 const RootStack = () => {
   const { backend } = useLocalSearchParams();

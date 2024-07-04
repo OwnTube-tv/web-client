@@ -10,9 +10,9 @@ import { useGetInstancesQuery } from "../api";
 import { ComboBoxInput } from "./ComboBoxInput";
 import { Spacer } from "./shared/Spacer";
 import { colors } from "../colors";
-import { ExternalLink } from "./ExternalLink";
 import { useRecentInstances } from "../hooks";
 import { Ionicons } from "@expo/vector-icons";
+import { ExternalLink } from "./ExternalLink";
 
 export const SourceSelect = () => {
   const { backend } = useLocalSearchParams<RootStackParams["settings"]>();

@@ -3,8 +3,10 @@ import { StyleSheet, View } from "react-native";
 import { Typography } from "./Typography";
 import { Spacer } from "./shared/Spacer";
 import { ViewHistoryListItem } from "./ViewHistoryListItem";
+import { useTranslation } from "react-i18next";
 
 export const ResumeWatching = () => {
+  const { t } = useTranslation();
   const { viewHistory, isFetching } = useViewHistory();
   const latestVideo = viewHistory?.[0];
 
@@ -15,7 +17,7 @@ export const ResumeWatching = () => {
   return (
     <View style={styles.container}>
       <Spacer height={16} />
-      <Typography>Continue where you left off:</Typography>
+      <Typography>{t("continueWatching")}</Typography>
       <Spacer height={16} />
       <ViewHistoryListItem video={latestVideo} />
       <Spacer height={16} />

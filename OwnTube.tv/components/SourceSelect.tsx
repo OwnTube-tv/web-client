@@ -10,9 +10,9 @@ import { useGetInstancesQuery } from "../api";
 import { ComboBoxInput } from "./ComboBoxInput";
 import { Spacer } from "./shared/Spacer";
 import { colors } from "../colors";
-import { ExternalLink } from "./ExternalLink";
 import { useRecentInstances } from "../hooks";
 import { Ionicons } from "@expo/vector-icons";
+import { ExternalLink } from "./ExternalLink";
 
 export const SourceSelect = () => {
   const { backend } = useLocalSearchParams<RootStackParams["settings"]>();
@@ -79,6 +79,23 @@ export const SourceSelect = () => {
         </>
       )}
       <Spacer height={16} />
+      {!!recentInstances?.length && (
+        <>
+          <View style={styles.recentsHeader}>
+            <Typography>Recent instances:</Typography>
+            <Ionicons.Button
+              name="trash"
+              backgroundColor={theme.colors.background}
+              style={{ ...styles.iconButton, borderColor: theme.colors.border }}
+              onPress={clearRecentInstances}
+            >
+              <Typography>Clear</Typography>
+            </Ionicons.Button>
+          </View>
+          {recentInstances?.map(renderItem)}
+          <Spacer height={16} />
+        </>
+      )}
       <Typography>Predefined instances:</Typography>
       {Object.values(SOURCES).map(renderItem)}
       {backend && backend in SOURCES && renderItem(backend)}

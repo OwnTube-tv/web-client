@@ -10,6 +10,14 @@ jest.mock("../api", () => ({
     ],
   }),
 }));
+jest.mock("../hooks", () => ({
+  ...jest.requireActual("../hooks"),
+  useRecentInstances: jest.fn(() => ({
+    recentInstances: [],
+    addRecentInstance: jest.fn(),
+    clearRecentInstances: jest.fn(),
+  })),
+}));
 
 jest.mock("./ComboBoxInput", () => ({
   ComboBoxInput: "ComboBoxInput",

@@ -3,7 +3,10 @@ import { SourceSelect, Typography, ViewHistory, AppConfig } from "../../componen
 import { Screen } from "../../layouts";
 import { styles } from "./styles";
 import { useTheme } from "@react-navigation/native";
-import React, { useState } from "react";
+import React from "react";
+import { useLocalSearchParams, useRouter } from "expo-router";
+import { RootStackParams } from "../../app/_layout";
+import { ROUTES } from "../../types";
 
 type SettingsTab = "history" | "instance" | "config";
 
@@ -15,12 +18,17 @@ const tabsWithNames: Record<SettingsTab, string> = {
 
 export const SettingsScreen = () => {
   const { colors } = useTheme();
-  const [tab, setTab] = useState<SettingsTab>("history");
+  const { tab } = useLocalSearchParams<RootStackParams[ROUTES.SETTINGS]>();
+  const router = useRouter();
 
   const tabContent: Record<SettingsTab, React.JSX.Element> = {
     history: <ViewHistory />,
     instance: <SourceSelect />,
     config: <AppConfig />,
+  };
+
+  const setTab = (newTab: SettingsTab) => () => {
+    router.setParams({ tab: newTab });
   };
 
   return (
@@ -34,12 +42,12 @@ export const SettingsScreen = () => {
         ]}
       >
         {Object.entries(tabsWithNames).map(([key, label]) => (
-          <Pressable key={key} onPress={() => setTab(key as SettingsTab)}>
+          <Pressable key={key} onPress={setTab(key as SettingsTab)}>
             <Typography color={key === tab ? colors.primary : undefined}>{label}</Typography>
           </Pressable>
         ))}
       </View>
-      {tabContent[tab]}
+      {!!tab && tabContent[tab]}
     </Screen>
   );
 };

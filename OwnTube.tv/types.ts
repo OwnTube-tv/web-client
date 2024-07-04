@@ -7,6 +7,7 @@ export enum SOURCES {
 export enum STORAGE {
   DATASOURCE = "data_source",
   VIEW_HISTORY = "view_history",
+  RECENT_INSTANCES = "recent_instances",
 }
 
 export enum ROUTES {

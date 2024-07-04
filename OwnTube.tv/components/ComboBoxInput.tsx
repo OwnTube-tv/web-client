@@ -80,7 +80,7 @@ export const ComboBoxInput = ({ value = "", onChange, data = [], testID }: Combo
   );
 
   return (
-    <View testID={testID} accessible={false}>
+    <View testID={testID} accessible={false} style={styles.container}>
       <TextInput
         placeholder="Search instances..."
         placeholderTextColor={colors.text}
@@ -95,7 +95,15 @@ export const ComboBoxInput = ({ value = "", onChange, data = [], testID }: Combo
         onChangeText={setInputValue}
       />
       {isDropDownVisible && (
-        <View style={[{ borderColor: colors.border }, styles.optionsContainer]}>
+        <View
+          style={[
+            {
+              borderColor: colors.border,
+              backgroundColor: colors.background,
+            },
+            styles.optionsContainer,
+          ]}
+        >
           <FlatList
             data={filteredList}
             renderItem={renderItem}
@@ -116,6 +124,7 @@ export const ComboBoxInput = ({ value = "", onChange, data = [], testID }: Combo
 };
 
 const styles = StyleSheet.create({
+  container: { position: "relative", zIndex: 1 },
   input: {
     borderRadius: 8,
     borderWidth: 1,
@@ -127,10 +136,11 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     flex: 1,
     height: 400,
+    left: 0,
     padding: 8,
     position: "absolute",
     top: 30,
     width: 500,
-    zIndex: 1,
+    zIndex: 99,
   },
 });

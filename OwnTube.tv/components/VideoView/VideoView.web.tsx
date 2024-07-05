@@ -57,6 +57,7 @@ const VideoView = ({ uri, testID, handleSetTimeStamp, timestamp, title }: VideoV
 
   const handleReplay = () => {
     playerRef.current?.currentTime(0);
+    playerRef.current?.play();
   };
 
   const handleJumpTo = (position: number) => {

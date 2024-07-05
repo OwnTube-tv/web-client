@@ -1,7 +1,7 @@
 import { View, StyleSheet } from "react-native";
 import { ErrorMessage, Loader, Typography, VideosByCategory } from "./";
 import { useGetVideosQuery } from "../api";
-import { GetVideosVideo } from "../api/peertubeVideosApi";
+import { GetVideosVideo } from "../api/models";
 
 type CategorizedVideos = Record<string, GetVideosVideo[]>;
 

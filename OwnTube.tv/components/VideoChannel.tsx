@@ -1,10 +1,11 @@
 import { VideosByCategory } from "./VideosByCategory";
 import { Channel, GetVideosVideo } from "../api/models";
-import { Image, View } from "react-native";
+import { View } from "react-native";
 import { Typography } from "./Typography";
 import { useLocalSearchParams } from "expo-router";
 import { RootStackParams } from "../app/_layout";
 import { ROUTES } from "../types";
+import { ChannelAvatar } from "./ChannelAvatar";
 
 interface Props {
   channel: Channel;
@@ -17,9 +18,7 @@ export const VideoChannel = ({ channel, data }: Props) => {
   return (
     <View>
       <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
-        {channel?.avatar?.path && (
-          <Image source={{ uri: `https://${backend}${channel.avatar?.path}` }} style={{ width: 20, height: 20 }} />
-        )}
+        <ChannelAvatar imageUri={`https://${backend}${channel.avatar?.path}`} />
         <Typography>{channel.displayName}</Typography>
       </View>
       {Object.entries(data || {}).map(([category, videos]) => (

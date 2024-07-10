@@ -1,8 +1,9 @@
-import { Linking, StyleSheet, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import { Typography } from "./Typography";
 import build_info from "../build-info.json";
 import { useTheme } from "@react-navigation/native";
 import { removeSecondsFromISODate } from "../utils";
+import { ExternalLink } from "./ExternalLink";
 
 export const BuildInfoToast = () => {
   const { colors } = useTheme();
@@ -11,17 +12,17 @@ export const BuildInfoToast = () => {
     <View style={[{ backgroundColor: colors.card }, styles.container]}>
       <Typography fontSize={14} style={{ userSelect: "none" }}>
         Revision{" "}
-        <Typography fontSize={14} style={styles.link} onPress={() => Linking.openURL(build_info.COMMIT_URL)}>
-          {build_info.GITHUB_SHA_SHORT}
-        </Typography>{" "}
+        <ExternalLink absoluteHref={build_info.COMMIT_URL}>
+          <Typography fontSize={14} style={styles.link}>
+            {build_info.GITHUB_SHA_SHORT}
+          </Typography>{" "}
+        </ExternalLink>
         built at {removeSecondsFromISODate(build_info.BUILD_TIMESTAMP)} by{" "}
-        <Typography
-          fontSize={14}
-          style={styles.link}
-          onPress={() => Linking.openURL("https://github.com/" + build_info.GITHUB_ACTOR)}
-        >
-          {build_info.GITHUB_ACTOR}
-        </Typography>
+        <ExternalLink absoluteHref={"https://github.com/" + build_info.GITHUB_ACTOR}>
+          <Typography fontSize={14} style={styles.link}>
+            {build_info.GITHUB_ACTOR}
+          </Typography>
+        </ExternalLink>
       </Typography>
     </View>
   );

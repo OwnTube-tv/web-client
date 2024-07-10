@@ -1,15 +1,16 @@
 import { useCallback, useMemo } from "react";
-import { Linking, Pressable, StyleSheet, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import { SOURCES, STORAGE } from "../types";
 import { Typography } from "./Typography";
 import { useTheme } from "@react-navigation/native";
-import { Link, useLocalSearchParams, useRouter } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import { writeToAsyncStorage } from "../utils";
 import { RootStackParams } from "../app/_layout";
 import { useGetInstancesQuery } from "../api";
 import { ComboBoxInput } from "./ComboBoxInput";
 import { Spacer } from "./shared/Spacer";
 import { colors } from "../colors";
+import { ExternalLink } from "./ExternalLink";
 import { useRecentInstances } from "../hooks";
 import { Ionicons } from "@expo/vector-icons";
 
@@ -55,9 +56,9 @@ export const SourceSelect = () => {
       {backend && (
         <View style={{ flexDirection: "row" }}>
           <Typography>Selected instance: </Typography>
-          <Pressable onPress={() => Linking.openURL(`https://${backend}/`)}>
+          <ExternalLink absoluteHref={`https://${backend}/`}>
             <Typography color={theme.colors.primary}>{backend}</Typography>
-          </Pressable>
+          </ExternalLink>
         </View>
       )}
       <Spacer height={16} />
@@ -83,9 +84,9 @@ export const SourceSelect = () => {
       {backend && backend in SOURCES && renderItem(backend)}
       <Spacer height={16} />
       <Typography>
-        <Link style={{ textDecorationLine: "underline", color: colors.sepia }} href={"https://sepiasearch.org/"}>
-          Sepia
-        </Link>{" "}
+        <ExternalLink absoluteHref={"https://sepiasearch.org/"}>
+          <Typography color={colors.sepia}>Sepia</Typography>
+        </ExternalLink>{" "}
         PeerTube instances:
       </Typography>
       <Spacer height={16} />

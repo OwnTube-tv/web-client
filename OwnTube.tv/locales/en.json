@@ -42,6 +42,7 @@
   "history": "History",
   "instance": "Instance",
   "config": "Config",
+  "searchInstances": "Search instances...",
   "errors": {
     "failedToFetchInstances": "Failed to fetch instances: {{error}}",
     "max100VideosPerChunk": "The maximum number of videos to fetch in a single request is 100",

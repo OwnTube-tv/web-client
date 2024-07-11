@@ -2,6 +2,7 @@ import { FlatList, Pressable, StyleSheet, TextInput, View } from "react-native";
 import { Typography } from "./Typography";
 import { useCallback, useMemo, useState } from "react";
 import { useTheme } from "@react-navigation/native";
+import { useTranslation } from "react-i18next";
 
 interface DropDownItem {
   label: string;
@@ -46,6 +47,7 @@ const DropdownItem = ({
 };
 
 export const ComboBoxInput = ({ value = "", onChange, data = [], testID }: ComboBoxInputProps) => {
+  const { t } = useTranslation();
   const { colors } = useTheme();
   const [inputValue, setInputValue] = useState("");
   const [isDropDownVisible, setIsDropDownVisible] = useState(false);
@@ -82,7 +84,7 @@ export const ComboBoxInput = ({ value = "", onChange, data = [], testID }: Combo
   return (
     <View testID={testID} accessible={false} style={styles.container}>
       <TextInput
-        placeholder="Search instances..."
+        placeholder={t("searchInstances")}
         placeholderTextColor={colors.text}
         style={[{ color: colors.primary, backgroundColor: colors.card, borderColor: colors.primary }, styles.input]}
         onFocus={() => setIsDropDownVisible(true)}

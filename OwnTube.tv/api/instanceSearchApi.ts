@@ -1,5 +1,6 @@
 import axios, { AxiosInstance } from "axios";
 import { PeertubeInstance } from "./models";
+import i18n from "../i18n";
 
 export class InstanceSearchApi {
   private instance!: AxiosInstance;
@@ -37,7 +38,7 @@ export class InstanceSearchApi {
       });
       return response.data;
     } catch (error: unknown) {
-      throw new Error(`Failed to fetch instances: ${(error as Error).message}`);
+      throw new Error(i18n.t("errors.failedToFetchInstances", { error: (error as Error).message }));
     }
   }
 }

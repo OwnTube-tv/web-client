@@ -5,10 +5,12 @@ import { Ionicons } from "@expo/vector-icons";
 import { Spacer } from "./shared/Spacer";
 import { useAppConfigContext } from "../contexts";
 import { useTheme } from "@react-navigation/native";
+import { useTranslation } from "react-i18next";
 
 export const DeviceCapabilities = () => {
   const { deviceCapabilities } = useAppConfigContext();
   const { colors } = useTheme();
+  const { t } = useTranslation();
 
   const handleCopyToClipboard = async () => {
     await Clipboard.setStringAsync(JSON.stringify(deviceCapabilities));
@@ -17,42 +19,42 @@ export const DeviceCapabilities = () => {
   return (
     <View style={[{ backgroundColor: colors.card }, styles.modalContainer]}>
       <View style={styles.modalHeader}>
-        <Typography>Device Capability info:</Typography>
+        <Typography>{t("deviceCapabilityInfoTitle")}</Typography>
         <Pressable onPress={handleCopyToClipboard}>
           <Ionicons color={colors.primary} name="copy" size={24} />
         </Pressable>
       </View>
       <Spacer height={16} />
       <View style={styles.row}>
-        <Typography>Player implementation:</Typography>
+        <Typography>{t("playerImpl")}</Typography>
         <Typography>{deviceCapabilities.playerImplementation}</Typography>
       </View>
       <View style={styles.row}>
-        <Typography>Device type:</Typography>
+        <Typography>{t("deviceType")}</Typography>
         <Typography>{deviceCapabilities.deviceType}</Typography>
       </View>
       <View style={styles.row}>
-        <Typography>Operating system:</Typography>
+        <Typography>{t("operatingSystem")}</Typography>
         <Typography>{deviceCapabilities.OS}</Typography>
       </View>
       {deviceCapabilities.browser && (
         <View style={styles.row}>
-          <Typography>Browser:</Typography>
+          <Typography>{t("browser")}</Typography>
           <Typography>{deviceCapabilities.browser}</Typography>
         </View>
       )}
       {deviceCapabilities.device && (
         <View style={styles.row}>
-          <Typography>Device:</Typography>
+          <Typography>{t("device")}</Typography>
           <Typography>{deviceCapabilities.device}</Typography>
         </View>
       )}
       <View style={styles.row}>
-        <Typography>Screen dimensions:</Typography>
+        <Typography>{t("screenDimensions")}</Typography>
         <Typography>{deviceCapabilities.dimensions}</Typography>
       </View>
       <View style={styles.row}>
-        <Typography>Orientation:</Typography>
+        <Typography>{t("orientation")}</Typography>
         <Typography>{deviceCapabilities.orientation}</Typography>
       </View>
     </View>

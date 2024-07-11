@@ -1,9 +1,9 @@
 import { useCallback, useMemo } from "react";
-import { Linking, Pressable, StyleSheet, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import { SOURCES, STORAGE } from "../types";
 import { Typography } from "./Typography";
 import { useTheme } from "@react-navigation/native";
-import { Link, useLocalSearchParams, useRouter } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import { writeToAsyncStorage } from "../utils";
 import { RootStackParams } from "../app/_layout";
 import { useGetInstancesQuery } from "../api";
@@ -12,12 +12,15 @@ import { Spacer } from "./shared/Spacer";
 import { colors } from "../colors";
 import { useRecentInstances } from "../hooks";
 import { Ionicons } from "@expo/vector-icons";
+import { ExternalLink } from "./ExternalLink";
+import { useTranslation } from "react-i18next";
 
 export const SourceSelect = () => {
   const { backend } = useLocalSearchParams<RootStackParams["settings"]>();
   const router = useRouter();
   const theme = useTheme();
   const { recentInstances, addRecentInstance, clearRecentInstances } = useRecentInstances();
+  const { t } = useTranslation();
 
   const handleSelectSource = (backend: string) => {
     router.setParams({ backend });
@@ -54,11 +57,28 @@ export const SourceSelect = () => {
     <View style={styles.container}>
       {backend && (
         <View style={{ flexDirection: "row" }}>
-          <Typography>Selected instance: </Typography>
-          <Pressable onPress={() => Linking.openURL(`https://${backend}/`)}>
+          <Typography>{t("selectedInstance")}</Typography>
+          <ExternalLink absoluteHref={`https://${backend}/`}>
             <Typography color={theme.colors.primary}>{backend}</Typography>
-          </Pressable>
+          </ExternalLink>
         </View>
+      )}
+      <Spacer height={16} />
+      {!!recentInstances?.length && (
+        <>
+          <View style={styles.recentsHeader}>
+            <Typography>{t("recentInstances")}</Typography>
+            <Ionicons.Button
+              name="trash"
+              backgroundColor={theme.colors.background}
+              style={{ ...styles.iconButton, borderColor: theme.colors.border }}
+              onPress={clearRecentInstances}
+            >
+              <Typography>{t("clear")}</Typography>
+            </Ionicons.Button>
+          </View>
+          {recentInstances?.map(renderItem)}
+        </>
       )}
       <Spacer height={16} />
       {!!recentInstances?.length && (
@@ -75,18 +95,18 @@ export const SourceSelect = () => {
             </Ionicons.Button>
           </View>
           {recentInstances?.map(renderItem)}
+          <Spacer height={16} />
         </>
       )}
-      <Spacer height={16} />
-      <Typography>Predefined instances:</Typography>
+      <Typography>{t("predefinedInstances")}</Typography>
       {Object.values(SOURCES).map(renderItem)}
       {backend && backend in SOURCES && renderItem(backend)}
       <Spacer height={16} />
       <Typography>
-        <Link style={{ textDecorationLine: "underline", color: colors.sepia }} href={"https://sepiasearch.org/"}>
-          Sepia
-        </Link>{" "}
-        PeerTube instances:
+        <ExternalLink absoluteHref={"https://sepiasearch.org/"}>
+          <Typography color={colors.sepia}>Sepia</Typography>
+        </ExternalLink>{" "}
+        {t("peertubeInstances")}
       </Typography>
       <Spacer height={16} />
       <ComboBoxInput

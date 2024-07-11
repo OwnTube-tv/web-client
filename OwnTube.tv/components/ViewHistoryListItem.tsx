@@ -4,23 +4,30 @@ import { Typography } from "./Typography";
 import { getHumanReadableDuration } from "../utils";
 import { format } from "date-fns";
 import { ViewHistoryEntry } from "../hooks";
+import { useTranslation } from "react-i18next";
 
 interface ViewHistoryListItemProps {
   video: ViewHistoryEntry;
 }
 
 export const ViewHistoryListItem = ({ video }: ViewHistoryListItemProps) => {
+  const { t } = useTranslation();
+
   return (
     <View style={styles.container}>
       <VideoThumbnail video={video} backend={video.backend} key={video.uuid} timestamp={video.timestamp} />
       <View>
-        <Typography>Last playback timestamp: {getHumanReadableDuration(video.timestamp * 1000)}</Typography>
-        <Typography>Video duration: {getHumanReadableDuration(video.duration * 1000)}</Typography>
-        <Typography>Associated PeerTube backend: {video.backend}</Typography>
+        <Typography>
+          {t("lastPlaybackTimeStamp", { timestamp: getHumanReadableDuration(video.timestamp * 1000) })}
+        </Typography>
+        <Typography>{t("videoDuration", { duration: getHumanReadableDuration(video.duration * 1000) })}</Typography>
+        <Typography>{t("associatedPeertubeBackend", { backend: video.backend })}</Typography>
         {video.firstViewedAt && (
-          <Typography>First watched: {format(new Date(video.firstViewedAt), "dd/M/yyyy p")}</Typography>
+          <Typography>{t("firstWatched", { date: format(new Date(video.firstViewedAt), "dd/M/yyyy p") })}</Typography>
         )}
-        {video.lastViewedAt && <Typography>Last watched: {format(video.lastViewedAt, "dd/M/yyyy p")}</Typography>}
+        {video.lastViewedAt && (
+          <Typography>{t("lastWatched", { lastWatched: format(video.lastViewedAt, "dd/M/yyyy p") })}</Typography>
+        )}
       </View>
     </View>
   );

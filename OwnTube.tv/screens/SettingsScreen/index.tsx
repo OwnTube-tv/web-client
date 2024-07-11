@@ -7,13 +7,14 @@ import React from "react";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { RootStackParams } from "../../app/_layout";
 import { ROUTES } from "../../types";
+import i18n from "../../i18n";
 
 type SettingsTab = "history" | "instance" | "config";
 
 const tabsWithNames: Record<SettingsTab, string> = {
-  history: "History",
-  instance: "Instance",
-  config: "Config",
+  history: i18n.t("history"),
+  instance: i18n.t("instance"),
+  config: i18n.t("config"),
 };
 
 export const SettingsScreen = () => {

@@ -10,6 +10,7 @@ import { useTheme } from "@react-navigation/native";
 import { StyleSheet, View } from "react-native";
 import { useRecentInstances } from "../../hooks";
 import { RootStackParams } from "../_layout";
+import { useTranslation } from "react-i18next";
 
 export default function index() {
   const router = useRouter();
@@ -18,6 +19,7 @@ export default function index() {
   const { backend } = useLocalSearchParams<RootStackParams[ROUTES.INDEX]>();
   const [isGettingStoredBackend, setIsGettingStoredBackend] = useState(true);
   const { recentInstances, addRecentInstance } = useRecentInstances();
+  const { t } = useTranslation();
 
   const getSourceAndRedirect = async () => {
     if (backend) {
@@ -39,7 +41,7 @@ export default function index() {
     useCallback(() => {
       if (backend) {
         navigation.setOptions({
-          title: `OwnTube.tv@${backend}`,
+          title: `${t("appName")}@${backend}`,
           headerRight: () => (
             <View style={styles.headerControls}>
               <Link
@@ -69,7 +71,9 @@ export default function index() {
   return (
     <>
       <Head>
-        <title>OwnTube.tv@{backend || ""}</title>
+        <title>
+          {t("appName")}@{backend || ""}
+        </title>
         <meta name="description" content="OwnTube.tv homepage" />
       </Head>
       {!!backend && <HomeScreen />}

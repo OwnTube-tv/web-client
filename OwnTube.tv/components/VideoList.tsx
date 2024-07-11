@@ -1,23 +1,25 @@
-import { View, StyleSheet } from "react-native";
-import { ErrorMessage, Loader, Typography, VideosByCategory } from "./";
+import { View, StyleSheet, FlatList, ListRenderItem } from "react-native";
+import { ErrorMessage, Loader, Typography } from "./";
 import { useGetVideosQuery } from "../api";
 import { GetVideosVideo } from "../api/models";
-
-type CategorizedVideos = Record<string, GetVideosVideo[]>;
+import { VideoChannel } from "./VideoChannel";
+import { organizeVideosByChannelAndCategory, VideosByChannel } from "../utils";
+import { useCallback } from "react";
 
 export const VideoList = () => {
   const { data, error, isFetching } = useGetVideosQuery<{
-    videos: GetVideosVideo[];
-    videosByCategory: CategorizedVideos;
+    raw: GetVideosVideo[];
+    videosByChannel: VideosByChannel;
   }>({
     select: (data) => ({
-      videos: data,
-      videosByCategory: data.reduce<CategorizedVideos>((acc, cur) => {
-        acc[cur.category.label] = [...(acc[cur.category.label] || []), cur];
-        return acc;
-      }, {}),
+      raw: data,
+      videosByChannel: organizeVideosByChannelAndCategory(data),
     }),
   });
+
+  const renderVideoChannelListItem = useCallback<ListRenderItem<VideosByChannel[number]>>(({ item }) => {
+    return <VideoChannel channel={item.channel} data={item.data} />;
+  }, []);
 
   if (error) {
     return <ErrorMessage message={error.message} />;
@@ -27,7 +29,7 @@ export const VideoList = () => {
     return <Loader />;
   }
 
-  if (data?.videos.length === 0) {
+  if (data?.raw.length === 0) {
     return (
       <View style={styles.centeredContainer}>
         <Typography>No videos or categories found.</Typography>
@@ -37,9 +39,7 @@ export const VideoList = () => {
 
   return (
     <View style={styles.container}>
-      {Object.entries(data?.videosByCategory || {}).map(([category, videos]) => (
-        <VideosByCategory key={category} title={category} videos={videos} />
-      ))}
+      <FlatList data={data?.videosByChannel} renderItem={renderVideoChannelListItem} />
     </View>
   );
 };

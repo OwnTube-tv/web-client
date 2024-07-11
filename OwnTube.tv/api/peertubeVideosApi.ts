@@ -142,6 +142,7 @@ export class PeertubeVideosApi {
         description: video.description,
         thumbnailPath: video.thumbnailPath,
         duration: video.duration,
+        channel: video.channel,
       };
     });
   }

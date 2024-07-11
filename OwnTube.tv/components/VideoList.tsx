@@ -5,8 +5,10 @@ import { GetVideosVideo } from "../api/models";
 import { VideoChannel } from "./VideoChannel";
 import { organizeVideosByChannelAndCategory, VideosByChannel } from "../utils";
 import { useCallback } from "react";
+import { useTranslation } from "react-i18next";
 
 export const VideoList = () => {
+  const { t } = useTranslation();
   const { data, error, isFetching } = useGetVideosQuery<{
     raw: GetVideosVideo[];
     videosByChannel: VideosByChannel;
@@ -32,7 +34,7 @@ export const VideoList = () => {
   if (data?.raw.length === 0) {
     return (
       <View style={styles.centeredContainer}>
-        <Typography>No videos or categories found.</Typography>
+        <Typography>{t("noVideosOrCategoriesFound")}</Typography>
       </View>
     );
   }

@@ -10,15 +10,19 @@ import { useGetInstancesQuery } from "../api";
 import { ComboBoxInput } from "./ComboBoxInput";
 import { Spacer } from "./shared/Spacer";
 import { colors } from "../colors";
+import { useRecentInstances } from "../hooks";
+import { Ionicons } from "@expo/vector-icons";
 
 export const SourceSelect = () => {
   const { backend } = useLocalSearchParams<RootStackParams["settings"]>();
   const router = useRouter();
   const theme = useTheme();
+  const { recentInstances, addRecentInstance, clearRecentInstances } = useRecentInstances();
 
   const handleSelectSource = (backend: string) => {
     router.setParams({ backend });
     writeToAsyncStorage(STORAGE.DATASOURCE, backend);
+    addRecentInstance(backend);
   };
 
   const renderItem = useCallback(
@@ -57,6 +61,23 @@ export const SourceSelect = () => {
         </View>
       )}
       <Spacer height={16} />
+      {!!recentInstances?.length && (
+        <>
+          <View style={styles.recentsHeader}>
+            <Typography>Recent instances:</Typography>
+            <Ionicons.Button
+              name="trash"
+              backgroundColor={theme.colors.background}
+              style={{ ...styles.iconButton, borderColor: theme.colors.border }}
+              onPress={clearRecentInstances}
+            >
+              <Typography>Clear</Typography>
+            </Ionicons.Button>
+          </View>
+          {recentInstances?.map(renderItem)}
+        </>
+      )}
+      <Spacer height={16} />
       <Typography>Predefined instances:</Typography>
       {Object.values(SOURCES).map(renderItem)}
       {backend && backend in SOURCES && renderItem(backend)}
@@ -82,6 +103,8 @@ const styles = StyleSheet.create({
   container: {
     marginTop: 8,
   },
+  iconButton: { borderWidth: 1 },
+  recentsHeader: { alignItems: "center", flexDirection: "row", justifyContent: "space-between" },
   source: {
     opacity: 0.5,
     padding: 5,

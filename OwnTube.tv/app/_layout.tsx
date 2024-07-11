@@ -79,7 +79,7 @@ export const unstable_settings = {
 
 export type RootStackParams = {
   [ROUTES.INDEX]: { backend: string };
-  [ROUTES.SETTINGS]: { backend: string };
+  [ROUTES.SETTINGS]: { backend: string; tab: "history" | "instance" | "config" };
   [ROUTES.VIDEO]: { backend: string; id: string; timestamp?: string };
 };
 

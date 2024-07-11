@@ -8,13 +8,16 @@ import { HomeScreen } from "../../screens";
 import { Feather } from "@expo/vector-icons";
 import { useTheme } from "@react-navigation/native";
 import { StyleSheet, View } from "react-native";
+import { useRecentInstances } from "../../hooks";
+import { RootStackParams } from "../_layout";
 
 export default function index() {
   const router = useRouter();
   const navigation = useNavigation();
   const theme = useTheme();
-  const { backend } = useLocalSearchParams();
+  const { backend } = useLocalSearchParams<RootStackParams[ROUTES.INDEX]>();
   const [isGettingStoredBackend, setIsGettingStoredBackend] = useState(true);
+  const { recentInstances, addRecentInstance } = useRecentInstances();
 
   const getSourceAndRedirect = async () => {
     if (backend) {
@@ -39,17 +42,24 @@ export default function index() {
           title: `OwnTube.tv@${backend}`,
           headerRight: () => (
             <View style={styles.headerControls}>
-              <Link style={styles.headerButton} href={{ pathname: `/${ROUTES.SETTINGS}`, params: { backend } }}>
+              <Link
+                style={styles.headerButton}
+                href={{ pathname: `/${ROUTES.SETTINGS}`, params: { backend, tab: "history" } }}
+              >
                 <Feather name="settings" size={24} color={theme.colors.primary} />
               </Link>
               <DeviceCapabilitiesModal />
             </View>
           ),
         });
+
+        if (!(recentInstances?.[0] === backend)) {
+          addRecentInstance(backend);
+        }
       }
 
       getSourceAndRedirect();
-    }, [backend]),
+    }, [backend, recentInstances]),
   );
 
   if (isGettingStoredBackend) {

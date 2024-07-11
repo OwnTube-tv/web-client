@@ -11,7 +11,7 @@ i18n.use(initReactI18next).init({
   },
   fallbackLng: "en",
   defaultNS: "translation",
-  lng: getLocales()[0].languageCode || undefined,
+  lng: getLocales()[0]?.languageCode || undefined,
 });
 
 i18n.addResourceBundle("en", "translation", en);

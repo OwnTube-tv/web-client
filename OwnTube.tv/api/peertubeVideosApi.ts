@@ -2,6 +2,7 @@ import axios, { AxiosInstance } from "axios";
 import { VideosCommonQuery } from "@peertube/peertube-types";
 import { Video } from "@peertube/peertube-types/peertube-models/videos/video.model";
 import { GetVideosVideo } from "./models";
+import i18n from "../i18n";
 
 /**
  * Get videos from the PeerTube backend `/api/v1/videos` API
@@ -20,7 +21,7 @@ export class PeertubeVideosApi {
   private _maxChunkSize!: number;
   set maxChunkSize(value: number) {
     if (!(value > 0 && value <= 100)) {
-      throw new Error("The maximum number of videos to fetch in a single request is 100");
+      throw new Error("errors.maxVideosPerChunk");
     }
     this._maxChunkSize = value;
   }
@@ -70,7 +71,7 @@ export class PeertubeVideosApi {
       });
       return response.data.total as number;
     } catch (error: unknown) {
-      throw new Error(`Failed to fetch total number of videos from PeerTube API: ${(error as Error).message}`);
+      throw new Error(i18n.t("errors.failedToFetchTotalVids", { error: (error as Error).message }));
     }
   }
 
@@ -92,7 +93,7 @@ export class PeertubeVideosApi {
           })
         ).data.data as Required<GetVideosVideo>[];
       } catch (error: unknown) {
-        throw new Error(`Failed to fetch videos from PeerTube API: ${(error as Error).message}`);
+        throw new Error(i18n.t("errors.failedToFetchVids", { error: (error as Error).message }));
       }
     } else {
       let rawTotal = -1;
@@ -104,7 +105,7 @@ export class PeertubeVideosApi {
           fetchCount = rawTotal - offset;
           if (this.debugLogging) {
             console.debug(
-              `We would exceed the total available ${rawTotal} videos with chunk size ${this.maxChunkSize}, so fetching only ${fetchCount} videos to reach the total`,
+              i18n.t("errors.maxTotalToBeExceeded", { rawTotal, maxChunkSize: this.maxChunkSize, fetchCount }),
             );
           }
         }
@@ -112,9 +113,7 @@ export class PeertubeVideosApi {
         if (maxLimitToBeExceeded) {
           fetchCount = limit - offset;
           if (this.debugLogging) {
-            console.debug(
-              `We would exceed max limit of ${limit} videos, so fetching only ${fetchCount} additional videos to reach the limit`,
-            );
+            console.debug(i18n.t("errors.maxLimitToBeExceeded", { limit, fetchCount }));
           }
         }
         try {
@@ -162,7 +161,7 @@ export class PeertubeVideosApi {
 
       return response.data;
     } catch (error: unknown) {
-      throw new Error(`Failed to fetch videos from PeerTube API: ${(error as Error).message}`);
+      throw new Error(i18n.t("errors.failedToFetchVideo", { error: (error as Error).message, id }));
     }
   }
 }

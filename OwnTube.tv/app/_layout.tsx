@@ -10,11 +10,13 @@ import { useFonts } from "expo-font";
 import Toast from "react-native-toast-message";
 import { BuildInfoToast, ClickableHeaderText } from "../components";
 import "../i18n";
+import { useTranslation } from "react-i18next";
 
 const RootStack = () => {
   const { backend } = useLocalSearchParams();
   const { scheme } = useColorSchemeContext();
   const theme = scheme === "dark" ? DarkTheme : DefaultTheme;
+  const { t } = useTranslation();
 
   return (
     <ThemeProvider value={theme}>
@@ -27,14 +29,14 @@ const RootStack = () => {
           name={"(home)/index"}
           options={{
             headerBackVisible: false,
-            title: "OwnTube.tv",
+            title: t("appName"),
             headerLeft: () => <></>,
             headerRight: () => <></>,
           }}
         />
         <Stack.Screen
           options={{
-            title: "Settings",
+            title: t("settingsPageTitle"),
             headerBackVisible: false,
             headerLeft: () => (
               <Link style={styles.headerButtonLeft} href={{ pathname: "/", params: { backend } }}>
@@ -44,7 +46,7 @@ const RootStack = () => {
           }}
           name={`(home)/${ROUTES.SETTINGS}`}
         />
-        <Stack.Screen options={{ title: "Video", headerShown: false }} name={`(home)/video`} />
+        <Stack.Screen options={{ title: t("videoPageTitle"), headerShown: false }} name={`(home)/video`} />
       </Stack>
       <Toast config={{ buildInfo: () => <BuildInfoToast /> }} />
     </ThemeProvider>

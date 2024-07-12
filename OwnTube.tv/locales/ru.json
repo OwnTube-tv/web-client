@@ -43,6 +43,8 @@
   "instance": "Экземпляр",
   "config": "Конфигурация",
   "searchInstances": "Поиск экземпляра...",
+  "selectLanguage": "Выбрать язык:",
+  "selectedLanguage": "Выбранный язык: {{lang}}",
   "errors": {
     "failedToFetchInstances": "Не удалось получить экземпляры: {{error}}",
     "max100VideosPerChunk": "Максимальное количество видео для одного запроса - 100",

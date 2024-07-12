@@ -93,10 +93,12 @@ export const SourceSelect = () => {
       </Typography>
       <Spacer height={16} />
       <ComboBoxInput
+        searchable
         testID={"custom-instance-select"}
         value={backend}
         data={availableInstances}
         onChange={handleSelectSource}
+        placeholder={t("searchInstances")}
       />
     </View>
   );

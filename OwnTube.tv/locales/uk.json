@@ -43,6 +43,8 @@
   "instance": "Інстанція",
   "config": "Конфігурація",
   "searchInstances": "Пошук інстанції...",
+  "selectLanguage": "Обрати мову:",
+  "selectedLanguage": "Обрана мова: {{lang}}",
   "errors": {
     "failedToFetchInstances": "Не вдалося отримати інстанції: {{error}}",
     "max100VideosPerChunk": "Максимальна кількість відео для одного запиту - 100",

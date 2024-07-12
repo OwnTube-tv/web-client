@@ -19,4 +19,23 @@ i18n.addResourceBundle("uk", "translation", uk);
 i18n.addResourceBundle("ru", "translation", ru);
 i18n.addResourceBundle("sv", "translation", sv);
 
+export const LANGUAGE_OPTIONS = [
+  {
+    label: "English",
+    value: "en",
+  },
+  {
+    label: "Українська",
+    value: "uk",
+  },
+  {
+    label: "Русский",
+    value: "ru",
+  },
+  {
+    label: "Svenska",
+    value: "sv",
+  },
+];
+
 export default i18n;

@@ -57,7 +57,7 @@ Data fetching is tested against a real peertube nightly instance, without mockin
 ### Internationalization 🌍
 
 The app leverages `react-18next` library for translations, which means text strings are added to components ONLY through
-the `t` function from `useTranslation` hook, or if out of React components, through importing `i18n` from `i18n.ts` and 
+the `t` function from `useTranslation` hook, or if out of React components, through importing `i18n` from `i18n.ts` and
 using the `t` method on the said import.
 The strings of text for each language are stored in JSON files, using the pattern `[language code].json`, to add or modify
 translations for each language you need to edit these files only.

@@ -1,8 +1,7 @@
 import { FlatList, Pressable, StyleSheet, TextInput, View } from "react-native";
 import { Typography } from "./Typography";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTheme } from "@react-navigation/native";
-import { useTranslation } from "react-i18next";
 
 interface DropDownItem {
   label: string;
@@ -14,6 +13,8 @@ interface ComboBoxInputProps {
   onChange: (value: string) => void;
   data?: Array<DropDownItem>;
   testID: string;
+  searchable?: boolean;
+  placeholder?: string;
 }
 
 const LIST_ITEM_HEIGHT = 50;
@@ -46,11 +47,18 @@ const DropdownItem = ({
   );
 };
 
-export const ComboBoxInput = ({ value = "", onChange, data = [], testID }: ComboBoxInputProps) => {
-  const { t } = useTranslation();
+export const ComboBoxInput = ({
+  value = "",
+  onChange,
+  data = [],
+  testID,
+  searchable,
+  placeholder,
+}: ComboBoxInputProps) => {
   const { colors } = useTheme();
   const [inputValue, setInputValue] = useState("");
   const [isDropDownVisible, setIsDropDownVisible] = useState(false);
+  const listRef = useRef<FlatList | null>(null);
 
   const onSelect = (item: { label: string; value: string }) => () => {
     onChange(item.value);
@@ -59,22 +67,20 @@ export const ComboBoxInput = ({ value = "", onChange, data = [], testID }: Combo
   };
 
   const filteredList = useMemo(() => {
-    if (!inputValue) {
+    if (!inputValue || !searchable) {
       return data;
     }
 
     return data.filter(({ label }) => label.toLowerCase().includes(inputValue.toLowerCase()));
-  }, [data, inputValue]);
+  }, [data, inputValue, searchable]);
 
-  const initialScrollIndex = useMemo(() => {
+  useEffect(() => {
     if (value) {
-      const scrollTo = filteredList?.findIndex(({ value: itemValue }) => itemValue === value) || 0;
+      const idx = filteredList?.findIndex(({ value: itemValue }) => itemValue === value) || 0;
 
-      return scrollTo > 0 ? scrollTo : 0;
+      listRef.current?.scrollToIndex({ index: idx || 0 });
     }
-
-    return 0;
-  }, [filteredList, value]);
+  }, [value]);
 
   const renderItem = useCallback(
     ({ item }: { item: DropDownItem }) => <DropdownItem item={item} onSelect={onSelect} value={value} />,
@@ -84,7 +90,8 @@ export const ComboBoxInput = ({ value = "", onChange, data = [], testID }: Combo
   return (
     <View testID={testID} accessible={false} style={styles.container}>
       <TextInput
-        placeholder={t("searchInstances")}
+        editable={searchable}
+        placeholder={placeholder}
         placeholderTextColor={colors.text}
         style={[{ color: colors.primary, backgroundColor: colors.card, borderColor: colors.primary }, styles.input]}
         onFocus={() => setIsDropDownVisible(true)}
@@ -107,10 +114,10 @@ export const ComboBoxInput = ({ value = "", onChange, data = [], testID }: Combo
           ]}
         >
           <FlatList
+            ref={listRef}
             data={filteredList}
             renderItem={renderItem}
             extraData={filteredList?.length}
-            initialScrollIndex={initialScrollIndex}
             keyExtractor={({ value }) => value}
             getItemLayout={(_, index) => ({
               length: LIST_ITEM_HEIGHT,

@@ -62,6 +62,12 @@ Each file in this folder contains a React hook and if available, a file with the
 
 Contains layout components, currently having only one - a `<Screen />` that wraps app screens.
 
+### 📁`/locales/`:
+
+Contains locale files for each language in the `[language code].json` format. These files are then
+supplied to the `react-18next` library as translation resources. To translate the app in your own language
+you will need to translate the json file with a tool of you choice and make a pull request.
+
 ### 📁`/patches/`:
 
 Contains patches used by the `patch-package` package. Best to keep this folder temporary.

@@ -45,7 +45,7 @@ Through video.js we are converting the hls stream into a stream of mp4 chunks wh
 The video controls are overlaid above the video player, this way the experience is unified regardless of the platform.
 You can skip 10 seconds in each direction, seek through the video, play/pause, mute.
 
-### Testing
+### Testing ⚙️
 
 Jest is used throughout the app for testing, both for component tests and unit tests. For testing React components, the
 `@testing-library/react-native` package is used, which allows us to test components as real functioning entities,
@@ -53,3 +53,13 @@ with state changes, user interactions etc. which in turn allows us to write test
 clicks X button and sees Y result).
 
 Data fetching is tested against a real peertube nightly instance, without mocking the API response.
+
+### Internationalization 🌍
+
+The app leverages `react-18next` library for translations, which means text strings are added to components ONLY through
+the `t` function from `useTranslation` hook, or if out of React components, through importing `i18n` from `i18n.ts` and 
+using the `t` method on the said import.
+The strings of text for each language are stored in JSON files, using the pattern `[language code].json`, to add or modify
+translations for each language you need to edit these files only.
+The default locale is chosen depending on your device's preferred language, or the language chosen in settings, and if your language
+is unavailable then `en` is chosen as fallback (this can be configured in `i18n.js` file).

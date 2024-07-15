@@ -3,13 +3,15 @@ import { initReactI18next } from "react-i18next";
 import { en, uk, ru, sv } from "./locales";
 import { getLocales } from "expo-localization";
 
+export const FALLBACK_LANG = "en";
+
 const i18n = i18next.createInstance();
 
 i18n.use(initReactI18next).init({
   interpolation: {
     escapeValue: false,
   },
-  fallbackLng: "en",
+  fallbackLng: FALLBACK_LANG,
   defaultNS: "translation",
   lng: getLocales()[0]?.languageCode || undefined,
 });

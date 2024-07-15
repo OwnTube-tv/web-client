@@ -18,12 +18,7 @@ export interface DeviceCapabilities {
 
 export const useDeviceCapabilities = () => {
   const { t } = useTranslation();
-  const [playerImplementation, setPlayerImplementation] = useState(
-    Platform.select({
-      web: `${t("web")} video.js`,
-      default: capitalize(Platform.OS),
-    }),
-  );
+  const [playerImplementation, setPlayerImplementation] = useState(capitalize(Platform.OS));
   const { height, width } = useWindowDimensions();
 
   const getBrowserInfo = () => {
@@ -47,7 +42,10 @@ export const useDeviceCapabilities = () => {
     orientation: height > width ? t("portrait") : t("landscape"),
     deviceType: Device.deviceType ? DeviceType[Device.deviceType] : t("unknown"),
     browser: getBrowserInfo(),
-    playerImplementation,
+    playerImplementation: Platform.select({
+      web: `${t("web")} video.js`,
+      default: playerImplementation,
+    }),
   };
 
   return { deviceCapabilities, setPlayerImplementation };

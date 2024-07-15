@@ -44,7 +44,9 @@
   "config": "Config",
   "searchInstances": "Search instances...",
   "selectLanguage": "Select language:",
-  "selectedLanguage": "Selected language: {{lang}}",
+  "selectedLanguage": "Selected language: {{selectedLang}} (client accepts \"{{availableLanguages}}\", using fallback language \"{{fallback}}\")",
+  "resetSelection": "Reset selection",
+  "selectedLangNone": "None",
   "errors": {
     "failedToFetchInstances": "Failed to fetch instances: {{error}}",
     "max100VideosPerChunk": "The maximum number of videos to fetch in a single request is 100",

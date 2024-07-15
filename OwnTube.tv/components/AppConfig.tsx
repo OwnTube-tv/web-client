@@ -3,21 +3,12 @@ import { StyleSheet, Switch, View } from "react-native";
 import { Typography } from "./Typography";
 import { useAppConfigContext, useColorSchemeContext } from "../contexts";
 import { useTranslation } from "react-i18next";
-import { ComboBoxInput } from "./ComboBoxInput";
-import { LANGUAGE_OPTIONS } from "../i18n";
-import { writeToAsyncStorage } from "../utils";
-import { STORAGE } from "../types";
-import { Spacer } from "./shared/Spacer";
+import { SelectLanguage } from "./SelectLanguage";
 
 export const AppConfig = () => {
   const { isDebugMode, setIsDebugMode } = useAppConfigContext();
   const { scheme, toggleScheme } = useColorSchemeContext();
-  const { t, i18n } = useTranslation();
-
-  const handleChangeLanguage = (langCode: string) => {
-    writeToAsyncStorage(STORAGE.LOCALE, langCode);
-    i18n.changeLanguage(langCode);
-  };
+  const { t } = useTranslation();
 
   return (
     <View style={styles.deviceInfoAndToggles}>
@@ -31,17 +22,7 @@ export const AppConfig = () => {
           <Typography>{t("toggleTheme")}</Typography>
           <Switch value={scheme === "light"} onValueChange={toggleScheme} />
         </View>
-        <Spacer height={16} />
-        <Typography>{t("selectedLanguage", { lang: i18n.language })}</Typography>
-        <Spacer height={16} />
-        <ComboBoxInput
-          searchable={false}
-          value={i18n.language}
-          data={LANGUAGE_OPTIONS}
-          onChange={handleChangeLanguage}
-          testID="language-selector"
-          placeholder={t("selectLanguage")}
-        />
+        <SelectLanguage />
       </View>
     </View>
   );

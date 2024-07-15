@@ -11,9 +11,9 @@ import { ComboBoxInput } from "./ComboBoxInput";
 import { Spacer } from "./shared/Spacer";
 import { colors } from "../colors";
 import { useRecentInstances } from "../hooks";
-import { Ionicons } from "@expo/vector-icons";
 import { ExternalLink } from "./ExternalLink";
 import { useTranslation } from "react-i18next";
+import { IconButton } from "./IconButton";
 
 export const SourceSelect = () => {
   const { backend } = useLocalSearchParams<RootStackParams["settings"]>();
@@ -68,14 +68,7 @@ export const SourceSelect = () => {
         <>
           <View style={styles.recentsHeader}>
             <Typography>{t("recentInstances")}</Typography>
-            <Ionicons.Button
-              name="trash"
-              backgroundColor={theme.colors.background}
-              style={{ ...styles.iconButton, borderColor: theme.colors.border }}
-              onPress={clearRecentInstances}
-            >
-              <Typography>{t("clear")}</Typography>
-            </Ionicons.Button>
+            <IconButton icon="trash" onPress={clearRecentInstances} text={t("clear")} />
           </View>
           {recentInstances?.map(renderItem)}
           <Spacer height={16} />
@@ -108,7 +101,6 @@ const styles = StyleSheet.create({
   container: {
     marginTop: 8,
   },
-  iconButton: { borderWidth: 1 },
   recentsHeader: { alignItems: "center", flexDirection: "row", justifyContent: "space-between" },
   source: {
     opacity: 0.5,

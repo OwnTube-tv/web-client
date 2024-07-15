@@ -44,7 +44,9 @@
   "config": "Конфигурация",
   "searchInstances": "Поиск экземпляра...",
   "selectLanguage": "Выбрать язык:",
-  "selectedLanguage": "Выбранный язык: {{lang}}",
+  "selectedLanguage": "Выбранный язык: {{selectedLang}} (клиент принимает \"{{availableLanguages}}\", по умолчанию используется язык \"{{fallback}}\")",
+  "resetSelection": "Сбросить выбор",
+  "selectedLangNone": "не выбрано",
   "errors": {
     "failedToFetchInstances": "Не удалось получить экземпляры: {{error}}",
     "max100VideosPerChunk": "Максимальное количество видео для одного запроса - 100",

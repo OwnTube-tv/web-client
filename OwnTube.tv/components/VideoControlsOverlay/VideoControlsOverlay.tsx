@@ -192,7 +192,7 @@ const styles = StyleSheet.create({
     right: "3%",
     userSelect: "none",
   },
-  title: { fontWeight: "bold" },
+  title: { fontWeight: "bold", maxWidth: "78%" },
   topControlsContainer: {
     alignItems: "center",
     flexDirection: "row",
@@ -206,5 +206,5 @@ const styles = StyleSheet.create({
     zIndex: 1,
   },
   topLeftControls: { flexDirection: "row", gap: 24, width: "80%" },
-  topRightControls: { alignItems: "center", flexDirection: "row", gap: 24, width: "10%" },
+  topRightControls: { alignItems: "center", flexDirection: "row", gap: 24, justifyContent: "flex-end", width: "20%" },
 });

@@ -4,6 +4,7 @@ import { useGetVideoQuery } from "../../api";
 import { useLocalSearchParams } from "expo-router";
 import { RootStackParams } from "../_layout";
 import { useTranslation } from "react-i18next";
+import { Platform } from "react-native";
 
 export default function video() {
   const { id } = useLocalSearchParams<RootStackParams["video"]>();
@@ -12,10 +13,15 @@ export default function video() {
 
   return (
     <>
-      <Head>
-        <title>{title}</title>
-        <meta name="description" content={t("viewVideo")} />
-      </Head>
+      {Platform.select({
+        default: null,
+        web: (
+          <Head>
+            <title>{title}</title>
+            <meta name="description" content={t("viewVideo")} />
+          </Head>
+        ),
+      })}
       <VideoScreen />
     </>
   );

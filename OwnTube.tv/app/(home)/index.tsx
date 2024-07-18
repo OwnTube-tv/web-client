@@ -7,7 +7,7 @@ import Head from "expo-router/head";
 import { HomeScreen } from "../../screens";
 import { Feather } from "@expo/vector-icons";
 import { useTheme } from "@react-navigation/native";
-import { StyleSheet, View } from "react-native";
+import { Platform, StyleSheet, View } from "react-native";
 import { useRecentInstances } from "../../hooks";
 import { RootStackParams } from "../_layout";
 import { useTranslation } from "react-i18next";
@@ -70,12 +70,17 @@ export default function index() {
 
   return (
     <>
-      <Head>
-        <title>
-          {t("appName")}@{backend || ""}
-        </title>
-        <meta name="description" content="OwnTube.tv homepage" />
-      </Head>
+      {Platform.select({
+        default: null,
+        web: (
+          <Head>
+            <title>
+              {t("appName")}@{backend || ""}
+            </title>
+            <meta name="description" content="OwnTube.tv homepage" />
+          </Head>
+        ),
+      })}
       {!!backend && <HomeScreen />}
     </>
   );

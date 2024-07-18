@@ -2,23 +2,27 @@ import { DeviceCapabilities } from "./DeviceCapabilities";
 import { StyleSheet, Switch, View } from "react-native";
 import { Typography } from "./Typography";
 import { useAppConfigContext, useColorSchemeContext } from "../contexts";
+import { useTranslation } from "react-i18next";
+import { SelectLanguage } from "./SelectLanguage";
 
 export const AppConfig = () => {
   const { isDebugMode, setIsDebugMode } = useAppConfigContext();
   const { scheme, toggleScheme } = useColorSchemeContext();
+  const { t } = useTranslation();
 
   return (
     <View style={styles.deviceInfoAndToggles}>
       <DeviceCapabilities />
       <View style={styles.togglesContainer}>
         <View style={styles.option}>
-          <Typography>Debug logging</Typography>
+          <Typography>{t("debugLogging")}</Typography>
           <Switch value={isDebugMode} onValueChange={setIsDebugMode} />
         </View>
         <View style={styles.option}>
-          <Typography>Toggle Theme</Typography>
+          <Typography>{t("toggleTheme")}</Typography>
           <Switch value={scheme === "light"} onValueChange={toggleScheme} />
         </View>
+        <SelectLanguage />
       </View>
     </View>
   );

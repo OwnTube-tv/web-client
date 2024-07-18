@@ -16,3 +16,5 @@ export * from "./ResumeWatching";
 export * from "./ViewHistory";
 export * from "./ComboBoxInput";
 export * from "./AppConfig";
+export * from "./SelectLanguage";
+export * from "./IconButton";

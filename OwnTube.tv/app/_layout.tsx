@@ -1,6 +1,6 @@
 import { Link, Stack, useLocalSearchParams } from "expo-router";
 import { Platform, StyleSheet } from "react-native";
-import { ROUTES } from "../types";
+import { ROUTES, STORAGE } from "../types";
 import { Ionicons } from "@expo/vector-icons";
 import { DarkTheme, DefaultTheme, ThemeProvider } from "@react-navigation/native";
 import { AppConfigContextProvider, ColorSchemeContextProvider, useColorSchemeContext } from "../contexts";
@@ -9,11 +9,20 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { useFonts } from "expo-font";
 import Toast from "react-native-toast-message";
 import { BuildInfoToast, ClickableHeaderText } from "../components";
+import "../i18n";
+import { useTranslation } from "react-i18next";
+import { useEffect } from "react";
+import { readFromAsyncStorage } from "../utils";
 
 const RootStack = () => {
   const { backend } = useLocalSearchParams();
   const { scheme } = useColorSchemeContext();
   const theme = scheme === "dark" ? DarkTheme : DefaultTheme;
+  const { t, i18n } = useTranslation();
+
+  useEffect(() => {
+    readFromAsyncStorage(STORAGE.LOCALE).then(i18n.changeLanguage);
+  }, []);
 
   return (
     <ThemeProvider value={theme}>
@@ -26,14 +35,14 @@ const RootStack = () => {
           name={"(home)/index"}
           options={{
             headerBackVisible: false,
-            title: "OwnTube.tv",
+            title: t("appName"),
             headerLeft: () => <></>,
             headerRight: () => <></>,
           }}
         />
         <Stack.Screen
           options={{
-            title: "Settings",
+            title: t("settingsPageTitle"),
             headerBackVisible: false,
             headerLeft: () => (
               <Link style={styles.headerButtonLeft} href={{ pathname: "/", params: { backend } }}>
@@ -43,7 +52,7 @@ const RootStack = () => {
           }}
           name={`(home)/${ROUTES.SETTINGS}`}
         />
-        <Stack.Screen options={{ title: "Video", headerShown: false }} name={`(home)/video`} />
+        <Stack.Screen options={{ title: t("videoPageTitle"), headerShown: false }} name={`(home)/video`} />
       </Stack>
       <Toast config={{ buildInfo: () => <BuildInfoToast /> }} />
     </ThemeProvider>

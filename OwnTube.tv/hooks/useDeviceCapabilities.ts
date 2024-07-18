@@ -4,6 +4,7 @@ import { DeviceType } from "expo-device";
 import { Platform, useWindowDimensions } from "react-native";
 import UAParser from "ua-parser-js";
 import { capitalize } from "../utils";
+import { useTranslation } from "react-i18next";
 
 export interface DeviceCapabilities {
   playerImplementation: string;
@@ -12,16 +13,12 @@ export interface DeviceCapabilities {
   browser: string | null;
   device: string | null;
   dimensions: string;
-  orientation: "portrait" | "landscape";
+  orientation: string;
 }
 
 export const useDeviceCapabilities = () => {
-  const [playerImplementation, setPlayerImplementation] = useState(
-    Platform.select({
-      web: "Web video.js",
-      default: capitalize(Platform.OS),
-    }),
-  );
+  const { t } = useTranslation();
+  const [playerImplementation, setPlayerImplementation] = useState(capitalize(Platform.OS));
   const { height, width } = useWindowDimensions();
 
   const getBrowserInfo = () => {
@@ -36,16 +33,19 @@ export const useDeviceCapabilities = () => {
   const brandOrManufacturer = Device.brand || Device.manufacturer;
 
   const deviceCapabilities: DeviceCapabilities = {
-    OS: `${Platform.OS === "android" ? "Android" : Device.osName} version ${Device.osVersion}`,
+    OS: `${Platform.OS === "android" ? t("android") : Device.osName} ${t("version")} ${Device.osVersion}`,
     dimensions: Platform.select({
       web: `${window?.screen?.width} x ${window?.screen?.height}`,
       default: `${Math.round(width)} x ${Math.round(height)}`,
     }),
     device: brandOrManufacturer ? `${brandOrManufacturer} ${Device.modelName}` : null,
-    orientation: height > width ? "portrait" : "landscape",
-    deviceType: Device.deviceType ? DeviceType[Device.deviceType] : "Unknown",
+    orientation: height > width ? t("portrait") : t("landscape"),
+    deviceType: Device.deviceType ? DeviceType[Device.deviceType] : t("unknown"),
     browser: getBrowserInfo(),
-    playerImplementation,
+    playerImplementation: Platform.select({
+      web: `${t("web")} video.js`,
+      default: playerImplementation,
+    }),
   };
 
   return { deviceCapabilities, setPlayerImplementation };

@@ -18,7 +18,7 @@ export const VideoChannel = ({ channel, data }: Props) => {
   return (
     <View>
       <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
-        <ChannelAvatar imageUri={`https://${backend}${channel.avatar?.path}`} />
+        <ChannelAvatar imageUri={channel.avatar?.path ? `https://${backend}${channel.avatar?.path}` : undefined} />
         <Typography>{channel.displayName}</Typography>
       </View>
       {Object.entries(data || {}).map(([category, videos]) => (

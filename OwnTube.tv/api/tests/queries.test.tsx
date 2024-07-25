@@ -40,7 +40,7 @@ describe("useGetVideosQuery", () => {
     (useLocalSearchParams as jest.Mock).mockReturnValue({ backend: "abc.xyz" });
     const { result } = renderHook(() => useGetVideosQuery({ enabled: true }), { wrapper });
     await waitFor(() => expect(getLocalData).not.toHaveBeenCalled());
-    await waitFor(() => expect(ApiServiceImpl.getVideos).toHaveBeenCalledWith("abc.xyz"));
+    await waitFor(() => expect(ApiServiceImpl.getVideos).toHaveBeenCalledWith("abc.xyz", 5000));
     await waitFor(() =>
       expect(result.current.data).toStrictEqual([
         { thumbnailPath: "https://abc.xyz/123f-3fe-3", uuid: "123" },

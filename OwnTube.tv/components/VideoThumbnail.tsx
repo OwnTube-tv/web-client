@@ -3,16 +3,18 @@ import { getThumbnailDimensions } from "../utils";
 import { useColorSchemeContext } from "../contexts";
 import { Typography } from "./Typography";
 import { useTheme } from "@react-navigation/native";
-import { FC } from "react";
+import { FC, useEffect, useState } from "react";
 import { Link } from "expo-router";
 import { ROUTES } from "../types";
 import { ViewHistoryEntry } from "../hooks";
 import { GetVideosVideo } from "../api/models";
+import { Loader } from "./Loader";
 
 interface VideoThumbnailProps {
   video: GetVideosVideo & Partial<ViewHistoryEntry>;
   backend?: string;
   timestamp?: number;
+  isVisible?: boolean;
 }
 
 const defaultImagePaths = {
@@ -20,14 +22,22 @@ const defaultImagePaths = {
   light: require("./../assets/Logo400x400.png"),
 };
 
-export const VideoThumbnail: FC<VideoThumbnailProps> = ({ video, backend, timestamp }) => {
+export const VideoThumbnail: FC<VideoThumbnailProps> = ({ video, backend, timestamp, isVisible = true }) => {
   const { scheme } = useColorSchemeContext();
+  const [shouldFetchThumbnail, setShouldFetchThumbnail] = useState(false);
 
-  const imageSource = video.thumbnailPath ? { uri: video.thumbnailPath } : defaultImagePaths[scheme ?? "dark"];
   const { width, height } = getThumbnailDimensions();
   const { colors } = useTheme();
 
   const percentageWatched = timestamp ? (timestamp / video.duration) * 100 : 0;
+
+  useEffect(() => {
+    if (isVisible) {
+      setShouldFetchThumbnail(true);
+    }
+  }, [isVisible]);
+
+  const imageSource = video.thumbnailPath ? { uri: video.thumbnailPath } : defaultImagePaths[scheme ?? "dark"];
 
   if (!backend) {
     return null;
@@ -38,7 +48,7 @@ export const VideoThumbnail: FC<VideoThumbnailProps> = ({ video, backend, timest
       style={[styles.videoThumbnailContainer, { height, width }, { backgroundColor: colors.card }]}
       href={{ pathname: `/${ROUTES.VIDEO}`, params: { id: video.uuid, backend, timestamp } }}
     >
-      <Image source={imageSource} style={styles.videoImage} />
+      {shouldFetchThumbnail ? <Image source={imageSource} style={styles.videoImage} /> : <Loader />}
       <View style={styles.textContainer}>
         {!!percentageWatched && percentageWatched > 0 && (
           <View style={styles.progressContainer}>

@@ -2,14 +2,14 @@ import { Image, StyleSheet, View } from "react-native";
 import { LogoNoText } from "./Svg";
 import { useTheme } from "@react-navigation/native";
 
-export const ChannelAvatar = ({ imageUri }: { imageUri: string }) => {
+export const ChannelAvatar = ({ imageUri }: { imageUri?: string }) => {
   const { colors } = useTheme();
 
   return (
     <View>
       <LogoNoText width={72} height={72} fill={colors.text} stroke={colors.text} />
       <View style={styles.imageContainer}>
-        <Image style={styles.image} source={{ uri: imageUri }} />
+        <Image style={styles.image} source={imageUri ? { uri: imageUri } : undefined} />
       </View>
     </View>
   );

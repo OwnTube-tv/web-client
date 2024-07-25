@@ -30,7 +30,7 @@ export const useGetVideosQuery = <TResult = GetVideosVideo[]>({
         return getLocalData<{ data: GetVideosVideo[] }>("videos").data;
       }
 
-      const data = await ApiServiceImpl.getVideos(backend!);
+      const data = await ApiServiceImpl.getVideos(backend!, 5000);
       return data.map((video) => ({ ...video, thumbnailPath: `https://${backend}${video.thumbnailPath}` }));
     },
     enabled: enabled && !!backend,

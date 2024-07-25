@@ -9,7 +9,7 @@ import { useTranslation } from "react-i18next";
 
 export const VideoList = () => {
   const { t } = useTranslation();
-  const { data, error, isFetching } = useGetVideosQuery<{
+  const { data, error, isLoading } = useGetVideosQuery<{
     raw: GetVideosVideo[];
     videosByChannel: VideosByChannel;
   }>({
@@ -27,7 +27,7 @@ export const VideoList = () => {
     return <ErrorMessage message={error.message} />;
   }
 
-  if (isFetching) {
+  if (isLoading) {
     return <Loader />;
   }
 

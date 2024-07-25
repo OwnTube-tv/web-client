@@ -1,11 +1,10 @@
 import { useEffect, useRef, useState } from "react";
-import { Dimensions, ScrollView } from "react-native";
-
-type ScrollRef = ScrollView | null;
+import { Dimensions, FlatList } from "react-native";
+import { GetVideosVideo } from "../api/models";
 
 export const useCategoryScroll = () => {
   const [windowWidth, setWindowWidth] = useState(Dimensions.get("window").width);
-  const scrollRefs = useRef<ScrollRef[]>([]);
+  const ref = useRef<FlatList<GetVideosVideo>>(null);
 
   useEffect(() => {
     const subscription = Dimensions.addEventListener("change", ({ window }) => {
@@ -15,10 +14,8 @@ export const useCategoryScroll = () => {
     return () => subscription.remove();
   }, []);
 
-  const scrollLeft = () => scrollRefs.current[0]?.scrollTo({ x: 0, animated: true });
-  const scrollRight = () => scrollRefs.current[0]?.scrollToEnd({ animated: true });
+  const scrollLeft = () => ref.current?.scrollToIndex({ index: 0, animated: true });
+  const scrollRight = () => ref.current?.scrollToEnd({ animated: true });
 
-  const ref = (ref: ScrollRef) => (scrollRefs.current[0] = ref);
-
-  return { ref, scrollLeft, scrollRight, windowWidth };
+  return { ref, windowWidth, scrollRight, scrollLeft };
 };

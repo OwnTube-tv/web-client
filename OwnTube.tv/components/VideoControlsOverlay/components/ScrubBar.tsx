@@ -154,13 +154,13 @@ const styles = StyleSheet.create({
     borderRightWidth: 1,
     flexDirection: "row",
     height: 5,
-    width: "95%",
+    width: "100%",
   },
   scrubBarHitSlop: {
     alignItems: "center",
     height: "100%",
     justifyContent: "center",
-    width: "100%",
+    width: "95%",
   },
   seekTime: {
     borderRadius: 8,

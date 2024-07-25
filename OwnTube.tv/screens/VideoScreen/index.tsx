@@ -6,6 +6,7 @@ import { useGetVideoQuery } from "../../api";
 import { useEffect, useMemo } from "react";
 import { Loader } from "../../components";
 import { useViewHistory } from "../../hooks";
+import { StatusBar } from "expo-status-bar";
 
 export const VideoScreen = () => {
   const params = useLocalSearchParams<RootStackParams[ROUTES.VIDEO]>();
@@ -64,12 +65,15 @@ export const VideoScreen = () => {
   }
 
   return (
-    <VideoView
-      timestamp={params?.timestamp}
-      handleSetTimeStamp={handleSetTimeStamp}
-      testID={`${params.id}-video-view`}
-      uri={uri}
-      title={data?.name}
-    />
+    <>
+      <StatusBar hidden />
+      <VideoView
+        timestamp={params?.timestamp}
+        handleSetTimeStamp={handleSetTimeStamp}
+        testID={`${params.id}-video-view`}
+        uri={uri}
+        title={data?.name}
+      />
+    </>
   );
 };

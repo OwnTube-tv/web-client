@@ -100,7 +100,7 @@ const VideoView = ({ uri, testID, handleSetTimeStamp, timestamp, title }: VideoV
           ref={videoRef}
           source={{ uri }}
           onPlaybackStatusUpdate={handlePlaybackStatusUpdate}
-          videoStyle={{ position: "relative" }}
+          style={styles.videoWrapper}
         />
       </VideoControlsOverlay>
     </View>

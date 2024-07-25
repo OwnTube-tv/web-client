@@ -154,7 +154,7 @@ const styles = StyleSheet.create({
     borderRightWidth: 1,
     flexDirection: "row",
     height: 5,
-    width: "100%",
+    width: "95%",
   },
   scrubBarHitSlop: {
     alignItems: "center",

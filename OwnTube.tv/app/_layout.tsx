@@ -1,7 +1,6 @@
 import { Link, Stack, useLocalSearchParams } from "expo-router";
 import { Platform, StyleSheet } from "react-native";
 import { ROUTES, STORAGE } from "../types";
-import { Ionicons } from "@expo/vector-icons";
 import { DarkTheme, DefaultTheme, ThemeProvider } from "@react-navigation/native";
 import { AppConfigContextProvider, ColorSchemeContextProvider, useColorSchemeContext } from "../contexts";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -13,6 +12,18 @@ import "../i18n";
 import { useTranslation } from "react-i18next";
 import { useEffect } from "react";
 import { readFromAsyncStorage } from "../utils";
+import {
+  Inter_100Thin,
+  Inter_200ExtraLight,
+  Inter_300Light,
+  Inter_400Regular,
+  Inter_500Medium,
+  Inter_600SemiBold,
+  Inter_700Bold,
+  Inter_800ExtraBold,
+  Inter_900Black,
+} from "@expo-google-fonts/inter";
+import { IcoMoonIcon } from "../components";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 const RootStack = () => {
@@ -47,7 +58,7 @@ const RootStack = () => {
             headerBackVisible: false,
             headerLeft: () => (
               <Link style={styles.headerButtonLeft} href={{ pathname: "/", params: { backend } }}>
-                <Ionicons name="home" size={24} color={theme.colors.primary} />
+                <IcoMoonIcon name="Home" size={24} color={theme.colors.primary} />
               </Link>
             ),
           }}
@@ -65,7 +76,18 @@ const queryClient = new QueryClient();
 export default function RootLayout() {
   const isWeb = Platform.OS === "web";
 
-  const [fontsLoaded, fontError] = useFonts(Ionicons.font);
+  const [fontsLoaded, fontError] = useFonts({
+    Inter_100Thin,
+    Inter_200ExtraLight,
+    Inter_300Light,
+    Inter_400Regular,
+    Inter_500Medium,
+    Inter_600SemiBold,
+    Inter_700Bold,
+    Inter_800ExtraBold,
+    Inter_900Black,
+    IcoMoon: require("../assets/fonts/icomoon.ttf"),
+  });
 
   if (!fontsLoaded && !fontError) {
     return null;

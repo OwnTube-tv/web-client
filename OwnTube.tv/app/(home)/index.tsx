@@ -1,11 +1,10 @@
 import { Link, useFocusEffect, useLocalSearchParams, useNavigation, useRouter } from "expo-router";
 import { ROUTES, SOURCES, STORAGE } from "../../types";
 import { readFromAsyncStorage, writeToAsyncStorage } from "../../utils";
-import { DeviceCapabilitiesModal, Loader } from "../../components";
+import { DeviceCapabilitiesModal, IcoMoonIcon, Loader } from "../../components";
 import { useCallback, useState } from "react";
 import Head from "expo-router/head";
 import { HomeScreen } from "../../screens";
-import { Feather } from "@expo/vector-icons";
 import { useTheme } from "@react-navigation/native";
 import { Platform, StyleSheet, View } from "react-native";
 import { useRecentInstances } from "../../hooks";
@@ -48,7 +47,7 @@ export default function index() {
                 style={styles.headerButton}
                 href={{ pathname: `/${ROUTES.SETTINGS}`, params: { backend, tab: "history" } }}
               >
-                <Feather name="settings" size={24} color={theme.colors.primary} />
+                <IcoMoonIcon name="Settings" size={24} color={theme.colors.primary} />
               </Link>
               <DeviceCapabilitiesModal />
             </View>

@@ -1,6 +1,5 @@
 import { PropsWithChildren, useMemo } from "react";
 import { Dimensions, Pressable, StyleSheet, View } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
 import { useTheme } from "@react-navigation/native";
 import { ScrubBar } from "./components/ScrubBar";
 import { Typography } from "../Typography";
@@ -8,6 +7,7 @@ import { getHumanReadableDuration } from "../../utils";
 import { typography } from "../../theme";
 import { useNavigation } from "expo-router";
 import { DeviceCapabilitiesModal } from "../DeviceCapabilitiesModal";
+import { IcoMoonIcon } from "../IcoMoonIcon";
 
 interface VideoControlsOverlayProps {
   isVisible: boolean;
@@ -56,7 +56,7 @@ export const VideoControlsOverlay = ({
   }, []);
 
   const centralIconName = useMemo(() => {
-    return isPlaying ? "pause" : shouldReplay ? "reload" : "play";
+    return isPlaying ? "Pause" : shouldReplay ? "Reload" : "Play";
   }, [isPlaying, shouldReplay]);
 
   const { percentageAvailable, percentagePosition } = useMemo(() => {
@@ -73,7 +73,7 @@ export const VideoControlsOverlay = ({
           <View style={styles.topControlsContainer}>
             <View style={styles.topLeftControls}>
               <Pressable onPress={navigation.goBack} style={styles.goBackContainer}>
-                <Ionicons name={"arrow-back"} size={48 * uiScale} color={colors.primary} />
+                <IcoMoonIcon name="Arrow-Left" size={48 * uiScale} color={colors.primary} />
               </Pressable>
               <Typography
                 numberOfLines={1}
@@ -87,7 +87,7 @@ export const VideoControlsOverlay = ({
             </View>
             <View style={styles.topRightControls}>
               <Pressable onPress={toggleMute}>
-                <Ionicons name={`volume-${isMute ? "mute" : "high"}`} size={48 * uiScale} color={colors.primary} />
+                <IcoMoonIcon name={`Volume${isMute ? "-Off" : ""}`} size={48 * uiScale} color={colors.primary} />
               </Pressable>
               <DeviceCapabilitiesModal />
             </View>
@@ -95,23 +95,13 @@ export const VideoControlsOverlay = ({
           <View style={styles.playbackControlsContainer}>
             <View style={{ flexDirection: "row", gap: 32 * uiScale }}>
               <Pressable onPress={() => handleRW(15)}>
-                <View style={styles.skipTextContainer}>
-                  <Typography color={colors.primary} fontSize={32 * uiScale} style={styles.skipText}>
-                    {15}
-                  </Typography>
-                </View>
-                <Ionicons name={"reload"} size={96 * uiScale} color={colors.primary} style={styles.skipLeft} />
+                <IcoMoonIcon name="Rewind-15" size={96 * uiScale} color={colors.primary} />
               </Pressable>
               <Pressable onPress={shouldReplay ? handleReplay : handlePlayPause}>
-                <Ionicons name={centralIconName} size={96 * uiScale} color={colors.primary} />
+                <IcoMoonIcon name={centralIconName} size={96 * uiScale} color={colors.primary} />
               </Pressable>
               <Pressable onPress={() => handleFF(30)}>
-                <View style={styles.skipTextContainer}>
-                  <Typography color={colors.primary} fontSize={32 * uiScale} style={styles.skipText}>
-                    {30}
-                  </Typography>
-                </View>
-                <Ionicons name={"reload"} size={96 * uiScale} color={colors.primary} style={styles.skipRight} />
+                <IcoMoonIcon name="Fast-forward-30" size={96 * uiScale} color={colors.primary} />
               </Pressable>
             </View>
           </View>
@@ -164,23 +154,6 @@ const styles = StyleSheet.create({
     height: "100%",
     justifyContent: "center",
     width: "100%",
-  },
-  skipLeft: {
-    transform: [{ rotateZ: "45deg" }, { scaleX: -1 }],
-  },
-  skipRight: {
-    transform: [{ rotateZ: "-45deg" }],
-  },
-  skipText: { fontWeight: "bold", marginTop: 4, userSelect: "none" },
-  skipTextContainer: {
-    alignItems: "center",
-    bottom: 0,
-    justifyContent: "center",
-    left: 0,
-    position: "absolute",
-    right: 0,
-    top: 0,
-    zIndex: 1,
   },
   timeBlockLeft: {
     left: "3%",

@@ -68,7 +68,7 @@ export const SourceSelect = () => {
         <>
           <View style={styles.recentsHeader}>
             <Typography>{t("recentInstances")}</Typography>
-            <IconButton icon="trash" onPress={clearRecentInstances} text={t("clear")} />
+            <IconButton icon="Trash" onPress={clearRecentInstances} text={t("clear")} />
           </View>
           {recentInstances?.map(renderItem)}
           <Spacer height={16} />

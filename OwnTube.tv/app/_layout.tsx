@@ -13,6 +13,7 @@ import "../i18n";
 import { useTranslation } from "react-i18next";
 import { useEffect } from "react";
 import { readFromAsyncStorage } from "../utils";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 const RootStack = () => {
   const { backend } = useLocalSearchParams();
@@ -71,14 +72,16 @@ export default function RootLayout() {
   }
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <AppConfigContextProvider>
-        {isWeb && <ReactQueryDevtools initialIsOpen={false} />}
-        <ColorSchemeContextProvider>
-          <RootStack />
-        </ColorSchemeContextProvider>
-      </AppConfigContextProvider>
-    </QueryClientProvider>
+    <GestureHandlerRootView>
+      <QueryClientProvider client={queryClient}>
+        <AppConfigContextProvider>
+          {isWeb && <ReactQueryDevtools initialIsOpen={false} />}
+          <ColorSchemeContextProvider>
+            <RootStack />
+          </ColorSchemeContextProvider>
+        </AppConfigContextProvider>
+      </QueryClientProvider>
+    </GestureHandlerRootView>
   );
 }
 

@@ -1,11 +1,11 @@
 import { Pressable, StyleSheet, View } from "react-native";
 import { Typography } from "./Typography";
 import * as Clipboard from "expo-clipboard";
-import { Ionicons } from "@expo/vector-icons";
 import { Spacer } from "./shared/Spacer";
 import { useAppConfigContext } from "../contexts";
 import { useTheme } from "@react-navigation/native";
 import { useTranslation } from "react-i18next";
+import { IcoMoonIcon } from "./IcoMoonIcon";
 
 export const DeviceCapabilities = () => {
   const { deviceCapabilities } = useAppConfigContext();
@@ -21,7 +21,7 @@ export const DeviceCapabilities = () => {
       <View style={styles.modalHeader}>
         <Typography>{t("deviceCapabilityInfoTitle")}</Typography>
         <Pressable onPress={handleCopyToClipboard}>
-          <Ionicons color={colors.primary} name="copy" size={24} />
+          <IcoMoonIcon color={colors.primary} name="Content-Copy" size={24} />
         </Pressable>
       </View>
       <Spacer height={16} />

@@ -23,7 +23,7 @@ export const ViewHistory = () => {
     <View style={styles.container}>
       <View style={styles.headerContainer}>
         <Typography style={styles.header}>{t("viewHistory")}</Typography>
-        <IconButton icon="trash" onPress={clearHistory} text={t("clear")} />
+        <IconButton icon="Trash" onPress={clearHistory} text={t("clear")} />
       </View>
       <FlatList
         renderItem={({ item }) => <ViewHistoryListItem video={item} />}

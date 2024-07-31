@@ -1,7 +1,7 @@
 import { PropsWithChildren } from "react";
 import { Text, TextProps } from "react-native";
 import { useTheme } from "@react-navigation/native";
-import { typography } from "../theme";
+import { fontFamilies, typography } from "../theme";
 
 export const Typography = (
   props: PropsWithChildren<
@@ -24,6 +24,7 @@ export const Typography = (
           fontSize: props.fontSize || typography.size.M,
           textShadowColor: props.hasOuterGlow ? colors.background : undefined,
           textShadowRadius: props.hasOuterGlow ? 10 : undefined,
+          fontFamily: fontFamilies.regular,
         },
       ]}
     >

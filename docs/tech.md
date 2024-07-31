@@ -63,3 +63,10 @@ The strings of text for each language are stored in JSON files, using the patter
 translations for each language you need to edit these files only.
 The default locale is chosen depending on your device's preferred language, or the language chosen in settings, and if your language
 is unavailable then `en` is chosen as fallback (this can be configured in `i18n.js` file).
+
+### Icons
+
+This app uses the IcoMoon format for using a dedicated icon set. Usage: go to [IcoMoon](https://icomoon.io/), go to "App"
+section, import the `selection.json` file from `assets/` to IcoMoon selection, press `Generate Font`, download and unzip,
+copy the new `selection.json` file to `assets` and `icomoon.ttf` to `assets/fonts`. Then use the `<IcoMoonIcon />` in the
+app.

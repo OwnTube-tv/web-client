@@ -3,11 +3,11 @@ import { View, StyleSheet, FlatList, ViewToken } from "react-native";
 import { useCategoryScroll, useViewHistory } from "../hooks";
 import { Button, VideoThumbnail } from "./";
 import { useTheme } from "@react-navigation/native";
-import { Ionicons } from "@expo/vector-icons";
 import { GetVideosVideo } from "../api/models";
 import { useLocalSearchParams } from "expo-router";
 import { RootStackParams } from "../app/_layout";
 import { ROUTES } from "../types";
+import { IcoMoonIcon } from "./IcoMoonIcon";
 
 export const CategoryScroll: FC<{ videos: GetVideosVideo[] }> = ({ videos }) => {
   const { backend } = useLocalSearchParams<RootStackParams[ROUTES.INDEX]>();
@@ -42,7 +42,7 @@ export const CategoryScroll: FC<{ videos: GetVideosVideo[] }> = ({ videos }) => 
   return (
     <View style={styles.horizontalScrollContainer}>
       <Button onPress={scrollLeft} style={[styles.scrollButton, { backgroundColor: colors.card }]}>
-        <Ionicons name="chevron-back" size={20} color={colors.text} />
+        <IcoMoonIcon name="Chevron" size={20} color={colors.text} style={{ transform: [{ rotate: "90deg" }] }} />
       </Button>
       <FlatList
         onViewableItemsChanged={handleViewableItemsChanged}
@@ -61,7 +61,7 @@ export const CategoryScroll: FC<{ videos: GetVideosVideo[] }> = ({ videos }) => 
         }}
       />
       <Button onPress={scrollRight} style={[styles.scrollButton, { backgroundColor: colors.card }]}>
-        <Ionicons name="chevron-forward" size={20} color={colors.text} />
+        <IcoMoonIcon name="Chevron" size={20} color={colors.text} style={{ transform: [{ rotate: "-90deg" }] }} />
       </Button>
     </View>
   );

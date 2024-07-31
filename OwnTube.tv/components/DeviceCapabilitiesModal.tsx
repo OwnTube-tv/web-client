@@ -1,9 +1,9 @@
-import { Ionicons } from "@expo/vector-icons";
 import { useTheme } from "@react-navigation/native";
 import { Modal, Pressable, StyleSheet } from "react-native";
 import { useState } from "react";
 import { colors } from "../colors";
 import { DeviceCapabilities } from "./DeviceCapabilities";
+import { IcoMoonIcon } from "./IcoMoonIcon";
 
 export const DeviceCapabilitiesModal = () => {
   const { colors } = useTheme();
@@ -15,7 +15,7 @@ export const DeviceCapabilitiesModal = () => {
   return (
     <>
       <Pressable onPress={toggleModal}>
-        <Ionicons size={24} color={colors.primary} name="information-circle" />
+        <IcoMoonIcon size={24} color={colors.primary} name="Information" />
       </Pressable>
       <Modal style={styles.modal} transparent={true} visible={modalVisible} onRequestClose={toggleModal}>
         <Pressable style={styles.showModalBtn} onPress={toggleModal}>

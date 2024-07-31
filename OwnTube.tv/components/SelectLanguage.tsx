@@ -23,7 +23,7 @@ export const SelectLanguage = () => {
           })}
         </Typography>
         {defaultLang !== currentLang && (
-          <IconButton onPress={handleResetLang} text={t("resetSelection")} icon="trash" />
+          <IconButton onPress={handleResetLang} text={t("resetSelection")} icon="Trash" />
         )}
       </View>
       <Spacer height={16} />

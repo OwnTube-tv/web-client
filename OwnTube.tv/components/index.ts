@@ -18,3 +18,4 @@ export * from "./ComboBoxInput";
 export * from "./AppConfig";
 export * from "./SelectLanguage";
 export * from "./IconButton";
+export * from "./IcoMoonIcon";

@@ -1,7 +1,7 @@
 import { Typography } from "./Typography";
-import { Ionicons } from "@expo/vector-icons";
 import { useTheme } from "@react-navigation/native";
-import { StyleSheet } from "react-native";
+import { Pressable, StyleSheet } from "react-native";
+import { IcoMoonIcon } from "./IcoMoonIcon";
 
 interface IconButtonProps {
   onPress: () => void;
@@ -13,21 +13,24 @@ export const IconButton = ({ onPress, icon, text }: IconButtonProps) => {
   const { colors } = useTheme();
 
   return (
-    <Ionicons.Button
-      // @ts-expect-error there is no usable type for this property provided in the lib
-      name={icon}
-      backgroundColor={colors.background}
-      style={{ ...styles.container, borderColor: colors.border }}
+    <Pressable
+      style={{ ...styles.container, borderColor: colors.border, backgroundColor: colors.background }}
       onPress={onPress}
     >
       <Typography>{text}</Typography>
-    </Ionicons.Button>
+      <IcoMoonIcon name={icon} size={24} color={colors.text} />
+    </Pressable>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
+    alignItems: "center",
     alignSelf: "flex-start",
+    borderRadius: 8,
     borderWidth: 1,
+    flexDirection: "row",
+    gap: 16,
+    padding: 8,
   },
 });

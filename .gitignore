@@ -131,3 +131,7 @@ dist
 
 # IDEA
 .idea
+
+# macOS
+.DS_Store
+*.pem

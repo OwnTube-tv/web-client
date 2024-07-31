@@ -115,7 +115,7 @@ export const VideoControlsOverlay = ({
               </Pressable>
             </View>
           </View>
-          <Pressable style={styles.bottomControlsContainer}>
+          <View style={styles.bottomControlsContainer}>
             <Typography hasOuterGlow fontSize={typography.size.M * uiScale} style={styles.timeBlockLeft}>
               {getHumanReadableDuration(position)}
             </Typography>
@@ -128,7 +128,7 @@ export const VideoControlsOverlay = ({
             <Typography hasOuterGlow fontSize={typography.size.M * uiScale} style={styles.timeBlockRight}>
               {getHumanReadableDuration(duration)}
             </Typography>
-          </Pressable>
+          </View>
         </View>
       ) : null}
       {children}

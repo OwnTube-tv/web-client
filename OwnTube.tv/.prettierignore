@@ -1,2 +1,4 @@
 **/.expo/*
 **/dist/*
+package.json
+app.json

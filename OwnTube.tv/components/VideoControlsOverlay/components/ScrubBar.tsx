@@ -1,6 +1,6 @@
 import { StyleSheet, View } from "react-native";
 import { useTheme } from "@react-navigation/native";
-import { Gesture, GestureDetector, GestureHandlerRootView } from "react-native-gesture-handler";
+import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import { useEffect, useMemo, useState } from "react";
 import { Typography } from "../../Typography";
 import { getHumanReadableDuration } from "../../../utils";
@@ -45,7 +45,8 @@ export const ScrubBar = ({ percentageAvailable, percentagePosition, onDrag, dura
       setPosition(x);
       setIsDragging(false);
     })
-    .minDistance(0);
+    .minDistance(0)
+    .runOnJS(true);
 
   useEffect(() => {
     if (!isDragging) {
@@ -58,7 +59,7 @@ export const ScrubBar = ({ percentageAvailable, percentagePosition, onDrag, dura
   }, [scrubberPosition, visibleWidth, duration]);
 
   return (
-    <GestureHandlerRootView style={styles.gestureHandlerContainer}>
+    <View style={styles.gestureHandlerContainer}>
       <GestureDetector gesture={pan}>
         <View collapsable={false} style={styles.scrubBarHitSlop}>
           <View
@@ -115,7 +116,7 @@ export const ScrubBar = ({ percentageAvailable, percentagePosition, onDrag, dura
           </View>
         </View>
       </GestureDetector>
-    </GestureHandlerRootView>
+    </View>
   );
 };
 
@@ -154,13 +155,13 @@ const styles = StyleSheet.create({
     borderRightWidth: 1,
     flexDirection: "row",
     height: 5,
-    width: "95%",
+    width: "100%",
   },
   scrubBarHitSlop: {
     alignItems: "center",
     height: "100%",
     justifyContent: "center",
-    width: "100%",
+    width: "95%",
   },
   seekTime: {
     borderRadius: 8,

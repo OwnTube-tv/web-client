@@ -16,7 +16,9 @@ export interface VideoViewProps {
 const VideoView = ({ uri, testID, handleSetTimeStamp, timestamp, title }: VideoViewProps) => {
   const videoRef = useRef<Video>(null);
   const [isControlsVisible, setIsControlsVisible] = useState(false);
-  const [playbackStatus, setPlaybackStatus] = useState<AVPlaybackStatusSuccess | null>(null);
+  const [playbackStatus, setPlaybackStatus] = useState<(AVPlaybackStatusSuccess & { positionSeconds: number }) | null>(
+    null,
+  );
   const { setPlayerImplementation } = useAppConfigContext();
 
   const toggleControls = () => {
@@ -29,7 +31,7 @@ const VideoView = ({ uri, testID, handleSetTimeStamp, timestamp, title }: VideoV
 
   const handlePlaybackStatusUpdate = (status: AVPlaybackStatus) => {
     if (status?.isLoaded) {
-      setPlaybackStatus(status);
+      setPlaybackStatus({ ...status, positionSeconds: Math.floor(status.positionMillis / 1000) });
 
       if (status.androidImplementation) {
         setPlayerImplementation(`Android ${status.androidImplementation}`);
@@ -62,12 +64,9 @@ const VideoView = ({ uri, testID, handleSetTimeStamp, timestamp, title }: VideoV
   useEffect(() => {
     if (!playbackStatus) return;
 
-    const { positionMillis } = playbackStatus;
-    const positionFormatted = positionMillis / 1000;
+    const { positionSeconds } = playbackStatus;
 
-    if (positionFormatted % 10 === 0) {
-      handleSetTimeStamp(positionFormatted);
-    }
+    handleSetTimeStamp(positionSeconds);
   }, [playbackStatus?.positionMillis]);
 
   useEffect(() => {

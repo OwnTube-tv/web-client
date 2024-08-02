@@ -1,4 +1,6 @@
-interface ColorScheme {
+import { DarkTheme, DefaultTheme } from "@react-navigation/native";
+
+export interface ColorScheme {
   theme50: string;
   theme100: string;
   theme200: string;
@@ -47,6 +49,23 @@ const dark: ColorScheme = {
   theme950: "#F5F9FD",
   themeDesaturated500: "#7A8D9F",
   ...blackAndWhite,
+};
+
+export const colorSchemes = {
+  light: {
+    ...DefaultTheme,
+    colors: {
+      ...DefaultTheme.colors,
+      ...light,
+    },
+  },
+  dark: {
+    ...DarkTheme,
+    colors: {
+      ...DarkTheme.colors,
+      ...dark,
+    },
+  },
 };
 
 export const colors = { light, dark };

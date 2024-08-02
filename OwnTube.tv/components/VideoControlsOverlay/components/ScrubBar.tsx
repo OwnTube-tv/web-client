@@ -4,17 +4,30 @@ import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import { useEffect, useMemo, useState } from "react";
 import { Typography } from "../../Typography";
 import { getHumanReadableDuration } from "../../../utils";
+import { borderRadius, spacing } from "../../../theme";
 
 interface ScrubBarProps {
-  percentageAvailable: number;
   percentagePosition: number;
+  percentageAvailable?: number;
   onDrag: (position: number) => void;
-  duration: number;
+  length: number;
+  isExpanded: boolean;
+  variant: "volume" | "seek";
 }
 
-const INDICATOR_SIZE = 16;
+const INDICATOR_SIZE = 12;
+const HALF_INDICATOR_SIZE = INDICATOR_SIZE / 2;
+const SEEK_HINT_OFFSET = 26;
+const SEEK_HINT_COLOR = "#151E29";
 
-export const ScrubBar = ({ percentageAvailable, percentagePosition, onDrag, duration }: ScrubBarProps) => {
+export const ScrubBar = ({
+  percentageAvailable,
+  percentagePosition,
+  onDrag,
+  length,
+  isExpanded,
+  variant,
+}: ScrubBarProps) => {
   const { colors } = useTheme();
   const [visibleWidth, setVisibleWidth] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
@@ -25,15 +38,15 @@ export const ScrubBar = ({ percentageAvailable, percentagePosition, onDrag, dura
       return;
     }
 
-    setScrubberPosition(x - INDICATOR_SIZE / 2);
+    setScrubberPosition(x > HALF_INDICATOR_SIZE ? x - HALF_INDICATOR_SIZE : 0);
   };
 
   const setPosition = (x: number) => {
     const newX = visibleWidth <= x ? visibleWidth : x < 0 ? 0 : x;
 
-    const newPositionRelation = (newX - INDICATOR_SIZE / 2) / visibleWidth;
+    const newPositionRelation = (newX - HALF_INDICATOR_SIZE) / visibleWidth;
 
-    onDrag(Math.floor(newPositionRelation * duration));
+    onDrag(Math.floor(newPositionRelation * length));
   };
 
   const pan = Gesture.Pan()
@@ -55,8 +68,31 @@ export const ScrubBar = ({ percentageAvailable, percentagePosition, onDrag, dura
   }, [percentagePosition, visibleWidth]);
 
   const seekHint = useMemo(() => {
-    return getHumanReadableDuration(duration * (scrubberPosition / visibleWidth));
-  }, [scrubberPosition, visibleWidth, duration]);
+    const newPosition = scrubberPosition - SEEK_HINT_OFFSET;
+    const hintMs = scrubberPosition / visibleWidth;
+
+    return {
+      text: getHumanReadableDuration(length * (hintMs > 0 ? hintMs : 0)),
+      position: newPosition < 0 ? 0 : newPosition,
+    };
+  }, [scrubberPosition, visibleWidth, length]);
+
+  const indicatorPosition = useMemo(() => {
+    return scrubberPosition > HALF_INDICATOR_SIZE ? scrubberPosition - HALF_INDICATOR_SIZE : 0;
+  }, [scrubberPosition]);
+
+  const colorVariant = useMemo(() => {
+    return {
+      volume: {
+        position: colors.white94,
+        indicator: colors.white94,
+      },
+      seek: {
+        position: colors.theme600,
+        indicator: colors.theme600,
+      },
+    }[variant];
+  }, [variant, colors]);
 
   return (
     <View style={styles.gestureHandlerContainer}>
@@ -66,41 +102,43 @@ export const ScrubBar = ({ percentageAvailable, percentagePosition, onDrag, dura
             style={[
               styles.scrubBarContainer,
               {
-                backgroundColor: colors.background,
-                borderColor: colors.background,
+                backgroundColor: colors.white25,
               },
             ]}
             onLayout={(event) => setVisibleWidth(event.nativeEvent.layout.width)}
           >
-            {isDragging && (
+            {isDragging && variant === "seek" && (
               <View
                 style={[
                   styles.seekTime,
                   {
-                    backgroundColor: colors.card,
-                    left: scrubberPosition,
+                    backgroundColor: SEEK_HINT_COLOR,
+                    left: seekHint.position,
                   },
                 ]}
               >
-                <Typography>{seekHint}</Typography>
+                <Typography fontSize="sizeXS" color={colors.white94} fontWeight="Medium">
+                  {seekHint.text}
+                </Typography>
               </View>
             )}
-            <View
-              style={[
-                styles.indicator,
-                {
-                  backgroundColor: isDragging ? colors.text : colors.primary,
-                  borderColor: colors.background,
-                  left: scrubberPosition,
-                },
-              ]}
-            />
+            {isExpanded && (
+              <View
+                style={[
+                  styles.indicator,
+                  {
+                    backgroundColor: isDragging ? colors.white94 : colorVariant.indicator,
+                    left: indicatorPosition,
+                  },
+                ]}
+              />
+            )}
             <View
               style={[
                 styles.percentageAvailableBar,
                 {
-                  backgroundColor: colors.border,
-                  width: `${percentageAvailable}%`,
+                  backgroundColor: colors.white80,
+                  width: `${percentageAvailable || 0}%`,
                 },
               ]}
             />
@@ -108,8 +146,9 @@ export const ScrubBar = ({ percentageAvailable, percentagePosition, onDrag, dura
               style={[
                 styles.percentagePositionBar,
                 {
-                  backgroundColor: colors.primary,
+                  backgroundColor: colorVariant.position,
                   width: scrubberPosition,
+                  height: isExpanded ? 6 : 4,
                 },
               ]}
             />
@@ -123,50 +162,43 @@ export const ScrubBar = ({ percentageAvailable, percentagePosition, onDrag, dura
 const styles = StyleSheet.create({
   gestureHandlerContainer: {
     alignItems: "center",
-    height: 45,
+    height: spacing.md,
     position: "relative",
-    width: "80%",
+    width: "100%",
   },
   indicator: {
-    borderRadius: INDICATOR_SIZE,
-    borderWidth: 1,
+    borderRadius: borderRadius.radiusSm,
     height: INDICATOR_SIZE,
     position: "absolute",
-    top: -6,
+    top: -spacing.xs,
     width: INDICATOR_SIZE,
     zIndex: 4,
   },
   percentageAvailableBar: {
-    height: 3,
+    height: spacing.xs,
     left: 0,
     position: "absolute",
-    top: 1,
     zIndex: 1,
   },
   percentagePositionBar: {
-    height: 3,
-    left: 0,
-    position: "absolute",
-    top: 1,
     zIndex: 2,
   },
   scrubBarContainer: {
-    borderLeftWidth: 1,
-    borderRightWidth: 1,
+    alignItems: "center",
     flexDirection: "row",
-    height: 5,
+    height: spacing.xs,
     width: "100%",
   },
   scrubBarHitSlop: {
     alignItems: "center",
     height: "100%",
     justifyContent: "center",
-    width: "95%",
+    width: "100%",
   },
   seekTime: {
-    borderRadius: 8,
-    padding: 8,
+    borderRadius: borderRadius.radiusMd,
+    padding: spacing.xs,
     position: "absolute",
-    top: -50,
+    top: -32,
   },
 });

@@ -40,7 +40,13 @@
           "fonts": ["assets/fonts/icomoon.ttf"]
         }
       ],
-      "expo-localization"
+      "expo-localization",
+      [
+        "expo-screen-orientation",
+        {
+          "initialOrientation": "DEFAULT"
+        }
+      ]
     ]
   }
 }

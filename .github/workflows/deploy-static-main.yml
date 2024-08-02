@@ -67,7 +67,7 @@ jobs:
         run: cd OwnTube.tv/ && npm run test
 
   build_android_apk:
-    needs: code_quality
+    needs: [code_quality, build_info]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -119,7 +119,7 @@ jobs:
           path: "./OwnTube.tv/android/app/build/outputs/apk/release/app-release.apk"
 
   deploy_web:
-    needs: code_quality
+    needs: [code_quality, build_info]
     runs-on: ubuntu-latest
     environment:
       name: github-pages

@@ -19,3 +19,4 @@ export * from "./AppConfig";
 export * from "./SelectLanguage";
 export * from "./IconButton";
 export * from "./IcoMoonIcon";
+export * from "./FocusWrapper";

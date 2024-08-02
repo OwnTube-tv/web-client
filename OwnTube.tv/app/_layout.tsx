@@ -1,7 +1,7 @@
 import { Link, Stack, useLocalSearchParams } from "expo-router";
 import { Platform, StyleSheet } from "react-native";
 import { ROUTES, STORAGE } from "../types";
-import { DarkTheme, DefaultTheme, ThemeProvider } from "@react-navigation/native";
+import { ThemeProvider } from "@react-navigation/native";
 import { AppConfigContextProvider, ColorSchemeContextProvider, useColorSchemeContext } from "../contexts";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
@@ -24,12 +24,14 @@ import {
   Inter_900Black,
 } from "@expo-google-fonts/inter";
 import { IcoMoonIcon } from "../components";
+import { colorSchemes } from "../theme";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { StatusBar } from "expo-status-bar";
 
 const RootStack = () => {
   const { backend } = useLocalSearchParams();
   const { scheme } = useColorSchemeContext();
-  const theme = scheme === "dark" ? DarkTheme : DefaultTheme;
+  const theme = scheme === "dark" ? colorSchemes.dark : colorSchemes.light;
   const { t, i18n } = useTranslation();
 
   useEffect(() => {
@@ -37,37 +39,40 @@ const RootStack = () => {
   }, []);
 
   return (
-    <ThemeProvider value={theme}>
-      <Stack
-        screenOptions={{
-          headerTitle: ({ children }) => <ClickableHeaderText>{children}</ClickableHeaderText>,
-        }}
-      >
-        <Stack.Screen
-          name={"(home)/index"}
-          options={{
-            headerBackVisible: false,
-            title: t("appName"),
-            headerLeft: () => <></>,
-            headerRight: () => <></>,
+    <>
+      <StatusBar style={scheme === "dark" ? "light" : "dark"} />
+      <ThemeProvider value={theme}>
+        <Stack
+          screenOptions={{
+            headerTitle: ({ children }) => <ClickableHeaderText>{children}</ClickableHeaderText>,
           }}
-        />
-        <Stack.Screen
-          options={{
-            title: t("settingsPageTitle"),
-            headerBackVisible: false,
-            headerLeft: () => (
-              <Link style={styles.headerButtonLeft} href={{ pathname: "/", params: { backend } }}>
-                <IcoMoonIcon name="Home" size={24} color={theme.colors.primary} />
-              </Link>
-            ),
-          }}
-          name={`(home)/${ROUTES.SETTINGS}`}
-        />
-        <Stack.Screen options={{ title: t("videoPageTitle"), headerShown: false }} name={`(home)/video`} />
-      </Stack>
-      <Toast config={{ buildInfo: () => <BuildInfoToast /> }} />
-    </ThemeProvider>
+        >
+          <Stack.Screen
+            name={"(home)/index"}
+            options={{
+              headerBackVisible: false,
+              title: t("appName"),
+              headerLeft: () => <></>,
+              headerRight: () => <></>,
+            }}
+          />
+          <Stack.Screen
+            options={{
+              title: t("settingsPageTitle"),
+              headerBackVisible: false,
+              headerLeft: () => (
+                <Link style={styles.headerButtonLeft} href={{ pathname: "/", params: { backend } }}>
+                  <IcoMoonIcon name="Home" size={24} color={theme.colors.primary} />
+                </Link>
+              ),
+            }}
+            name={`(home)/${ROUTES.SETTINGS}`}
+          />
+          <Stack.Screen options={{ title: t("videoPageTitle"), headerShown: false }} name={`(home)/video`} />
+        </Stack>
+        <Toast config={{ buildInfo: () => <BuildInfoToast /> }} />
+      </ThemeProvider>
+    </>
   );
 };
 

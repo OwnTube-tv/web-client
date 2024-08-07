@@ -6,16 +6,26 @@ import { VideoViewProps } from "./VideoView";
 import { styles } from "./styles";
 import "./styles.web.css";
 import videojs from "video.js";
+import * as Device from "expo-device";
+import { DeviceType } from "expo-device";
 
 declare const window: {
   videojs: typeof videojs;
 } & Window;
 
-const VideoView = ({ uri, testID, handleSetTimeStamp, timestamp, title }: VideoViewProps) => {
+const VideoView = ({
+  uri,
+  testID,
+  handleSetTimeStamp,
+  timestamp,
+  title,
+  channelName,
+  toggleFullscreen,
+  isFullscreen,
+}: VideoViewProps) => {
   const { videojs } = window;
   const videoRef = useRef<HTMLDivElement>(null);
   const playerRef = useRef<Player | null>(null);
-  const [isControlsVisible, setIsControlsVisible] = useState(false);
   const [playbackStatus, setPlaybackStatus] = useState({
     didJustFinish: false,
     isMuted: false,
@@ -23,14 +33,13 @@ const VideoView = ({ uri, testID, handleSetTimeStamp, timestamp, title }: VideoV
     position: 0,
     duration: 1,
     playableDuration: 0,
+    volume: 1,
   });
+  const isMobile = Device.deviceType !== DeviceType.DESKTOP;
+  const [isControlsVisible, setIsControlsVisible] = useState(false);
 
   const updatePlaybackStatus = (updatedStatus: Partial<typeof playbackStatus>) => {
     setPlaybackStatus((prev) => ({ ...prev, ...updatedStatus }));
-  };
-
-  const toggleControls = () => {
-    setIsControlsVisible((prev) => !prev);
   };
 
   const handlePlayPause = () => {
@@ -109,6 +118,12 @@ const VideoView = ({ uri, testID, handleSetTimeStamp, timestamp, title }: VideoV
     player.on("ended", () => {
       updatePlaybackStatus({ didJustFinish: true });
     });
+
+    player.on("volumechange", () => {
+      const vol = playerRef.current?.volume?.() ?? 1;
+
+      updatePlaybackStatus({ volume: vol });
+    });
   };
 
   useEffect(() => {
@@ -168,6 +183,9 @@ const VideoView = ({ uri, testID, handleSetTimeStamp, timestamp, title }: VideoV
       if (e.code === "KeyM") {
         toggleMute();
       }
+      if (e.code === "KeyF") {
+        toggleFullscreen();
+      }
     };
 
     window.addEventListener("keydown", handleKeyboard);
@@ -175,13 +193,54 @@ const VideoView = ({ uri, testID, handleSetTimeStamp, timestamp, title }: VideoV
     return () => window.removeEventListener("keydown", handleKeyboard);
   }, [handleFF, handleRW, handlePlayPause, toggleMute]);
 
+  useEffect(() => {
+    let timeout: NodeJS.Timeout;
+    const handleAction = () => {
+      setIsControlsVisible(true);
+
+      clearTimeout(timeout);
+      timeout = setTimeout(() => {
+        setIsControlsVisible(false);
+      }, 3000);
+    };
+
+    window?.addEventListener("mousemove", handleAction);
+    window?.addEventListener("mousedown", handleAction);
+
+    return () => {
+      window?.removeEventListener("mousemove", handleAction);
+      window?.removeEventListener("mousedown", handleAction);
+      clearTimeout(timeout);
+    };
+  }, []);
+
+  const handleVolumeControl = (volume: number) => {
+    const formattedVolume = (volume < 0 ? 0 : volume) * 0.01;
+
+    if (formattedVolume === 0) {
+      playerRef.current?.muted(true);
+      updatePlaybackStatus({ isMuted: true });
+      return;
+    }
+
+    playerRef.current?.volume(formattedVolume);
+    playerRef.current?.muted(false);
+    updatePlaybackStatus({ isMuted: false });
+  };
+
+  const handleOverlayPress = () => {
+    if (!isMobile) {
+      handlePlayPause();
+    }
+  };
+
   return (
-    <View style={styles.container}>
+    <div id="web-video-container" style={styles.container}>
       <VideoControlsOverlay
         handlePlayPause={handlePlayPause}
         isPlaying={playbackStatus?.isPlaying}
         isVisible={isControlsVisible}
-        onOverlayPress={toggleControls}
+        onOverlayPress={handleOverlayPress}
         handleRW={handleRW}
         handleFF={handleFF}
         duration={playbackStatus?.duration}
@@ -193,10 +252,20 @@ const VideoView = ({ uri, testID, handleSetTimeStamp, timestamp, title }: VideoV
         handleReplay={handleReplay}
         handleJumpTo={handleJumpTo}
         title={title}
+        channelName={channelName}
+        handleVolumeControl={handleVolumeControl}
+        volume={playbackStatus.isMuted ? 0 : playbackStatus.volume * 100}
+        toggleFullscreen={toggleFullscreen}
+        isFullscreen={isFullscreen}
       >
-        <div style={{ position: "relative" }} ref={videoRef} data-testid={`${testID}-video-playback`} />
+        <div
+          style={{ position: "relative", cursor: "pointer" }}
+          ref={videoRef}
+          data-testid={`${testID}-video-playback`}
+        />
+        {isMobile && isControlsVisible && <View style={styles.opacityOverlay} />}
       </VideoControlsOverlay>
-    </View>
+    </div>
   );
 };
 

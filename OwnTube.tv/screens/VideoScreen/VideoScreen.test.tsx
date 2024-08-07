@@ -1,6 +1,7 @@
 import { VideoScreen } from ".";
 import { render, screen } from "@testing-library/react-native";
 import { useLocalSearchParams } from "expo-router";
+import mockSafeAreaContext from "react-native-safe-area-context/jest/mock";
 
 jest.mock("expo-router");
 jest.mock("../../api/queries", () => ({
@@ -22,9 +23,17 @@ jest.mock("../../api/queries", () => ({
 }));
 const mockUpdHistory = jest.fn();
 jest.mock("../../hooks", () => ({
+  ...jest.requireActual("../../hooks"),
   useViewHistory: jest.fn(() => ({ updateHistory: mockUpdHistory })),
 }));
 (useLocalSearchParams as jest.Mock).mockReturnValue({ id: 123, backend: "example.com" });
+jest.mock("@react-navigation/native", () => ({
+  ...jest.requireActual("@react-navigation/native"),
+  useIsFocused: jest.fn(() => true),
+}));
+jest.mock("react-native-safe-area-context", () => ({
+  useSafeAreaInsets: jest.fn(() => mockSafeAreaContext),
+}));
 
 describe("VideoScreen", () => {
   beforeAll(() => {

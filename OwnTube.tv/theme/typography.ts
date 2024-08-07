@@ -16,23 +16,32 @@ export const fontSizes = {
   sizeLg: 18,
   sizeMd: 16,
   sizeSm: 14,
-  sizeXs: 13,
-};
+  sizeXS: 13,
+} as const;
+
+export const lineHeights = {
+  sizeXXL: 39,
+  sizeXL: 29,
+  sizeLg: 22,
+  sizeMd: 19,
+  sizeSm: 17,
+  sizeXS: 16,
+} as const;
 
 export const fontWeights = {
-  regular: "400",
-  medium: "500",
-  semiBold: "600",
-  bold: "700",
-  extraBold: "800",
-};
+  Regular: 400,
+  Medium: 500,
+  SemiBold: 600,
+  Bold: 700,
+  ExtraBold: 800,
+} as const;
 
 export const fontFamilies = {
-  regular: "Inter_400Regular",
-  medium: "Inter_500Medium",
-  semiBold: "Inter_600SemiBold",
-  bold: "Inter_700Bold",
-  extraBold: "Inter_800ExtraBold",
-};
+  Regular: "Inter_400Regular",
+  Medium: "Inter_500Medium",
+  SemiBold: "Inter_600SemiBold",
+  Bold: "Inter_700Bold",
+  ExtraBold: "Inter_800ExtraBold",
+} as const;
 
 export const typography = { size, letterSpacing };

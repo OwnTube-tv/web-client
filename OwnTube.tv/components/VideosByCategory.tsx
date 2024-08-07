@@ -11,7 +11,9 @@ interface VideosByCategoryProps {
 export const VideosByCategory: FC<VideosByCategoryProps> = ({ title, videos }) => {
   return (
     <View style={styles.container}>
-      <Typography style={styles.categoryTitle}>{title}</Typography>
+      <Typography style={styles.categoryTitle} fontWeight="Bold" fontSize="sizeXL">
+        {title}
+      </Typography>
       <CategoryScroll videos={videos} />
     </View>
   );
@@ -19,8 +21,6 @@ export const VideosByCategory: FC<VideosByCategoryProps> = ({ title, videos }) =
 
 const styles = StyleSheet.create({
   categoryTitle: {
-    fontSize: 24,
-    fontWeight: "bold",
     padding: 20,
     paddingLeft: 50,
   },

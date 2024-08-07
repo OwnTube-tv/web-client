@@ -47,6 +47,8 @@
   "selectedLanguage": "Обрана мова: {{selectedLang}} (клієнт приймає \"{{availableLanguages}}\", за замовчуванням використовується мова \"{{fallback}}\")",
   "resetSelection": "Скасувати вибір",
   "selectedLangNone": "не обрано",
+  "details": "Деталі",
+  "share": "Поділитися",
   "errors": {
     "failedToFetchInstances": "Не вдалося отримати інстанції: {{error}}",
     "max100VideosPerChunk": "Максимальна кількість відео для одного запиту - 100",

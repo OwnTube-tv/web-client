@@ -1,17 +1,24 @@
-import { PropsWithChildren, useMemo } from "react";
-import { Dimensions, Pressable, StyleSheet, View } from "react-native";
+import { PropsWithChildren, useMemo, useState } from "react";
+import { Pressable, StyleSheet, View } from "react-native";
 import { useTheme } from "@react-navigation/native";
-import { ScrubBar } from "./components/ScrubBar";
 import { Typography } from "../Typography";
 import { getHumanReadableDuration } from "../../utils";
-import { typography } from "../../theme";
-import { useNavigation } from "expo-router";
-import { DeviceCapabilitiesModal } from "../DeviceCapabilitiesModal";
-import { IcoMoonIcon } from "../IcoMoonIcon";
+import { Link, useNavigation } from "expo-router";
+import { VolumeControl } from "./components/VolumeControl";
+import * as Device from "expo-device";
+import { DeviceType } from "expo-device";
+import { colors, spacing } from "../../theme";
+import { PlayerButton } from "./components/PlayerButton";
+import { ShareButton } from "./components/ShareButton";
+import { TextLink } from "./components/TextLink";
+import { ScrubBar } from "./components/ScrubBar";
+import { LinearGradient } from "expo-linear-gradient";
+import Animated, { SlideInDown, SlideInUp, SlideOutDown, SlideOutUp, FadeIn, FadeOut } from "react-native-reanimated";
+import { useTranslation } from "react-i18next";
 
 interface VideoControlsOverlayProps {
   isVisible: boolean;
-  onOverlayPress: () => void;
+  onOverlayPress?: () => void;
   isPlaying?: boolean;
   handlePlayPause: () => void;
   handleRW: (s: number) => void;
@@ -25,6 +32,11 @@ interface VideoControlsOverlayProps {
   handleReplay: () => void;
   handleJumpTo: (position: number) => void;
   title?: string;
+  channelName?: string;
+  handleVolumeControl: (volume: number) => void;
+  volume: number;
+  toggleFullscreen: () => void;
+  isFullscreen: boolean;
 }
 
 export const VideoControlsOverlay = ({
@@ -44,19 +56,19 @@ export const VideoControlsOverlay = ({
   handleReplay,
   handleJumpTo,
   title,
+  channelName,
+  handleVolumeControl,
+  volume,
+  toggleFullscreen,
+  isFullscreen,
 }: PropsWithChildren<VideoControlsOverlayProps>) => {
+  const { t } = useTranslation();
   const { colors } = useTheme();
   const navigation = useNavigation();
-
-  const uiScale = useMemo(() => {
-    const { width, height } = Dimensions.get("window");
-    const isHorizontal = width > height;
-
-    return isHorizontal ? 1 : 0.5;
-  }, []);
+  const [isSeekBarFocused, setIsSeekBarFocused] = useState(false);
 
   const centralIconName = useMemo(() => {
-    return isPlaying ? "Pause" : shouldReplay ? "Reload" : "Play";
+    return isPlaying ? "Pause" : shouldReplay ? "Restart" : "Play";
   }, [isPlaying, shouldReplay]);
 
   const { percentageAvailable, percentagePosition } = useMemo(() => {
@@ -66,59 +78,122 @@ export const VideoControlsOverlay = ({
     };
   }, [availableDuration, duration, position]);
 
+  const isMobile = Device.deviceType !== DeviceType.DESKTOP;
+
   return (
-    <Pressable style={styles.overlay} onPress={onOverlayPress}>
+    // @ts-expect-error web cursor options not included in React Native core
+    <Pressable style={[styles.overlay, { cursor: isVisible ? "auto" : "none" }]} onPress={onOverlayPress}>
       {isVisible ? (
-        <View style={styles.contentContainer}>
-          <View style={styles.topControlsContainer}>
-            <View style={styles.topLeftControls}>
-              <Pressable onPress={navigation.goBack} style={styles.goBackContainer}>
-                <IcoMoonIcon name="Arrow-Left" size={48 * uiScale} color={colors.primary} />
-              </Pressable>
-              <Typography
-                numberOfLines={1}
-                ellipsizeMode="tail"
-                color={colors.primary}
-                fontSize={48 * uiScale}
-                style={styles.title}
+        <View style={styles.contentContainer} pointerEvents="box-none">
+          <Animated.View
+            entering={SlideInUp}
+            exiting={SlideOutUp}
+            style={styles.animatedTopContainer}
+            pointerEvents="box-none"
+          >
+            <LinearGradient
+              locations={[0, 0.25, 1]}
+              colors={isMobile ? ["#00000000", "#00000000", "#00000000"] : ["#00000080", "#0000004D", "#00000000"]}
+              style={[styles.topControlsContainer, ...(isMobile ? [{ paddingTop: spacing.lg }] : [{ height: 360 }])]}
+            >
+              <View style={styles.topLeftControls} pointerEvents="box-none">
+                <PlayerButton onPress={navigation.goBack} icon="Arrow-Left" />
+                <View style={styles.videoInfoContainer}>
+                  <Link href="#">
+                    <Typography
+                      numberOfLines={1}
+                      ellipsizeMode="tail"
+                      color={colors.white80}
+                      fontSize={isMobile ? "sizeXS" : "sizeSm"}
+                      fontWeight="SemiBold"
+                    >
+                      {channelName}
+                    </Typography>
+                  </Link>
+                  <Typography
+                    numberOfLines={4}
+                    ellipsizeMode="tail"
+                    color={colors.white94}
+                    fontWeight="SemiBold"
+                    fontSize={isMobile ? "sizeSm" : "sizeLg"}
+                    style={{ width: "88%" }}
+                  >
+                    {title}
+                  </Typography>
+                  <TextLink text={t("details")} onPress={() => {}} isMobile={isMobile} />
+                </View>
+              </View>
+              <View style={styles.topRightControls}>
+                <ShareButton onPress={() => {}} isMobile={isMobile} />
+                <PlayerButton onPress={() => {}} icon="Settings" />
+              </View>
+            </LinearGradient>
+          </Animated.View>
+          {isMobile && (
+            <Animated.View
+              entering={FadeIn}
+              exiting={FadeOut}
+              style={styles.playbackControlsContainer}
+              pointerEvents="box-none"
+            >
+              <PlayerButton onPress={() => handleRW(15)} icon="Rewind-15" />
+              <PlayerButton onPress={shouldReplay ? handleReplay : handlePlayPause} icon={centralIconName} />
+              <PlayerButton onPress={() => handleFF(30)} icon="Fast-forward-30" />
+            </Animated.View>
+          )}
+          <Animated.View
+            exiting={SlideOutDown}
+            style={styles.animatedBottomContainer}
+            entering={SlideInDown}
+            pointerEvents="box-none"
+          >
+            <LinearGradient
+              locations={[0, 0.85, 1]}
+              colors={isMobile ? ["#00000000", "#00000000", "#00000000"] : ["#00000000", "#0000004D", "#000000AB"]}
+              style={[styles.bottomControlsContainer, ...(isMobile ? [{}] : [{ height: 360 }])]}
+            >
+              <Pressable
+                onHoverIn={() => setIsSeekBarFocused(true)}
+                onHoverOut={() => setIsSeekBarFocused(false)}
+                style={styles.scrubBarContainer}
               >
-                {title}
-              </Typography>
-            </View>
-            <View style={styles.topRightControls}>
-              <Pressable onPress={toggleMute}>
-                <IcoMoonIcon name={`Volume${isMute ? "-Off" : ""}`} size={48 * uiScale} color={colors.primary} />
+                <ScrubBar
+                  isExpanded={isSeekBarFocused}
+                  variant="seek"
+                  length={duration}
+                  onDrag={handleJumpTo}
+                  percentageAvailable={percentageAvailable}
+                  percentagePosition={percentagePosition}
+                />
               </Pressable>
-              <DeviceCapabilitiesModal />
-            </View>
-          </View>
-          <View style={styles.playbackControlsContainer}>
-            <View style={{ flexDirection: "row", gap: 32 * uiScale }}>
-              <Pressable onPress={() => handleRW(15)}>
-                <IcoMoonIcon name="Rewind-15" size={96 * uiScale} color={colors.primary} />
-              </Pressable>
-              <Pressable onPress={shouldReplay ? handleReplay : handlePlayPause}>
-                <IcoMoonIcon name={centralIconName} size={96 * uiScale} color={colors.primary} />
-              </Pressable>
-              <Pressable onPress={() => handleFF(30)}>
-                <IcoMoonIcon name="Fast-forward-30" size={96 * uiScale} color={colors.primary} />
-              </Pressable>
-            </View>
-          </View>
-          <View style={styles.bottomControlsContainer}>
-            <Typography hasOuterGlow fontSize={typography.size.M * uiScale} style={styles.timeBlockLeft}>
-              {getHumanReadableDuration(position)}
-            </Typography>
-            <ScrubBar
-              duration={duration}
-              onDrag={handleJumpTo}
-              percentageAvailable={percentageAvailable}
-              percentagePosition={percentagePosition}
-            />
-            <Typography hasOuterGlow fontSize={typography.size.M * uiScale} style={styles.timeBlockRight}>
-              {getHumanReadableDuration(duration)}
-            </Typography>
-          </View>
+              <View style={styles.bottomRowContainer}>
+                <View style={styles.bottomRowControlsContainer}>
+                  {!isMobile && (
+                    <>
+                      <PlayerButton onPress={shouldReplay ? handleReplay : handlePlayPause} icon={centralIconName} />
+                      <PlayerButton onPress={() => handleRW(15)} icon="Rewind-15" />
+                      <PlayerButton onPress={() => handleFF(30)} icon="Fast-forward-30" />
+                      <VolumeControl
+                        setVolume={handleVolumeControl}
+                        volume={volume}
+                        isMute={isMute}
+                        toggleMute={toggleMute}
+                      />
+                    </>
+                  )}
+                  <Typography
+                    fontSize="sizeXS"
+                    fontWeight="Medium"
+                    style={[styles.timingContainer, { paddingLeft: isMobile ? spacing.sm : null }]}
+                    color={colors.white94}
+                  >
+                    {`${getHumanReadableDuration(position)} / ${getHumanReadableDuration(duration)}`}
+                  </Typography>
+                </View>
+                <PlayerButton onPress={toggleFullscreen} icon={`Fullscreen${isFullscreen ? "-Exit" : ""}`} />
+              </View>
+            </LinearGradient>
+          </Animated.View>
         </View>
       ) : null}
       {children}
@@ -127,22 +202,36 @@ export const VideoControlsOverlay = ({
 };
 
 const styles = StyleSheet.create({
+  animatedBottomContainer: { bottom: 0, left: 0, position: "absolute", width: "100%" },
+  animatedTopContainer: { left: 0, position: "absolute", top: 0, width: "100%", zIndex: 1 },
   bottomControlsContainer: {
     alignItems: "center",
-    bottom: 0,
-    flexDirection: "row",
-    height: "20%",
-    justifyContent: "center",
-    left: 0,
-    position: "absolute",
+    cursor: "auto",
+    justifyContent: "flex-end",
+    paddingHorizontal: spacing.sm,
     width: "100%",
   },
-  contentContainer: { flex: 1, height: "100%", left: 0, position: "absolute", top: 0, width: "100%", zIndex: 1 },
-  goBackContainer: { justifyContent: "center" },
+  bottomRowContainer: {
+    alignItems: "center",
+    alignSelf: "flex-start",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    width: "100%",
+  },
+  bottomRowControlsContainer: { alignItems: "center", flexDirection: "row" },
+  contentContainer: {
+    flex: 1,
+    height: "100%",
+    left: 0,
+    position: "absolute",
+    top: 0,
+    width: "100%",
+    zIndex: 1,
+  },
   overlay: {
     alignItems: "center",
     alignSelf: "center",
-    cursor: "auto",
+    backgroundColor: colors.dark.black100,
     display: "flex",
     height: "100%",
     justifyContent: "center",
@@ -150,34 +239,34 @@ const styles = StyleSheet.create({
   },
   playbackControlsContainer: {
     alignItems: "center",
+    flexDirection: "row",
     flex: 1,
+    gap: spacing.xl,
     height: "100%",
     justifyContent: "center",
+    position: "relative",
     width: "100%",
+    zIndex: 2,
   },
-  timeBlockLeft: {
-    left: "3%",
-    position: "absolute",
+  scrubBarContainer: { height: spacing.md, width: "100%" },
+  timingContainer: {
+    height: 48,
+    justifyContent: "center",
+    lineHeight: 48,
+    textAlign: "center",
+    textAlignVertical: "center",
     userSelect: "none",
   },
-  timeBlockRight: {
-    position: "absolute",
-    right: "3%",
-    userSelect: "none",
-  },
-  title: { fontWeight: "bold", maxWidth: "78%" },
   topControlsContainer: {
-    alignItems: "center",
+    alignItems: "flex-start",
     flexDirection: "row",
-    height: "20%",
+    gap: spacing.lg,
     justifyContent: "space-between",
-    left: 0,
-    paddingHorizontal: "5%",
-    position: "absolute",
-    top: 0,
+    paddingHorizontal: spacing.sm,
+    paddingTop: spacing.xl,
     width: "100%",
-    zIndex: 1,
   },
-  topLeftControls: { flexDirection: "row", gap: 24, width: "80%" },
-  topRightControls: { alignItems: "center", flexDirection: "row", gap: 24, justifyContent: "flex-end", width: "20%" },
+  topLeftControls: { flexDirection: "row", gap: spacing.sm, maxWidth: 600, width: "60%" },
+  topRightControls: { alignItems: "center", flexDirection: "row" },
+  videoInfoContainer: { gap: spacing.md, width: "100%" },
 });

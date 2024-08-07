@@ -47,6 +47,8 @@
   "selectedLanguage": "Выбранный язык: {{selectedLang}} (клиент принимает \"{{availableLanguages}}\", по умолчанию используется язык \"{{fallback}}\")",
   "resetSelection": "Сбросить выбор",
   "selectedLangNone": "не выбрано",
+  "details": "Детали",
+  "share": "Поделиться",
   "errors": {
     "failedToFetchInstances": "Не удалось получить экземпляры: {{error}}",
     "max100VideosPerChunk": "Максимальное количество видео для одного запроса - 100",

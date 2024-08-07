@@ -4,6 +4,11 @@ import { View } from "react-native";
 import { VideoControlsOverlay } from "../VideoControlsOverlay";
 import { styles } from "./styles";
 import { useAppConfigContext } from "../../contexts";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { Gesture, GestureDetector } from "react-native-gesture-handler";
+import * as Device from "expo-device";
+import { DeviceType } from "expo-device";
+import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
 
 export interface VideoViewProps {
   uri: string;
@@ -11,19 +16,29 @@ export interface VideoViewProps {
   handleSetTimeStamp: (timestamp: number) => void;
   timestamp?: string;
   title?: string;
+  channelName?: string;
+  toggleFullscreen: () => void;
+  isFullscreen: boolean;
 }
 
-const VideoView = ({ uri, testID, handleSetTimeStamp, timestamp, title }: VideoViewProps) => {
+const VideoView = ({
+  uri,
+  testID,
+  handleSetTimeStamp,
+  timestamp,
+  title,
+  channelName,
+  toggleFullscreen,
+  isFullscreen,
+}: VideoViewProps) => {
   const videoRef = useRef<Video>(null);
-  const [isControlsVisible, setIsControlsVisible] = useState(false);
   const [playbackStatus, setPlaybackStatus] = useState<(AVPlaybackStatusSuccess & { positionSeconds: number }) | null>(
     null,
   );
+  const [isControlsVisible, setIsControlsVisible] = useState(false);
   const { setPlayerImplementation } = useAppConfigContext();
-
-  const toggleControls = () => {
-    setIsControlsVisible((prev) => !prev);
-  };
+  const { top } = useSafeAreaInsets();
+  const isMobile = Device.deviceType !== DeviceType.DESKTOP;
 
   const handlePlayPause = () => {
     videoRef.current?.[playbackStatus?.isPlaying ? "pauseAsync" : "playAsync"]();
@@ -73,36 +88,62 @@ const VideoView = ({ uri, testID, handleSetTimeStamp, timestamp, title }: VideoV
     videoRef.current?.setPositionAsync(Number(timestamp) * 1000);
   }, [timestamp]);
 
+  const handleVolumeControl = (volume: number) => {
+    videoRef.current?.setVolumeAsync(volume);
+  };
+
+  const timeout = useRef<NodeJS.Timeout>();
+  const handleOverlayPress = () => {
+    setIsControlsVisible(true);
+
+    clearTimeout(timeout.current);
+    timeout.current = setTimeout(() => {
+      setIsControlsVisible(false);
+    }, 3000);
+  };
+
+  const tap = Gesture.Tap().onFinalize(handleOverlayPress).runOnJS(true);
+
   return (
-    <View style={styles.container}>
-      <VideoControlsOverlay
-        handlePlayPause={handlePlayPause}
-        isPlaying={playbackStatus?.isPlaying}
-        isVisible={isControlsVisible}
-        onOverlayPress={toggleControls}
-        handleRW={handleRW}
-        handleFF={handleFF}
-        duration={playbackStatus?.durationMillis}
-        availableDuration={playbackStatus?.playableDurationMillis}
-        position={playbackStatus?.positionMillis}
-        toggleMute={toggleMute}
-        isMute={playbackStatus?.isMuted}
-        shouldReplay={playbackStatus?.didJustFinish}
-        handleReplay={handleReplay}
-        handleJumpTo={handleJumpTo}
-        title={title}
-      >
-        <Video
-          testID={`${testID}-video-playback`}
-          shouldPlay
-          resizeMode={ResizeMode.CONTAIN}
-          ref={videoRef}
-          source={{ uri }}
-          onPlaybackStatusUpdate={handlePlaybackStatusUpdate}
-          style={styles.videoWrapper}
-        />
-      </VideoControlsOverlay>
-    </View>
+    <GestureDetector gesture={tap}>
+      <View collapsable={false} style={[styles.container, { marginTop: top }]}>
+        <VideoControlsOverlay
+          handlePlayPause={handlePlayPause}
+          isPlaying={playbackStatus?.isPlaying}
+          isVisible={isControlsVisible}
+          onOverlayPress={undefined}
+          handleRW={handleRW}
+          handleFF={handleFF}
+          duration={playbackStatus?.durationMillis}
+          availableDuration={playbackStatus?.playableDurationMillis}
+          position={playbackStatus?.positionMillis}
+          toggleMute={toggleMute}
+          isMute={playbackStatus?.isMuted}
+          shouldReplay={playbackStatus?.didJustFinish}
+          handleReplay={handleReplay}
+          handleJumpTo={handleJumpTo}
+          title={title}
+          channelName={channelName}
+          handleVolumeControl={handleVolumeControl}
+          volume={playbackStatus?.volume ?? 0}
+          toggleFullscreen={toggleFullscreen}
+          isFullscreen={isFullscreen}
+        >
+          <Video
+            testID={`${testID}-video-playback`}
+            shouldPlay
+            resizeMode={ResizeMode.CONTAIN}
+            ref={videoRef}
+            source={{ uri }}
+            onPlaybackStatusUpdate={handlePlaybackStatusUpdate}
+            style={styles.videoWrapper}
+          />
+          {isMobile && isControlsVisible && (
+            <Animated.View entering={FadeIn} exiting={FadeOut} style={styles.opacityOverlay} />
+          )}
+        </VideoControlsOverlay>
+      </View>
+    </GestureDetector>
   );
 };
 

@@ -49,6 +49,11 @@
   "selectedLangNone": "не обрано",
   "details": "Деталі",
   "share": "Поділитися",
+  "shareVideo": "Поділитися відео",
+  "qrCode": "QR-код",
+  "copy": "Копіювати",
+  "linkCopied": "Скопійовано!",
+  "startAt": "Почати з",
   "errors": {
     "failedToFetchInstances": "Не вдалося отримати інстанції: {{error}}",
     "max100VideosPerChunk": "Максимальна кількість відео для одного запиту - 100",

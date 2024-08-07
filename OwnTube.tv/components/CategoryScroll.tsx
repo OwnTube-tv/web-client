@@ -7,7 +7,6 @@ import { GetVideosVideo } from "../api/models";
 import { useLocalSearchParams } from "expo-router";
 import { RootStackParams } from "../app/_layout";
 import { ROUTES } from "../types";
-import { IcoMoonIcon } from "./IcoMoonIcon";
 
 export const CategoryScroll: FC<{ videos: GetVideosVideo[] }> = ({ videos }) => {
   const { backend } = useLocalSearchParams<RootStackParams[ROUTES.INDEX]>();
@@ -41,9 +40,11 @@ export const CategoryScroll: FC<{ videos: GetVideosVideo[] }> = ({ videos }) => 
 
   return (
     <View style={styles.horizontalScrollContainer}>
-      <Button onPress={scrollLeft} style={[styles.scrollButton, { backgroundColor: colors.card }]}>
-        <IcoMoonIcon name="Chevron" size={20} color={colors.text} style={{ transform: [{ rotate: "90deg" }] }} />
-      </Button>
+      <Button
+        icon="Chevron"
+        onPress={scrollLeft}
+        style={{ ...styles.scrollButton, ...styles.scrollLeft, backgroundColor: colors.card }}
+      />
       <FlatList
         onViewableItemsChanged={handleViewableItemsChanged}
         horizontal
@@ -60,9 +61,11 @@ export const CategoryScroll: FC<{ videos: GetVideosVideo[] }> = ({ videos }) => 
           waitForInteraction: false,
         }}
       />
-      <Button onPress={scrollRight} style={[styles.scrollButton, { backgroundColor: colors.card }]}>
-        <IcoMoonIcon name="Chevron" size={20} color={colors.text} style={{ transform: [{ rotate: "-90deg" }] }} />
-      </Button>
+      <Button
+        icon="Chevron"
+        onPress={scrollRight}
+        style={{ ...styles.scrollButton, ...styles.scrollRight, backgroundColor: colors.card }}
+      />
     </View>
   );
 };
@@ -81,6 +84,8 @@ const styles = StyleSheet.create({
     marginHorizontal: 5,
     width: 40,
   },
+  scrollLeft: { transform: [{ rotate: "90deg" }] },
+  scrollRight: { transform: [{ rotate: "-90deg" }] },
   scrollView: {
     flexGrow: 0,
     overflow: "visible",

@@ -1,12 +1,65 @@
-import { PropsWithChildren, FC } from "react";
-import { ViewStyle, Pressable, PressableProps } from "react-native";
+import { PropsWithChildren, FC, useMemo } from "react";
+import { ViewStyle, Pressable, PressableProps, StyleSheet } from "react-native";
+import { useTheme } from "@react-navigation/native";
+import { useHoverState } from "../../hooks";
+import { borderRadius } from "../../theme";
+import { Typography } from "../Typography";
+import { IcoMoonIcon } from "../IcoMoonIcon";
 
 interface ButtonProps extends PropsWithChildren<PressableProps> {
-  style?: ViewStyle | ViewStyle[];
+  style?: ViewStyle;
+  contrast?: "high" | "low" | "none";
+  icon?: string;
+  text?: string;
 }
 
-export const Button: FC<ButtonProps> = ({ children, style, ...props }) => (
-  <Pressable {...props} style={({ pressed }) => [style, { opacity: pressed ? 0.5 : 1 }]}>
-    {children}
-  </Pressable>
-);
+export const Button: FC<ButtonProps> = ({ contrast = "none", text, icon, ...props }) => {
+  const { colors } = useTheme();
+  const { isHovered, toggleHovered } = useHoverState();
+
+  const { regularColor, hoverColor } = useMemo(() => {
+    return {
+      none: { regularColor: colors.theme50, hoverColor: colors.theme100 },
+      low: { regularColor: colors.theme100, hoverColor: colors.theme200 },
+      high: { regularColor: colors.theme500, hoverColor: colors.theme600 },
+    }[contrast];
+  }, []);
+
+  return (
+    <Pressable
+      {...props}
+      onHoverIn={(e) => {
+        props.onHoverIn?.(e);
+        toggleHovered();
+      }}
+      onHoverOut={(e) => {
+        props.onHoverOut?.(e);
+        toggleHovered();
+      }}
+      style={[styles.container, props.style, { backgroundColor: isHovered ? hoverColor : regularColor }]}
+    >
+      {icon && <IcoMoonIcon name={icon} size={24} color={colors.theme900} />}
+      {text && (
+        <Typography
+          fontSize="sizeSm"
+          fontWeight="SemiBold"
+          color={contrast === "high" ? colors.white94 : colors.theme900}
+        >
+          {text}
+        </Typography>
+      )}
+    </Pressable>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    alignItems: "center",
+    borderRadius: borderRadius.radiusMd,
+    flexDirection: "row",
+    gap: 12,
+    justifyContent: "center",
+    paddingHorizontal: 12,
+    paddingVertical: 9.5,
+  },
+});

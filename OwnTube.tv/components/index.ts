@@ -20,3 +20,6 @@ export * from "./SelectLanguage";
 export * from "./IconButton";
 export * from "./IcoMoonIcon";
 export * from "./FocusWrapper";
+export * from "./ModalContainer";
+export * from "./ChannelLink";
+export * from "./FullScreenModal";

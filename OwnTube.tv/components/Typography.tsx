@@ -36,7 +36,7 @@ export const Typography = (
       {...props}
       style={[
         {
-          color: props.color ?? colors.text,
+          color: props.color ?? colors.theme950,
           fontSize,
           fontWeight,
           lineHeight,

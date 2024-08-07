@@ -4,7 +4,6 @@ import { View } from "react-native";
 import { VideoControlsOverlay } from "../VideoControlsOverlay";
 import { styles } from "./styles";
 import { useAppConfigContext } from "../../contexts";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import * as Device from "expo-device";
 import { DeviceType } from "expo-device";
@@ -19,6 +18,9 @@ export interface VideoViewProps {
   channelName?: string;
   toggleFullscreen: () => void;
   isFullscreen: boolean;
+  handleOpenDetails: () => void;
+  handleShare: () => void;
+  handleOpenSettings: () => void;
 }
 
 const VideoView = ({
@@ -30,6 +32,9 @@ const VideoView = ({
   channelName,
   toggleFullscreen,
   isFullscreen,
+  handleOpenDetails,
+  handleShare,
+  handleOpenSettings,
 }: VideoViewProps) => {
   const videoRef = useRef<Video>(null);
   const [playbackStatus, setPlaybackStatus] = useState<(AVPlaybackStatusSuccess & { positionSeconds: number }) | null>(
@@ -37,7 +42,6 @@ const VideoView = ({
   );
   const [isControlsVisible, setIsControlsVisible] = useState(false);
   const { setPlayerImplementation } = useAppConfigContext();
-  const { top } = useSafeAreaInsets();
   const isMobile = Device.deviceType !== DeviceType.DESKTOP;
 
   const handlePlayPause = () => {
@@ -106,7 +110,7 @@ const VideoView = ({
 
   return (
     <GestureDetector gesture={tap}>
-      <View collapsable={false} style={[styles.container, { marginTop: top }]}>
+      <View collapsable={false} style={styles.container}>
         <VideoControlsOverlay
           handlePlayPause={handlePlayPause}
           isPlaying={playbackStatus?.isPlaying}
@@ -128,6 +132,9 @@ const VideoView = ({
           volume={playbackStatus?.volume ?? 0}
           toggleFullscreen={toggleFullscreen}
           isFullscreen={isFullscreen}
+          handleOpenDetails={handleOpenDetails}
+          handleShare={handleShare}
+          handleOpenSettings={handleOpenSettings}
         >
           <Video
             testID={`${testID}-video-playback`}

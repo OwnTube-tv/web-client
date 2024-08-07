@@ -10,7 +10,7 @@ export const useFullScreenVideoPlayback = () => {
 
   const toggleFullscreen = async () => {
     if (isWeb) {
-      const player = document?.getElementById("web-video-container");
+      const player = document?.getElementById("video-container");
       const video = document?.getElementsByClassName("vjs-tech")[0];
 
       if (!document.fullscreenElement) {

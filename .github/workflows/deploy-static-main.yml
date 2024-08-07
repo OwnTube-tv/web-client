@@ -28,6 +28,7 @@ jobs:
       GITHUB_SHA_SHORT: ${{ steps.create.outputs.GITHUB_SHA_SHORT }}
       COMMIT_URL: ${{ steps.create.outputs.COMMIT_URL }}
       BUILD_TIMESTAMP: ${{ steps.create.outputs.BUILD_TIMESTAMP }}
+      WEB_URL: ${{ steps.create.outputs.WEB_URL }}
     steps:
       - id: create
         name: "@${{ github.actor }} initiated GitHub Pages deployment, prepare build info"
@@ -46,6 +47,14 @@ jobs:
           # Create ISO format build timestamp in UTC, e.g. "2024-02-19T13:12:52Z"
           BUILD_TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
           echo "BUILD_TIMESTAMP=$BUILD_TIMESTAMP" && echo "BUILD_TIMESTAMP=$BUILD_TIMESTAMP" >> "$GITHUB_OUTPUT"
+
+          # Extract part after '/' in github.repository
+          REPO_NAME=$(echo "${{ github.repository }}" | awk -F/ '{print $2}')
+          echo "REPO_NAME=$REPO_NAME" && echo "REPO_NAME=$REPO_NAME" >> "$GITHUB_OUTPUT"
+
+          # Create web url
+          WEB_URL="https://${{ github.repository_owner }}.github.io/$REPO_NAME"
+          echo "WEB_URL=$WEB_URL" && echo "WEB_URL=$WEB_URL" >> "$GITHUB_OUTPUT"
 
   code_quality:
     needs: build_info
@@ -105,7 +114,8 @@ jobs:
             "GITHUB_ACTOR": "${{ needs.build_info.outputs.GITHUB_ACTOR }}",
             "GITHUB_SHA_SHORT": "${{ needs.build_info.outputs.GITHUB_SHA_SHORT }}",
             "COMMIT_URL": "${{ needs.build_info.outputs.COMMIT_URL }}",            
-            "BUILD_TIMESTAMP": "${{ needs.build_info.outputs.BUILD_TIMESTAMP }}"
+            "BUILD_TIMESTAMP": "${{ needs.build_info.outputs.BUILD_TIMESTAMP }}",
+            "WEB_URL": "${{ needs.build_info.outputs.WEB_URL }}"
           }
           EOF
 
@@ -141,7 +151,8 @@ jobs:
             "GITHUB_ACTOR": "${{ needs.build_info.outputs.GITHUB_ACTOR }}",
             "GITHUB_SHA_SHORT": "${{ needs.build_info.outputs.GITHUB_SHA_SHORT }}",
             "COMMIT_URL": "${{ needs.build_info.outputs.COMMIT_URL }}",            
-            "BUILD_TIMESTAMP": "${{ needs.build_info.outputs.BUILD_TIMESTAMP }}"
+            "BUILD_TIMESTAMP": "${{ needs.build_info.outputs.BUILD_TIMESTAMP }}",
+            "WEB_URL": "${{ needs.build_info.outputs.WEB_URL }}"
           }
           EOF
       - name: "Build Web App by @${{ github.actor }}"

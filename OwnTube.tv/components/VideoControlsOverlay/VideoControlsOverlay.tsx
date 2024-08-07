@@ -37,6 +37,9 @@ interface VideoControlsOverlayProps {
   volume: number;
   toggleFullscreen: () => void;
   isFullscreen: boolean;
+  handleOpenDetails: () => void;
+  handleShare: () => void;
+  handleOpenSettings: () => void;
 }
 
 export const VideoControlsOverlay = ({
@@ -61,6 +64,9 @@ export const VideoControlsOverlay = ({
   volume,
   toggleFullscreen,
   isFullscreen,
+  handleOpenDetails,
+  handleShare,
+  handleOpenSettings,
 }: PropsWithChildren<VideoControlsOverlayProps>) => {
   const { t } = useTranslation();
   const { colors } = useTheme();
@@ -120,12 +126,14 @@ export const VideoControlsOverlay = ({
                   >
                     {title}
                   </Typography>
-                  <TextLink text={t("details")} onPress={() => {}} isMobile={isMobile} />
+                  <View accessible={false} style={{ alignSelf: "flex-start" }}>
+                    <TextLink text={t("details")} onPress={handleOpenDetails} isMobile={isMobile} />
+                  </View>
                 </View>
               </View>
               <View style={styles.topRightControls}>
-                <ShareButton onPress={() => {}} isMobile={isMobile} />
-                <PlayerButton onPress={() => {}} icon="Settings" />
+                <ShareButton onPress={handleShare} isMobile={isMobile} />
+                <PlayerButton onPress={handleOpenSettings} icon="Settings" />
               </View>
             </LinearGradient>
           </Animated.View>

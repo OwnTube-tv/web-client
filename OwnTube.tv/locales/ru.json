@@ -49,6 +49,11 @@
   "selectedLangNone": "не выбрано",
   "details": "Детали",
   "share": "Поделиться",
+  "shareVideo": "Поделиться видео",
+  "qrCode": "QR-код",
+  "copy": "Копировать",
+  "linkCopied": "Скопировано!",
+  "startAt": "Начать с",
   "errors": {
     "failedToFetchInstances": "Не удалось получить экземпляры: {{error}}",
     "max100VideosPerChunk": "Максимальное количество видео для одного запроса - 100",

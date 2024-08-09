@@ -45,6 +45,14 @@ Through video.js we are converting the hls stream into a stream of mp4 chunks wh
 The video controls are overlaid above the video player, this way the experience is unified regardless of the platform.
 You can skip 10 seconds in each direction, seek through the video, play/pause, mute.
 
+You can also control the player with your keyboard. See shortcuts below:
+
+- [F]: toggle fullscreen;
+- [M]: toggle mute;
+- [->]: skip forward;
+- [<-]: skip backward;
+- [spacebar]: toggle play/pause;
+
 ### Testing ⚙️
 
 Jest is used throughout the app for testing, both for component tests and unit tests. For testing React components, the

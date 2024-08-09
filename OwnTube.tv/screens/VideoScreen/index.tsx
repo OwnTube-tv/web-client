@@ -7,7 +7,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Loader, FocusWrapper, FullScreenModal } from "../../components";
 import { useViewHistory, useFullScreenVideoPlayback } from "../../hooks";
 import { StatusBar } from "expo-status-bar";
-import { Share, VideoDetails } from "../../components/VideoControlsOverlay/components/modals";
+import { Settings, Share, VideoDetails } from "../../components/VideoControlsOverlay/components/modals";
 import { Platform, StyleSheet, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useColorSchemeContext } from "../../contexts";
@@ -82,7 +82,7 @@ export const VideoScreen = () => {
         backgroundColor="black"
         style={Platform.OS === "android" ? "light" : scheme === "dark" ? "light" : "dark"}
       />
-      <View id="video-container" style={[{ marginTop: top }, styles.videoContainer]}>
+      <View id="video-container" style={[{ paddingTop: top }, styles.videoContainer]}>
         <VideoView
           timestamp={params?.timestamp}
           handleSetTimeStamp={handleSetTimeStamp}
@@ -111,6 +111,9 @@ export const VideoScreen = () => {
         </FullScreenModal>
         <FullScreenModal onBackdropPress={closeModal} isVisible={visibleModal === "share"}>
           <Share onClose={closeModal} />
+        </FullScreenModal>
+        <FullScreenModal onBackdropPress={closeModal} isVisible={visibleModal === "settings"}>
+          <Settings onClose={closeModal} />
         </FullScreenModal>
       </View>
     </FocusWrapper>

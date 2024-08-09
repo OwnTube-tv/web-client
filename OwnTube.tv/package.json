@@ -47,6 +47,7 @@
     "react-i18next": "^14.1.2",
     "react-native": "0.74.3",
     "react-native-gesture-handler": "~2.16.1",
+    "react-native-picker-select": "^9.2.0",
     "react-native-reanimated": "~3.10.1",
     "react-native-safe-area-context": "4.10.5",
     "react-native-screens": "3.31.1",
@@ -56,7 +57,8 @@
     "react-qr-code": "^2.0.15",
     "react-test-renderer": "18.2.0",
     "ua-parser-js": "^1.0.38",
-    "video.js": "^8.12.0"
+    "video.js": "^8.12.0",
+    "@react-native-picker/picker": "2.7.5"
   },
   "devDependencies": {
     "@babel/core": "^7.24.0",

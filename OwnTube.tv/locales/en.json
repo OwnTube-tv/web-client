@@ -11,7 +11,7 @@
   "toggleTheme": "Toggle Theme",
   "revision": "Revision",
   "builtAtBy": "built at {{builtAt}} by",
-  "deviceCapabilityInfoTitle": "Device Capability info:",
+  "deviceCapabilityInfoTitle": "Device capability information",
   "playerImpl": "Player implementation:",
   "deviceType": "Device type:",
   "operatingSystem": "Operating system:",

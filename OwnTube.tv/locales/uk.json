@@ -11,7 +11,7 @@
   "toggleTheme": "Змінити тему",
   "revision": "Ревізія",
   "builtAtBy": "поставка від {{builtAt}} авторства",
-  "deviceCapabilityInfoTitle": "Інформація про можливості пристрою:",
+  "deviceCapabilityInfoTitle": "Інформація про можливості пристрою",
   "playerImpl": "Реалізація плеєра:",
   "deviceType": "Тип пристрою:",
   "operatingSystem": "Операційна система:",

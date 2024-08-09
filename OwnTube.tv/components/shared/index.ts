@@ -3,3 +3,4 @@ export * from "./Error";
 export * from "./Separator";
 export * from "./Checkbox";
 export * from "./Input";
+export * from "./Picker";

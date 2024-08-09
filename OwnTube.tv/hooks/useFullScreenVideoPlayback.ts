@@ -49,6 +49,7 @@ export const useFullScreenVideoPlayback = () => {
     return () => {
       if (isWeb) {
         window?.removeEventListener("fullscreenchange", handleFullscreenChangeWeb);
+        return;
       }
 
       ScreenOrientation.lockAsync(OrientationLock.DEFAULT);

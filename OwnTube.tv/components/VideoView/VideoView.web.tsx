@@ -22,6 +22,9 @@ const VideoView = ({
   channelName,
   toggleFullscreen,
   isFullscreen,
+  handleOpenDetails,
+  handleShare,
+  handleOpenSettings,
 }: VideoViewProps) => {
   const { videojs } = window;
   const videoRef = useRef<HTMLDivElement>(null);
@@ -235,7 +238,7 @@ const VideoView = ({
   };
 
   return (
-    <div id="web-video-container" style={styles.container}>
+    <View style={styles.container}>
       <VideoControlsOverlay
         handlePlayPause={handlePlayPause}
         isPlaying={playbackStatus?.isPlaying}
@@ -257,6 +260,9 @@ const VideoView = ({
         volume={playbackStatus.isMuted ? 0 : playbackStatus.volume * 100}
         toggleFullscreen={toggleFullscreen}
         isFullscreen={isFullscreen}
+        handleOpenDetails={handleOpenDetails}
+        handleShare={handleShare}
+        handleOpenSettings={handleOpenSettings}
       >
         <div
           style={{ position: "relative", cursor: "pointer" }}
@@ -265,7 +271,7 @@ const VideoView = ({
         />
         {isMobile && isControlsVisible && <View style={styles.opacityOverlay} />}
       </VideoControlsOverlay>
-    </div>
+    </View>
   );
 };
 

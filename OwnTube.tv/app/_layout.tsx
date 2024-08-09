@@ -27,6 +27,7 @@ import { IcoMoonIcon } from "../components";
 import { colorSchemes } from "../theme";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { StatusBar } from "expo-status-bar";
+import "../global.css";
 
 const RootStack = () => {
   const { backend } = useLocalSearchParams();

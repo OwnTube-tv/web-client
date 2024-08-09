@@ -49,6 +49,11 @@
   "selectedLangNone": "None",
   "details": "Details",
   "share": "Share",
+  "shareVideo": "Share video",
+  "qrCode": "QR code",
+  "copy": "Copy",
+  "linkCopied": "Link copied!",
+  "startAt": "Start at",
   "errors": {
     "failedToFetchInstances": "Failed to fetch instances: {{error}}",
     "max100VideosPerChunk": "The maximum number of videos to fetch in a single request is 100",

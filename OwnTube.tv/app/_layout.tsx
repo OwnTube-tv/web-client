@@ -28,9 +28,11 @@ import { colorSchemes } from "../theme";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { StatusBar } from "expo-status-bar";
 import "../global.css";
+import { AppHeader } from "../components/AppHeader";
+import { SafeAreaProvider } from "react-native-safe-area-context";
 
 const RootStack = () => {
-  const { backend } = useLocalSearchParams();
+  const { backend = null } = useLocalSearchParams<RootStackParams[ROUTES.INDEX]>();
   const { scheme } = useColorSchemeContext();
   const theme = scheme === "dark" ? colorSchemes.dark : colorSchemes.light;
   const { t, i18n } = useTranslation();
@@ -53,8 +55,7 @@ const RootStack = () => {
             options={{
               headerBackVisible: false,
               title: t("appName"),
-              headerLeft: () => <></>,
-              headerRight: () => <></>,
+              header: () => <AppHeader backend={backend} />,
             }}
           />
           <Stack.Screen
@@ -100,16 +101,18 @@ export default function RootLayout() {
   }
 
   return (
-    <GestureHandlerRootView>
-      <QueryClientProvider client={queryClient}>
-        <AppConfigContextProvider>
-          {isWeb && <ReactQueryDevtools initialIsOpen={false} />}
-          <ColorSchemeContextProvider>
-            <RootStack />
-          </ColorSchemeContextProvider>
-        </AppConfigContextProvider>
-      </QueryClientProvider>
-    </GestureHandlerRootView>
+    <SafeAreaProvider>
+      <GestureHandlerRootView>
+        <QueryClientProvider client={queryClient}>
+          <AppConfigContextProvider>
+            {isWeb && <ReactQueryDevtools initialIsOpen={false} />}
+            <ColorSchemeContextProvider>
+              <RootStack />
+            </ColorSchemeContextProvider>
+          </AppConfigContextProvider>
+        </QueryClientProvider>
+      </GestureHandlerRootView>
+    </SafeAreaProvider>
   );
 }
 

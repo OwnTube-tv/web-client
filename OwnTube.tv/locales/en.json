@@ -54,6 +54,9 @@
   "copy": "Copy",
   "linkCopied": "Link copied!",
   "startAt": "Start at",
+  "welcomeText": "Welcome to OwnTube!",
+  "welcomeDescriptionText": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut laoreet, nisl dignissim gravida placerat, nunc nibh lacinia tortor faucibus ipsum.",
+  "exploreVideoSites": "Explore video sites",
   "errors": {
     "failedToFetchInstances": "Failed to fetch instances: {{error}}",
     "max100VideosPerChunk": "The maximum number of videos to fetch in a single request is 100",

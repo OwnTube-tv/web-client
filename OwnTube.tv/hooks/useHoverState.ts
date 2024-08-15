@@ -6,5 +6,5 @@ export const useHoverState = () => {
     setIsHovered((prevState) => !prevState);
   };
 
-  return { isHovered, toggleHovered };
+  return { isHovered, toggleHovered, hoverHandlers: { onHoverIn: toggleHovered, onHoverOut: toggleHovered } };
 };

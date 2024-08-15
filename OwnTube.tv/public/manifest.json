@@ -25,15 +25,15 @@
   "background_color": "#F95F1E",
   "screenshots": [
     {
-      "src": "screenshot_wide.png",
-      "sizes": "1440x676",
-      "type": "image/png",
+      "src": "screenshot_wide.jpeg",
+      "sizes": "1280x576",
+      "type": "image/jpeg",
       "form_factor": "wide",
       "label": "OwnTube.tv"
     },
     {
       "src": "screenshot_narrow.jpeg",
-      "sizes": "660x1280",
+      "sizes": "576x1280",
       "type": "image/jpeg",
       "form_factor": "narrow",
       "label": "OwnTube.tv"

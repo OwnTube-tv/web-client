@@ -1,0 +1,56 @@
+[
+  {
+    "name": "XR Tube",
+    "description": "The PeerTube platform of Extinction Rebellion.",
+    "url": "tube.rebellion.global",
+    "logoUrl": "https://joinpeertube.org/img/content-selection-thumbnails/extinction-rebellion.jpg"
+  },
+  {
+    "name": "Blender",
+    "description": "Videos presenting the evolutions of the 3D creation software, tutorials and animated films supported by the Blender Foundation.",
+    "url": "video.blender.org",
+    "logoUrl": "https://joinpeertube.org/img/content-selection-thumbnails/blender.jpg"
+  },
+  {
+    "name": "TILvids",
+    "description": "A video community focused on sharing best content at the crossroads of education and entertainment, made by some of the best independent creators.",
+    "url": "tilvids.com",
+    "logoUrl": "https://joinpeertube.org/img/content-selection-thumbnails/tilvids.jpg"
+  },
+  {
+    "name": "Beeld & Geluid",
+    "description": "Netherland Museum for media culture, Beeld & Geluid offers online access to audiovisual archive collections to stimulate creative reuse.",
+    "url": "peertube.beeldengeluid.nl",
+    "logoUrl": "https://joinpeertube.org/img/content-selection-thumbnails/beeldengeluid.jpg"
+  },
+  {
+    "name": "Privacy International Media Server",
+    "description": "Videos presenting excessive state and corporate surveillance issues and advices on how to increase security and freedom through better privacy.",
+    "url": "media.privacyinternational.org",
+    "logoUrl": "https://joinpeertube.org/img/content-selection-thumbnails/privacy-international.jpg"
+  },
+  {
+    "name": "Basspistol",
+    "description": "Video platform for the Underground Artists sharing their music under free license.",
+    "url": "v.basspistol.org",
+    "logoUrl": "https://joinpeertube.org/img/content-selection-thumbnails/basspistol.jpg"
+  },
+  {
+    "name": "PeerTube Nightly",
+    "description": "PeerTube instance with the bleeding edge changes",
+    "url": "peertube2.cpy.re",
+    "logoUrl": "https://peertube2.cpy.re/plugins/logo-framasoft/0.0.1/static/images/framasoft-logo.png"
+  },
+  {
+    "name": "Fedi.Video",
+    "description": "This site is intended as a safe, easy-to-use way to search and browse the PeerTube network. Accounts are only listed here if they are run responsibly and create good videos. Anything involving bigotry, conspiracy theories, NSFW or junk content is not allowed.",
+    "url": "fedi.video",
+    "logoUrl": "https://upload.wikimedia.org/wikipedia/commons/8/88/Logopeertube.png"
+  },
+  {
+    "name": "LinuxRocks",
+    "description": "We welcome everyone on LinuxRocks, regardless of race, religion or orientation. We welcome debates and conversations, but we do not tolerate personal attacks. The core belief is that we should learn from each other's differences and ideologies.\n\n",
+    "url": "fedi.video",
+    "logoUrl": "https://upload.wikimedia.org/wikipedia/commons/8/88/Logopeertube.png"
+  }
+]

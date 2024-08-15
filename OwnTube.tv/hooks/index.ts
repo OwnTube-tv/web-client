@@ -5,3 +5,4 @@ export * from "./useRecentInstances";
 export * from "./useSelectLocale";
 export * from "./useFullScreenVideoPlayback";
 export * from "./useHoverState";
+export * from "./useBreakpoints";

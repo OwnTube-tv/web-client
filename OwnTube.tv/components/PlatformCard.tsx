@@ -5,6 +5,8 @@ import { borderRadius, spacing } from "../theme";
 import { useTheme } from "@react-navigation/native";
 import { useBreakpoints, useHoverState } from "../hooks";
 import { IcoMoonIcon } from "./IcoMoonIcon";
+import { PeertubeLogo } from "./Svg";
+import { SvgUri } from "react-native-svg";
 
 interface PlatformCardProps {
   name: string;
@@ -17,6 +19,7 @@ export const PlatformCard = ({ name, description, url, logoUrl }: PlatformCardPr
   const { colors } = useTheme();
   const { isHovered, hoverHandlers } = useHoverState();
   const { isDesktop } = useBreakpoints();
+  const isLogoSvg = logoUrl.endsWith("svg");
 
   return (
     <Link href={{ pathname: "./", params: { backend: url } }} asChild>
@@ -39,7 +42,13 @@ export const PlatformCard = ({ name, description, url, logoUrl }: PlatformCardPr
               },
             ]}
           >
-            <Image source={{ uri: logoUrl }} resizeMode="cover" style={styles.image} />
+            {!logoUrl ? (
+              <PeertubeLogo width={40} height={40} />
+            ) : isLogoSvg ? (
+              <SvgUri uri={logoUrl} width={40} height={40} fallback={<PeertubeLogo width={40} height={40} />} />
+            ) : (
+              <Image source={{ uri: logoUrl }} resizeMode="cover" style={styles.image} />
+            )}
           </View>
           <View style={styles.textsContainer}>
             <View

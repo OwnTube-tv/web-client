@@ -3,7 +3,7 @@ import { Logo } from "../../components/Svg";
 import { useTheme } from "@react-navigation/native";
 import { useTranslation } from "react-i18next";
 import { InfoFooter, PlatformCard, Typography } from "../../components";
-import PLATFORMS from "../../assets/platforms.json";
+import FEATURED_INSTANCES from "../../assets/featured-instances.json";
 import { useBreakpoints } from "../../hooks";
 import { Spacer } from "../../components/shared/Spacer";
 import { spacing } from "../../theme";
@@ -43,7 +43,7 @@ export const LandingScreen = () => {
       </Typography>
       <Spacer height={isDesktop ? spacing.xxl : spacing.xl} />
       <View style={styles.platformsContainer}>
-        {PLATFORMS.map((platform, index) => (
+        {FEATURED_INSTANCES.map((platform, index) => (
           <View
             key={index}
             style={{ width: isDesktop ? 392 : 344, alignSelf: "flex-start", height: isDesktop ? 164 : 132 }}

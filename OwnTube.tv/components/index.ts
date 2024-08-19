@@ -25,3 +25,4 @@ export * from "./ChannelLink";
 export * from "./FullScreenModal";
 export * from "./PlatformCard";
 export * from "./InfoFooter";
+export * from "./VideoGridCard";

@@ -54,6 +54,10 @@
   "copy": "Копіювати",
   "linkCopied": "Скопійовано!",
   "startAt": "Почати з",
+  "views": "{{count}} переглядів",
+  "views_zero": "{{count}} переглядів",
+  "views_one": "{{count}} перегляд",
+  "views_other": "{{count}} переглядів",
   "errors": {
     "failedToFetchInstances": "Не вдалося отримати інстанції: {{error}}",
     "max100VideosPerChunk": "Максимальна кількість відео для одного запиту - 100",

@@ -7,7 +7,7 @@ import { useTranslation } from "react-i18next";
 
 export const ResumeWatching = () => {
   const { t } = useTranslation();
-  const { viewHistory, isFetching } = useViewHistory();
+  const { viewHistory, isFetching, deleteVideoFromHistory } = useViewHistory();
   const latestVideo = viewHistory?.[0];
 
   if (!latestVideo || isFetching) {
@@ -19,7 +19,10 @@ export const ResumeWatching = () => {
       <Spacer height={16} />
       <Typography>{t("continueWatching")}</Typography>
       <Spacer height={16} />
-      <ViewHistoryListItem video={latestVideo} />
+      <ViewHistoryListItem
+        handleDeleteFromHistory={() => deleteVideoFromHistory(latestVideo?.uuid)}
+        video={latestVideo}
+      />
       <Spacer height={16} />
     </View>
   );

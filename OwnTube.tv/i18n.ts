@@ -2,6 +2,8 @@ import i18next from "i18next";
 import { initReactI18next } from "react-i18next";
 import { en, uk, ru, sv } from "./locales";
 import { getLocales } from "expo-localization";
+import { enUS as enDateLocale, uk as ukDateLocale, ru as ruDateLocale, sv as svDateLocale } from "date-fns/locale";
+import "intl-pluralrules";
 
 export const FALLBACK_LANG = "en";
 
@@ -14,6 +16,8 @@ i18n.use(initReactI18next).init({
   fallbackLng: FALLBACK_LANG,
   defaultNS: "translation",
   lng: getLocales()[0]?.languageCode || undefined,
+  pluralSeparator: "_",
+  keySeparator: false,
 });
 
 i18n.addResourceBundle("en", "translation", en);
@@ -25,18 +29,22 @@ export const LANGUAGE_OPTIONS = [
   {
     label: "English",
     value: "en",
+    dateLocale: enDateLocale,
   },
   {
     label: "Українська",
     value: "uk",
+    dateLocale: ukDateLocale,
   },
   {
     label: "Русский",
     value: "ru",
+    dateLocale: ruDateLocale,
   },
   {
     label: "Svenska",
     value: "sv",
+    dateLocale: svDateLocale,
   },
 ];
 

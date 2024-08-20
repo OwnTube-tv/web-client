@@ -54,6 +54,10 @@
   "copy": "Копировать",
   "linkCopied": "Скопировано!",
   "startAt": "Начать с",
+  "views": "{{count}} просмотрsв",
+  "views_zero": "{{count}} просмотров",
+  "views_one": "{{count}} просмотр",
+  "views_other": "{{count}} просмотров",
   "errors": {
     "failedToFetchInstances": "Не удалось получить экземпляры: {{error}}",
     "max100VideosPerChunk": "Максимальное количество видео для одного запроса - 100",

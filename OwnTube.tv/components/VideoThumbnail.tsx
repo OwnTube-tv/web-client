@@ -1,20 +1,20 @@
 import { View, Image, StyleSheet } from "react-native";
-import { getThumbnailDimensions } from "../utils";
 import { useColorSchemeContext } from "../contexts";
-import { Typography } from "./Typography";
 import { useTheme } from "@react-navigation/native";
 import { FC, useEffect, useState } from "react";
-import { Link } from "expo-router";
-import { ROUTES } from "../types";
 import { ViewHistoryEntry } from "../hooks";
 import { GetVideosVideo } from "../api/models";
 import { Loader } from "./Loader";
+import { borderRadius, spacing } from "../theme";
+import { Typography } from "./Typography";
+import { getHumanReadableDuration } from "../utils";
 
 interface VideoThumbnailProps {
   video: GetVideosVideo & Partial<ViewHistoryEntry>;
   backend?: string;
   timestamp?: number;
   isVisible?: boolean;
+  imageDimensions: { width: number; height: number };
 }
 
 const defaultImagePaths = {
@@ -22,11 +22,16 @@ const defaultImagePaths = {
   light: require("./../assets/Logo400x400.png"),
 };
 
-export const VideoThumbnail: FC<VideoThumbnailProps> = ({ video, backend, timestamp, isVisible = true }) => {
+export const VideoThumbnail: FC<VideoThumbnailProps> = ({
+  video,
+  backend,
+  timestamp,
+  isVisible = true,
+  imageDimensions,
+}) => {
   const { scheme } = useColorSchemeContext();
   const [shouldFetchThumbnail, setShouldFetchThumbnail] = useState(false);
 
-  const { width, height } = getThumbnailDimensions();
   const { colors } = useTheme();
 
   const percentageWatched = timestamp ? (timestamp / video.duration) * 100 : 0;
@@ -44,55 +49,54 @@ export const VideoThumbnail: FC<VideoThumbnailProps> = ({ video, backend, timest
   }
 
   return (
-    <Link
-      style={[styles.videoThumbnailContainer, { height, width }, { backgroundColor: colors.card }]}
-      href={{ pathname: `/${ROUTES.VIDEO}`, params: { id: video.uuid, backend, timestamp } }}
-    >
-      {shouldFetchThumbnail ? <Image source={imageSource} style={styles.videoImage} /> : <Loader />}
-      <View style={styles.textContainer}>
-        {!!percentageWatched && percentageWatched > 0 && (
-          <View style={styles.progressContainer}>
-            <View style={{ backgroundColor: colors.primary, width: `${percentageWatched}%`, height: "100%" }} />
-          </View>
-        )}
-        <Typography style={styles.videoTitle}>{video.name}</Typography>
+    <View style={[styles.videoThumbnailContainer, { backgroundColor: colors.themeDesaturated500 }]}>
+      {shouldFetchThumbnail ? (
+        <Image {...imageDimensions} resizeMode="cover" source={imageSource} style={styles.videoImage} />
+      ) : (
+        <Loader />
+      )}
+      {!!percentageWatched && percentageWatched > 0 && (
+        <View style={[styles.progressContainer, { backgroundColor: colors.white25 }]}>
+          <View style={{ backgroundColor: colors.theme500, width: `${percentageWatched}%`, height: spacing.xs }} />
+        </View>
+      )}
+      <View style={[styles.durationContainer, { backgroundColor: colors.black100 }]}>
+        <Typography color={colors.white94} fontSize="sizeXS" fontWeight="SemiBold">
+          {getHumanReadableDuration(video.duration * 1000)}
+        </Typography>
       </View>
-    </Link>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
+  durationContainer: {
+    borderRadius: borderRadius.radiusMd,
+    bottom: spacing.xs + 2,
+    padding: spacing.xs,
+    position: "absolute",
+    right: spacing.sm,
+    zIndex: 1,
+  },
   progressContainer: {
+    bottom: 0,
     flex: 1,
-    height: 4,
+    height: spacing.xs,
     left: 0,
     position: "absolute",
-    top: 0,
+    right: 0,
     width: "100%",
     zIndex: 1,
   },
-  textContainer: {
-    alignItems: "center",
-    padding: 10,
-    width: "100%",
-  },
   videoImage: {
-    borderTopLeftRadius: 10,
-    borderTopRightRadius: 10,
-    height: "85%",
-    resizeMode: "cover",
-    width: "100%",
+    aspectRatio: 16 / 9,
+    flex: 1,
   },
   videoThumbnailContainer: {
-    alignItems: "center",
-    borderRadius: 10,
-    elevation: 4,
-    flexDirection: "column",
-    marginBottom: 20,
-    shadowOpacity: 0.6,
-    shadowRadius: 3,
-  },
-  videoTitle: {
-    fontSize: 20,
+    aspectRatio: 16 / 9,
+    borderRadius: borderRadius.radiusMd,
+    flex: 1,
+    overflow: "hidden",
+    width: "100%",
   },
 });

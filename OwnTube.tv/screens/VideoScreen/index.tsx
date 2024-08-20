@@ -31,6 +31,7 @@ export const VideoScreen = () => {
         category: data.category,
         description: data.description,
         duration: data.duration,
+        channel: data.channel,
       };
 
       updateHistory({ data: updateData });

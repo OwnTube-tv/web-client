@@ -1,4 +1,4 @@
-import { useViewHistory } from "../hooks";
+import { useViewHistory, ViewHistoryEntry } from "../hooks";
 import { FlatList, StyleSheet, View } from "react-native";
 import { Loader } from "./Loader";
 import { Spacer } from "./shared/Spacer";
@@ -6,10 +6,18 @@ import { Typography } from "./Typography";
 import { ViewHistoryListItem } from "./ViewHistoryListItem";
 import { useTranslation } from "react-i18next";
 import { IconButton } from "./IconButton";
+import { useCallback } from "react";
 
 export const ViewHistory = () => {
   const { t } = useTranslation();
-  const { viewHistory, clearHistory, isFetching } = useViewHistory();
+  const { viewHistory, clearHistory, isFetching, deleteVideoFromHistory } = useViewHistory();
+
+  const renderItem = useCallback(
+    ({ item }: { item: ViewHistoryEntry }) => (
+      <ViewHistoryListItem handleDeleteFromHistory={() => deleteVideoFromHistory(item.uuid)} video={item} />
+    ),
+    [deleteVideoFromHistory],
+  );
 
   if (!viewHistory?.length && !isFetching) {
     return <Typography>{t("viewHistoryEmpty")}</Typography>;
@@ -25,11 +33,7 @@ export const ViewHistory = () => {
         <Typography style={styles.header}>{t("viewHistory")}</Typography>
         <IconButton icon="Trash" onPress={clearHistory} text={t("clear")} />
       </View>
-      <FlatList
-        renderItem={({ item }) => <ViewHistoryListItem video={item} />}
-        data={viewHistory}
-        ItemSeparatorComponent={() => <Spacer height={32} />}
-      />
+      <FlatList renderItem={renderItem} data={viewHistory} ItemSeparatorComponent={() => <Spacer height={32} />} />
     </View>
   );
 };

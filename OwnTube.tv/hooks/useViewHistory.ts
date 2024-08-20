@@ -78,5 +78,16 @@ export const useViewHistory = (enabled: boolean = true, maxItems: number = 50) =
     return history?.[uuid];
   };
 
-  return { viewHistory, isFetching, clearHistory, updateHistory, getViewHistoryEntryByUuid };
+  const deleteVideoFromHistory = async (uuid: string) => {
+    const history: string[] = await readFromAsyncStorage(STORAGE.VIEW_HISTORY);
+
+    await writeToAsyncStorage(
+      STORAGE.VIEW_HISTORY,
+      history.filter((entry) => entry !== uuid),
+    );
+    await deleteFromAsyncStorage([uuid]);
+    await queryClient.invalidateQueries({ queryKey: ["viewHistory"] });
+  };
+
+  return { viewHistory, isFetching, clearHistory, updateHistory, getViewHistoryEntryByUuid, deleteVideoFromHistory };
 };

@@ -1,12 +1,13 @@
 import { FC, useCallback, useState } from "react";
 import { View, StyleSheet, FlatList, ViewToken } from "react-native";
 import { useCategoryScroll, useViewHistory } from "../hooks";
-import { Button, VideoThumbnail } from "./";
+import { Button } from "./";
 import { useTheme } from "@react-navigation/native";
 import { GetVideosVideo } from "../api/models";
 import { useLocalSearchParams } from "expo-router";
 import { RootStackParams } from "../app/_layout";
 import { ROUTES } from "../types";
+import { VideoGridCard } from "./VideoGridCard";
 
 export const CategoryScroll: FC<{ videos: GetVideosVideo[] }> = ({ videos }) => {
   const { backend } = useLocalSearchParams<RootStackParams[ROUTES.INDEX]>();
@@ -20,12 +21,12 @@ export const CategoryScroll: FC<{ videos: GetVideosVideo[] }> = ({ videos }) => 
       const { timestamp } = getViewHistoryEntryByUuid(video.uuid) || {};
 
       return (
-        <VideoThumbnail
-          isVisible={viewableItems.includes(video.uuid)}
-          key={video.uuid}
+        <VideoGridCard
           video={video}
           backend={backend}
           timestamp={timestamp}
+          key={video.uuid}
+          isVisible={viewableItems.includes(video.uuid)}
         />
       );
     },
@@ -91,7 +92,7 @@ const styles = StyleSheet.create({
     overflow: "visible",
   },
   videoThumbnailsContainer: {
-    alignItems: "center",
+    alignItems: "flex-start",
     flexDirection: "row",
     gap: 8,
   },

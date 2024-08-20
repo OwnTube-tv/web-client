@@ -57,6 +57,7 @@ export const colorSchemes = {
     colors: {
       ...DefaultTheme.colors,
       ...light,
+      background: light.theme50,
     },
   },
   dark: {
@@ -64,6 +65,7 @@ export const colorSchemes = {
     colors: {
       ...DarkTheme.colors,
       ...dark,
+      background: dark.theme50,
     },
   },
 };

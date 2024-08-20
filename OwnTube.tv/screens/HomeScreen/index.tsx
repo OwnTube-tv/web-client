@@ -2,21 +2,14 @@ import { ResumeWatching, VideoList } from "../../components";
 import { Screen } from "../../layouts";
 import { styles } from "./styles";
 import { useTheme } from "@react-navigation/native";
-import { Image } from "react-native";
-
-const images = {
-  dark: require("../../assets/logoDark-160x160.png"),
-  light: require("../../assets/Logo160x160.png"),
-};
+import { Logo } from "../../components/Svg";
 
 export const HomeScreen = () => {
-  const theme = useTheme();
-
-  const logoSource = theme.dark ? images.dark : images.light;
+  const { colors } = useTheme();
 
   return (
-    <Screen style={{ ...styles.container, backgroundColor: theme.colors.background }}>
-      <Image source={logoSource} width={160} height={160} />
+    <Screen style={{ ...styles.container, backgroundColor: colors.background }}>
+      <Logo width={160} textColor={colors.theme950} />
       <ResumeWatching />
       <VideoList />
     </Screen>

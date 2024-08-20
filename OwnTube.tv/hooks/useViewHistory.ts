@@ -13,7 +13,7 @@ export type ViewHistoryEntry = GetVideosVideo & {
 type UpdateHistoryMutationFnArg = { data: Partial<ViewHistoryEntry> & { uuid: string } };
 type ViewHistoryBase = Record<string, ViewHistoryEntry>;
 
-export const useViewHistory = (maxItems: number = 50) => {
+export const useViewHistory = (enabled: boolean = true, maxItems: number = 50) => {
   const queryClient = useQueryClient();
 
   const { data: viewHistory, isFetching } = useQuery<ViewHistoryBase, DefaultError, Array<ViewHistoryEntry>>({
@@ -29,6 +29,7 @@ export const useViewHistory = (maxItems: number = 50) => {
       Object.values(data)
         .sort((a: ViewHistoryEntry, b: ViewHistoryEntry) => b.lastViewedAt - a.lastViewedAt)
         .slice(0, maxItems),
+    enabled,
   });
 
   const { mutateAsync: updateHistory } = useMutation({

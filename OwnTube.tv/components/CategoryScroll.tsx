@@ -10,7 +10,7 @@ import { ROUTES } from "../types";
 
 export const CategoryScroll: FC<{ videos: GetVideosVideo[] }> = ({ videos }) => {
   const { backend } = useLocalSearchParams<RootStackParams[ROUTES.INDEX]>();
-  const { getViewHistoryEntryByUuid } = useViewHistory();
+  const { getViewHistoryEntryByUuid } = useViewHistory(false);
   const { ref, windowWidth, scrollRight, scrollLeft } = useCategoryScroll();
   const { colors } = useTheme();
   const [viewableItems, setViewableItems] = useState<string[]>([]);

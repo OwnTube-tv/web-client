@@ -23,3 +23,5 @@ export * from "./FocusWrapper";
 export * from "./ModalContainer";
 export * from "./ChannelLink";
 export * from "./FullScreenModal";
+export * from "./PlatformCard";
+export * from "./InfoFooter";

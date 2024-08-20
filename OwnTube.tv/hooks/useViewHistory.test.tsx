@@ -21,7 +21,7 @@ describe("useViewHistory", () => {
       ["uuid3", JSON.stringify({ lastViewedAt: 109 })],
     ]);
 
-    const { result } = renderHook(() => useViewHistory(2), { wrapper });
+    const { result } = renderHook(() => useViewHistory(true, 2), { wrapper });
 
     await waitFor(() => expect(result.current.viewHistory).toEqual([{ lastViewedAt: 125 }, { lastViewedAt: 123 }]));
   });
@@ -32,7 +32,7 @@ describe("useViewHistory", () => {
       .mockResolvedValueOnce(["uuid1", "uuid2"])
       .mockResolvedValueOnce(null);
 
-    const { result } = renderHook(() => useViewHistory(2), { wrapper });
+    const { result } = renderHook(() => useViewHistory(true, 2), { wrapper });
 
     await act(async () => {
       await result.current.updateHistory({ data: { uuid: "uuid3", name: "big bug buggy", lastViewedAt: 1234 } });

@@ -12,7 +12,7 @@ import { VideoGridCard } from "./VideoGridCard";
 export const CategoryScroll: FC<{ videos: GetVideosVideo[] }> = ({ videos }) => {
   const { backend } = useLocalSearchParams<RootStackParams[ROUTES.INDEX]>();
   const { getViewHistoryEntryByUuid } = useViewHistory(false);
-  const { ref, windowWidth, scrollRight, scrollLeft } = useCategoryScroll();
+  const { ref, scrollRight, scrollLeft } = useCategoryScroll();
   const { colors } = useTheme();
   const [viewableItems, setViewableItems] = useState<string[]>([]);
 
@@ -54,7 +54,6 @@ export const CategoryScroll: FC<{ videos: GetVideosVideo[] }> = ({ videos }) => 
         contentContainerStyle={styles.videoThumbnailsContainer}
         data={videos}
         renderItem={renderItem}
-        style={[styles.scrollView, { width: windowWidth - 120 }]}
         keyExtractor={({ uuid }) => uuid}
         viewabilityConfig={{
           minimumViewTime: 0,
@@ -87,10 +86,6 @@ const styles = StyleSheet.create({
   },
   scrollLeft: { transform: [{ rotate: "90deg" }] },
   scrollRight: { transform: [{ rotate: "-90deg" }] },
-  scrollView: {
-    flexGrow: 0,
-    overflow: "visible",
-  },
   videoThumbnailsContainer: {
     alignItems: "flex-start",
     flexDirection: "row",

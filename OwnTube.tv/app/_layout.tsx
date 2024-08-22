@@ -1,5 +1,5 @@
-import { Link, Stack, useLocalSearchParams } from "expo-router";
-import { Platform, StyleSheet } from "react-native";
+import { useGlobalSearchParams } from "expo-router";
+import { Platform } from "react-native";
 import { ROUTES, STORAGE } from "../types";
 import { ThemeProvider } from "@react-navigation/native";
 import { AppConfigContextProvider, ColorSchemeContextProvider, useColorSchemeContext } from "../contexts";
@@ -7,10 +7,10 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { useFonts } from "expo-font";
 import Toast from "react-native-toast-message";
-import { BuildInfoToast, ClickableHeaderText } from "../components";
+import { BuildInfoToast, FullScreenModal, Sidebar } from "../components";
 import "../i18n";
 import { useTranslation } from "react-i18next";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { readFromAsyncStorage } from "../utils";
 import {
   Inter_100Thin,
@@ -23,56 +23,65 @@ import {
   Inter_800ExtraBold,
   Inter_900Black,
 } from "@expo-google-fonts/inter";
-import { IcoMoonIcon } from "../components";
 import { colorSchemes } from "../theme";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { StatusBar } from "expo-status-bar";
 import "../global.css";
+import { Drawer } from "expo-router/drawer";
+import { Settings } from "../components/VideoControlsOverlay/components/modals";
 import { AppHeader } from "../components/AppHeader";
 import { SafeAreaProvider } from "react-native-safe-area-context";
+import { useBreakpoints } from "../hooks";
+
+export const CLOSED_DRAWER_WIDTH = 64;
+export const OPEN_DRAWER_WIDTH = 272;
 
 const RootStack = () => {
-  const { backend = null } = useLocalSearchParams<RootStackParams[ROUTES.INDEX]>();
   const { scheme } = useColorSchemeContext();
   const theme = scheme === "dark" ? colorSchemes.dark : colorSchemes.light;
-  const { t, i18n } = useTranslation();
+  const { i18n } = useTranslation();
 
   useEffect(() => {
     readFromAsyncStorage(STORAGE.LOCALE).then(i18n.changeLanguage);
   }, []);
 
+  const [isSettingsModalVisible, setIsSettingsModalVisible] = useState(false);
+  const breakpoints = useBreakpoints();
+  const { backend } = useGlobalSearchParams<{ backend: string }>();
+
   return (
     <>
       <StatusBar style={scheme === "dark" ? "light" : "dark"} />
       <ThemeProvider value={theme}>
-        <Stack
+        <Drawer
           screenOptions={{
-            headerTitle: ({ children }) => <ClickableHeaderText>{children}</ClickableHeaderText>,
+            drawerType: breakpoints.isMobile ? "front" : "permanent",
+            drawerStyle: {
+              width: !backend
+                ? 0
+                : !breakpoints.isDesktop && !breakpoints.isMobile
+                  ? CLOSED_DRAWER_WIDTH
+                  : OPEN_DRAWER_WIDTH,
+            },
+            header: (props) => (breakpoints.isMobile ? <AppHeader {...props} backend={backend} /> : <></>),
           }}
+          drawerContent={(props) => (
+            <Sidebar {...props} handleOpenSettings={() => setIsSettingsModalVisible(true)} backend={backend} />
+          )}
         >
-          <Stack.Screen
-            name={"(home)/index"}
-            options={{
-              headerBackVisible: false,
-              title: t("appName"),
-              header: () => <AppHeader backend={backend} />,
-            }}
+          <Drawer.Screen name={"(home)/index"} />
+          <Drawer.Screen name={`(home)/${ROUTES.SETTINGS}`} />
+          <Drawer.Screen
+            name={`(home)/video`}
+            options={{ drawerStyle: { display: "none" }, swipeEnabled: false, header: () => <></> }}
           />
-          <Stack.Screen
-            options={{
-              title: t("settingsPageTitle"),
-              headerBackVisible: false,
-              headerLeft: () => (
-                <Link style={styles.headerButtonLeft} href={{ pathname: "/", params: { backend } }}>
-                  <IcoMoonIcon name="Home" size={24} color={theme.colors.primary} />
-                </Link>
-              ),
-            }}
-            name={`(home)/${ROUTES.SETTINGS}`}
-          />
-          <Stack.Screen options={{ title: t("videoPageTitle"), headerShown: false }} name={`(home)/video`} />
-        </Stack>
+          <Drawer.Screen name={`(home)/${ROUTES.CHANNELS}`} />
+          <Drawer.Screen name={`(home)/${ROUTES.CATEGORIES}`} />
+        </Drawer>
         <Toast config={{ buildInfo: () => <BuildInfoToast /> }} />
+        <FullScreenModal onBackdropPress={() => setIsSettingsModalVisible(false)} isVisible={isSettingsModalVisible}>
+          <Settings onClose={() => setIsSettingsModalVisible(false)} />
+        </FullScreenModal>
       </ThemeProvider>
     </>
   );
@@ -124,10 +133,6 @@ export type RootStackParams = {
   [ROUTES.INDEX]: { backend: string };
   [ROUTES.SETTINGS]: { backend: string; tab: "history" | "instance" | "config" };
   [ROUTES.VIDEO]: { backend: string; id: string; timestamp?: string };
+  [ROUTES.CHANNELS]: { backend: string };
+  [ROUTES.CATEGORIES]: { backend: string };
 };
-
-const styles = StyleSheet.create({
-  headerButtonLeft: {
-    paddingLeft: 11,
-  },
-});

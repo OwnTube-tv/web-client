@@ -20,7 +20,7 @@ export class InstanceSearchApi {
     });
   }
 
-  // Common query parameters for fetching videos that are classified as "local", "non-live", and "Safe-For-Work"
+  // Common query parameters for fetching a list of instances
   private readonly commonQueryParams = {
     start: 0,
     count: 1000,

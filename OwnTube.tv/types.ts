@@ -15,6 +15,8 @@ export enum ROUTES {
   INDEX = "index",
   SETTINGS = "settings",
   VIDEO = "video",
+  CHANNELS = "channels",
+  CATEGORIES = "categories",
 }
 
 export interface Category {

@@ -20,7 +20,8 @@
   "rules": {
     "react-native/no-raw-text": ["error", { "skip": ["Typography", "title", "ExternalLink"] }],
     "react/prop-types": "off",
-    "react-native/no-inline-styles": "off"
+    "react-native/no-inline-styles": "off",
+    "@typescript-eslint/no-var-requires": "off"
   },
   "settings": {
     "react": {

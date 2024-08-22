@@ -46,8 +46,8 @@ export type PeertubeInstance = {
   autoBlacklistUserVideosEnabled: boolean;
   defaultNSFWPolicy: "do_not_list" | "display" | "blur";
   isNSFW: boolean;
-  avatars: Array<{ width: number; url: string }>;
-  banners: Array<{ width: number; url: string }>;
+  avatars: Array<{ width: number; url: string; path: string }>;
+  banners: Array<{ width: number; url: string; path: string }>;
   totalUsers: number;
   totalVideos: number;
   totalLocalVideos: number;

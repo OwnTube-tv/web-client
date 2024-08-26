@@ -30,7 +30,7 @@ import "../global.css";
 import { Drawer } from "expo-router/drawer";
 import { Settings } from "../components/VideoControlsOverlay/components/modals";
 import { AppHeader } from "../components/AppHeader";
-import { SafeAreaProvider } from "react-native-safe-area-context";
+import { SafeAreaProvider, useSafeAreaInsets } from "react-native-safe-area-context";
 import { useBreakpoints } from "../hooks";
 
 export const CLOSED_DRAWER_WIDTH = 64;
@@ -48,6 +48,7 @@ const RootStack = () => {
   const [isSettingsModalVisible, setIsSettingsModalVisible] = useState(false);
   const breakpoints = useBreakpoints();
   const { backend } = useGlobalSearchParams<{ backend: string }>();
+  const { left } = useSafeAreaInsets();
 
   return (
     <>
@@ -57,13 +58,11 @@ const RootStack = () => {
           screenOptions={{
             drawerType: breakpoints.isMobile ? "front" : "permanent",
             drawerStyle: {
-              width: !backend
-                ? 0
-                : !breakpoints.isDesktop && !breakpoints.isMobile
-                  ? CLOSED_DRAWER_WIDTH
-                  : OPEN_DRAWER_WIDTH,
+              display: !backend ? "none" : "flex",
+              width: (!breakpoints.isDesktop && !breakpoints.isMobile ? CLOSED_DRAWER_WIDTH : OPEN_DRAWER_WIDTH) + left,
+              borderRightWidth: 0,
             },
-            header: (props) => (breakpoints.isMobile ? <AppHeader {...props} backend={backend} /> : <></>),
+            header: (props) => (breakpoints.isMobile && !!backend ? <AppHeader {...props} backend={backend} /> : <></>),
           }}
           drawerContent={(props) => (
             <Sidebar {...props} handleOpenSettings={() => setIsSettingsModalVisible(true)} backend={backend} />

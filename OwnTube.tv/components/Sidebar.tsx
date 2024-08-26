@@ -10,7 +10,6 @@ import { Button, Separator } from "./shared";
 import { spacing } from "../theme";
 import { Spacer } from "./shared/Spacer";
 import { useBreakpoints } from "../hooks";
-import { CLOSED_DRAWER_WIDTH, OPEN_DRAWER_WIDTH } from "../app/_layout";
 import { InstanceInfo } from "./InstanceInfo";
 
 const SIDEBAR_ROUTES = [
@@ -59,9 +58,9 @@ export const Sidebar: FC<SidebarProps> = ({ handleOpenSettings, backend, ...navi
       style={[
         styles.container,
         {
-          width: !shouldExpand ? CLOSED_DRAWER_WIDTH : OPEN_DRAWER_WIDTH,
           backgroundColor: colors.theme50,
           paddingHorizontal: shouldExpand ? spacing.md : spacing.sm,
+          width: "100%",
         },
       ]}
     >

@@ -7,11 +7,13 @@ import { useLocalSearchParams } from "expo-router";
 import { RootStackParams } from "../app/_layout";
 import { InstanceSearchServiceImpl } from "./instanceSearchApi";
 import { GetVideosVideo } from "./models";
+import { InstanceInformationApiImpl } from "./instance";
 
 export enum QUERY_KEYS {
   videos = "videos",
   video = "video",
   instances = "instances",
+  instance = "instance",
 }
 
 export const useGetVideosQuery = <TResult = GetVideosVideo[]>({
@@ -65,5 +67,17 @@ export const useGetInstancesQuery = () => {
     },
     refetchOnWindowFocus: false,
     select: ({ data }) => data,
+  });
+};
+
+export const useGetInstanceInfoQuery = (backend?: string) => {
+  return useQuery({
+    queryKey: [QUERY_KEYS.instance, backend],
+    queryFn: async () => {
+      return await InstanceInformationApiImpl.getInstanceInfo(backend!);
+    },
+    select: ({ instance }) => instance,
+    enabled: !!backend,
+    refetchOnWindowFocus: false,
   });
 };

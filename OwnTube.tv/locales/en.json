@@ -61,6 +61,11 @@
   "views_zero": "{{count}} views",
   "views_one": "{{count}} view",
   "views_other": "{{count}} views",
+  "home": "Home",
+  "channels": "Channels",
+  "categories": "Categories",
+  "darkMode": "Dark mode",
+  "lightMode": "Light mode",
   "errors": {
     "failedToFetchInstances": "Failed to fetch instances: {{error}}",
     "max100VideosPerChunk": "The maximum number of videos to fetch in a single request is 100",
@@ -68,6 +73,7 @@
     "failedToFetchVids": "Failed to fetch videos from PeerTube API: ",
     "failedToFetchVideo": "Failed to fetch video {{id}} from PeerTube API: ",
     "maxTotalToBeExceeded": "We would exceed the total available {{rawTotal}} videos with chunk size {{maxChunkSize}}, so fetching only {{fetchCount}} videos to reach the total",
-    "maxLimitToBeExceeded": "We would exceed max limit of {{limit}} videos, so fetching only {{fetchCount}} additional videos to reach the limit"
+    "maxLimitToBeExceeded": "We would exceed max limit of {{limit}} videos, so fetching only {{fetchCount}} additional videos to reach the limit",
+    "failedToFetchInstanceInfo": "Failed to fetch information about the instance"
   }
 }

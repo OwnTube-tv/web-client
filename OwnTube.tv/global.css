@@ -1,3 +1,7 @@
+body {
+  min-height: 100dvh;
+}
+
 input:focus {
   outline: none;
 }

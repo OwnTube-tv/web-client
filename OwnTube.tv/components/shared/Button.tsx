@@ -11,9 +11,18 @@ interface ButtonProps extends PropsWithChildren<PressableProps> {
   contrast?: "high" | "low" | "none";
   icon?: string;
   text?: string;
+  justifyContent?: ViewStyle["justifyContent"];
+  isActive?: boolean;
 }
 
-export const Button: FC<ButtonProps> = ({ contrast = "none", text, icon, ...props }) => {
+export const Button: FC<ButtonProps> = ({
+  contrast = "none",
+  text,
+  icon,
+  justifyContent = "center",
+  isActive,
+  ...props
+}) => {
   const { colors } = useTheme();
   const { isHovered, toggleHovered } = useHoverState();
 
@@ -23,7 +32,7 @@ export const Button: FC<ButtonProps> = ({ contrast = "none", text, icon, ...prop
       low: { regularColor: colors.theme100, hoverColor: colors.theme200 },
       high: { regularColor: colors.theme500, hoverColor: colors.theme600 },
     }[contrast];
-  }, []);
+  }, [colors, contrast]);
 
   return (
     <Pressable
@@ -36,7 +45,14 @@ export const Button: FC<ButtonProps> = ({ contrast = "none", text, icon, ...prop
         props.onHoverOut?.(e);
         toggleHovered();
       }}
-      style={[styles.container, props.style, { backgroundColor: isHovered ? hoverColor : regularColor }]}
+      style={({ pressed }) => [
+        styles.container,
+        props.style,
+        {
+          backgroundColor: isHovered ? hoverColor : isActive || pressed ? colors.theme100 : regularColor,
+          justifyContent,
+        },
+      ]}
     >
       {icon && <IcoMoonIcon name={icon} size={24} color={colors.theme900} />}
       {text && (
@@ -58,7 +74,6 @@ const styles = StyleSheet.create({
     borderRadius: borderRadius.radiusMd,
     flexDirection: "row",
     gap: 12,
-    justifyContent: "center",
     paddingHorizontal: 12,
     paddingVertical: 9.5,
   },

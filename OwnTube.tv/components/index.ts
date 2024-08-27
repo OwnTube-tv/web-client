@@ -26,3 +26,5 @@ export * from "./FullScreenModal";
 export * from "./PlatformCard";
 export * from "./InfoFooter";
 export * from "./VideoGridCard";
+export * from "./Sidebar";
+export * from "./InstanceInfo";

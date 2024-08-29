@@ -1,10 +1,9 @@
 import { View, Image, StyleSheet } from "react-native";
 import { useColorSchemeContext } from "../contexts";
 import { useTheme } from "@react-navigation/native";
-import { FC, useEffect, useState } from "react";
+import { FC } from "react";
 import { ViewHistoryEntry } from "../hooks";
 import { GetVideosVideo } from "../api/models";
-import { Loader } from "./Loader";
 import { borderRadius, spacing } from "../theme";
 import { Typography } from "./Typography";
 import { getHumanReadableDuration } from "../utils";
@@ -22,25 +21,12 @@ const defaultImagePaths = {
   light: require("./../assets/Logo400x400.png"),
 };
 
-export const VideoThumbnail: FC<VideoThumbnailProps> = ({
-  video,
-  backend,
-  timestamp,
-  isVisible = true,
-  imageDimensions,
-}) => {
+export const VideoThumbnail: FC<VideoThumbnailProps> = ({ video, backend, timestamp, imageDimensions }) => {
   const { scheme } = useColorSchemeContext();
-  const [shouldFetchThumbnail, setShouldFetchThumbnail] = useState(false);
 
   const { colors } = useTheme();
 
   const percentageWatched = timestamp ? (timestamp / video.duration) * 100 : 0;
-
-  useEffect(() => {
-    if (isVisible) {
-      setShouldFetchThumbnail(true);
-    }
-  }, [isVisible]);
 
   const imageSource = video.thumbnailPath ? { uri: video.thumbnailPath } : defaultImagePaths[scheme ?? "dark"];
 
@@ -50,11 +36,7 @@ export const VideoThumbnail: FC<VideoThumbnailProps> = ({
 
   return (
     <View style={[styles.videoThumbnailContainer, { backgroundColor: colors.themeDesaturated500 }]}>
-      {shouldFetchThumbnail ? (
-        <Image {...imageDimensions} resizeMode="cover" source={imageSource} style={styles.videoImage} />
-      ) : (
-        <Loader />
-      )}
+      <Image {...imageDimensions} resizeMode="cover" source={imageSource} style={styles.videoImage} />
       {!!percentageWatched && percentageWatched > 0 && (
         <View style={[styles.progressContainer, { backgroundColor: colors.white25 }]}>
           <View style={{ backgroundColor: colors.theme500, width: `${percentageWatched}%`, height: spacing.xs }} />

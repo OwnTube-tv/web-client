@@ -23,15 +23,10 @@ export const VideoScreen = () => {
   useEffect(() => {
     if (data && params?.backend) {
       const updateData = {
-        uuid: data.uuid,
-        name: data.name,
+        ...data,
         thumbnailPath: `https://${params.backend}${data.thumbnailPath}`,
         backend: params.backend,
         lastViewedAt: new Date().getTime(),
-        category: data.category,
-        description: data.description,
-        duration: data.duration,
-        channel: data.channel,
       };
 
       updateHistory({ data: updateData });

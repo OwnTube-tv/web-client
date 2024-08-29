@@ -1,9 +1,6 @@
-export * from "./VideoList";
 export * from "./SourceSelect";
 export * from "./Typography";
 export * from "./shared";
-export * from "./VideosByCategory";
-export * from "./CategoryScroll";
 export * from "./VideoThumbnail";
 export * from "./VideoView/VideoView";
 export * from "./VideoControlsOverlay";
@@ -28,3 +25,4 @@ export * from "./InfoFooter";
 export * from "./VideoGridCard";
 export * from "./Sidebar";
 export * from "./InstanceInfo";
+export * from "./VideoGrid";

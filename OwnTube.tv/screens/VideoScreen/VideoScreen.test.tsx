@@ -66,6 +66,11 @@ describe("VideoScreen", () => {
         name: "fastest car",
         thumbnailPath: "https://example.com/thumb.jpg",
         uuid: "123",
+        files: [
+          { resolution: { id: 2160 } },
+          { resolution: { id: 1080 }, fileUrl: "http://abc.xyz/static/web-videos/123-1080.mp4" },
+          { resolution: { id: 240 } },
+        ],
       },
     });
   });

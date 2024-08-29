@@ -63,6 +63,10 @@
   "categories": "Категорії",
   "darkMode": "Темний режим",
   "lightMode": "Світлий режим",
+  "latestVideos": "Останні відео",
+  "recentlyWatched": "Недавно переглянуті",
+  "visitChannel": "Відвідати канал",
+  "viewAll": "Переглянути все",
   "errors": {
     "failedToFetchInstances": "Не вдалося отримати інстанції: {{error}}",
     "max100VideosPerChunk": "Максимальна кількість відео для одного запиту - 100",

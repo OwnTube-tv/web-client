@@ -70,6 +70,8 @@
   "recentlyWatched": "Recently watched",
   "visitChannel": "Visit channel",
   "viewAll": "View all",
+  "leaveInstance": "Leave {{instance}}",
+  "leaveInstanceDescription": "Leave the current site and return to OwnTubes site overview page",
   "errors": {
     "failedToFetchInstances": "Failed to fetch instances: {{error}}",
     "max100VideosPerChunk": "The maximum number of videos to fetch in a single request is 100",

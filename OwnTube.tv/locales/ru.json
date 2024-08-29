@@ -54,6 +54,9 @@
   "copy": "Копировать",
   "linkCopied": "Скопировано!",
   "startAt": "Начать с",
+  "welcomeText": "Добро пожаловать на OwnTube!",
+  "welcomeDescriptionText": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut laoreet, nisl dignissim gravida placerat, nunc nibh lacinia tortor faucibus ipsum.",
+  "exploreVideoSites": "Просмотреть видео-сайты",
   "views": "{{count}} просмотров",
   "views_zero": "{{count}} просмотров",
   "views_one": "{{count}} просмотр",
@@ -67,6 +70,8 @@
   "recentlyWatched": "Недавно просмотренные",
   "visitChannel": "Посетить канал",
   "viewAll": "Просмотреть все",
+  "leaveInstance": "Покинуть {{instance}}",
+  "leaveInstanceDescription": "Покинуть текущий сайт и вернуться к странице обзора сайтов OwnTube",
   "errors": {
     "failedToFetchInstances": "Не удалось получить экземпляры: {{error}}",
     "max100VideosPerChunk": "Максимальное количество видео для одного запроса - 100",

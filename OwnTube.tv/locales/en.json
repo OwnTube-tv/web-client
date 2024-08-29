@@ -78,6 +78,9 @@
     "failedToFetchVideo": "Failed to fetch video {{id}} from PeerTube API: ",
     "maxTotalToBeExceeded": "We would exceed the total available {{rawTotal}} videos with chunk size {{maxChunkSize}}, so fetching only {{fetchCount}} videos to reach the total",
     "maxLimitToBeExceeded": "We would exceed max limit of {{limit}} videos, so fetching only {{fetchCount}} additional videos to reach the limit",
-    "failedToFetchInstanceInfo": "Failed to fetch information about the instance"
+    "failedToFetchInstanceInfo": "Failed to fetch information about the instance",
+    "failedToFetchChannels": "Failed to fetch channels list from the instance",
+    "failedToFetchChannelVideos": "Failed to fetch channel videos",
+    "failedToFetchAvailableCategories": "Failed to fetch available categories"
   }
 }

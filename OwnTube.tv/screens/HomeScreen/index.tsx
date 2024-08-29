@@ -1,47 +1,29 @@
-import { ErrorMessage, InfoFooter, Loader, Typography, VideoGrid } from "../../components";
+import { InfoFooter, VideoGrid } from "../../components";
 import { Screen } from "../../layouts";
 import { useTheme } from "@react-navigation/native";
-import { useGetVideosQuery } from "../../api";
-import { GetVideosVideo } from "../../api/models";
-import { organizeVideosByChannelAndCategory, VideosByChannel } from "../../utils";
-import { useState } from "react";
+import { useGetCategoriesQuery, useGetChannelsQuery } from "../../api";
+import { useMemo } from "react";
 import { useBreakpoints, useViewHistory } from "../../hooks";
 import { spacing } from "../../theme";
 import { ROUTES } from "../../types";
-import { StyleSheet, View } from "react-native";
+import { StyleSheet } from "react-native";
 import { useTranslation } from "react-i18next";
+import { ChannelView, LatestVideosView, CategoryView } from "./components";
+import { useLocalSearchParams } from "expo-router";
+import { RootStackParams } from "../../app/_layout";
 
 export const HomeScreen = () => {
   const { colors } = useTheme();
   const { t } = useTranslation();
-  const { data, error, isLoading } = useGetVideosQuery<{
-    raw: GetVideosVideo[];
-    videosByChannel: VideosByChannel;
-  }>({
-    select: (data) => ({
-      raw: data,
-      videosByChannel: organizeVideosByChannelAndCategory(data),
-    }),
-  });
+  const { backend } = useLocalSearchParams<RootStackParams[ROUTES.INDEX]>();
   const { viewHistory } = useViewHistory();
-  const [latestVideosShown, setLatestVideosShown] = useState(12);
   const { isMobile } = useBreakpoints();
+  const { data: channels } = useGetChannelsQuery();
+  const { data: categories } = useGetCategoriesQuery();
 
-  if (error) {
-    return <ErrorMessage message={error.message} />;
-  }
-
-  if (isLoading) {
-    return <Loader />;
-  }
-
-  if (data?.raw.length === 0) {
-    return (
-      <View style={styles.centeredContainer}>
-        <Typography>{t("noVideosOrCategoriesFound")}</Typography>
-      </View>
-    );
-  }
+  const historyData = useMemo(() => {
+    return viewHistory?.filter(({ backend: itemBackend }) => itemBackend === backend).slice(0, 4);
+  }, [viewHistory, backend]);
 
   return (
     <Screen
@@ -52,46 +34,24 @@ export const HomeScreen = () => {
         paddingRight: isMobile ? 0 : spacing.xl,
       }}
     >
-      <VideoGrid
-        title={t("latestVideos")}
-        data={data?.raw?.slice(0, latestVideosShown)}
-        handleShowMore={() => setLatestVideosShown((prevState) => prevState + 4)}
-      />
+      <LatestVideosView />
       {viewHistory?.length !== 0 && (
         <VideoGrid
           headerLink={{ text: t("viewHistory"), href: { pathname: ROUTES.SETTINGS, params: { tab: "history" } } }}
           title={t("recentlyWatched")}
           icon="History"
-          data={viewHistory?.slice(0, 4)}
+          data={historyData}
           variant="history"
         />
       )}
-      {data?.videosByChannel?.map(({ channel, data }) => (
-        <VideoGrid
-          headerLink={{ text: t("visitChannel"), href: { pathname: "#" } }}
-          variant="channel"
-          key={channel?.id}
-          title={channel?.displayName}
-          data={Object.values(data).flat().slice(0, 4)}
-          channelLogoUri={channel?.avatar?.path}
-        />
-      ))}
-      <VideoGrid
-        headerLink={{ text: t("viewAll"), href: { pathname: "#" } }}
-        title="Category"
-        data={data?.raw?.slice(0, 4)}
-      />
+      {channels?.map((channel) => <ChannelView key={channel.id} channel={channel} />)}
+      {categories?.map((category) => <CategoryView category={category} key={category.id} />)}
       <InfoFooter />
     </Screen>
   );
 };
 
 const styles = StyleSheet.create({
-  centeredContainer: {
-    alignItems: "center",
-    flex: 1,
-    justifyContent: "center",
-  },
   container: {
     alignItems: "center",
     flex: 1,

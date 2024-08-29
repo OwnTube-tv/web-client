@@ -11,6 +11,7 @@ import { Image, StyleSheet, View } from "react-native";
 import { VideoGridCard } from "./VideoGridCard";
 import { Button } from "./shared";
 import { IcoMoonIcon } from "./IcoMoonIcon";
+import { Loader } from "./Loader";
 
 interface VideoGridProps {
   data?: Array<GetVideosVideo | ViewHistoryEntry>;
@@ -23,6 +24,7 @@ interface VideoGridProps {
   };
   handleShowMore?: () => void;
   channelLogoUri?: string;
+  isLoadingMore?: boolean;
 }
 
 export const VideoGrid = ({
@@ -33,6 +35,7 @@ export const VideoGrid = ({
   headerLink,
   handleShowMore,
   channelLogoUri,
+  isLoadingMore,
 }: VideoGridProps) => {
   const { backend } = useLocalSearchParams<RootStackParams[ROUTES.INDEX]>();
   const { colors } = useTheme();
@@ -78,6 +81,7 @@ export const VideoGrid = ({
       {!!handleShowMore && (
         <View style={styles.showMoreContainer}>
           <Button contrast="low" text="Show more" onPress={handleShowMore} />
+          {isLoadingMore && <Loader />}
         </View>
       )}
     </View>
@@ -108,5 +112,5 @@ const styles = StyleSheet.create({
   },
   headerTextContainer: { alignItems: "center", flexDirection: "row", gap: spacing.lg },
   image: { borderRadius: borderRadius.radiusMd, height: 32, width: 32 },
-  showMoreContainer: { alignSelf: "flex-start", marginTop: spacing.xl },
+  showMoreContainer: { alignSelf: "flex-start", flexDirection: "row", gap: spacing.xl, marginTop: spacing.xl },
 });

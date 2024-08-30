@@ -1,17 +1,18 @@
-import axios, { AxiosInstance } from "axios";
 import { VideosCommonQuery } from "@peertube/peertube-types";
 import { Video } from "@peertube/peertube-types/peertube-models/videos/video.model";
 import { GetVideosVideo } from "./models";
 import i18n from "../i18n";
+import { commonQueryParams } from "./constants";
+import { AxiosInstanceBasedApi } from "./axiosInstance";
 
 /**
  * Get videos from the PeerTube backend `/api/v1/videos` API
  *
  * @description https://docs.joinpeertube.org/api-rest-reference.html#tag/Video/operation/getVideos
  */
-export class PeertubeVideosApi {
+export class PeertubeVideosApi extends AxiosInstanceBasedApi {
   constructor(maxChunkSize: number = 100, debugLogging: boolean = false) {
-    this.createAxiosInstance();
+    super();
     this.maxChunkSize = maxChunkSize;
     this.debugLogging = debugLogging;
   }
@@ -29,34 +30,6 @@ export class PeertubeVideosApi {
     return this._maxChunkSize;
   }
 
-  // Common query parameters for fetching videos that are classified as "local", "non-live", and "Safe-For-Work"
-  private readonly commonQueryParams: VideosCommonQuery = {
-    start: 0,
-    count: 15,
-    sort: "createdAt",
-    nsfw: "false",
-    isLocal: true,
-    isLive: false,
-    skipCount: false,
-  };
-
-  // Our Axios instance, https://axios-http.com/docs/instance
-  private instance!: AxiosInstance;
-
-  /**
-   * Create the Axios instance with app identifier and request/response interceptors
-   */
-  private createAxiosInstance(): void {
-    this.instance = axios.create({
-      withCredentials: false,
-      headers: {
-        "Access-Control-Allow-Origin": "*",
-        "Content-Type": "application/json",
-        "User-Agent": "OwnTube.tv/1.0.0 (https://app.owntube.tv)",
-      },
-    });
-  }
-
   /**
    * Get total number of "local", "non-live", and "Safe-For-Work" videos from the PeerTube instance
    *
@@ -66,7 +39,7 @@ export class PeertubeVideosApi {
   async getTotalVideos(baseURL: string): Promise<number> {
     try {
       const response = await this.instance.get("videos", {
-        params: { ...this.commonQueryParams, count: undefined },
+        params: { ...commonQueryParams, count: undefined },
         baseURL: `https://${baseURL}/api/v1`,
       });
       return response.data.total as number;
@@ -79,19 +52,24 @@ export class PeertubeVideosApi {
    * Get "local", "non-live", and "Safe-For-Work" videos from the PeerTube instance
    *
    * @param [baseURL] - Selected instance url
-   * @param [limit=15] - The maximum number of videos to fetch
+   * @param [queryParams] - Any custom query params
    * @returns A list of videos, with a lot of additional details from the API removed
    */
-  async getVideos(baseURL: string, limit: number = 15): Promise<GetVideosVideo[]> {
+  async getVideos(
+    baseURL: string,
+    queryParams?: VideosCommonQuery,
+  ): Promise<{ data: GetVideosVideo[]; total: number }> {
     let rawVideos: Required<GetVideosVideo>[] = [];
+    let total: number = 0;
+    let limit = queryParams?.count || 15;
     if (limit <= this.maxChunkSize) {
       try {
-        rawVideos = (
-          await this.instance.get("videos", {
-            params: { ...this.commonQueryParams, count: limit },
-            baseURL: `https://${baseURL}/api/v1`,
-          })
-        ).data.data as Required<GetVideosVideo>[];
+        const response = await this.instance.get("videos", {
+          params: { ...commonQueryParams, ...(queryParams || {}), count: limit },
+          baseURL: `https://${baseURL}/api/v1`,
+        });
+        total = response.data.total;
+        rawVideos = response.data.data as Required<GetVideosVideo[]>;
       } catch (error: unknown) {
         throw new Error(i18n.t("errors.failedToFetchVids", { error: (error as Error).message }));
       }
@@ -118,7 +96,7 @@ export class PeertubeVideosApi {
         }
         try {
           const response = await this.instance.get("videos", {
-            params: { ...this.commonQueryParams, count: fetchCount, start: offset },
+            params: { ...commonQueryParams, count: fetchCount, start: offset },
             baseURL: `https://${baseURL}/api/v1`,
           });
           rawTotal = response.data.total as number;
@@ -133,20 +111,23 @@ export class PeertubeVideosApi {
       }
     }
 
-    return rawVideos.map((video) => {
-      return {
-        uuid: video.uuid,
-        name: video.name,
-        category: video.category,
-        description: video.description,
-        thumbnailPath: video.thumbnailPath,
-        duration: video.duration,
-        channel: video.channel,
-        publishedAt: video.publishedAt,
-        originallyPublishedAt: video.originallyPublishedAt,
-        views: video.views,
-      };
-    });
+    return {
+      data: rawVideos.map((video) => {
+        return {
+          uuid: video.uuid,
+          name: video.name,
+          category: video.category,
+          description: video.description,
+          thumbnailPath: video.thumbnailPath,
+          duration: video.duration,
+          channel: video.channel,
+          publishedAt: video.publishedAt,
+          originallyPublishedAt: video.originallyPublishedAt,
+          views: video.views,
+        };
+      }),
+      total,
+    };
   }
 
   /**

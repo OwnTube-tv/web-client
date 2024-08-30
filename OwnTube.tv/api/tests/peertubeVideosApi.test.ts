@@ -6,15 +6,15 @@ describe("peertubeVideosApi", () => {
     const videos = await peertubeVideosApi.getVideos("peertube2.cpy.re");
 
     expect(videos).toBeDefined();
-    expect(videos.length).toBeLessThanOrEqual(15);
+    expect(videos.data.length).toBeLessThanOrEqual(15);
   });
 
   it("should return a list of videos, limited to maximum 2 when specified", async () => {
     const peertubeVideosApi = new PeertubeVideosApi();
-    const videos = await peertubeVideosApi.getVideos("peertube2.cpy.re", 2);
+    const videos = await peertubeVideosApi.getVideos("peertube2.cpy.re", { count: 2 });
 
     expect(videos).toBeDefined();
-    expect(videos.length).toBeLessThanOrEqual(2);
+    expect(videos.data.length).toBeLessThanOrEqual(2);
   });
 
   it("should return total number of videos", async () => {
@@ -29,14 +29,14 @@ describe("peertubeVideosApi", () => {
     const totalVideos = await peertubeVideosApi.getTotalVideos("peertube2.cpy.re");
 
     peertubeVideosApi.maxChunkSize = Math.floor(totalVideos / 2) - 1;
-    let videos = await peertubeVideosApi.getVideos("peertube2.cpy.re", totalVideos + 1);
+    let videos = await peertubeVideosApi.getVideos("peertube2.cpy.re", { count: totalVideos + 1 });
     expect(videos).toBeDefined();
-    expect(videos.length).toBe(totalVideos);
+    expect(videos.data.length).toBe(totalVideos);
 
     peertubeVideosApi.maxChunkSize = totalVideos + 5;
-    videos = await peertubeVideosApi.getVideos("peertube2.cpy.re", totalVideos + 1);
+    videos = await peertubeVideosApi.getVideos("peertube2.cpy.re", { count: totalVideos + 1 });
     expect(videos).toBeDefined();
-    expect(videos.length).toBe(totalVideos);
+    expect(videos.data.length).toBe(totalVideos);
   });
 
   it("should get video info by uuid", async () => {

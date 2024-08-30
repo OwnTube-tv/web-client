@@ -13,10 +13,13 @@ jest.mock("../helpers", () => ({
 }));
 jest.mock("../peertubeVideosApi", () => ({
   ApiServiceImpl: {
-    getVideos: jest.fn(() => [
-      { uuid: "123", thumbnailPath: "/123f-3fe-3" },
-      { uuid: "1235", thumbnailPath: "/123f-3fe-3yt3" },
-    ]),
+    getVideos: jest.fn(() => ({
+      data: [
+        { uuid: "123", thumbnailPath: "/123f-3fe-3" },
+        { uuid: "1235", thumbnailPath: "/123f-3fe-3yt3" },
+      ],
+      total: 50,
+    })),
     getVideo: jest.fn(() => ({
       uuid: "123",
       description: "desc",
@@ -40,7 +43,7 @@ describe("useGetVideosQuery", () => {
     (useLocalSearchParams as jest.Mock).mockReturnValue({ backend: "abc.xyz" });
     const { result } = renderHook(() => useGetVideosQuery({ enabled: true }), { wrapper });
     await waitFor(() => expect(getLocalData).not.toHaveBeenCalled());
-    await waitFor(() => expect(ApiServiceImpl.getVideos).toHaveBeenCalledWith("abc.xyz", 5000));
+    await waitFor(() => expect(ApiServiceImpl.getVideos).toHaveBeenCalledWith("abc.xyz", { count: 50 }));
     await waitFor(() =>
       expect(result.current.data).toStrictEqual([
         { thumbnailPath: "https://abc.xyz/123f-3fe-3", uuid: "123" },

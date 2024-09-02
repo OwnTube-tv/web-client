@@ -77,6 +77,7 @@ const RootStack = () => {
           <Drawer.Screen name={`(home)/${ROUTES.CHANNEL}`} />
           <Drawer.Screen name={`(home)/${ROUTES.CHANNELS}`} />
           <Drawer.Screen name={`(home)/${ROUTES.CATEGORIES}`} />
+          <Drawer.Screen name={`(home)/${ROUTES.PLAYLISTS}`} />
         </Drawer>
         <Toast config={{ buildInfo: () => <BuildInfoToast /> }} />
         <FullScreenModal onBackdropPress={() => setIsSettingsModalVisible(false)} isVisible={isSettingsModalVisible}>

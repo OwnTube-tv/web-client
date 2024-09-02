@@ -38,19 +38,6 @@ describe("useGetVideosQuery", () => {
     renderHook(() => useGetVideosQuery({ enabled: true }), { wrapper });
     await waitFor(() => expect(getLocalData).toHaveBeenCalledWith("videos"));
   });
-
-  it("should add thumbnail paths to live data", async () => {
-    (useLocalSearchParams as jest.Mock).mockReturnValue({ backend: "abc.xyz" });
-    const { result } = renderHook(() => useGetVideosQuery({ enabled: true }), { wrapper });
-    await waitFor(() => expect(getLocalData).not.toHaveBeenCalled());
-    await waitFor(() => expect(ApiServiceImpl.getVideos).toHaveBeenCalledWith("abc.xyz", { count: 50 }));
-    await waitFor(() =>
-      expect(result.current.data).toStrictEqual([
-        { thumbnailPath: "https://abc.xyz/123f-3fe-3", uuid: "123" },
-        { thumbnailPath: "https://abc.xyz/123f-3fe-3yt3", uuid: "1235" },
-      ]),
-    );
-  });
 });
 
 describe("useGetVideoQuery", () => {

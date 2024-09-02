@@ -32,6 +32,12 @@ const SIDEBAR_ROUTES = [
     routeName: `(home)/${ROUTES.CHANNELS}`,
   },
   {
+    nameKey: "playlistsPageTitle",
+    icon: "Playlist",
+    href: { pathname: ROUTES.PLAYLISTS },
+    routeName: `(home)/${ROUTES.PLAYLISTS}`,
+  },
+  {
     nameKey: "categories",
     icon: "Category",
     href: { pathname: ROUTES.CATEGORIES },

@@ -57,3 +57,14 @@ export type PeertubeInstance = {
   health: number;
   createdAt: number;
 };
+
+export class OwnTubeError {
+  constructor(text: string = "Unexpected", code: number = 0, message: string) {
+    this.text = text;
+    this.code = code;
+    this.message = message;
+  }
+  public text: string;
+  public code: number;
+  public message: string;
+}

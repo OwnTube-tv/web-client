@@ -83,6 +83,7 @@
     "failedToFetchInstanceInfo": "Failed to fetch information about the instance",
     "failedToFetchChannels": "Failed to fetch channels list from the instance",
     "failedToFetchChannelVideos": "Failed to fetch channel videos",
-    "failedToFetchAvailableCategories": "Failed to fetch available categories"
+    "failedToFetchAvailableCategories": "Failed to fetch available categories",
+    "failedToFetchChannelInfo": "Failed to fetch channel info"
   }
 }

@@ -85,7 +85,7 @@ export const VideoScreen = () => {
           testID={`${params.id}-video-view`}
           uri={uri}
           title={data?.name}
-          channelName={data?.channel?.displayName}
+          channel={data?.channel}
           toggleFullscreen={toggleFullscreen}
           isFullscreen={isFullscreen}
           handleOpenDetails={() => setVisibleModal("details")}
@@ -101,6 +101,7 @@ export const VideoScreen = () => {
             onClose={closeModal}
             name={data?.name || ""}
             channelName={data?.channel?.displayName || ""}
+            channelHandle={data?.channel?.name}
             description={data?.description || ""}
             datePublished={data?.originallyPublishedAt || data?.publishedAt || ""}
           />

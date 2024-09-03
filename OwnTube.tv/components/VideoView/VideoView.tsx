@@ -8,6 +8,7 @@ import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import * as Device from "expo-device";
 import { DeviceType } from "expo-device";
 import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
+import { VideoChannelSummary } from "@peertube/peertube-types";
 
 export interface VideoViewProps {
   uri: string;
@@ -15,7 +16,7 @@ export interface VideoViewProps {
   handleSetTimeStamp: (timestamp: number) => void;
   timestamp?: string;
   title?: string;
-  channelName?: string;
+  channel?: VideoChannelSummary;
   toggleFullscreen: () => void;
   isFullscreen: boolean;
   handleOpenDetails: () => void;
@@ -29,7 +30,7 @@ const VideoView = ({
   handleSetTimeStamp,
   timestamp,
   title,
-  channelName,
+  channel,
   toggleFullscreen,
   isFullscreen,
   handleOpenDetails,
@@ -127,7 +128,7 @@ const VideoView = ({
           handleReplay={handleReplay}
           handleJumpTo={handleJumpTo}
           title={title}
-          channelName={channelName}
+          channel={{ name: channel?.displayName, handle: channel?.name }}
           handleVolumeControl={handleVolumeControl}
           volume={playbackStatus?.volume ?? 0}
           toggleFullscreen={toggleFullscreen}

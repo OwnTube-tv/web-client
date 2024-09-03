@@ -4,9 +4,10 @@ import { Typography } from "./Typography";
 import { useTheme } from "@react-navigation/native";
 import { useHoverState } from "../hooks";
 import { Pressable } from "react-native";
+import { LinkProps } from "expo-router/build/link/Link";
 
 interface ChannelLinkProps {
-  href: string;
+  href: LinkProps["href"];
   text: string;
 }
 

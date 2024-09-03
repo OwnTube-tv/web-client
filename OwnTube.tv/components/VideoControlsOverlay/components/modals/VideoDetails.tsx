@@ -6,23 +6,35 @@ import { Typography } from "../../../Typography";
 import { format } from "date-fns";
 import { Spacer } from "../../../shared/Spacer";
 import { useTheme } from "@react-navigation/native";
+import { ROUTES } from "../../../../types";
+import { useLocalSearchParams } from "expo-router";
+import { RootStackParams } from "../../../../app/_layout";
 
 interface VideoDetailsProps {
   onClose: () => void;
   name: string;
   channelName: string;
+  channelHandle?: string;
   datePublished: string | Date;
   description: string;
 }
 
-export const VideoDetails = ({ onClose, name, channelName, datePublished, description }: VideoDetailsProps) => {
+export const VideoDetails = ({
+  onClose,
+  name,
+  channelName,
+  channelHandle,
+  datePublished,
+  description,
+}: VideoDetailsProps) => {
   const { colors } = useTheme();
+  const { backend } = useLocalSearchParams<RootStackParams[ROUTES.VIDEO]>();
 
   return (
     <Animated.View entering={SlideInLeft} exiting={SlideOutLeft} style={styles.animatedContainer}>
       <ModalContainer onClose={onClose} title={name} containerStyle={styles.modalContainer}>
         <View style={styles.metadataContainer}>
-          <ChannelLink text={channelName} href="#" />
+          <ChannelLink text={channelName} href={{ pathname: ROUTES.CHANNEL, params: { backend, channelHandle } }} />
           <Typography fontSize="sizeSm" fontWeight="SemiBold" color={colors.themeDesaturated500}>
             {format(datePublished, "dd MMMM yyyy")}
           </Typography>

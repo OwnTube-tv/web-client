@@ -1,4 +1,4 @@
-import { VideoChannel } from "@peertube/peertube-types";
+import { VideoChannel, VideosCommonQuery } from "@peertube/peertube-types";
 import { Video } from "@peertube/peertube-types/peertube-models/videos/video.model";
 import { GetVideosVideo } from "./models";
 import i18n from "../i18n";
@@ -13,6 +13,25 @@ import { commonQueryParams } from "./constants";
 export class ChannelsApi extends AxiosInstanceBasedApi {
   constructor() {
     super();
+  }
+
+  /**
+   * Get channel info
+   *
+   * @param [baseURL] - Selected instance url
+   * @param [channelHandle] - Channel identifier
+   * @returns Channel info
+   */
+  async getChannelInfo(baseURL: string, channelHandle: string): Promise<VideoChannel> {
+    try {
+      const response = await this.instance.get<VideoChannel>(`video-channels/${channelHandle}`, {
+        baseURL: `https://${baseURL}/api/v1`,
+      });
+
+      return response.data;
+    } catch (error: unknown) {
+      throw new Error(i18n.t("errors.failedToFetchChannelInfo", { error: (error as Error).message }));
+    }
   }
 
   /**
@@ -39,17 +58,17 @@ export class ChannelsApi extends AxiosInstanceBasedApi {
    *
    * @param [baseURL] - Selected instance url
    * @param [channelHandle] - Channel handle
-   * @param [count] - Count of videos to fetch
+   * @param [queryParams] - Query params
    * @returns List of channel videos
    */
   async getChannelVideos(
     baseURL: string,
     channelHandle: string,
-    count: number,
+    queryParams: VideosCommonQuery,
   ): Promise<{ data: GetVideosVideo[]; total: number }> {
     try {
       const response = await this.instance.get(`video-channels/${channelHandle}/videos`, {
-        params: { ...commonQueryParams, sort: "-originallyPublishedAt", count },
+        params: { ...commonQueryParams, ...queryParams, sort: "-originallyPublishedAt" },
         baseURL: `https://${baseURL}/api/v1`,
       });
 

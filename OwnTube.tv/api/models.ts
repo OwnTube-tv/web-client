@@ -1,6 +1,5 @@
-// Subset of a video object from the PeerTube backend API, https://github.com/Chocobozzz/PeerTube/blob/develop/server/core/models/video/video.ts#L460
-import { VideoModel } from "@peertube/peertube-types/server/core/models/video/video";
 import { VideoChannelSummary } from "@peertube/peertube-types";
+import { Video } from "@peertube/peertube-types/peertube-models/videos/video.model";
 
 export interface Channel {
   id: number;
@@ -23,7 +22,7 @@ export interface Channel {
 }
 
 export type GetVideosVideo = Pick<
-  VideoModel,
+  Video,
   "uuid" | "name" | "description" | "duration" | "publishedAt" | "originallyPublishedAt" | "views"
 > & {
   thumbnailPath: string;

@@ -77,7 +77,7 @@ export const ViewHistoryListItem = ({ video, handleDeleteFromHistory }: ViewHist
             </Pressable>
           </Link>
           <ChannelLink
-            href={{ pathname: ROUTES.CHANNEL, params: { backend: video.backend, channelHandle: video.channel?.name } }}
+            href={{ pathname: ROUTES.CHANNEL, params: { backend: video.backend, channel: video.channel?.name } }}
             text={video.channel?.displayName}
           />
         </View>

@@ -7,9 +7,9 @@ import { CategoryView, ChannelInfoHeader, LatestVideos } from "./components";
 import { Loader } from "../../components";
 
 export const ChannelScreen = () => {
-  const { backend, channelHandle } = useLocalSearchParams<RootStackParams[ROUTES.CHANNEL]>();
+  const { backend, channel } = useLocalSearchParams<RootStackParams[ROUTES.CHANNEL]>();
 
-  const { data: channelInfo, isLoading: isLoadingChannelInfo } = useGetChannelInfoQuery(backend, channelHandle);
+  const { data: channelInfo, isLoading: isLoadingChannelInfo } = useGetChannelInfoQuery(backend, channel);
   const { data: categories } = useGetCategoriesQuery();
 
   return (
@@ -26,9 +26,7 @@ export const ChannelScreen = () => {
         />
       )}
       <LatestVideos />
-      {categories?.map((category) => (
-        <CategoryView channelHandle={channelHandle} category={category} key={category.id} />
-      ))}
+      {categories?.map((category) => <CategoryView channelHandle={channel} category={category} key={category.id} />)}
     </Screen>
   );
 };

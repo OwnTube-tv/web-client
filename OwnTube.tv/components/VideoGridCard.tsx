@@ -57,7 +57,7 @@ export const VideoGridCard = ({ video, backend }: VideoGridCardProps) => {
       </Pressable>
       <View style={styles.restInfoContainer}>
         <ChannelLink
-          href={{ pathname: ROUTES.CHANNEL, params: { backend, channelHandle: video.channel.name } }}
+          href={{ pathname: ROUTES.CHANNEL, params: { backend, channel: video.channel.name } }}
           text={video.channel?.displayName}
         />
         <Typography fontSize="sizeXS" fontWeight="Medium" color={colors.themeDesaturated500}>

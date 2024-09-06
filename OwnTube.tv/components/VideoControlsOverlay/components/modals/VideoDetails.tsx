@@ -34,7 +34,10 @@ export const VideoDetails = ({
     <Animated.View entering={SlideInLeft} exiting={SlideOutLeft} style={styles.animatedContainer}>
       <ModalContainer onClose={onClose} title={name} containerStyle={styles.modalContainer}>
         <View style={styles.metadataContainer}>
-          <ChannelLink text={channelName} href={{ pathname: ROUTES.CHANNEL, params: { backend, channelHandle } }} />
+          <ChannelLink
+            text={channelName}
+            href={{ pathname: ROUTES.CHANNEL, params: { backend, channel: channelHandle } }}
+          />
           <Typography fontSize="sizeSm" fontWeight="SemiBold" color={colors.themeDesaturated500}>
             {format(datePublished, "dd MMMM yyyy")}
           </Typography>

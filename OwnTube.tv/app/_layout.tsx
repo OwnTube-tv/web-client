@@ -133,7 +133,7 @@ export type RootStackParams = {
   [ROUTES.INDEX]: { backend: string };
   [ROUTES.SETTINGS]: { backend: string; tab: "history" | "instance" | "config" };
   [ROUTES.VIDEO]: { backend: string; id: string; timestamp?: string };
-  [ROUTES.CHANNEL]: { backend: string; channelHandle: string };
+  [ROUTES.CHANNEL]: { backend: string; channel: string };
   [ROUTES.CHANNELS]: { backend: string };
   [ROUTES.CATEGORIES]: { backend: string };
 };

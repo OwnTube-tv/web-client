@@ -8,8 +8,8 @@ import { useTranslation } from "react-i18next";
 
 export const LatestVideos = () => {
   const { t } = useTranslation();
-  const { channelHandle } = useLocalSearchParams<RootStackParams[ROUTES.CHANNEL]>();
-  const { fetchNextPage, data, hasNextPage, isFetchingNextPage } = useInfiniteGetChannelVideosQuery(channelHandle);
+  const { channel } = useLocalSearchParams<RootStackParams[ROUTES.CHANNEL]>();
+  const { fetchNextPage, data, hasNextPage, isFetchingNextPage } = useInfiniteGetChannelVideosQuery(channel);
 
   const videos = useMemo(() => {
     return data?.pages?.flatMap(({ data }) => data.flat());

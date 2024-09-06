@@ -80,6 +80,7 @@
     "failedToFetchVideo": "Не удалось получить видео {{id}} из PeerTube API: ",
     "maxTotalToBeExceeded": "Мы превысим общее доступное количество {{rawTotal}} видео с размером блока {{maxChunkSize}}, поэтому загружаем только {{fetchCount}} видео, чтобы достигнуть общего числа",
     "maxLimitToBeExceeded": "Мы превысим максимальный лимит в {{limit}} видео, поэтому загружаем только {{fetchCount}} дополнительных видео, чтобы достигнуть лимита",
-    "failedToFetchInstanceInfo": "Не удалось загрузить информацию о инстанции"
+    "failedToFetchInstanceInfo": "Не удалось загрузить информацию о инстанции",
+    "failedToFetchChannelInfo": "Не удалось загрузить информацию о канале"
   }
 }

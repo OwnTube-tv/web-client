@@ -56,7 +56,10 @@ export const VideoGridCard = ({ video, backend }: VideoGridCardProps) => {
         </View>
       </Pressable>
       <View style={styles.restInfoContainer}>
-        <ChannelLink href="#" text={video.channel?.displayName} />
+        <ChannelLink
+          href={{ pathname: ROUTES.CHANNEL, params: { backend, channel: video.channel.name } }}
+          text={video.channel?.displayName}
+        />
         <Typography fontSize="sizeXS" fontWeight="Medium" color={colors.themeDesaturated500}>
           {`${video.publishedAt ? formatDistanceToNow(video.publishedAt, { addSuffix: true, locale: LANGUAGE_OPTIONS.find(({ value }) => value === i18n.language)?.dateLocale }) : ""} • ${t("views", { count: video.views })}`}
         </Typography>

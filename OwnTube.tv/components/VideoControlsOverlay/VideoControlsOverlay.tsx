@@ -3,7 +3,7 @@ import { Pressable, StyleSheet, View } from "react-native";
 import { useTheme } from "@react-navigation/native";
 import { Typography } from "../Typography";
 import { getHumanReadableDuration } from "../../utils";
-import { Link, useNavigation } from "expo-router";
+import { Link, useLocalSearchParams, useNavigation } from "expo-router";
 import { VolumeControl } from "./components/VolumeControl";
 import * as Device from "expo-device";
 import { DeviceType } from "expo-device";
@@ -15,6 +15,8 @@ import { ScrubBar } from "./components/ScrubBar";
 import { LinearGradient } from "expo-linear-gradient";
 import Animated, { SlideInDown, SlideInUp, SlideOutDown, SlideOutUp, FadeIn, FadeOut } from "react-native-reanimated";
 import { useTranslation } from "react-i18next";
+import { ROUTES } from "../../types";
+import { RootStackParams } from "../../app/_layout";
 
 interface VideoControlsOverlayProps {
   isVisible: boolean;
@@ -32,7 +34,7 @@ interface VideoControlsOverlayProps {
   handleReplay: () => void;
   handleJumpTo: (position: number) => void;
   title?: string;
-  channelName?: string;
+  channel?: Partial<{ name: string; handle: string }>;
   handleVolumeControl: (volume: number) => void;
   volume: number;
   toggleFullscreen: () => void;
@@ -59,7 +61,7 @@ export const VideoControlsOverlay = ({
   handleReplay,
   handleJumpTo,
   title,
-  channelName,
+  channel,
   handleVolumeControl,
   volume,
   toggleFullscreen,
@@ -68,6 +70,7 @@ export const VideoControlsOverlay = ({
   handleShare,
   handleOpenSettings,
 }: PropsWithChildren<VideoControlsOverlayProps>) => {
+  const { backend } = useLocalSearchParams<RootStackParams[ROUTES.VIDEO]>();
   const { t } = useTranslation();
   const { colors } = useTheme();
   const navigation = useNavigation();
@@ -105,7 +108,7 @@ export const VideoControlsOverlay = ({
               <View style={styles.topLeftControls} pointerEvents="box-none">
                 <PlayerButton onPress={navigation.goBack} icon="Arrow-Left" />
                 <View style={styles.videoInfoContainer}>
-                  <Link href="#">
+                  <Link href={{ pathname: ROUTES.CHANNEL, params: { backend, channelHandle: channel?.handle } }}>
                     <Typography
                       numberOfLines={1}
                       ellipsizeMode="tail"
@@ -113,7 +116,7 @@ export const VideoControlsOverlay = ({
                       fontSize={isMobile ? "sizeXS" : "sizeSm"}
                       fontWeight="SemiBold"
                     >
-                      {channelName}
+                      {channel?.name}
                     </Typography>
                   </Link>
                   <Typography

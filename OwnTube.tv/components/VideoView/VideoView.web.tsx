@@ -19,7 +19,7 @@ const VideoView = ({
   handleSetTimeStamp,
   timestamp,
   title,
-  channelName,
+  channel,
   toggleFullscreen,
   isFullscreen,
   handleOpenDetails,
@@ -255,7 +255,7 @@ const VideoView = ({
         handleReplay={handleReplay}
         handleJumpTo={handleJumpTo}
         title={title}
-        channelName={channelName}
+        channel={{ name: channel?.displayName, handle: channel?.name }}
         handleVolumeControl={handleVolumeControl}
         volume={playbackStatus.isMuted ? 0 : playbackStatus.volume * 100}
         toggleFullscreen={toggleFullscreen}

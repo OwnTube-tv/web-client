@@ -17,6 +17,7 @@ export enum QUERY_KEYS {
   video = "video",
   instances = "instances",
   instance = "instance",
+  channel = "channel",
   channels = "channels",
   channelVideos = "channelVideos",
   categories = "categories",
@@ -120,6 +121,17 @@ export const useGetInstanceInfoQuery = (backend?: string) => {
   });
 };
 
+export const useGetChannelInfoQuery = (backend?: string, channelHandle?: string) => {
+  return useQuery({
+    queryKey: [QUERY_KEYS.channel, backend, channelHandle],
+    queryFn: async () => {
+      return await ChannelsApiImpl.getChannelInfo(backend!, channelHandle!);
+    },
+    enabled: !!backend && !!channelHandle,
+    refetchOnWindowFocus: false,
+  });
+};
+
 export const useGetChannelsQuery = () => {
   const { backend } = useLocalSearchParams<RootStackParams["index"]>();
 
@@ -134,17 +146,45 @@ export const useGetChannelsQuery = () => {
   });
 };
 
-export const useGetChannelVideosQuery = (channelHandle: string, videosCount = 4) => {
+export const useGetChannelVideosQuery = (channelHandle?: string, queryParams: VideosCommonQuery = { count: 4 }) => {
   const { backend } = useLocalSearchParams<RootStackParams["index"]>();
 
   return useQuery<GetVideosVideo[]>({
-    queryKey: [QUERY_KEYS.channelVideos, backend, channelHandle],
+    queryKey: [QUERY_KEYS.channelVideos, backend, channelHandle, queryParams?.categoryOneOf],
     queryFn: async () => {
-      const response = await ChannelsApiImpl.getChannelVideos(backend!, channelHandle, videosCount);
+      const response = await ChannelsApiImpl.getChannelVideos(backend!, channelHandle!, queryParams);
 
       return response.data.map((video) => ({ ...video, thumbnailPath: `https://${backend}${video.thumbnailPath}` }));
     },
-    enabled: !!backend,
+    enabled: !!backend && !!channelHandle,
+    refetchOnWindowFocus: false,
+  });
+};
+
+export const useInfiniteGetChannelVideosQuery = (channelHandle?: string, pageSize = 4) => {
+  const { backend } = useLocalSearchParams<RootStackParams["index"]>();
+
+  return useInfiniteQuery({
+    initialPageParam: 0,
+    getNextPageParam: (lastPage: { data: GetVideosVideo[]; total: number }, _nextPage, lastPageParam) => {
+      const nextCount = (lastPageParam === 0 ? pageSize * 3 : lastPageParam) + pageSize;
+
+      return nextCount > lastPage.total ? null : nextCount;
+    },
+    queryKey: [QUERY_KEYS.channelVideos, backend, channelHandle, "infinite"],
+    queryFn: async ({ pageParam }) => {
+      const response = await ChannelsApiImpl.getChannelVideos(backend!, channelHandle!, {
+        count: pageParam === 0 ? pageSize * 3 : pageSize,
+        start: pageParam,
+        sort: "-publishedAt",
+      });
+
+      return {
+        data: response.data.map((video) => ({ ...video, thumbnailPath: `https://${backend}${video.thumbnailPath}` })),
+        total: response.total,
+      };
+    },
+    enabled: !!backend && !!channelHandle,
     refetchOnWindowFocus: false,
   });
 };

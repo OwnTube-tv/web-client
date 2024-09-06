@@ -6,11 +6,12 @@ import { Video } from "@peertube/peertube-types/peertube-models/videos/video.mod
 import { useLocalSearchParams } from "expo-router";
 import { RootStackParams } from "../app/_layout";
 import { InstanceSearchServiceImpl } from "./instanceSearchApi";
-import { GetVideosVideo } from "./models";
+import { GetVideosVideo, OwnTubeError } from "./models";
 import { InstanceInformationApiImpl } from "./instance";
 import { ChannelsApiImpl } from "./channelsApi";
 import { VideosCommonQuery } from "@peertube/peertube-types";
 import { CategoriesApiImpl } from "./categoriesApi";
+import { PlaylistsApiImpl } from "./playlistsApi";
 
 export enum QUERY_KEYS {
   videos = "videos",
@@ -21,6 +22,8 @@ export enum QUERY_KEYS {
   channels = "channels",
   channelVideos = "channelVideos",
   categories = "categories",
+  playlists = "playlists",
+  playlistVideos = "playlistVideos",
 }
 
 export const useGetVideosQuery = <TResult = GetVideosVideo[]>({
@@ -44,7 +47,7 @@ export const useGetVideosQuery = <TResult = GetVideosVideo[]>({
       }
 
       const data = await ApiServiceImpl.getVideos(backend!, { count: 50, ...params });
-      return data.data.map((video) => ({ ...video, thumbnailPath: `https://${backend}${video.thumbnailPath}` }));
+      return data.data;
     },
     enabled: enabled && !!backend,
     refetchOnWindowFocus: false,
@@ -64,16 +67,11 @@ export const useInfiniteVideosQuery = (pageSize = 4) => {
     },
     queryKey: [QUERY_KEYS.videos, backend, "infinite"],
     queryFn: async ({ pageParam }) => {
-      const data = await ApiServiceImpl.getVideos(backend!, {
+      return await ApiServiceImpl.getVideos(backend!, {
         count: pageParam === 0 ? pageSize * 3 : pageSize,
         start: pageParam,
         sort: "-publishedAt",
       });
-
-      return {
-        data: data.data.map((video) => ({ ...video, thumbnailPath: `https://${backend}${video.thumbnailPath}` })),
-        total: data.total,
-      };
     },
     refetchOnWindowFocus: false,
     enabled: !!backend,
@@ -154,7 +152,7 @@ export const useGetChannelVideosQuery = (channelHandle?: string, queryParams: Vi
     queryFn: async () => {
       const response = await ChannelsApiImpl.getChannelVideos(backend!, channelHandle!, queryParams);
 
-      return response.data.map((video) => ({ ...video, thumbnailPath: `https://${backend}${video.thumbnailPath}` }));
+      return response.data;
     },
     enabled: !!backend && !!channelHandle,
     refetchOnWindowFocus: false,
@@ -199,5 +197,38 @@ export const useGetCategoriesQuery = () => {
     },
     enabled: !!backend,
     refetchOnWindowFocus: false,
+  });
+};
+
+export const useGetPlaylistsQuery = () => {
+  const { backend } = useLocalSearchParams<RootStackParams["index"]>();
+
+  return useQuery({
+    queryKey: [QUERY_KEYS.playlists, backend],
+    queryFn: async () => {
+      const data = await PlaylistsApiImpl.getPlaylists(backend!);
+      return { ...data, data: data.data.filter(({ isLocal, videosLength }) => isLocal && videosLength > 0) };
+    },
+    enabled: !!backend,
+    refetchOnWindowFocus: false,
+  });
+};
+
+export const useGetPlaylistVideosQuery = (playlistId?: number, count: number = 4) => {
+  const { backend } = useLocalSearchParams<RootStackParams["index"]>();
+
+  return useQuery({
+    queryKey: [QUERY_KEYS.playlistVideos, backend, playlistId],
+    queryFn: async () => {
+      return await PlaylistsApiImpl.getPlaylistVideos(backend!, playlistId!, { count });
+    },
+    enabled: !!backend && !!playlistId,
+    refetchOnWindowFocus: false,
+    retry: (failureCount, error: OwnTubeError) => {
+      if (error.code === 429) {
+        return true;
+      }
+      return failureCount < 5;
+    },
   });
 };

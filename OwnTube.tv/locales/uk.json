@@ -72,6 +72,7 @@
   "viewAll": "Переглянути все",
   "leaveInstance": "Покинути {{instance}}",
   "leaveInstanceDescription": "Покинути поточний сайт і повернутись до сторінки огляду сайтів OwnTube",
+  "playlistsPageTitle": "Плейлісти",
   "errors": {
     "failedToFetchInstances": "Не вдалося отримати інстанції: {{error}}",
     "max100VideosPerChunk": "Максимальна кількість відео для одного запиту - 100",

@@ -72,6 +72,7 @@
   "viewAll": "Просмотреть все",
   "leaveInstance": "Покинуть {{instance}}",
   "leaveInstanceDescription": "Покинуть текущий сайт и вернуться к странице обзора сайтов OwnTube",
+  "playlistsPageTitle": "Плейлисты",
   "errors": {
     "failedToFetchInstances": "Не удалось получить экземпляры: {{error}}",
     "max100VideosPerChunk": "Максимальное количество видео для одного запроса - 100",

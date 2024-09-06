@@ -4,3 +4,4 @@ export * from "./VideoScreen";
 export * from "./LandingScreen";
 export * from "./ChannelScreen";
 export * from "./ChannelsScreen";
+export * from "./Playlists";

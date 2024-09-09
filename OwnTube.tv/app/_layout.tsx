@@ -3,7 +3,7 @@ import { Platform } from "react-native";
 import { ROUTES, STORAGE } from "../types";
 import { ThemeProvider } from "@react-navigation/native";
 import { AppConfigContextProvider, ColorSchemeContextProvider, useColorSchemeContext } from "../contexts";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { QueryCache, QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { useFonts } from "expo-font";
 import Toast from "react-native-toast-message";
@@ -32,6 +32,7 @@ import { Settings } from "../components/VideoControlsOverlay/components/modals";
 import { AppHeader } from "../components/AppHeader";
 import { SafeAreaProvider, useSafeAreaInsets } from "react-native-safe-area-context";
 import { useBreakpoints } from "../hooks";
+import { OwnTubeError } from "../api/models";
 
 export const CLOSED_DRAWER_WIDTH = 64;
 export const OPEN_DRAWER_WIDTH = 272;
@@ -64,6 +65,7 @@ const RootStack = () => {
             },
             header: (props) => (breakpoints.isMobile && !!backend ? <AppHeader {...props} backend={backend} /> : <></>),
           }}
+          backBehavior="history"
           drawerContent={(props) => (
             <Sidebar {...props} handleOpenSettings={() => setIsSettingsModalVisible(true)} backend={backend} />
           )}
@@ -88,7 +90,22 @@ const RootStack = () => {
   );
 };
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  queryCache: new QueryCache({
+    onError: (error: Error) => {
+      const errorInfo = (error as unknown as OwnTubeError).text || error.message;
+
+      console.error(`Error ${(error as unknown as OwnTubeError).code}, ${errorInfo}`);
+
+      Toast.show({
+        type: "error",
+        text1: `Error ${(error as unknown as OwnTubeError).code}`,
+        text2: errorInfo,
+        autoHide: false,
+      });
+    },
+  }),
+});
 
 export default function RootLayout() {
   const isWeb = Platform.OS === "web";

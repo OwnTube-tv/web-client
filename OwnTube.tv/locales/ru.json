@@ -72,16 +72,5 @@
   "viewAll": "Просмотреть все",
   "leaveInstance": "Покинуть {{instance}}",
   "leaveInstanceDescription": "Покинуть текущий сайт и вернуться к странице обзора сайтов OwnTube",
-  "playlistsPageTitle": "Плейлисты",
-  "errors": {
-    "failedToFetchInstances": "Не удалось получить экземпляры: {{error}}",
-    "max100VideosPerChunk": "Максимальное количество видео для одного запроса - 100",
-    "failedToFetchTotalVids": "Не удалось получить общее количество видео из PeerTube API: ",
-    "failedToFetchVids": "Не удалось получить список видео из PeerTube API: ",
-    "failedToFetchVideo": "Не удалось получить видео {{id}} из PeerTube API: ",
-    "maxTotalToBeExceeded": "Мы превысим общее доступное количество {{rawTotal}} видео с размером блока {{maxChunkSize}}, поэтому загружаем только {{fetchCount}} видео, чтобы достигнуть общего числа",
-    "maxLimitToBeExceeded": "Мы превысим максимальный лимит в {{limit}} видео, поэтому загружаем только {{fetchCount}} дополнительных видео, чтобы достигнуть лимита",
-    "failedToFetchInstanceInfo": "Не удалось загрузить информацию о инстанции",
-    "failedToFetchChannelInfo": "Не удалось загрузить информацию о канале"
-  }
+  "playlistsPageTitle": "Плейлисты"
 }

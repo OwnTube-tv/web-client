@@ -1,9 +1,8 @@
 import { VideoPlaylist } from "@peertube/peertube-types";
 import { Video } from "@peertube/peertube-types/peertube-models/videos/video.model";
-import { GetVideosVideo, OwnTubeError } from "./models";
-import i18n from "../i18n";
+import { GetVideosVideo } from "./models";
 import { AxiosInstanceBasedApi } from "./axiosInstance";
-import { AxiosError } from "axios";
+import { handleAxiosErrorWithRetry } from "./errorHandler";
 
 /**
  * Get playlists from the PeerTube backend `/api/v1/video-playlists` API
@@ -30,7 +29,7 @@ export class PlaylistsApi extends AxiosInstanceBasedApi {
 
       return response.data;
     } catch (error: unknown) {
-      throw new Error(i18n.t("errors.failedToFetchPlaylists", { error: (error as Error).message }));
+      return handleAxiosErrorWithRetry(error, "playlists");
     }
   }
 
@@ -74,26 +73,7 @@ export class PlaylistsApi extends AxiosInstanceBasedApi {
         total: response.data.total,
       };
     } catch (error: unknown) {
-      const retryAfter = (error as AxiosError).response?.headers["retry-after"];
-
-      if (retryAfter) {
-        console.info("errors.tooManyRequests", { retryAfter });
-      }
-
-      return new Promise((_, reject) => {
-        setTimeout(
-          () => {
-            reject(
-              new OwnTubeError(
-                i18n.t("errors.failedToFetchPlaylistVideos"),
-                (error as AxiosError).response?.status,
-                (error as AxiosError).message,
-              ),
-            );
-          },
-          (retryAfter ?? 0) * 1000, // QueryClient will handle the retry
-        );
-      });
+      return handleAxiosErrorWithRetry(error, "playlist videos");
     }
   }
 }

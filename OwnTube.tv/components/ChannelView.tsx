@@ -15,15 +15,16 @@ export const ChannelView = ({ channel }: ChannelViewProps) => {
   const { data, isFetching } = useGetChannelVideosQuery(channel.name);
   const { t } = useTranslation();
 
-  if (!data?.length || isFetching) {
+  if (!data?.length && !isFetching) {
     return null;
   }
 
   return (
     <VideoGrid
+      isLoading={isFetching}
       headerLink={{
         text: t("visitChannel"),
-        href: { pathname: ROUTES.CHANNEL, params: { backend, channelHandle: channel.name } },
+        href: { pathname: ROUTES.CHANNEL, params: { backend, channel: channel.name } },
       }}
       variant="channel"
       key={channel.id}

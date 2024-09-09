@@ -1,6 +1,7 @@
 import { VideoGrid } from "../../../components";
 import { useTranslation } from "react-i18next";
 import { useGetVideosQuery } from "../../../api";
+import { useMemo } from "react";
 
 interface CategoryViewProps {
   category: { name: string; id: number };
@@ -17,9 +18,20 @@ export const CategoryView = ({ category }: CategoryViewProps) => {
     customQueryKey: `category-${category.id}`,
   });
 
-  if (!data?.length || isFetching) {
+  const linkText = useMemo(() => {
+    return t("viewAll") + (Number(data?.total) > 4 ? ` (${data?.total})` : "");
+  }, [data?.total, t]);
+
+  if (!data?.data?.length && !isFetching) {
     return null;
   }
 
-  return <VideoGrid headerLink={{ text: t("viewAll"), href: { pathname: "#" } }} title={category.name} data={data} />;
+  return (
+    <VideoGrid
+      isLoading={isFetching}
+      headerLink={{ text: linkText, href: { pathname: "#" } }}
+      title={category.name}
+      data={data?.data}
+    />
+  );
 };

@@ -1,5 +1,5 @@
-import i18n from "../i18n";
 import { AxiosInstanceBasedApi } from "./axiosInstance";
+import { handleAxiosErrorWithRetry } from "./errorHandler";
 
 /**
  * Get available categories from the PeerTube backend `/api/v1/videos/categories` API
@@ -25,7 +25,7 @@ export class CategoriesApi extends AxiosInstanceBasedApi {
 
       return Object.entries(response.data).map(([id, name]) => ({ id: Number(id), name }));
     } catch (error: unknown) {
-      throw new Error(i18n.t("errors.failedToFetchAvailableCategories", { error: (error as Error).message }));
+      return handleAxiosErrorWithRetry(error, "categories");
     }
   }
 }

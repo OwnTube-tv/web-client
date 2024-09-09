@@ -9,7 +9,7 @@ import { useTranslation } from "react-i18next";
 export const LatestVideos = () => {
   const { t } = useTranslation();
   const { channel } = useLocalSearchParams<RootStackParams[ROUTES.CHANNEL]>();
-  const { fetchNextPage, data, hasNextPage, isFetchingNextPage } = useInfiniteGetChannelVideosQuery(channel);
+  const { fetchNextPage, data, hasNextPage, isFetchingNextPage, isLoading } = useInfiniteGetChannelVideosQuery(channel);
 
   const videos = useMemo(() => {
     return data?.pages?.flatMap(({ data }) => data.flat());
@@ -17,6 +17,7 @@ export const LatestVideos = () => {
 
   return (
     <VideoGrid
+      isLoading={isLoading}
       data={videos}
       title={t("latestVideos")}
       isLoadingMore={isFetchingNextPage}

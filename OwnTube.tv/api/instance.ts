@@ -1,23 +1,10 @@
-import axios, { AxiosInstance } from "axios";
 import { PeertubeInstance } from "./models";
-import i18n from "../i18n";
+import { AxiosInstanceBasedApi } from "./axiosInstance";
+import { handleAxiosErrorWithRetry } from "./errorHandler";
 
-export class InstanceInformationApi {
-  private instance!: AxiosInstance;
+export class InstanceInformationApi extends AxiosInstanceBasedApi {
   constructor() {
-    this.createAxiosInstance();
-  }
-
-  /**
-   * Create the Axios instance with request/response interceptors
-   */
-  private createAxiosInstance(): void {
-    this.instance = axios.create({
-      headers: {
-        "Access-Control-Allow-Origin": "*",
-        "Content-Type": "application/json",
-      },
-    });
+    super();
   }
 
   /**
@@ -31,7 +18,7 @@ export class InstanceInformationApi {
 
       return response.data;
     } catch (error: unknown) {
-      throw new Error(i18n.t("errors.failedToFetchInstanceInfo", { error: (error as Error).message }));
+      return handleAxiosErrorWithRetry(error, "instance info");
     }
   }
 }

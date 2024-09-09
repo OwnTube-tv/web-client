@@ -1,9 +1,9 @@
 import { VideoChannel, VideosCommonQuery } from "@peertube/peertube-types";
 import { Video } from "@peertube/peertube-types/peertube-models/videos/video.model";
 import { GetVideosVideo } from "./models";
-import i18n from "../i18n";
 import { AxiosInstanceBasedApi } from "./axiosInstance";
 import { commonQueryParams } from "./constants";
+import { handleAxiosErrorWithRetry } from "./errorHandler";
 
 /**
  * Get channels from the PeerTube backend `/api/v1/video-channels` API
@@ -30,7 +30,7 @@ export class ChannelsApi extends AxiosInstanceBasedApi {
 
       return response.data;
     } catch (error: unknown) {
-      throw new Error(i18n.t("errors.failedToFetchChannelInfo", { error: (error as Error).message }));
+      return handleAxiosErrorWithRetry(error, "channel info");
     }
   }
 
@@ -49,7 +49,7 @@ export class ChannelsApi extends AxiosInstanceBasedApi {
 
       return response.data;
     } catch (error: unknown) {
-      throw new Error(i18n.t("errors.failedToFetchTotalVids", { error: (error as Error).message }));
+      return handleAxiosErrorWithRetry(error, "channels");
     }
   }
 
@@ -90,7 +90,7 @@ export class ChannelsApi extends AxiosInstanceBasedApi {
         total: response.data.total,
       };
     } catch (error: unknown) {
-      throw new Error(i18n.t("errors.failedToFetchTotalVids", { error: (error as Error).message }));
+      return handleAxiosErrorWithRetry(error, "channel videos");
     }
   }
 }

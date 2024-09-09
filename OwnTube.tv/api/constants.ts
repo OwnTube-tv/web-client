@@ -10,3 +10,16 @@ export const commonQueryParams: VideosCommonQuery = {
   isLive: false,
   skipCount: false,
 };
+
+export enum QUERY_KEYS {
+  videos = "videos",
+  video = "video",
+  instances = "instances",
+  instance = "instance",
+  channel = "channel",
+  channels = "channels",
+  channelVideos = "channelVideos",
+  categories = "categories",
+  playlists = "playlists",
+  playlistVideos = "playlistVideos",
+}

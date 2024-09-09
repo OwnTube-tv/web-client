@@ -108,7 +108,7 @@ export const VideoControlsOverlay = ({
               <View style={styles.topLeftControls} pointerEvents="box-none">
                 <PlayerButton onPress={navigation.goBack} icon="Arrow-Left" />
                 <View style={styles.videoInfoContainer}>
-                  <Link href={{ pathname: ROUTES.CHANNEL, params: { backend, channelHandle: channel?.handle } }}>
+                  <Link href={{ pathname: ROUTES.CHANNEL, params: { backend, channel: channel?.handle } }}>
                     <Typography
                       numberOfLines={1}
                       ellipsizeMode="tail"

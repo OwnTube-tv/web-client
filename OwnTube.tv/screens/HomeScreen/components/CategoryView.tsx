@@ -14,8 +14,9 @@ export const CategoryView = ({ category }: CategoryViewProps) => {
     params: {
       categoryOneOf: [category.id],
       count: 4,
+      sort: "-publishedAt",
     },
-    customQueryKey: `category-${category.id}`,
+    uniqueQueryKey: `category-${category.id}`,
   });
 
   const linkText = useMemo(() => {

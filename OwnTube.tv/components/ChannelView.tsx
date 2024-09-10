@@ -15,7 +15,7 @@ export const ChannelView = ({ channel }: ChannelViewProps) => {
   const { data, isFetching } = useGetChannelVideosQuery(channel.name);
   const { t } = useTranslation();
 
-  if (!data?.length && !isFetching) {
+  if (!data?.data?.length && !isFetching) {
     return null;
   }
 
@@ -29,7 +29,7 @@ export const ChannelView = ({ channel }: ChannelViewProps) => {
       variant="channel"
       key={channel.id}
       title={channel.displayName}
-      data={data}
+      data={data?.data}
       channelLogoUri={channel.avatars?.[0]?.path}
     />
   );

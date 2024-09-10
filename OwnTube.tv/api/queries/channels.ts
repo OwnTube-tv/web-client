@@ -28,7 +28,7 @@ export const useGetChannelsQuery = () => {
     queryFn: async () => {
       return await ChannelsApiImpl.getChannels(backend!);
     },
-    select: ({ data }) => data,
+    select: ({ data }) => data.filter(({ isLocal }) => isLocal),
     enabled: !!backend,
     refetchOnWindowFocus: false,
     retry,
@@ -41,9 +41,7 @@ export const useGetChannelVideosQuery = (channelHandle?: string, queryParams: Vi
   return useQuery({
     queryKey: [QUERY_KEYS.channelVideos, backend, channelHandle, queryParams?.categoryOneOf],
     queryFn: async () => {
-      const response = await ChannelsApiImpl.getChannelVideos(backend!, channelHandle!, queryParams);
-
-      return response.data;
+      return await ChannelsApiImpl.getChannelVideos(backend!, channelHandle!, queryParams);
     },
     enabled: !!backend && !!channelHandle,
     refetchOnWindowFocus: false,
@@ -51,22 +49,27 @@ export const useGetChannelVideosQuery = (channelHandle?: string, queryParams: Vi
   });
 };
 
-export const useInfiniteGetChannelVideosQuery = (channelHandle?: string, pageSize = 4) => {
+export const useInfiniteGetChannelVideosQuery = (
+  queryArgs: Partial<{ channelHandle: string; category: number; pageSize: number; uniqueQueryKey: string }>,
+) => {
   const { backend } = useLocalSearchParams<RootStackParams["index"]>();
+  const { channelHandle, category, pageSize = 4, uniqueQueryKey } = queryArgs;
 
   return useInfiniteQuery({
     initialPageParam: 0,
     getNextPageParam: (lastPage: { data: GetVideosVideo[]; total: number }, _nextPage, lastPageParam) => {
-      const nextCount = (lastPageParam === 0 ? pageSize * 3 : lastPageParam) + lastPageParam ? pageSize : 0;
+      const nextCount = (lastPageParam === 0 ? pageSize * 4 : lastPageParam) + (lastPageParam ? pageSize : 0);
 
-      return nextCount > lastPage.total ? null : nextCount;
+      return nextCount + pageSize > lastPage.total ? null : nextCount;
     },
-    queryKey: [QUERY_KEYS.channelVideos, backend, channelHandle, "infinite"],
+    queryKey: [QUERY_KEYS.channelVideos, backend, channelHandle, "infinite", uniqueQueryKey],
     queryFn: async ({ pageParam }) => {
       return await ChannelsApiImpl.getChannelVideos(backend!, channelHandle!, {
-        count: pageParam === 0 ? pageSize * 3 : pageSize,
+        count: pageParam === 0 ? pageSize * 4 : pageSize,
         start: pageParam,
         sort: "-publishedAt",
+        categoryOneOf: category ? [category] : undefined,
+        skipCount: false,
       });
     },
     enabled: !!backend && !!channelHandle,

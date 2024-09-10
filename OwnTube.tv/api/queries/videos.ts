@@ -14,17 +14,17 @@ export const useGetVideosQuery = <TResult = GetVideosVideo[]>({
   enabled = true,
   select,
   params,
-  customQueryKey,
+  uniqueQueryKey,
 }: {
   enabled?: boolean;
   select?: (queryReturn: { data: GetVideosVideo[]; total: number }) => { data: TResult; total: number };
   params?: VideosCommonQuery;
-  customQueryKey?: string;
+  uniqueQueryKey?: string;
 }) => {
   const { backend } = useLocalSearchParams<RootStackParams["index"]>();
 
   return useQuery({
-    queryKey: [QUERY_KEYS.videos, backend, customQueryKey],
+    queryKey: [QUERY_KEYS.videos, backend, uniqueQueryKey],
     queryFn: async () => {
       if (backend === SOURCES.TEST_DATA) {
         return getLocalData<{ data: GetVideosVideo[]; total: 10 }>("videos");
@@ -45,14 +45,14 @@ export const useInfiniteVideosQuery = (pageSize = 4) => {
   return useInfiniteQuery({
     initialPageParam: 0,
     getNextPageParam: (lastPage: { data: GetVideosVideo[]; total: number }, _nextPage, lastPageParam) => {
-      const nextCount = (lastPageParam === 0 ? pageSize * 3 : lastPageParam) + (lastPageParam ? pageSize : 0);
+      const nextCount = (lastPageParam === 0 ? pageSize * 4 : lastPageParam) + (lastPageParam ? pageSize : 0);
 
-      return nextCount > lastPage.total ? null : nextCount;
+      return nextCount + pageSize > lastPage.total ? null : nextCount;
     },
     queryKey: [QUERY_KEYS.videos, backend, "infinite"],
     queryFn: async ({ pageParam }) => {
       return await ApiServiceImpl.getVideos(backend!, {
-        count: pageParam === 0 ? pageSize * 3 : pageSize,
+        count: pageParam === 0 ? pageSize * 4 : pageSize,
         start: pageParam,
         sort: "-publishedAt",
       });

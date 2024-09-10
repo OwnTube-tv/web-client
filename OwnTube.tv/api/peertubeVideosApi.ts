@@ -1,9 +1,9 @@
 import { VideosCommonQuery } from "@peertube/peertube-types";
 import { Video } from "@peertube/peertube-types/peertube-models/videos/video.model";
 import { GetVideosVideo } from "./models";
-import i18n from "../i18n";
 import { commonQueryParams } from "./constants";
 import { AxiosInstanceBasedApi } from "./axiosInstance";
+import { handleAxiosErrorWithRetry } from "./errorHandler";
 
 /**
  * Get videos from the PeerTube backend `/api/v1/videos` API
@@ -22,7 +22,7 @@ export class PeertubeVideosApi extends AxiosInstanceBasedApi {
   private _maxChunkSize!: number;
   set maxChunkSize(value: number) {
     if (!(value > 0 && value <= 100)) {
-      throw new Error("errors.maxVideosPerChunk");
+      throw new Error("The maximum number of videos to fetch in a single request is 100");
     }
     this._maxChunkSize = value;
   }
@@ -44,7 +44,7 @@ export class PeertubeVideosApi extends AxiosInstanceBasedApi {
       });
       return response.data.total as number;
     } catch (error: unknown) {
-      throw new Error(i18n.t("errors.failedToFetchTotalVids", { error: (error as Error).message }));
+      return handleAxiosErrorWithRetry(error, "total videos");
     }
   }
 
@@ -71,7 +71,7 @@ export class PeertubeVideosApi extends AxiosInstanceBasedApi {
         total = response.data.total;
         rawVideos = response.data.data as Required<GetVideosVideo[]>;
       } catch (error: unknown) {
-        throw new Error(i18n.t("errors.failedToFetchVids", { error: (error as Error).message }));
+        return handleAxiosErrorWithRetry(error, "videos");
       }
     } else {
       let rawTotal = -1;
@@ -83,7 +83,7 @@ export class PeertubeVideosApi extends AxiosInstanceBasedApi {
           fetchCount = rawTotal - offset;
           if (this.debugLogging) {
             console.debug(
-              i18n.t("errors.maxTotalToBeExceeded", { rawTotal, maxChunkSize: this.maxChunkSize, fetchCount }),
+              `We would exceed the total available ${rawTotal} videos with chunk size ${this.maxChunkSize}, so fetching only ${fetchCount} videos to reach the total`,
             );
           }
         }
@@ -91,7 +91,9 @@ export class PeertubeVideosApi extends AxiosInstanceBasedApi {
         if (maxLimitToBeExceeded) {
           fetchCount = limit - offset;
           if (this.debugLogging) {
-            console.debug(i18n.t("errors.maxLimitToBeExceeded", { limit, fetchCount }));
+            console.debug(
+              `We would exceed max limit of ${limit} videos, so fetching only ${fetchCount} additional videos to reach the limit`,
+            );
           }
         }
         try {
@@ -105,7 +107,7 @@ export class PeertubeVideosApi extends AxiosInstanceBasedApi {
           }
           rawVideos = rawVideos.concat(response.data.data as Required<GetVideosVideo>[]);
         } catch (error: unknown) {
-          throw new Error(`Failed to fetch videos from PeerTube API: ${(error as Error).message}`);
+          return handleAxiosErrorWithRetry(error, "videos");
         }
         offset += fetchCount;
       }
@@ -145,7 +147,7 @@ export class PeertubeVideosApi extends AxiosInstanceBasedApi {
 
       return response.data;
     } catch (error: unknown) {
-      throw new Error(i18n.t("errors.failedToFetchVideo", { error: (error as Error).message, id }));
+      return handleAxiosErrorWithRetry(error, "video data");
     }
   }
 }

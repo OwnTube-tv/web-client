@@ -1,25 +1,11 @@
-import axios, { AxiosInstance } from "axios";
 import { PeertubeInstance } from "./models";
-import i18n from "../i18n";
+import { AxiosInstanceBasedApi } from "./axiosInstance";
+import { handleAxiosErrorWithRetry } from "./errorHandler";
 
-export class InstanceSearchApi {
-  private instance!: AxiosInstance;
+export class InstanceSearchApi extends AxiosInstanceBasedApi {
   constructor() {
-    this.createAxiosInstance();
+    super();
   }
-
-  /**
-   * Create the Axios instance with request/response interceptors
-   */
-  private createAxiosInstance(): void {
-    this.instance = axios.create({
-      headers: {
-        "Access-Control-Allow-Origin": "*",
-        "Content-Type": "application/json",
-      },
-    });
-  }
-
   // Common query parameters for fetching a list of instances
   private readonly commonQueryParams = {
     start: 0,
@@ -38,7 +24,7 @@ export class InstanceSearchApi {
       });
       return response.data;
     } catch (error: unknown) {
-      throw new Error(i18n.t("errors.failedToFetchInstances", { error: (error as Error).message }));
+      return handleAxiosErrorWithRetry(error, "Sepia instances");
     }
   }
 }

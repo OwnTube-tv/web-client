@@ -14,7 +14,7 @@
   },
   "dependencies": {
     "@expo-google-fonts/inter": "^0.2.3",
-    "@expo/metro-runtime": "~3.2.1",
+    "@expo/metro-runtime": "~3.2.3",
     "@expo/vector-icons": "^14.0.2",
     "@peertube/peertube-types": "^6.1.0",
     "@react-native-async-storage/async-storage": "^1.23.1",
@@ -28,8 +28,8 @@
     "@types/ua-parser-js": "^0.7.39",
     "axios": "^1.7.2",
     "date-fns": "^3.6.0",
-    "expo": "~51.0.21",
-    "expo-av": "~14.0.6",
+    "expo": "~51.0.31",
+    "expo-av": "~14.0.7",
     "expo-clipboard": "~6.0.3",
     "expo-constants": "~16.0.2",
     "expo-device": "~6.0.2",
@@ -38,17 +38,18 @@
     "expo-linking": "~6.3.1",
     "expo-localization": "~15.0.3",
     "expo-navigation-bar": "~3.0.7",
-    "expo-router": "~3.5.18",
+    "expo-router": "~3.5.23",
     "expo-screen-orientation": "~7.0.5",
     "expo-status-bar": "~1.12.1",
     "i18next": "^23.11.5",
     "intl-pluralrules": "^2.0.1",
-    "jest-expo": "~51.0.3",
+    "jest-expo": "~51.0.4",
     "patch-package": "^8.0.0",
     "react": "18.2.0",
+    "react-content-loader": "^7.0.2",
     "react-dom": "18.2.0",
     "react-i18next": "^14.1.2",
-    "react-native": "0.74.3",
+    "react-native": "0.74.5",
     "react-native-gesture-handler": "~2.16.1",
     "react-native-picker-select": "^9.2.0",
     "react-native-reanimated": "~3.10.1",
@@ -79,6 +80,11 @@
   "overrides": {
     "expo": {
       "@expo/cli": "^0.18.3"
+    }
+  },
+  "expo": {
+    "install": {
+      "exclude": ["react-native-svg"]
     }
   },
   "jest": {

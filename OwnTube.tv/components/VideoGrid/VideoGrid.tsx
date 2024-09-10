@@ -1,17 +1,19 @@
 import { LinkProps } from "expo-router/build/link/Link";
 import { Link, useLocalSearchParams } from "expo-router";
-import { RootStackParams } from "../app/_layout";
-import { ROUTES } from "../types";
+import { RootStackParams } from "../../app/_layout";
+import { ROUTES } from "../../types";
 import { useTheme } from "@react-navigation/native";
-import { GetVideosVideo } from "../api/models";
-import { useBreakpoints, ViewHistoryEntry } from "../hooks";
-import { borderRadius, spacing } from "../theme";
-import { Typography } from "./Typography";
-import { Image, StyleSheet, View } from "react-native";
-import { VideoGridCard } from "./VideoGridCard";
-import { Button } from "./shared";
-import { IcoMoonIcon } from "./IcoMoonIcon";
-import { Loader } from "./Loader";
+import { GetVideosVideo } from "../../api/models";
+import { useBreakpoints, ViewHistoryEntry } from "../../hooks";
+import { borderRadius, spacing } from "../../theme";
+import { Typography } from "../Typography";
+import { Image, Platform, StyleSheet, View } from "react-native";
+import { VideoGridCard } from "../VideoGridCard";
+import { Button } from "../shared";
+import { IcoMoonIcon } from "../IcoMoonIcon";
+import { Loader } from "../Loader";
+import "./styles.css";
+import VideoGridCardLoader from "../loaders/VideoGridCardLoader";
 
 interface VideoGridProps {
   data?: Array<GetVideosVideo | ViewHistoryEntry>;
@@ -20,11 +22,12 @@ interface VideoGridProps {
   icon?: string;
   headerLink?: {
     text: string;
-    href: LinkProps["href"];
+    href: LinkProps<ROUTES>["href"];
   };
   handleShowMore?: () => void;
   channelLogoUri?: string;
   isLoadingMore?: boolean;
+  isLoading?: boolean;
 }
 
 export const VideoGrid = ({
@@ -36,6 +39,7 @@ export const VideoGrid = ({
   handleShowMore,
   channelLogoUri,
   isLoadingMore,
+  isLoading,
 }: VideoGridProps) => {
   const { backend } = useLocalSearchParams<RootStackParams[ROUTES.INDEX]>();
   const { colors } = useTheme();
@@ -66,17 +70,48 @@ export const VideoGrid = ({
           </Link>
         )}
       </View>
-      <View style={styles.gridContainer}>
-        {data.map((video) => {
-          return (
-            <View key={video.uuid} style={styles.gridItemContainer}>
-              <VideoGridCard
-                backend={variant === "history" && "backend" in video ? video.backend : backend}
-                video={video}
-              />
-            </View>
-          );
+      <View
+        style={Platform.select({
+          web: { $$css: true, _: "grid-container" },
+          default: {
+            flex: 1,
+            flexDirection: "row",
+            flexWrap: "wrap",
+            gap: spacing.xl,
+            alignItems: "flex-start",
+          },
         })}
+      >
+        {isLoading
+          ? [...Array(4)].map((_, index) => {
+              return (
+                <View
+                  key={index}
+                  style={Platform.select({
+                    web: styles.gridItemWeb,
+                    default: styles.loaderGridItemNonWeb,
+                  })}
+                >
+                  <VideoGridCardLoader />
+                </View>
+              );
+            })
+          : data.map((video) => {
+              return (
+                <View
+                  key={video.uuid}
+                  style={Platform.select({
+                    web: styles.gridItemWeb,
+                    default: styles.gridItemNonWeb,
+                  })}
+                >
+                  <VideoGridCard
+                    backend={variant === "history" && "backend" in video ? video.backend : backend}
+                    video={video}
+                  />
+                </View>
+              );
+            })}
       </View>
       {!!handleShowMore && (
         <View style={styles.showMoreContainer}>
@@ -93,15 +128,16 @@ const styles = StyleSheet.create({
   container: {
     width: "100%",
   },
-  gridContainer: {
-    columnGap: spacing.lg,
-    flexDirection: "row",
-    flexWrap: "wrap",
+  gridItemNonWeb: {
+    alignSelf: "flex-start",
     flex: 1,
-    rowGap: spacing.xxl,
+    height: "auto",
+    maxHeight: "100%",
+    maxWidth: "100%",
+    minWidth: "100%",
     width: "100%",
   },
-  gridItemContainer: { flex: 1, maxHeight: 320, maxWidth: 360, minWidth: 277, width: "100%" },
+  gridItemWeb: { flex: 1 },
   headerContainer: {
     alignItems: "center",
     flexDirection: "row",
@@ -112,5 +148,15 @@ const styles = StyleSheet.create({
   },
   headerTextContainer: { alignItems: "center", flexDirection: "row", gap: spacing.lg },
   image: { borderRadius: borderRadius.radiusMd, height: 32, width: 32 },
+  loaderGridItemNonWeb: {
+    aspectRatio: 1.145,
+    flexDirection: "row",
+    flex: 0,
+    justifyContent: "flex-start",
+    maxHeight: "100%",
+    maxWidth: "100%",
+    minWidth: "100%",
+    width: "100%",
+  },
   showMoreContainer: { alignSelf: "flex-start", flexDirection: "row", gap: spacing.xl, marginTop: spacing.xl },
 });

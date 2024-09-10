@@ -57,7 +57,7 @@ export const VideoGridCard = ({ video, backend }: VideoGridCardProps) => {
       </Pressable>
       <View style={styles.restInfoContainer}>
         <ChannelLink
-          href={{ pathname: ROUTES.CHANNEL, params: { backend, channel: video.channel.name } }}
+          href={{ pathname: `/${ROUTES.CHANNEL}`, params: { channel: video.channel?.name, backend } }}
           text={video.channel?.displayName}
         />
         <Typography fontSize="sizeXS" fontWeight="Medium" color={colors.themeDesaturated500}>
@@ -70,10 +70,10 @@ export const VideoGridCard = ({ video, backend }: VideoGridCardProps) => {
 
 const styles = StyleSheet.create({
   container: {
+    flex: 0,
     gap: spacing.sm,
-    height: "100%",
+    height: "auto",
     maxWidth: "100%",
-    width: 360,
   },
   linkWrapper: { flex: 1 },
   pressableContainer: { gap: spacing.md },

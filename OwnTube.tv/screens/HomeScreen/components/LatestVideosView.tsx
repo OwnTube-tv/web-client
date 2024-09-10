@@ -1,5 +1,5 @@
 import { useInfiniteVideosQuery } from "../../../api";
-import { Loader, VideoGrid } from "../../../components";
+import { VideoGrid } from "../../../components";
 import { useTranslation } from "react-i18next";
 import { useMemo } from "react";
 
@@ -11,12 +11,9 @@ export const LatestVideosView = () => {
     return data?.pages?.flatMap(({ data }) => data.flat());
   }, [data]);
 
-  if (isLoading) {
-    return <Loader />;
-  }
-
   return (
     <VideoGrid
+      isLoading={isLoading}
       data={videos}
       title={t("latestVideos")}
       isLoadingMore={isFetchingNextPage}

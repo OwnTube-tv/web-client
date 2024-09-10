@@ -72,22 +72,5 @@
   "viewAll": "View all",
   "leaveInstance": "Leave {{instance}}",
   "leaveInstanceDescription": "Leave the current site and return to OwnTubes site overview page",
-  "playlistsPageTitle": "Playlists",
-  "errors": {
-    "tooManyRequests": "Too many requests. Retrying in {{retryAfter}} seconds",
-    "failedToFetchInstances": "Failed to fetch instances: {{error}}",
-    "max100VideosPerChunk": "The maximum number of videos to fetch in a single request is 100",
-    "failedToFetchTotalVids": "Failed to fetch total number of videos from PeerTube API: ",
-    "failedToFetchVids": "Failed to fetch videos from PeerTube API: ",
-    "failedToFetchVideo": "Failed to fetch video {{id}} from PeerTube API: ",
-    "maxTotalToBeExceeded": "We would exceed the total available {{rawTotal}} videos with chunk size {{maxChunkSize}}, so fetching only {{fetchCount}} videos to reach the total",
-    "maxLimitToBeExceeded": "We would exceed max limit of {{limit}} videos, so fetching only {{fetchCount}} additional videos to reach the limit",
-    "failedToFetchInstanceInfo": "Failed to fetch information about the instance",
-    "failedToFetchChannels": "Failed to fetch channels list from the instance",
-    "failedToFetchChannelVideos": "Failed to fetch channel videos",
-    "failedToFetchAvailableCategories": "Failed to fetch available categories",
-    "failedToFetchPlaylists": "Failed to fetch playlists",
-    "failedToFetchPlaylistVideos": "Failed to fetch videos on a playlist",
-    "failedToFetchChannelInfo": "Failed to fetch channel info"
-  }
+  "playlistsPageTitle": "Playlists"
 }

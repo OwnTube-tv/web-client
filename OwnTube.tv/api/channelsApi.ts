@@ -79,7 +79,7 @@ export class ChannelsApi extends AxiosInstanceBasedApi {
             name: video.name,
             category: video.category,
             description: video.description,
-            thumbnailPath: `https://${baseURL}${video.previewPath}`,
+            previewPath: `https://${baseURL}${video.previewPath}`,
             duration: video.duration,
             channel: video.channel,
             publishedAt: video.publishedAt,

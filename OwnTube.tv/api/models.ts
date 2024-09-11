@@ -25,7 +25,7 @@ export type GetVideosVideo = Pick<
   Video,
   "uuid" | "name" | "description" | "duration" | "publishedAt" | "originallyPublishedAt" | "views"
 > & {
-  thumbnailPath: string;
+  previewPath: string;
   category: { id: number | null; label: string };
   channel: VideoChannelSummary;
 };

@@ -23,7 +23,7 @@ export const ChannelView = ({ channel }: ChannelViewProps) => {
     <VideoGrid
       isLoading={isFetching}
       headerLink={{
-        text: t("visitChannel"),
+        text: `${t("visitChannel")} (${Number(data?.total)})`,
         href: { pathname: ROUTES.CHANNEL, params: { backend, channel: channel.name } },
       }}
       variant="channel"

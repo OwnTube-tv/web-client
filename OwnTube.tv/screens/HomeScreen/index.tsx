@@ -1,4 +1,4 @@
-import { InfoFooter, VideoGrid } from "../../components";
+import { CategoryView, InfoFooter, VideoGrid } from "../../components";
 import { Screen } from "../../layouts";
 import { useTheme } from "@react-navigation/native";
 import { useGetCategoriesQuery, useGetChannelsQuery } from "../../api";
@@ -8,7 +8,7 @@ import { spacing } from "../../theme";
 import { ROUTES } from "../../types";
 import { StyleSheet } from "react-native";
 import { useTranslation } from "react-i18next";
-import { LatestVideosView, CategoryView } from "./components";
+import { LatestVideosView } from "./components";
 import { useLocalSearchParams } from "expo-router";
 import { RootStackParams } from "../../app/_layout";
 import { ChannelView } from "../../components";

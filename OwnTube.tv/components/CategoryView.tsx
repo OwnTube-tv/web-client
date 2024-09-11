@@ -1,6 +1,8 @@
-import { VideoGrid } from "../../../components";
+import { VideoGrid } from "./index";
 import { useTranslation } from "react-i18next";
-import { useGetVideosQuery } from "../../../api";
+import { useGetVideosQuery } from "../api";
+import { ROUTES } from "../types";
+import { useLocalSearchParams } from "expo-router";
 
 interface CategoryViewProps {
   category: { name: string; id: number };
@@ -8,6 +10,7 @@ interface CategoryViewProps {
 
 export const CategoryView = ({ category }: CategoryViewProps) => {
   const { t } = useTranslation();
+  const { backend } = useLocalSearchParams();
   const { data, isFetching } = useGetVideosQuery({
     enabled: true,
     params: {
@@ -25,7 +28,10 @@ export const CategoryView = ({ category }: CategoryViewProps) => {
   return (
     <VideoGrid
       isLoading={isFetching}
-      headerLink={{ text: `${t("viewAll")} (${Number(data?.total)})`, href: { pathname: "#" } }}
+      headerLink={{
+        text: `${t("viewAll")} (${Number(data?.total)})`,
+        href: { pathname: ROUTES.CATEGORY, params: { backend, category: category.id } },
+      }}
       title={category.name}
       data={data?.data}
     />

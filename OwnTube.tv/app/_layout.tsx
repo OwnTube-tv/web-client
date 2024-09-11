@@ -80,6 +80,7 @@ const RootStack = () => {
           <Drawer.Screen name={`(home)/${ROUTES.CHANNELS}`} />
           <Drawer.Screen name={`(home)/${ROUTES.CHANNEL_CATEGORY}`} />
           <Drawer.Screen name={`(home)/${ROUTES.CATEGORIES}`} />
+          <Drawer.Screen name={`(home)/${ROUTES.CATEGORY}`} />
           <Drawer.Screen name={`(home)/${ROUTES.PLAYLISTS}`} />
         </Drawer>
         <Toast config={{ buildInfo: () => <BuildInfoToast /> }} />
@@ -156,4 +157,5 @@ export type RootStackParams = {
   [ROUTES.CHANNELS]: { backend: string };
   [ROUTES.CHANNEL_CATEGORY]: { backend: string; channel: string; category: string };
   [ROUTES.CATEGORIES]: { backend: string };
+  [ROUTES.CATEGORY]: { backend: string; category: string };
 };

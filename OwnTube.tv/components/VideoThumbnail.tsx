@@ -28,7 +28,7 @@ export const VideoThumbnail: FC<VideoThumbnailProps> = ({ video, backend, timest
 
   const percentageWatched = timestamp ? (timestamp / video.duration) * 100 : 0;
 
-  const imageSource = video.thumbnailPath ? { uri: video.thumbnailPath } : defaultImagePaths[scheme ?? "dark"];
+  const imageSource = video.previewPath ? { uri: video.previewPath } : defaultImagePaths[scheme ?? "dark"];
 
   if (!backend) {
     return null;

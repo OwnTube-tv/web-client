@@ -65,7 +65,7 @@ describe("VideoScreen", () => {
         lastViewedAt: 1607775160000,
         name: "fastest car",
         previewPath: "/thumb.jpg",
-        thumbnailPath: "https://example.com/thumb.jpg",
+        previewPath: "https://example.com/thumb.jpg",
         uuid: "123",
         files: [
           { resolution: { id: 2160 } },

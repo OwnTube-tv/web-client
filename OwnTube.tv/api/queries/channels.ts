@@ -60,7 +60,7 @@ export const useInfiniteGetChannelVideosQuery = (
     getNextPageParam: (lastPage: { data: GetVideosVideo[]; total: number }, _nextPage, lastPageParam) => {
       const nextCount = (lastPageParam === 0 ? pageSize * 4 : lastPageParam) + (lastPageParam ? pageSize : 0);
 
-      return nextCount + pageSize > lastPage.total ? null : nextCount;
+      return nextCount >= lastPage.total ? null : nextCount;
     },
     queryKey: [QUERY_KEYS.channelVideos, backend, channelHandle, "infinite", uniqueQueryKey],
     queryFn: async ({ pageParam }) => {

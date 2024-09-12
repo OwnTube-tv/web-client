@@ -19,6 +19,7 @@ export enum ROUTES {
   CHANNELS = "channels",
   CHANNEL_CATEGORY = "channel-category",
   CATEGORIES = "categories",
+  CATEGORY = "category",
   PLAYLISTS = "playlists",
 }
 
@@ -31,7 +32,7 @@ export interface Video {
   id: number;
   name: string;
   category: Category;
-  thumbnailPath: string;
+  previewPath: string;
   thumbnailUrl?: string;
   description?: string | null;
 }

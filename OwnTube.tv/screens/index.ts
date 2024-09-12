@@ -6,3 +6,5 @@ export * from "./ChannelScreen";
 export * from "./ChannelCategoryScreen";
 export * from "./ChannelsScreen";
 export * from "./Playlists";
+export * from "./CategoriesScreen";
+export * from "./CategoryScreen";

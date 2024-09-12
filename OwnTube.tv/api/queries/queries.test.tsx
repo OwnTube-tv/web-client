@@ -15,8 +15,8 @@ jest.mock("../peertubeVideosApi", () => ({
   ApiServiceImpl: {
     getVideos: jest.fn(() => ({
       data: [
-        { uuid: "123", thumbnailPath: "/123f-3fe-3" },
-        { uuid: "1235", thumbnailPath: "/123f-3fe-3yt3" },
+        { uuid: "123", previewPath: "/123f-3fe-3" },
+        { uuid: "1235", previewPath: "/123f-3fe-3yt3" },
       ],
       total: 50,
     })),

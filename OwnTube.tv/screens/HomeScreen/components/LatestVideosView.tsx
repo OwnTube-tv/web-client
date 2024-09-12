@@ -6,7 +6,9 @@ import { useMemo } from "react";
 export const LatestVideosView = () => {
   const { t } = useTranslation();
 
-  const { fetchNextPage, data, hasNextPage, isLoading, isFetchingNextPage } = useInfiniteVideosQuery();
+  const { fetchNextPage, data, hasNextPage, isLoading, isFetchingNextPage } = useInfiniteVideosQuery({
+    uniqueQueryKey: "homepageLatestVideosView",
+  });
   const videos = useMemo(() => {
     return data?.pages?.flatMap(({ data }) => data.flat());
   }, [data]);

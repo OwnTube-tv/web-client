@@ -27,3 +27,4 @@ export * from "./Sidebar";
 export * from "./InstanceInfo";
 export * from "./VideoGrid";
 export * from "./ChannelView";
+export * from "./CategoryView";

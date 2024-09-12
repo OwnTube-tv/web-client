@@ -18,7 +18,7 @@ import VideoGridCardLoader from "../loaders/VideoGridCardLoader";
 interface VideoGridProps {
   data?: Array<GetVideosVideo | ViewHistoryEntry>;
   variant?: "default" | "channel" | "history";
-  title: string;
+  title?: string;
   icon?: string;
   headerLink?: {
     text: string;
@@ -60,9 +60,11 @@ export const VideoGrid = ({
         <View style={styles.headerTextContainer}>
           {!!channelLogoUri && <Image style={styles.image} source={{ uri: `https://${backend}${channelLogoUri}` }} />}
           {icon && <IcoMoonIcon size={24} name={icon} color={colors.theme900} />}
-          <Typography fontSize="sizeXL" fontWeight="ExtraBold" color={colors.theme900}>
-            {title}
-          </Typography>
+          {title && (
+            <Typography fontSize="sizeXL" fontWeight="ExtraBold" color={colors.theme900}>
+              {title}
+            </Typography>
+          )}
         </View>
         {!!headerLink && (
           <Link asChild href={headerLink.href}>
@@ -116,7 +118,7 @@ export const VideoGrid = ({
       {!!handleShowMore && (
         <View style={styles.showMoreContainer}>
           <Button contrast="low" text="Show more" onPress={handleShowMore} />
-          {isLoadingMore && <Loader />}
+          <View>{isLoadingMore && <Loader />}</View>
         </View>
       )}
     </View>

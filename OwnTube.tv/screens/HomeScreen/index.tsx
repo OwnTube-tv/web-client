@@ -23,7 +23,7 @@ export const HomeScreen = () => {
   const { data: categories } = useGetCategoriesQuery();
 
   const historyData = useMemo(() => {
-    return viewHistory?.filter(({ backend: itemBackend }) => itemBackend === backend).slice(0, 4);
+    return viewHistory?.filter(({ backend: itemBackend }) => itemBackend === backend).slice(0, 4) || [];
   }, [viewHistory, backend]);
 
   return (
@@ -35,7 +35,7 @@ export const HomeScreen = () => {
       }}
     >
       <LatestVideosView />
-      {!!viewHistory?.length && (
+      {historyData.length > 0 && (
         <VideoGrid
           headerLink={{ text: t("viewHistory"), href: { pathname: ROUTES.SETTINGS, params: { tab: "history" } } }}
           title={t("recentlyWatched")}

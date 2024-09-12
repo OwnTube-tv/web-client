@@ -24,7 +24,7 @@ export const VideoScreen = () => {
     if (data && params?.backend) {
       const updateData = {
         ...data,
-        thumbnailPath: `https://${params.backend}${data.thumbnailPath}`,
+        thumbnailPath: `https://${params.backend}${data.previewPath}`,
         backend: params.backend,
         lastViewedAt: new Date().getTime(),
       };

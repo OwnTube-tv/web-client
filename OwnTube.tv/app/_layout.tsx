@@ -78,6 +78,7 @@ const RootStack = () => {
           />
           <Drawer.Screen name={`(home)/${ROUTES.CHANNEL}`} />
           <Drawer.Screen name={`(home)/${ROUTES.CHANNELS}`} />
+          <Drawer.Screen name={`(home)/${ROUTES.CHANNEL_CATEGORY}`} />
           <Drawer.Screen name={`(home)/${ROUTES.CATEGORIES}`} />
           <Drawer.Screen name={`(home)/${ROUTES.PLAYLISTS}`} />
         </Drawer>
@@ -153,5 +154,6 @@ export type RootStackParams = {
   [ROUTES.VIDEO]: { backend: string; id: string; timestamp?: string };
   [ROUTES.CHANNEL]: { backend: string; channel: string };
   [ROUTES.CHANNELS]: { backend: string };
+  [ROUTES.CHANNEL_CATEGORY]: { backend: string; channel: string; category: string };
   [ROUTES.CATEGORIES]: { backend: string };
 };

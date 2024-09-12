@@ -8,7 +8,7 @@ jest.mock("../../api/queries", () => ({
   useGetVideoQuery: jest.fn(() => ({
     data: {
       name: "fastest car",
-      thumbnailPath: "/thumb.jpg",
+      previewPath: "/thumb.jpg",
       uuid: "123",
       category: "cars",
       description: "a description",
@@ -64,6 +64,7 @@ describe("VideoScreen", () => {
         duration: 200,
         lastViewedAt: 1607775160000,
         name: "fastest car",
+        previewPath: "/thumb.jpg",
         thumbnailPath: "https://example.com/thumb.jpg",
         uuid: "123",
         files: [

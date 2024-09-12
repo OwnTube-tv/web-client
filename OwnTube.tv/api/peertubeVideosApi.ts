@@ -59,7 +59,7 @@ export class PeertubeVideosApi extends AxiosInstanceBasedApi {
     baseURL: string,
     queryParams?: VideosCommonQuery,
   ): Promise<{ data: GetVideosVideo[]; total: number }> {
-    let rawVideos: Required<GetVideosVideo>[] = [];
+    let rawVideos: Required<Video>[] = [];
     let total: number = 0;
     let limit = queryParams?.count || 15;
     if (limit <= this.maxChunkSize) {
@@ -69,7 +69,7 @@ export class PeertubeVideosApi extends AxiosInstanceBasedApi {
           baseURL: `https://${baseURL}/api/v1`,
         });
         total = response.data.total;
-        rawVideos = response.data.data as Required<GetVideosVideo[]>;
+        rawVideos = response.data.data as Required<Video>[];
       } catch (error: unknown) {
         return handleAxiosErrorWithRetry(error, "videos");
       }
@@ -105,7 +105,7 @@ export class PeertubeVideosApi extends AxiosInstanceBasedApi {
           if (rawTotal < limit) {
             limit = rawTotal;
           }
-          rawVideos = rawVideos.concat(response.data.data as Required<GetVideosVideo>[]);
+          rawVideos = rawVideos.concat(response.data.data as Required<Video>[]);
         } catch (error: unknown) {
           return handleAxiosErrorWithRetry(error, "videos");
         }
@@ -120,7 +120,7 @@ export class PeertubeVideosApi extends AxiosInstanceBasedApi {
           name: video.name,
           category: video.category,
           description: video.description,
-          thumbnailPath: `https://${baseURL}${video.thumbnailPath}`,
+          thumbnailPath: `https://${baseURL}${video.previewPath}`,
           duration: video.duration,
           channel: video.channel,
           publishedAt: video.publishedAt,

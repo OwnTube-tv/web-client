@@ -22,7 +22,7 @@ concurrency:
 
 jobs:
   build_info:
-    runs-on: ubuntu-latest
+    runs-on: arc-owntube-runner
     outputs:
       GITHUB_ACTOR: ${{ steps.create.outputs.GITHUB_ACTOR }}
       GITHUB_SHA_SHORT: ${{ steps.create.outputs.GITHUB_SHA_SHORT }}

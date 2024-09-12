@@ -22,7 +22,7 @@ concurrency:
 
 jobs:
   build_info:
-    runs-on: arc-owntube-runner
+    runs-on: ubuntu-latest
     outputs:
       GITHUB_ACTOR: ${{ steps.create.outputs.GITHUB_ACTOR }}
       GITHUB_SHA_SHORT: ${{ steps.create.outputs.GITHUB_SHA_SHORT }}
@@ -58,7 +58,7 @@ jobs:
 
   code_quality:
     needs: build_info
-    runs-on: arc-owntube-runner
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -77,7 +77,7 @@ jobs:
 
   build_android_apk:
     needs: [code_quality, build_info]
-    runs-on: arc-owntube-runner
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -130,7 +130,7 @@ jobs:
 
   deploy_web:
     needs: [code_quality, build_info]
-    runs-on: arc-owntube-runner
+    runs-on: ubuntu-latest
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}

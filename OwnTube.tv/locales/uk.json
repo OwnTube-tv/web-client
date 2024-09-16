@@ -22,6 +22,9 @@
   "selectedInstance": "Вибрана інстанція: ",
   "recentInstances": "Недавні інстанції:",
   "clear": "Очистити",
+  "clearSiteHistory": "Очистити історію сайту",
+  "clearSiteHistoryQuestion": "Очистити історію сайту?",
+  "yourWatchHistory": "Ваша історія перегляду",
   "predefinedInstances": "Передвстановлені інстанції:",
   "peertubeInstances": "Інстанції PeerTube:",
   "noVideosOrCategoriesFound": "Відео або категорії не знайдено.",
@@ -75,5 +78,7 @@
   "leaveInstance": "Покинути {{instance}}",
   "leaveInstanceDescription": "Покинути поточний сайт і повернутись до сторінки огляду сайтів OwnTube",
   "playlistsPageTitle": "Плейлісти",
-  "currentBuild": "Поточна збірка:"
+  "currentBuild": "Поточна збірка:",
+  "cancel": "Скасувати",
+  "otherSites": "Інші сайти"
 }

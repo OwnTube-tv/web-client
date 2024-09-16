@@ -22,6 +22,9 @@
   "selectedInstance": "Selected instance: ",
   "recentInstances": "Recent instances:",
   "clear": "Clear",
+  "clearSiteHistory": "Clear site history",
+  "clearSiteHistoryQuestion": "Clear site history?",
+  "yourWatchHistory": "Your watch history",
   "predefinedInstances": "Predefined instances:",
   "peertubeInstances": "PeerTube instances:",
   "noVideosOrCategoriesFound": "No videos or categories found.",
@@ -75,5 +78,7 @@
   "leaveInstance": "Leave {{instance}}",
   "leaveInstanceDescription": "Leave the current site and return to OwnTubes site overview page",
   "playlistsPageTitle": "Playlists",
-  "currentBuild": "Current build:"
+  "currentBuild": "Current build:",
+  "cancel": "Cancel",
+  "otherSites": "Other sites"
 }

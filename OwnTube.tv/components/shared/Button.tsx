@@ -49,7 +49,7 @@ export const Button = forwardRef<View, ButtonProps>(
         ]}
         ref={ref}
       >
-        {icon && <IcoMoonIcon name={icon} size={24} color={colors.theme900} />}
+        {icon && <IcoMoonIcon name={icon} size={24} color={contrast === "high" ? colors.white94 : colors.theme900} />}
         {text && (
           <Typography
             fontSize="sizeSm"

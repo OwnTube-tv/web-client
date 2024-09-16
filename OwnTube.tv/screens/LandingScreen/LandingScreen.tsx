@@ -1,18 +1,20 @@
-import { StyleSheet, View } from "react-native";
+import { Pressable, StyleSheet, View } from "react-native";
 import { Logo } from "../../components/Svg";
 import { useTheme } from "@react-navigation/native";
 import { useTranslation } from "react-i18next";
-import { InfoFooter, PlatformCard, Typography } from "../../components";
+import { InfoFooter, PlatformCard, SourceSelect, Typography } from "../../components";
 import FEATURED_INSTANCES from "../../assets/featured-instances.json";
 import { useBreakpoints } from "../../hooks";
 import { Spacer } from "../../components/shared/Spacer";
 import { spacing } from "../../theme";
 import { Screen } from "../../layouts";
+import { useState } from "react";
 
 export const LandingScreen = () => {
   const { colors } = useTheme();
   const { t } = useTranslation();
   const { isDesktop } = useBreakpoints();
+  const [isInstanceSelectVisible, setIsInstanceSelectVisible] = useState(false);
 
   return (
     <Screen style={{ padding: 0, paddingTop: isDesktop ? spacing.xxxl : spacing.xxl }}>
@@ -52,6 +54,11 @@ export const LandingScreen = () => {
           </View>
         ))}
       </View>
+      <Spacer height={spacing.lg} />
+      <Pressable onPress={() => setIsInstanceSelectVisible(true)}>
+        <Typography style={{ textDecorationLine: "underline" }}>{t("otherSites")}</Typography>
+      </Pressable>
+      {isInstanceSelectVisible && <SourceSelect />}
       <InfoFooter showBuildInfo />
     </Screen>
   );

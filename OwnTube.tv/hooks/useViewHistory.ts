@@ -13,8 +13,9 @@ export type ViewHistoryEntry = GetVideosVideo & {
 type UpdateHistoryMutationFnArg = { data: Partial<ViewHistoryEntry> & { uuid: string } };
 type ViewHistoryBase = Record<string, ViewHistoryEntry>;
 
-export const useViewHistory = (enabled: boolean = true, maxItems: number = 50) => {
+export const useViewHistory = (queryArg?: { enabled?: boolean; maxItems?: number; backendToFilter?: string }) => {
   const queryClient = useQueryClient();
+  const { enabled = true, maxItems = 50, backendToFilter } = queryArg || {};
 
   const { data: viewHistory, isFetching } = useQuery<ViewHistoryBase, DefaultError, Array<ViewHistoryEntry>>({
     queryKey: ["viewHistory"],
@@ -27,6 +28,7 @@ export const useViewHistory = (enabled: boolean = true, maxItems: number = 50) =
     },
     select: (data) =>
       Object.values(data)
+        .filter(({ backend }) => (backendToFilter ? backend === backendToFilter : true))
         .sort((a: ViewHistoryEntry, b: ViewHistoryEntry) => b.lastViewedAt - a.lastViewedAt)
         .slice(0, maxItems),
     enabled,
@@ -72,6 +74,30 @@ export const useViewHistory = (enabled: boolean = true, maxItems: number = 50) =
     },
   });
 
+  const { mutateAsync: clearInstanceHistory } = useMutation({
+    mutationFn: async (backend: string) => {
+      const history: string[] = await readFromAsyncStorage(STORAGE.VIEW_HISTORY);
+      const toDelete: string[] = [];
+      const toKeep: string[] = [];
+
+      for (const uuid of history) {
+        const entry: ViewHistoryEntry = await readFromAsyncStorage(uuid);
+
+        if (entry.backend === backend) {
+          toDelete.push(uuid);
+        } else {
+          toKeep.push(uuid);
+        }
+      }
+
+      await deleteFromAsyncStorage(toDelete);
+      await writeToAsyncStorage(STORAGE.VIEW_HISTORY, toKeep);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["viewHistory"] });
+    },
+  });
+
   const getViewHistoryEntryByUuid = (uuid: string) => {
     const history = queryClient.getQueryData<ViewHistoryBase>(["viewHistory"]);
 
@@ -89,5 +115,13 @@ export const useViewHistory = (enabled: boolean = true, maxItems: number = 50) =
     await queryClient.invalidateQueries({ queryKey: ["viewHistory"] });
   };
 
-  return { viewHistory, isFetching, clearHistory, updateHistory, getViewHistoryEntryByUuid, deleteVideoFromHistory };
+  return {
+    viewHistory,
+    isFetching,
+    clearHistory,
+    updateHistory,
+    getViewHistoryEntryByUuid,
+    deleteVideoFromHistory,
+    clearInstanceHistory,
+  };
 };

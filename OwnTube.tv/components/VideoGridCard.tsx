@@ -22,7 +22,7 @@ export const VideoGridCard = ({ video, backend }: VideoGridCardProps) => {
   const { colors } = useTheme();
   const { isHovered, toggleHovered } = useHoverState();
   const { t, i18n } = useTranslation();
-  const { getViewHistoryEntryByUuid } = useViewHistory(false);
+  const { getViewHistoryEntryByUuid } = useViewHistory({ enabled: false });
   const { timestamp } = getViewHistoryEntryByUuid(video.uuid) || {};
 
   return (

@@ -16,7 +16,7 @@ import { useTranslation } from "react-i18next";
 import { IconButton } from "./IconButton";
 
 export const SourceSelect = () => {
-  const { backend } = useLocalSearchParams<RootStackParams["settings"]>();
+  const { backend } = useLocalSearchParams<RootStackParams["index"]>();
   const router = useRouter();
   const theme = useTheme();
   const { recentInstances, addRecentInstance, clearRecentInstances } = useRecentInstances();
@@ -100,6 +100,8 @@ export const SourceSelect = () => {
 const styles = StyleSheet.create({
   container: {
     marginTop: 8,
+    position: "relative",
+    zIndex: 1,
   },
   recentsHeader: { alignItems: "center", flexDirection: "row", justifyContent: "space-between" },
   source: {

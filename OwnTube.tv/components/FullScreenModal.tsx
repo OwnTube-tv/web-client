@@ -41,6 +41,14 @@ export const FullScreenModal: FC<PropsWithChildren<FullScreenModalProps>> = ({
 };
 
 const styles = StyleSheet.create({
-  container: { bottom: 0, cursor: "auto", left: 0, position: "absolute", right: 0, top: 0, zIndex: 999 },
+  container: {
+    bottom: 0,
+    cursor: "auto",
+    left: 0,
+    position: "absolute",
+    right: 0,
+    top: 0,
+    zIndex: 999,
+  },
   pressableOpacity: { bottom: 0, cursor: "auto", left: 0, position: "absolute", right: 0, top: 0 },
 });

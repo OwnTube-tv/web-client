@@ -21,7 +21,7 @@ describe("useViewHistory", () => {
       ["uuid3", JSON.stringify({ lastViewedAt: 109 })],
     ]);
 
-    const { result } = renderHook(() => useViewHistory(true, 2), { wrapper });
+    const { result } = renderHook(() => useViewHistory({ enabled: true, maxItems: 2 }), { wrapper });
 
     await waitFor(() => expect(result.current.viewHistory).toEqual([{ lastViewedAt: 125 }, { lastViewedAt: 123 }]));
   });
@@ -32,7 +32,7 @@ describe("useViewHistory", () => {
       .mockResolvedValueOnce(["uuid1", "uuid2"])
       .mockResolvedValueOnce(null);
 
-    const { result } = renderHook(() => useViewHistory(true, 2), { wrapper });
+    const { result } = renderHook(() => useViewHistory({ enabled: true, maxItems: 2 }), { wrapper });
 
     await act(async () => {
       await result.current.updateHistory({ data: { uuid: "uuid3", name: "big bug buggy", lastViewedAt: 1234 } });
@@ -87,5 +87,23 @@ describe("useViewHistory", () => {
 
     expect(deleteFromAsyncStorage).toHaveBeenNthCalledWith(1, ["uuid3", "uuid1", "uuid2"]);
     expect(deleteFromAsyncStorage).toHaveBeenNthCalledWith(2, [STORAGE.VIEW_HISTORY]);
+  });
+
+  it("should remove history for a specified backend", async () => {
+    (readFromAsyncStorage as jest.Mock)
+      .mockResolvedValueOnce(["uuid1", "uuid2", "uuid3"])
+      .mockResolvedValueOnce(["uuid1", "uuid2", "uuid3"])
+      .mockResolvedValueOnce({ backend: "backend1" })
+      .mockResolvedValueOnce({ backend: "backend2" })
+      .mockResolvedValueOnce({ backend: "backend1" });
+
+    const { result } = renderHook(() => useViewHistory({ enabled: true }), { wrapper });
+
+    await act(async () => {
+      await result.current.clearInstanceHistory("backend1");
+    });
+
+    expect(deleteFromAsyncStorage).toHaveBeenCalledWith(["uuid1", "uuid3"]);
+    expect(writeToAsyncStorage).toHaveBeenCalledWith(STORAGE.VIEW_HISTORY, ["uuid2"]);
   });
 });

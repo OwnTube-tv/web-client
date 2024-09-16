@@ -17,14 +17,14 @@ export const HomeScreen = () => {
   const { colors } = useTheme();
   const { t } = useTranslation();
   const { backend } = useLocalSearchParams<RootStackParams[ROUTES.INDEX]>();
-  const { viewHistory } = useViewHistory();
+  const { viewHistory } = useViewHistory({ backendToFilter: backend });
   const { isMobile } = useBreakpoints();
   const { data: channels } = useGetChannelsQuery();
   const { data: categories } = useGetCategoriesQuery();
 
   const historyData = useMemo(() => {
-    return viewHistory?.filter(({ backend: itemBackend }) => itemBackend === backend).slice(0, 4) || [];
-  }, [viewHistory, backend]);
+    return viewHistory?.slice(0, 4) || [];
+  }, [viewHistory]);
 
   return (
     <Screen
@@ -37,7 +37,7 @@ export const HomeScreen = () => {
       <LatestVideosView />
       {historyData.length > 0 && (
         <VideoGrid
-          headerLink={{ text: t("viewHistory"), href: { pathname: ROUTES.SETTINGS, params: { tab: "history" } } }}
+          headerLink={{ text: t("viewHistory"), href: { pathname: ROUTES.HISTORY, params: { backend } } }}
           title={t("recentlyWatched")}
           icon="History"
           data={historyData}

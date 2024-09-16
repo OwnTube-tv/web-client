@@ -6,6 +6,8 @@ import { useTheme } from "@react-navigation/native";
 import { useTranslation } from "react-i18next";
 import { IcoMoonIcon } from "./IcoMoonIcon";
 import { borderRadius } from "../theme";
+import { BuildInfo } from "./BuildInfo";
+import build_info from "../build-info.json";
 
 const CapabilityKeyValuePair = ({ label, value }: { label: string; value: string }) => {
   const { colors } = useTheme();
@@ -28,7 +30,11 @@ export const DeviceCapabilities = () => {
   const { t } = useTranslation();
 
   const handleCopyToClipboard = async () => {
-    await Clipboard.setStringAsync(JSON.stringify(deviceCapabilities));
+    await Clipboard.setStringAsync(
+      JSON.stringify({ buildInfo: { ...build_info, WEB_URL: null }, ...deviceCapabilities }, (_key, value) => {
+        return value === null ? undefined : value;
+      }),
+    );
   };
 
   return (
@@ -42,6 +48,12 @@ export const DeviceCapabilities = () => {
         </Pressable>
       </View>
       <View style={styles.capabilitiesContainer}>
+        <View style={styles.row}>
+          <Typography color={colors.themeDesaturated500} fontSize="sizeXS" fontWeight="Medium">
+            {t("currentBuild")}
+          </Typography>
+          <BuildInfo />
+        </View>
         <CapabilityKeyValuePair label={t("playerImpl")} value={deviceCapabilities.playerImplementation} />
         <CapabilityKeyValuePair label={t("deviceType")} value={deviceCapabilities.deviceType} />
         <CapabilityKeyValuePair label={t("operatingSystem")} value={deviceCapabilities.OS} />

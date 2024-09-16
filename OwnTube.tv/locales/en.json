@@ -11,7 +11,7 @@
   "toggleTheme": "Toggle Theme",
   "revision": "Revision",
   "builtAtBy": "built at {{builtAt}} by",
-  "deviceCapabilityInfoTitle": "Device capability information",
+  "deviceCapabilityInfoTitle": "Client information",
   "playerImpl": "Player implementation:",
   "deviceType": "Device type:",
   "operatingSystem": "Operating system:",
@@ -74,5 +74,6 @@
   "viewAll": "View all",
   "leaveInstance": "Leave {{instance}}",
   "leaveInstanceDescription": "Leave the current site and return to OwnTubes site overview page",
-  "playlistsPageTitle": "Playlists"
+  "playlistsPageTitle": "Playlists",
+  "currentBuild": "Current build:"
 }

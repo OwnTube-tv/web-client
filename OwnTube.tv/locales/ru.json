@@ -11,7 +11,7 @@
   "toggleTheme": "Переключить тему",
   "revision": "Ревизия",
   "builtAtBy": "поставка от {{builtAt}} авторства",
-  "deviceCapabilityInfoTitle": "Информация о возможностях устройства",
+  "deviceCapabilityInfoTitle": "Информация о клиенте",
   "playerImpl": "Реализация плеера:",
   "deviceType": "Тип устройства:",
   "operatingSystem": "Операционная система:",
@@ -74,5 +74,6 @@
   "viewAll": "Просмотреть все",
   "leaveInstance": "Покинуть {{instance}}",
   "leaveInstanceDescription": "Покинуть текущий сайт и вернуться к странице обзора сайтов OwnTube",
-  "playlistsPageTitle": "Плейлисты"
+  "playlistsPageTitle": "Плейлисты",
+  "currentBuild": "Текущая сборка:"
 }

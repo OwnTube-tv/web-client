@@ -1,7 +1,7 @@
 import { VideoThumbnail } from "./VideoThumbnail";
 import { Pressable, StyleSheet, View } from "react-native";
 import { Typography } from "./Typography";
-import { format } from "date-fns";
+import { format, formatDistanceToNow } from "date-fns";
 import { useBreakpoints, useHoverState, ViewHistoryEntry } from "../hooks";
 import { useTranslation } from "react-i18next";
 import { Link } from "expo-router";
@@ -11,6 +11,7 @@ import { useTheme } from "@react-navigation/native";
 import { useMemo } from "react";
 import { ChannelLink } from "./ChannelLink";
 import { IcoMoonIcon } from "./IcoMoonIcon";
+import { LANGUAGE_OPTIONS } from "../i18n";
 
 interface ViewHistoryListItemProps {
   video: ViewHistoryEntry;
@@ -18,7 +19,7 @@ interface ViewHistoryListItemProps {
 }
 
 export const ViewHistoryListItem = ({ video, handleDeleteFromHistory }: ViewHistoryListItemProps) => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { colors } = useTheme();
   const { isHovered, toggleHovered } = useHoverState();
   const { isDesktop } = useBreakpoints();
@@ -66,7 +67,7 @@ export const ViewHistoryListItem = ({ video, handleDeleteFromHistory }: ViewHist
           <Link asChild href={videoHref}>
             <Pressable onHoverOut={toggleHovered} onHoverIn={toggleHovered}>
               <Typography
-                style={{ textDecorationLine: isHovered ? "underline" : undefined }}
+                style={{ textDecorationLine: isHovered ? "underline" : undefined, maxWidth: "100%" }}
                 fontSize={isDesktop ? "sizeLg" : "sizeSm"}
                 fontWeight="SemiBold"
                 color={colors.theme900}
@@ -80,6 +81,9 @@ export const ViewHistoryListItem = ({ video, handleDeleteFromHistory }: ViewHist
             href={{ pathname: ROUTES.CHANNEL, params: { backend: video.backend, channel: video.channel?.name } }}
             text={video.channel?.displayName}
           />
+          <Typography fontSize="sizeXS" fontWeight="Medium" color={colors.themeDesaturated500}>
+            {`${video.publishedAt ? formatDistanceToNow(video.publishedAt, { addSuffix: true, locale: LANGUAGE_OPTIONS.find(({ value }) => value === i18n.language)?.dateLocale }) : ""} • ${t("views", { count: video.views })}`}
+          </Typography>
         </View>
         {isDesktop && deleteBtn}
       </View>
@@ -99,5 +103,5 @@ const styles = StyleSheet.create({
     gap: spacing.sm,
     height: "100%",
   },
-  thumbLinkWrapper: { maxWidth: "37%", width: 328 },
+  thumbLinkWrapper: { maxWidth: 328, width: "37%" },
 });

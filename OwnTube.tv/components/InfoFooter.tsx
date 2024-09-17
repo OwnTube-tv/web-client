@@ -34,6 +34,8 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     paddingBottom: spacing.xxl,
     paddingTop: spacing.xxxl,
+    position: undefined,
     width: "100%",
+    zIndex: undefined,
   },
 });

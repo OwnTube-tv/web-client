@@ -4,13 +4,14 @@ import { Link } from "expo-router";
 import { useTheme } from "@react-navigation/native";
 import { ROUTES } from "../types";
 import { useTranslation } from "react-i18next";
-import { useColorSchemeContext } from "../contexts";
+import { useColorSchemeContext, useFullScreenModalContext } from "../contexts";
 import { StyleSheet, View } from "react-native";
 import { Button, Separator } from "./shared";
 import { spacing } from "../theme";
 import { Spacer } from "./shared/Spacer";
 import { useBreakpoints } from "../hooks";
 import { InstanceInfo } from "./InstanceInfo";
+import { Settings } from "./VideoControlsOverlay/components/modals";
 
 const SIDEBAR_ROUTES = [
   {
@@ -22,8 +23,8 @@ const SIDEBAR_ROUTES = [
   {
     nameKey: "history",
     icon: "History",
-    href: { pathname: ROUTES.SETTINGS, params: { tab: "history" } },
-    routeName: `(home)/${ROUTES.SETTINGS}`,
+    href: { pathname: ROUTES.HISTORY },
+    routeName: `(home)/${ROUTES.HISTORY}`,
   },
   {
     nameKey: "channels",
@@ -46,17 +47,22 @@ const SIDEBAR_ROUTES = [
 ];
 
 interface SidebarProps extends DrawerContentComponentProps {
-  handleOpenSettings: () => void;
   backend?: string;
 }
 
-export const Sidebar: FC<SidebarProps> = ({ handleOpenSettings, backend, ...navigationProps }) => {
+export const Sidebar: FC<SidebarProps> = ({ backend, ...navigationProps }) => {
   const { colors } = useTheme();
   const { scheme, toggleScheme } = useColorSchemeContext();
   const { t } = useTranslation();
   const isDarkMode = scheme === "dark";
   const breakpoints = useBreakpoints();
   const shouldExpand = breakpoints.isDesktop || breakpoints.isMobile;
+  const { toggleModal, setContent } = useFullScreenModalContext();
+
+  const handleOpenSettings = () => {
+    toggleModal(true);
+    setContent(<Settings onClose={() => toggleModal(false)} />);
+  };
 
   return (
     <DrawerContentScrollView
@@ -88,7 +94,7 @@ export const Sidebar: FC<SidebarProps> = ({ handleOpenSettings, backend, ...navi
             navigationProps.state.index === navigationProps.state.routes.findIndex(({ name }) => name === routeName);
 
           return (
-            <Link href={{ ...href, params: { ...href.params, backend } }} key={routeName} asChild>
+            <Link href={{ ...href, params: { backend } }} key={routeName} asChild>
               <Button
                 isActive={isActive}
                 justifyContent="flex-start"

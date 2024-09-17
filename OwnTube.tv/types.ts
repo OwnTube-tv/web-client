@@ -13,7 +13,7 @@ export enum STORAGE {
 
 export enum ROUTES {
   INDEX = "index",
-  SETTINGS = "settings",
+  HISTORY = "history",
   VIDEO = "video",
   CHANNEL = "channel",
   CHANNELS = "channels",

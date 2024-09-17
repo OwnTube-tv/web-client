@@ -22,6 +22,9 @@
   "selectedInstance": "Выбранный экземпляр: ",
   "recentInstances": "Недавние экземпляры:",
   "clear": "Очистить",
+  "clearSiteHistory": "Очистить историю сайта",
+  "clearSiteHistoryQuestion": "Очистить историю сайта?",
+  "yourWatchHistory": "Ваша история просмотра",
   "predefinedInstances": "Предустановленные экземпляры:",
   "peertubeInstances": "Экземпляры PeerTube:",
   "noVideosOrCategoriesFound": "Видео или категории не найдены.",
@@ -75,5 +78,7 @@
   "leaveInstance": "Покинуть {{instance}}",
   "leaveInstanceDescription": "Покинуть текущий сайт и вернуться к странице обзора сайтов OwnTube",
   "playlistsPageTitle": "Плейлисты",
-  "currentBuild": "Текущая сборка:"
+  "currentBuild": "Текущая сборка:",
+  "cancel": "Отмена",
+  "otherSites": "Другие сайты"
 }

@@ -2,7 +2,13 @@ import { useGlobalSearchParams } from "expo-router";
 import { Platform } from "react-native";
 import { ROUTES, STORAGE } from "../types";
 import { ThemeProvider } from "@react-navigation/native";
-import { AppConfigContextProvider, ColorSchemeContextProvider, useColorSchemeContext } from "../contexts";
+import {
+  AppConfigContextProvider,
+  ColorSchemeContextProvider,
+  FullScreenModalContextProvider,
+  useColorSchemeContext,
+  useFullScreenModalContext,
+} from "../contexts";
 import { QueryCache, QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { useFonts } from "expo-font";
@@ -10,7 +16,7 @@ import Toast from "react-native-toast-message";
 import { FullScreenModal, Sidebar } from "../components";
 import "../i18n";
 import { useTranslation } from "react-i18next";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { readFromAsyncStorage } from "../utils";
 import {
   Inter_100Thin,
@@ -28,7 +34,6 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { StatusBar } from "expo-status-bar";
 import "../global.css";
 import { Drawer } from "expo-router/drawer";
-import { Settings } from "../components/VideoControlsOverlay/components/modals";
 import { AppHeader } from "../components/AppHeader";
 import { SafeAreaProvider, useSafeAreaInsets } from "react-native-safe-area-context";
 import { useBreakpoints } from "../hooks";
@@ -46,10 +51,11 @@ const RootStack = () => {
     readFromAsyncStorage(STORAGE.LOCALE).then(i18n.changeLanguage);
   }, []);
 
-  const [isSettingsModalVisible, setIsSettingsModalVisible] = useState(false);
   const breakpoints = useBreakpoints();
   const { backend } = useGlobalSearchParams<{ backend: string }>();
   const { left } = useSafeAreaInsets();
+
+  const { isOpen: isModalOpen, content: modalContent, toggleModal } = useFullScreenModalContext();
 
   return (
     <>
@@ -66,12 +72,9 @@ const RootStack = () => {
             header: (props) => (breakpoints.isMobile && !!backend ? <AppHeader {...props} backend={backend} /> : <></>),
           }}
           backBehavior="history"
-          drawerContent={(props) => (
-            <Sidebar {...props} handleOpenSettings={() => setIsSettingsModalVisible(true)} backend={backend} />
-          )}
+          drawerContent={(props) => <Sidebar {...props} backend={backend} />}
         >
           <Drawer.Screen name={"(home)/index"} />
-          <Drawer.Screen name={`(home)/${ROUTES.SETTINGS}`} />
           <Drawer.Screen
             name={`(home)/video`}
             options={{ drawerStyle: { display: "none" }, swipeEnabled: false, header: () => <></> }}
@@ -84,8 +87,8 @@ const RootStack = () => {
           <Drawer.Screen name={`(home)/${ROUTES.PLAYLISTS}`} />
         </Drawer>
         <Toast />
-        <FullScreenModal onBackdropPress={() => setIsSettingsModalVisible(false)} isVisible={isSettingsModalVisible}>
-          <Settings onClose={() => setIsSettingsModalVisible(false)} />
+        <FullScreenModal onBackdropPress={() => toggleModal?.(false)} isVisible={isModalOpen}>
+          {modalContent}
         </FullScreenModal>
       </ThemeProvider>
     </>
@@ -136,7 +139,9 @@ export default function RootLayout() {
           <AppConfigContextProvider>
             {isWeb && <ReactQueryDevtools initialIsOpen={false} />}
             <ColorSchemeContextProvider>
-              <RootStack />
+              <FullScreenModalContextProvider>
+                <RootStack />
+              </FullScreenModalContextProvider>
             </ColorSchemeContextProvider>
           </AppConfigContextProvider>
         </QueryClientProvider>
@@ -151,7 +156,7 @@ export const unstable_settings = {
 
 export type RootStackParams = {
   [ROUTES.INDEX]: { backend: string };
-  [ROUTES.SETTINGS]: { backend: string; tab: "history" | "instance" | "config" };
+  [ROUTES.HISTORY]: { backend: string };
   [ROUTES.VIDEO]: { backend: string; id: string; timestamp?: string };
   [ROUTES.CHANNEL]: { backend: string; channel: string };
   [ROUTES.CHANNELS]: { backend: string };

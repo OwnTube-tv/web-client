@@ -52,7 +52,7 @@ export const LandingScreen = () => {
           </View>
         ))}
       </View>
-      <InfoFooter />
+      <InfoFooter showBuildInfo />
     </Screen>
   );
 };

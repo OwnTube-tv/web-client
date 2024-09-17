@@ -7,7 +7,7 @@ import { QueryCache, QueryClient, QueryClientProvider } from "@tanstack/react-qu
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { useFonts } from "expo-font";
 import Toast from "react-native-toast-message";
-import { BuildInfoToast, FullScreenModal, Sidebar } from "../components";
+import { FullScreenModal, Sidebar } from "../components";
 import "../i18n";
 import { useTranslation } from "react-i18next";
 import { useEffect, useState } from "react";
@@ -83,7 +83,7 @@ const RootStack = () => {
           <Drawer.Screen name={`(home)/${ROUTES.CATEGORY}`} />
           <Drawer.Screen name={`(home)/${ROUTES.PLAYLISTS}`} />
         </Drawer>
-        <Toast config={{ buildInfo: () => <BuildInfoToast /> }} />
+        <Toast />
         <FullScreenModal onBackdropPress={() => setIsSettingsModalVisible(false)} isVisible={isSettingsModalVisible}>
           <Settings onClose={() => setIsSettingsModalVisible(false)} />
         </FullScreenModal>

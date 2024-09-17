@@ -7,3 +7,4 @@ export * from "./ChannelsScreen";
 export * from "./Playlists";
 export * from "./CategoriesScreen";
 export * from "./CategoryScreen";
+export * from "./Playlist";

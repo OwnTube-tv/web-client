@@ -7,15 +7,16 @@ import { GetVideosVideo } from "../../api/models";
 import { useBreakpoints, ViewHistoryEntry } from "../../hooks";
 import { borderRadius, spacing } from "../../theme";
 import { Typography } from "../Typography";
-import { Image, Platform, StyleSheet, View } from "react-native";
-import { VideoGridCard } from "../VideoGridCard";
+import { Image, StyleSheet, View } from "react-native";
 import { Button } from "../shared";
 import { IcoMoonIcon } from "../IcoMoonIcon";
 import { Loader } from "../Loader";
 import "./styles.css";
-import VideoGridCardLoader from "../loaders/VideoGridCardLoader";
+import { VideoGridContent } from "./VideoGridContent";
+import { VideoListContent } from "./VideoListContent";
+import { useState } from "react";
 
-interface VideoGridProps {
+export interface VideoGridProps {
   data?: Array<GetVideosVideo | ViewHistoryEntry>;
   variant?: "default" | "channel" | "history";
   title?: string;
@@ -28,6 +29,7 @@ interface VideoGridProps {
   channelLogoUri?: string;
   isLoadingMore?: boolean;
   isLoading?: boolean;
+  presentation?: "list" | "grid";
 }
 
 export const VideoGrid = ({
@@ -40,10 +42,16 @@ export const VideoGrid = ({
   channelLogoUri,
   isLoadingMore,
   isLoading,
+  presentation,
 }: VideoGridProps) => {
   const { backend } = useLocalSearchParams<RootStackParams[ROUTES.INDEX]>();
   const { colors } = useTheme();
-  const { isMobile } = useBreakpoints();
+  const { isMobile, isDesktop } = useBreakpoints();
+  const [customPresentation, setCustomPresentation] = useState<VideoGridProps["presentation"]>(presentation || "grid");
+
+  const handleSetPresentation = (newPresentation: VideoGridProps["presentation"]) => {
+    setCustomPresentation(newPresentation);
+  };
 
   return (
     <View
@@ -66,55 +74,42 @@ export const VideoGrid = ({
             </Typography>
           )}
         </View>
-        {!!headerLink && (
-          <Link asChild href={headerLink.href}>
-            <Button contrast="high" text={headerLink.text} style={{ marginLeft: spacing.xxl }} />
-          </Link>
-        )}
+        <View style={styles.headerLinksContainer}>
+          {!!presentation && isDesktop && (
+            <View
+              style={[
+                styles.presentationSwitcherContainer,
+                {
+                  borderColor: colors.theme500,
+                },
+              ]}
+            >
+              <Button
+                style={styles.presentationSwitcherButton}
+                onPress={() => handleSetPresentation("list")}
+                icon="Playlist"
+                contrast={customPresentation === "list" ? "high" : "none"}
+              />
+              <Button
+                style={styles.presentationSwitcherButton}
+                onPress={() => handleSetPresentation("grid")}
+                icon="Category"
+                contrast={customPresentation === "grid" ? "high" : "none"}
+              />
+            </View>
+          )}
+          {!!headerLink && (
+            <Link asChild href={headerLink.href}>
+              <Button contrast="high" text={headerLink.text} style={{ marginLeft: spacing.xxl }} />
+            </Link>
+          )}
+        </View>
       </View>
-      <View
-        style={Platform.select({
-          web: { $$css: true, _: "grid-container" },
-          default: {
-            flex: 1,
-            flexDirection: "row",
-            flexWrap: "wrap",
-            gap: spacing.xl,
-            alignItems: "flex-start",
-          },
-        })}
-      >
-        {isLoading
-          ? [...Array(4)].map((_, index) => {
-              return (
-                <View
-                  key={index}
-                  style={Platform.select({
-                    web: styles.gridItemWeb,
-                    default: styles.loaderGridItemNonWeb,
-                  })}
-                >
-                  <VideoGridCardLoader />
-                </View>
-              );
-            })
-          : data.map((video) => {
-              return (
-                <View
-                  key={video.uuid}
-                  style={Platform.select({
-                    web: styles.gridItemWeb,
-                    default: styles.gridItemNonWeb,
-                  })}
-                >
-                  <VideoGridCard
-                    backend={variant === "history" && "backend" in video ? video.backend : backend}
-                    video={video}
-                  />
-                </View>
-              );
-            })}
-      </View>
+      {customPresentation === "grid" ? (
+        <VideoGridContent isLoading={isLoading} data={data} backend={backend} />
+      ) : (
+        <VideoListContent isLoading={isLoading} data={data} backend={backend} />
+      )}
       {!!handleShowMore && (
         <View style={styles.showMoreContainer}>
           <Button contrast="low" text="Show more" onPress={handleShowMore} />
@@ -130,16 +125,6 @@ const styles = StyleSheet.create({
   container: {
     width: "100%",
   },
-  gridItemNonWeb: {
-    alignSelf: "flex-start",
-    flex: 1,
-    height: "auto",
-    maxHeight: "100%",
-    maxWidth: "100%",
-    minWidth: "100%",
-    width: "100%",
-  },
-  gridItemWeb: { flex: 1 },
   headerContainer: {
     alignItems: "center",
     flexDirection: "row",
@@ -148,17 +133,15 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     paddingBottom: spacing.xl,
   },
+  headerLinksContainer: { flexDirection: "row", gap: spacing.xl },
   headerTextContainer: { alignItems: "center", flexDirection: "row", gap: spacing.lg },
   image: { borderRadius: borderRadius.radiusMd, height: 32, width: 32 },
-  loaderGridItemNonWeb: {
-    aspectRatio: 1.145,
+  presentationSwitcherButton: { borderRadius: 0, height: 36 },
+  presentationSwitcherContainer: {
+    borderRadius: borderRadius.radiusMd,
+    borderWidth: 1,
     flexDirection: "row",
-    flex: 0,
-    justifyContent: "flex-start",
-    maxHeight: "100%",
-    maxWidth: "100%",
-    minWidth: "100%",
-    width: "100%",
+    overflow: "hidden",
   },
   showMoreContainer: { alignSelf: "flex-start", flexDirection: "row", gap: spacing.xl, marginTop: spacing.xl },
 });

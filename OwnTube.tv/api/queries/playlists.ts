@@ -1,9 +1,10 @@
 import { useLocalSearchParams } from "expo-router";
 import { RootStackParams } from "../../app/_layout";
-import { useQuery } from "@tanstack/react-query";
+import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import { QUERY_KEYS } from "../constants";
 import { PlaylistsApiImpl } from "../playlistsApi";
 import { retry } from "../helpers";
+import { GetVideosVideo } from "../models";
 
 export const useGetPlaylistsQuery = () => {
   const { backend } = useLocalSearchParams<RootStackParams["index"]>();
@@ -27,6 +28,43 @@ export const useGetPlaylistVideosQuery = (playlistId?: number, count: number = 4
     queryKey: [QUERY_KEYS.playlistVideos, backend, playlistId],
     queryFn: async () => {
       return await PlaylistsApiImpl.getPlaylistVideos(backend!, playlistId!, { count });
+    },
+    enabled: !!backend && !!playlistId,
+    refetchOnWindowFocus: false,
+    retry,
+  });
+};
+
+export const useInfiniteGetPlaylistVideosQuery = (playlistId?: number, pageSize: number = 4) => {
+  const { backend } = useLocalSearchParams<RootStackParams["index"]>();
+
+  return useInfiniteQuery({
+    initialPageParam: 0,
+    getNextPageParam: (lastPage: { data: GetVideosVideo[]; total: number }, _nextPage, lastPageParam) => {
+      const nextCount = (lastPageParam === 0 ? pageSize * 4 : lastPageParam) + (lastPageParam ? pageSize : 0);
+
+      return nextCount >= lastPage.total ? null : nextCount;
+    },
+    queryKey: [QUERY_KEYS.playlistVideos, backend, playlistId, "infinite"],
+    queryFn: async ({ pageParam }) => {
+      return await PlaylistsApiImpl.getPlaylistVideos(backend!, playlistId!, {
+        count: pageParam === 0 ? pageSize * 4 : pageSize,
+        start: pageParam,
+      });
+    },
+    refetchOnWindowFocus: false,
+    enabled: !!backend && !!playlistId,
+    retry,
+  });
+};
+
+export const useGetPlaylistInfoQuery = (playlistId?: number) => {
+  const { backend } = useLocalSearchParams<RootStackParams["index"]>();
+
+  return useQuery({
+    queryKey: [QUERY_KEYS.playlistInfo, backend, playlistId],
+    queryFn: async () => {
+      return await PlaylistsApiImpl.getPlaylistInfo(backend!, playlistId!);
     },
     enabled: !!backend && !!playlistId,
     refetchOnWindowFocus: false,

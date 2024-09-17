@@ -11,7 +11,7 @@ export const Playlists = () => {
   }
 
   return (
-    <Screen>
+    <Screen style={{ padding: 0 }}>
       {playlists?.data?.map(({ id, displayName }) => <PlaylistVideosView title={displayName} key={id} id={id} />)}
     </Screen>
   );

@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next";
 import { ROUTES } from "../types";
 import { useLocalSearchParams } from "expo-router";
 import { RootStackParams } from "../app/_layout";
+import { getAvailableVidsString } from "../utils";
 
 interface ChannelViewProps {
   channel: VideoChannel;
@@ -23,8 +24,8 @@ export const ChannelView = ({ channel }: ChannelViewProps) => {
     <VideoGrid
       isLoading={isFetching}
       headerLink={{
-        text: `${t("visitChannel")} (${Number(data?.total)})`,
-        href: { pathname: ROUTES.CHANNEL, params: { backend, channel: channel.name } },
+        text: t("visitChannel") + getAvailableVidsString(data?.total),
+        href: { pathname: `/${ROUTES.CHANNEL}`, params: { backend, channel: channel.name } },
       }}
       variant="channel"
       key={channel.id}

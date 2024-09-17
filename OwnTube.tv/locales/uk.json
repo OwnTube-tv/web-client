@@ -77,6 +77,8 @@
   "viewAll": "Переглянути все",
   "leaveInstance": "Покинути {{instance}}",
   "leaveInstanceDescription": "Покинути поточний сайт і повернутись до сторінки огляду сайтів OwnTube",
+  "playlist": "Плейліст",
+  "viewFullPlaylist": "Переглянути плейліст повністю",
   "playlistsPageTitle": "Плейлісти",
   "currentBuild": "Поточна збірка:",
   "cancel": "Скасувати",

@@ -85,6 +85,7 @@ const RootStack = () => {
           <Drawer.Screen name={`(home)/${ROUTES.CATEGORIES}`} />
           <Drawer.Screen name={`(home)/${ROUTES.CATEGORY}`} />
           <Drawer.Screen name={`(home)/${ROUTES.PLAYLISTS}`} />
+          <Drawer.Screen name={`(home)/${ROUTES.PLAYLIST}`} />
         </Drawer>
         <Toast />
         <FullScreenModal onBackdropPress={() => toggleModal?.(false)} isVisible={isModalOpen}>
@@ -163,4 +164,5 @@ export type RootStackParams = {
   [ROUTES.CHANNEL_CATEGORY]: { backend: string; channel: string; category: string };
   [ROUTES.CATEGORIES]: { backend: string };
   [ROUTES.CATEGORY]: { backend: string; category: string };
+  [ROUTES.PLAYLIST]: { backend: string; playlist: string };
 };

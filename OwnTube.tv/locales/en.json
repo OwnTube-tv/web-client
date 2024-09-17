@@ -80,5 +80,7 @@
   "playlistsPageTitle": "Playlists",
   "currentBuild": "Current build:",
   "cancel": "Cancel",
-  "otherSites": "Other sites"
+  "otherSites": "Other sites",
+  "playlist": "Playlist",
+  "viewFullPlaylist": "View full playlist"
 }

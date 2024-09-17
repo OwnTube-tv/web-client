@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import { useGetVideosQuery } from "../api";
 import { ROUTES } from "../types";
 import { useLocalSearchParams } from "expo-router";
+import { getAvailableVidsString } from "../utils";
 
 interface CategoryViewProps {
   category: { name: string; id: number };
@@ -29,8 +30,8 @@ export const CategoryView = ({ category }: CategoryViewProps) => {
     <VideoGrid
       isLoading={isFetching}
       headerLink={{
-        text: `${t("viewAll")} (${Number(data?.total)})`,
-        href: { pathname: ROUTES.CATEGORY, params: { backend, category: category.id } },
+        text: t("viewAll") + getAvailableVidsString(data?.total),
+        href: { pathname: `/${ROUTES.CATEGORY}`, params: { backend, category: category.id } },
       }}
       title={category.name}
       data={data?.data}

@@ -22,4 +22,5 @@ export enum QUERY_KEYS {
   categories = "categories",
   playlists = "playlists",
   playlistVideos = "playlistVideos",
+  playlistInfo = "playlistInfo",
 }

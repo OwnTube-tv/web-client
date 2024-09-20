@@ -7,8 +7,7 @@ import { ScrollView, StyleSheet, View } from "react-native";
 import build_info from "../../../../build-info.json";
 import QrCode from "react-qr-code";
 import { useMemo, useRef, useState } from "react";
-import { useLocalSearchParams } from "expo-router";
-import { RootStackParams } from "../../../../app/_layout";
+import { useGlobalSearchParams, usePathname } from "expo-router";
 import { useTheme } from "@react-navigation/native";
 import { borderRadius, spacing } from "../../../../theme";
 import { Input } from "../../../shared";
@@ -17,27 +16,34 @@ import { Spacer } from "../../../shared/Spacer";
 import { getHumanReadableDuration } from "../../../../utils";
 import { useViewHistory } from "../../../../hooks";
 import { colors } from "../../../../colors";
+import { ROUTES } from "../../../../types";
 
 interface ShareProps {
   onClose: () => void;
+  titleKey: string;
 }
 
-export const Share = ({ onClose }: ShareProps) => {
+export const Share = ({ onClose, titleKey }: ShareProps) => {
   const { t } = useTranslation();
   const { colors } = useTheme();
-  const { backend = "", id = "" } = useLocalSearchParams<RootStackParams["video"]>();
+  const params = useGlobalSearchParams();
   const [copyButtonText, setCopyButtonText] = useState(t("copy"));
   const [isTimestampAdded, setIsTimestampAdded] = useState(false);
   const timeoutRef = useRef<NodeJS.Timeout>();
   const { getViewHistoryEntryByUuid } = useViewHistory();
+  const pathname = usePathname();
 
   const addedTimestamp = useMemo(() => {
-    return getViewHistoryEntryByUuid(id)?.timestamp || 0;
-  }, [id]);
+    return getViewHistoryEntryByUuid(params?.id as string)?.timestamp || 0;
+  }, [params?.id]);
 
   const link = useMemo(() => {
-    return `${build_info.WEB_URL}/video?${new URLSearchParams({ id, backend })}${isTimestampAdded ? `&timestamp=${addedTimestamp}` : ""}`;
-  }, [id, backend, isTimestampAdded]);
+    const paramsCopy = { ...params };
+    delete paramsCopy.timestamp;
+    return `${build_info.WEB_URL?.toLowerCase()}${pathname}?${new URLSearchParams(paramsCopy as Record<string, string>)}${isTimestampAdded ? `&timestamp=${addedTimestamp}` : ""}`;
+  }, [isTimestampAdded, pathname, params, addedTimestamp]);
+
+  const isTimestampShown = pathname === `/${ROUTES.VIDEO}`;
 
   const handleCopy = async () => {
     await Clipboard.setStringAsync(link);
@@ -50,20 +56,24 @@ export const Share = ({ onClose }: ShareProps) => {
 
   return (
     <Animated.View entering={SlideInUp} exiting={SlideOutUp} style={styles.animatedContainer} pointerEvents="box-none">
-      <ModalContainer onClose={onClose} title={t("shareVideo")} containerStyle={styles.modalContainer}>
+      <ModalContainer onClose={onClose} title={t(titleKey)} containerStyle={styles.modalContainer}>
         <ScrollView>
           <Input buttonText={copyButtonText} readOnly value={link} handleButtonPress={handleCopy} />
           <Spacer height={spacing.xl} />
-          <View style={styles.startAtContainer}>
-            <Checkbox label={t("startAt")} checked={isTimestampAdded} onChange={setIsTimestampAdded} />
-            <Input
-              style={{ width: 96 }}
-              editable={false}
-              readOnly={!isTimestampAdded}
-              value={getHumanReadableDuration(addedTimestamp * 1000)}
-            />
-          </View>
-          <Spacer height={spacing.xl} />
+          {isTimestampShown && (
+            <>
+              <View style={styles.startAtContainer}>
+                <Checkbox label={t("startAt")} checked={isTimestampAdded} onChange={setIsTimestampAdded} />
+                <Input
+                  style={{ width: 96 }}
+                  editable={false}
+                  readOnly={!isTimestampAdded}
+                  value={getHumanReadableDuration(addedTimestamp * 1000)}
+                />
+              </View>
+              <Spacer height={spacing.xl} />
+            </>
+          )}
           <Separator />
           <Typography
             fontSize="sizeLg"

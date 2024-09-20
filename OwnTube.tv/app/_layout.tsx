@@ -1,4 +1,4 @@
-import { useGlobalSearchParams } from "expo-router";
+import { useGlobalSearchParams, usePathname } from "expo-router";
 import { Platform } from "react-native";
 import { ROUTES, STORAGE } from "../types";
 import { ThemeProvider } from "@react-navigation/native";
@@ -13,10 +13,10 @@ import { QueryCache, QueryClient, QueryClientProvider } from "@tanstack/react-qu
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { useFonts } from "expo-font";
 import Toast from "react-native-toast-message";
-import { FullScreenModal, Sidebar } from "../components";
+import { AppDesktopHeader, FullScreenModal, Sidebar } from "../components";
 import "../i18n";
 import { useTranslation } from "react-i18next";
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import { readFromAsyncStorage } from "../utils";
 import {
   Inter_100Thin,
@@ -38,6 +38,7 @@ import { AppHeader } from "../components/AppHeader";
 import { SafeAreaProvider, useSafeAreaInsets } from "react-native-safe-area-context";
 import { useBreakpoints } from "../hooks";
 import { OwnTubeError } from "../api/models";
+import { DrawerHeaderProps } from "@react-navigation/drawer";
 
 export const CLOSED_DRAWER_WIDTH = 64;
 export const OPEN_DRAWER_WIDTH = 272;
@@ -53,9 +54,29 @@ const RootStack = () => {
 
   const breakpoints = useBreakpoints();
   const { backend } = useGlobalSearchParams<{ backend: string }>();
+  const pathname = usePathname();
   const { left } = useSafeAreaInsets();
 
   const { isOpen: isModalOpen, content: modalContent, toggleModal } = useFullScreenModalContext();
+
+  const renderAppHeader = useCallback(
+    (props: DrawerHeaderProps) => {
+      if (!backend) {
+        return null;
+      }
+
+      if (breakpoints.isMobile) {
+        return <AppHeader {...props} backend={backend} />;
+      }
+
+      if (Object.keys(SHAREABLE_ROUTE_MODAL_TITLES).includes(pathname)) {
+        return <AppDesktopHeader />;
+      }
+
+      return null;
+    },
+    [backend, breakpoints, pathname],
+  );
 
   return (
     <>
@@ -69,7 +90,7 @@ const RootStack = () => {
               width: (!breakpoints.isDesktop && !breakpoints.isMobile ? CLOSED_DRAWER_WIDTH : OPEN_DRAWER_WIDTH) + left,
               borderRightWidth: 0,
             },
-            header: (props) => (breakpoints.isMobile && !!backend ? <AppHeader {...props} backend={backend} /> : <></>),
+            header: (props) => renderAppHeader(props),
           }}
           backBehavior="history"
           drawerContent={(props) => <Sidebar {...props} backend={backend} />}
@@ -167,4 +188,13 @@ export type RootStackParams = {
   [ROUTES.CATEGORIES]: { backend: string };
   [ROUTES.CATEGORY]: { backend: string; category: string };
   [ROUTES.PLAYLIST]: { backend: string; playlist: string };
+};
+
+export const SHAREABLE_ROUTE_MODAL_TITLES: Record<string, string> = {
+  "/": "shareVideoSite",
+  [`/${ROUTES.VIDEO}`]: "shareVideo",
+  [`/${ROUTES.CHANNEL}`]: "shareVideoChannel",
+  [`/${ROUTES.CHANNEL_CATEGORY}`]: "shareVideoChannelCategory",
+  [`/${ROUTES.PLAYLIST}`]: "sharePlaylist",
+  [`/${ROUTES.CHANNEL_PLAYLIST}`]: "shareChannelPlaylist",
 };

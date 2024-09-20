@@ -26,5 +26,6 @@ export * from "./ChannelView";
 export * from "./CategoryView";
 export * from "./BuildInfo";
 export * from "./VideoListItem";
+export * from "./AppDesktopHeader";
 export * from "./BackToChannel";
 export * from "./ListInfoHeader";

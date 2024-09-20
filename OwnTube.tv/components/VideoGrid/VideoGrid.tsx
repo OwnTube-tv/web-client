@@ -75,29 +75,6 @@ export const VideoGrid = ({
           )}
         </View>
         <View style={styles.headerLinksContainer}>
-          {!!presentation && isDesktop && (
-            <View
-              style={[
-                styles.presentationSwitcherContainer,
-                {
-                  borderColor: colors.theme500,
-                },
-              ]}
-            >
-              <Button
-                style={styles.presentationSwitcherButton}
-                onPress={() => handleSetPresentation("list")}
-                icon="Playlist"
-                contrast={customPresentation === "list" ? "high" : "none"}
-              />
-              <Button
-                style={styles.presentationSwitcherButton}
-                onPress={() => handleSetPresentation("grid")}
-                icon="Category"
-                contrast={customPresentation === "grid" ? "high" : "none"}
-              />
-            </View>
-          )}
           {!!headerLink && (
             <Link asChild href={headerLink.href}>
               <Button contrast="high" text={headerLink.text} style={{ marginLeft: spacing.xxl }} />
@@ -105,6 +82,29 @@ export const VideoGrid = ({
           )}
         </View>
       </View>
+      {!!presentation && isDesktop && (
+        <View
+          style={[
+            styles.presentationSwitcherContainer,
+            {
+              borderColor: colors.theme500,
+            },
+          ]}
+        >
+          <Button
+            style={styles.presentationSwitcherButton}
+            onPress={() => handleSetPresentation("list")}
+            icon="Playlist"
+            contrast={customPresentation === "list" ? "high" : "none"}
+          />
+          <Button
+            style={styles.presentationSwitcherButton}
+            onPress={() => handleSetPresentation("grid")}
+            icon="Category"
+            contrast={customPresentation === "grid" ? "high" : "none"}
+          />
+        </View>
+      )}
       {customPresentation === "grid" ? (
         <VideoGridContent isLoading={isLoading} data={data} backend={backend} />
       ) : (
@@ -138,9 +138,11 @@ const styles = StyleSheet.create({
   image: { borderRadius: borderRadius.radiusMd, height: 32, width: 32 },
   presentationSwitcherButton: { borderRadius: 0, height: 36 },
   presentationSwitcherContainer: {
+    alignSelf: "flex-start",
     borderRadius: borderRadius.radiusMd,
     borderWidth: 1,
     flexDirection: "row",
+    marginBottom: spacing.xl,
     overflow: "hidden",
   },
   showMoreContainer: { alignSelf: "flex-start", flexDirection: "row", gap: spacing.xl, marginTop: spacing.xl },

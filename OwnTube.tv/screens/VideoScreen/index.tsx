@@ -107,7 +107,7 @@ export const VideoScreen = () => {
           />
         </FullScreenModal>
         <FullScreenModal onBackdropPress={closeModal} isVisible={visibleModal === "share"}>
-          <Share onClose={closeModal} />
+          <Share onClose={closeModal} titleKey="shareVideo" />
         </FullScreenModal>
         <FullScreenModal onBackdropPress={closeModal} isVisible={visibleModal === "settings"}>
           <Settings onClose={closeModal} />

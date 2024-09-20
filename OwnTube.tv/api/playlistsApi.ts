@@ -56,23 +56,26 @@ export class PlaylistsApi extends AxiosInstanceBasedApi {
       );
 
       return {
-        data: response.data.data.map(({ video }) => {
-          return {
-            uuid: video.uuid,
-            name: video.name,
-            category: video.category,
-            description: video.description,
-            previewPath: `https://${baseURL}${video.previewPath}`,
-            duration: video.duration,
-            channel: video.channel,
-            publishedAt: video.publishedAt,
-            originallyPublishedAt: video.originallyPublishedAt,
-            views: video.views,
-          };
-        }),
+        data: response.data.data
+          .filter(({ video }) => !!video)
+          .map(({ video }) => {
+            return {
+              uuid: video.uuid,
+              name: video.name,
+              category: video.category,
+              description: video.description,
+              previewPath: `https://${baseURL}${video.previewPath}`,
+              duration: video.duration,
+              channel: video.channel,
+              publishedAt: video.publishedAt,
+              originallyPublishedAt: video.originallyPublishedAt,
+              views: video.views,
+            };
+          }),
         total: response.data.total,
       };
     } catch (error: unknown) {
+      console.error(error, playlistId);
       return handleAxiosErrorWithRetry(error, "playlist videos");
     }
   }

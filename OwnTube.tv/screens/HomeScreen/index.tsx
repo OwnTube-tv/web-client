@@ -1,7 +1,7 @@
 import { CategoryView, InfoFooter, VideoGrid } from "../../components";
 import { Screen } from "../../layouts";
 import { useTheme } from "@react-navigation/native";
-import { useGetCategoriesQuery, useGetChannelsQuery } from "../../api";
+import { useGetCategoriesQuery, useGetChannelsQuery, useGetPlaylistsQuery } from "../../api";
 import { useMemo } from "react";
 import { useBreakpoints, useViewHistory } from "../../hooks";
 import { spacing } from "../../theme";
@@ -12,6 +12,7 @@ import { LatestVideosView } from "./components";
 import { useLocalSearchParams } from "expo-router";
 import { RootStackParams } from "../../app/_layout";
 import { ChannelView } from "../../components";
+import { PlaylistVideosView } from "../Playlists/components";
 
 export const HomeScreen = () => {
   const { colors } = useTheme();
@@ -21,6 +22,7 @@ export const HomeScreen = () => {
   const { isMobile } = useBreakpoints();
   const { data: channels } = useGetChannelsQuery();
   const { data: categories } = useGetCategoriesQuery();
+  const { data: playlistsData } = useGetPlaylistsQuery();
 
   const historyData = useMemo(() => {
     return viewHistory?.slice(0, 4) || [];
@@ -44,6 +46,9 @@ export const HomeScreen = () => {
           variant="history"
         />
       )}
+      {playlistsData?.data?.map((playlist) => (
+        <PlaylistVideosView key={playlist.id} title={playlist.displayName} id={playlist.id} />
+      ))}
       {channels?.map((channel) => <ChannelView key={channel.id} channel={channel} />)}
       {categories?.map((category) => <CategoryView category={category} key={category.id} />)}
       <InfoFooter />

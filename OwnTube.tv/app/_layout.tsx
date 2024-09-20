@@ -82,6 +82,7 @@ const RootStack = () => {
           <Drawer.Screen name={`(home)/${ROUTES.CHANNEL}`} />
           <Drawer.Screen name={`(home)/${ROUTES.CHANNELS}`} />
           <Drawer.Screen name={`(home)/${ROUTES.CHANNEL_CATEGORY}`} />
+          <Drawer.Screen name={`(home)/${ROUTES.CHANNEL_PLAYLIST}`} />
           <Drawer.Screen name={`(home)/${ROUTES.CATEGORIES}`} />
           <Drawer.Screen name={`(home)/${ROUTES.CATEGORY}`} />
           <Drawer.Screen name={`(home)/${ROUTES.PLAYLISTS}`} />
@@ -162,6 +163,7 @@ export type RootStackParams = {
   [ROUTES.CHANNEL]: { backend: string; channel: string };
   [ROUTES.CHANNELS]: { backend: string };
   [ROUTES.CHANNEL_CATEGORY]: { backend: string; channel: string; category: string };
+  [ROUTES.CHANNEL_PLAYLIST]: { backend: string; channel: string; playlist: string };
   [ROUTES.CATEGORIES]: { backend: string };
   [ROUTES.CATEGORY]: { backend: string; category: string };
   [ROUTES.PLAYLIST]: { backend: string; playlist: string };

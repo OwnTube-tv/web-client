@@ -19,6 +19,7 @@ export enum QUERY_KEYS {
   channel = "channel",
   channels = "channels",
   channelVideos = "channelVideos",
+  channelPlaylists = "channelPlaylists",
   categories = "categories",
   playlists = "playlists",
   playlistVideos = "playlistVideos",

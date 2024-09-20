@@ -82,5 +82,6 @@
   "playlistsPageTitle": "Плейлисты",
   "currentBuild": "Текущая сборка:",
   "cancel": "Отмена",
-  "otherSites": "Другие сайты"
+  "otherSites": "Другие сайты",
+  "viewCategory": "Просмотреть категорию"
 }

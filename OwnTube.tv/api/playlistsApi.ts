@@ -1,4 +1,4 @@
-import { VideoPlaylist } from "@peertube/peertube-types";
+import { VideoPlaylist, VideosCommonQuery } from "@peertube/peertube-types";
 import { Video } from "@peertube/peertube-types/peertube-models/videos/video.model";
 import { GetVideosVideo } from "./models";
 import { AxiosInstanceBasedApi } from "./axiosInstance";
@@ -44,13 +44,13 @@ export class PlaylistsApi extends AxiosInstanceBasedApi {
   async getPlaylistVideos(
     baseURL: string,
     playlistId: number,
-    queryParams?: { count: number },
+    queryParams?: VideosCommonQuery,
   ): Promise<{ data: GetVideosVideo[]; total: number }> {
     try {
       const response = await this.instance.get<{ data: Array<{ video: Video }>; total: number }>(
         `video-playlists/${playlistId}/videos`,
         {
-          params: { sort: "-originallyPublishedAt", ...(queryParams || {}) },
+          params: { ...(queryParams || {}) },
           baseURL: `https://${baseURL}/api/v1`,
         },
       );
@@ -74,6 +74,25 @@ export class PlaylistsApi extends AxiosInstanceBasedApi {
       };
     } catch (error: unknown) {
       return handleAxiosErrorWithRetry(error, "playlist videos");
+    }
+  }
+
+  /**
+   * Get info on an instance playlist
+   *
+   * @param [baseURL] - Selected instance url
+   * @param [playlistId] - Playlist ID
+   * @returns Playlist info
+   */
+  async getPlaylistInfo(baseURL: string, playlistId: number): Promise<VideoPlaylist> {
+    try {
+      const response = await this.instance.get<VideoPlaylist>(`video-playlists/${playlistId}`, {
+        baseURL: `https://${baseURL}/api/v1`,
+      });
+
+      return response.data;
+    } catch (error: unknown) {
+      return handleAxiosErrorWithRetry(error, "playlist info");
     }
   }
 }

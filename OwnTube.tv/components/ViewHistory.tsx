@@ -3,7 +3,7 @@ import { SectionList, StyleSheet, View } from "react-native";
 import { Loader } from "./Loader";
 import { Spacer } from "./shared/Spacer";
 import { Typography } from "./Typography";
-import { ViewHistoryListItem } from "./ViewHistoryListItem";
+import { VideoListItem } from "./VideoListItem";
 import { useTranslation } from "react-i18next";
 import { useCallback, useMemo } from "react";
 import { Screen } from "../layouts";
@@ -69,7 +69,13 @@ export const ViewHistory = () => {
 
   const renderItem = useCallback(
     ({ item }: { item: ViewHistoryEntry }) => (
-      <ViewHistoryListItem handleDeleteFromHistory={() => deleteVideoFromHistory(item.uuid)} video={item} />
+      <VideoListItem
+        handleDeleteFromHistory={() => deleteVideoFromHistory(item.uuid)}
+        video={item}
+        backend={item.backend}
+        timestamp={item.timestamp}
+        lastViewedAt={item.lastViewedAt}
+      />
     ),
     [deleteVideoFromHistory],
   );

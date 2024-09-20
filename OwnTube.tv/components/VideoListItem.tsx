@@ -12,13 +12,21 @@ import { useMemo } from "react";
 import { ChannelLink } from "./ChannelLink";
 import { IcoMoonIcon } from "./IcoMoonIcon";
 import { LANGUAGE_OPTIONS } from "../i18n";
+import { GetVideosVideo } from "../api/models";
 
-interface ViewHistoryListItemProps {
-  video: ViewHistoryEntry;
-  handleDeleteFromHistory: () => void;
+interface VideoListItemProps extends Partial<Pick<ViewHistoryEntry, "lastViewedAt" | "timestamp">> {
+  video: GetVideosVideo;
+  handleDeleteFromHistory?: () => void;
+  backend?: string;
 }
 
-export const ViewHistoryListItem = ({ video, handleDeleteFromHistory }: ViewHistoryListItemProps) => {
+export const VideoListItem = ({
+  video,
+  handleDeleteFromHistory,
+  backend,
+  timestamp,
+  lastViewedAt,
+}: VideoListItemProps) => {
   const { t, i18n } = useTranslation();
   const { colors } = useTheme();
   const { isHovered, toggleHovered } = useHoverState();
@@ -26,11 +34,15 @@ export const ViewHistoryListItem = ({ video, handleDeleteFromHistory }: ViewHist
   const videoHref = useMemo(() => {
     return {
       pathname: `/${ROUTES.VIDEO}`,
-      params: { id: video.uuid, backend: video.backend, timestamp: video.timestamp },
+      params: { id: video.uuid, backend, timestamp },
     };
-  }, [video]);
+  }, [video, backend, timestamp]);
 
   const deleteBtn = useMemo(() => {
+    if (!handleDeleteFromHistory) {
+      return null;
+    }
+
     return (
       <Pressable onPress={handleDeleteFromHistory} style={{ padding: 6 }}>
         <IcoMoonIcon color={colors.theme950} name="Trash" size={24} />
@@ -44,14 +56,14 @@ export const ViewHistoryListItem = ({ video, handleDeleteFromHistory }: ViewHist
         <VideoThumbnail
           imageDimensions={{ width: isDesktop ? 328 : 128, height: isDesktop ? 102 : 72 }}
           video={video}
-          backend={video.backend}
+          backend={backend}
           key={video.uuid}
-          timestamp={video.timestamp}
+          timestamp={timestamp}
         />
       </Link>
       <View style={styles.infoContainer}>
         <View style={styles.textContainer}>
-          {video.lastViewedAt && (
+          {lastViewedAt && (
             <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
               <Typography
                 fontWeight="Medium"
@@ -59,7 +71,7 @@ export const ViewHistoryListItem = ({ video, handleDeleteFromHistory }: ViewHist
                 color={colors.themeDesaturated500}
                 style={{ maxWidth: isDesktop ? null : 150 }}
               >
-                {t("lastWatched", { lastWatched: format(video.lastViewedAt, "yyyy-MM-dd HH:mm") })}
+                {t("lastWatched", { lastWatched: format(lastViewedAt, "yyyy-MM-dd HH:mm") })}
               </Typography>
               {!isDesktop && deleteBtn}
             </View>
@@ -78,7 +90,7 @@ export const ViewHistoryListItem = ({ video, handleDeleteFromHistory }: ViewHist
             </Pressable>
           </Link>
           <ChannelLink
-            href={{ pathname: ROUTES.CHANNEL, params: { backend: video.backend, channel: video.channel?.name } }}
+            href={{ pathname: ROUTES.CHANNEL, params: { backend: backend, channel: video.channel?.name } }}
             text={video.channel?.displayName}
           />
           <Typography fontSize="sizeXS" fontWeight="Medium" color={colors.themeDesaturated500}>

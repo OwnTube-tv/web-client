@@ -1,5 +1,9 @@
-import { Loader, VideoGrid } from "../../../components";
+import { VideoGrid } from "../../../components";
 import { useGetPlaylistVideosQuery } from "../../../api";
+import { ROUTES } from "../../../types";
+import { useLocalSearchParams } from "expo-router";
+import { useTranslation } from "react-i18next";
+import { getAvailableVidsString } from "../../../utils";
 
 interface PlaylistVideosViewProps {
   id: number;
@@ -7,11 +11,23 @@ interface PlaylistVideosViewProps {
 }
 
 export const PlaylistVideosView = ({ id, title }: PlaylistVideosViewProps) => {
+  const { backend } = useLocalSearchParams();
   const { data, isFetching } = useGetPlaylistVideosQuery(id);
+  const { t } = useTranslation();
 
-  if (isFetching) {
-    return <Loader />;
+  if ((!data?.data?.length || !data?.total) && !isFetching) {
+    return null;
   }
 
-  return <VideoGrid title={title} data={data?.data} />;
+  return (
+    <VideoGrid
+      isLoading={isFetching}
+      title={title}
+      data={data?.data}
+      headerLink={{
+        text: t("viewFullPlaylist") + getAvailableVidsString(data?.total),
+        href: { pathname: `/${ROUTES.PLAYLIST}`, params: { backend, playlist: id } },
+      }}
+    />
+  );
 };

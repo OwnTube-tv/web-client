@@ -37,7 +37,7 @@ export const HomeScreen = () => {
       <LatestVideosView />
       {historyData.length > 0 && (
         <VideoGrid
-          headerLink={{ text: t("viewHistory"), href: { pathname: ROUTES.HISTORY, params: { backend } } }}
+          headerLink={{ text: t("viewHistory"), href: { pathname: `/${ROUTES.HISTORY}`, params: { backend } } }}
           title={t("recentlyWatched")}
           icon="History"
           data={historyData}

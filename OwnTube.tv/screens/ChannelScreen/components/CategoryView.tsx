@@ -4,6 +4,7 @@ import { VideoGrid } from "../../../components";
 import { ROUTES } from "../../../types";
 import { useLocalSearchParams } from "expo-router";
 import { RootStackParams } from "../../../app/_layout";
+import { getAvailableVidsString } from "../../../utils";
 
 interface CategoryViewProps {
   category: { name: string; id: number };
@@ -23,8 +24,11 @@ export const CategoryView = ({ category, channelHandle }: CategoryViewProps) => 
     <VideoGrid
       isLoading={isFetching}
       headerLink={{
-        text: `${t("viewAll")} (${Number(data?.total)})`,
-        href: { pathname: ROUTES.CHANNEL_CATEGORY, params: { backend, channel: channelHandle, category: category.id } },
+        text: t("viewAll") + getAvailableVidsString(data?.total),
+        href: {
+          pathname: `/${ROUTES.CHANNEL_CATEGORY}`,
+          params: { backend, channel: channelHandle, category: category.id },
+        },
       }}
       title={category.name}
       data={data?.data}

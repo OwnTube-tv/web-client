@@ -25,3 +25,4 @@ export * from "./VideoGrid";
 export * from "./ChannelView";
 export * from "./CategoryView";
 export * from "./BuildInfo";
+export * from "./VideoListItem";

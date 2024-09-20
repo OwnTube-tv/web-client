@@ -18,6 +18,7 @@ export enum ROUTES {
   CHANNEL = "channel",
   CHANNELS = "channels",
   CHANNEL_CATEGORY = "channel-category",
+  CHANNEL_PLAYLIST = "channel-playlist",
   CATEGORIES = "categories",
   CATEGORY = "category",
   PLAYLISTS = "playlists",

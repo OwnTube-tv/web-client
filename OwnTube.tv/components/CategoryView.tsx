@@ -30,7 +30,7 @@ export const CategoryView = ({ category }: CategoryViewProps) => {
     <VideoGrid
       isLoading={isFetching}
       headerLink={{
-        text: t("viewAll") + getAvailableVidsString(data?.total),
+        text: t("viewCategory") + getAvailableVidsString(data?.total),
         href: { pathname: `/${ROUTES.CATEGORY}`, params: { backend, category: category.id } },
       }}
       title={category.name}

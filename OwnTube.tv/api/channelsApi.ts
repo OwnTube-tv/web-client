@@ -1,4 +1,4 @@
-import { VideoChannel, VideosCommonQuery } from "@peertube/peertube-types";
+import { VideoChannel, VideoPlaylist, VideosCommonQuery } from "@peertube/peertube-types";
 import { Video } from "@peertube/peertube-types/peertube-models/videos/video.model";
 import { GetVideosVideo } from "./models";
 import { AxiosInstanceBasedApi } from "./axiosInstance";
@@ -91,6 +91,29 @@ export class ChannelsApi extends AxiosInstanceBasedApi {
       };
     } catch (error: unknown) {
       return handleAxiosErrorWithRetry(error, "channel videos");
+    }
+  }
+
+  /**
+   * Get a list of playlists on an instance channel
+   *
+   * @param [baseURL] - Selected instance url
+   * @param [channelHandle] - Channel handle
+   * @returns List of channel videos
+   */
+  async getChannelPlaylists(baseURL: string, channelHandle: string): Promise<VideoPlaylist[]> {
+    try {
+      const response = await this.instance.get<{ data: VideoPlaylist[]; total: number }>(
+        `video-channels/${channelHandle}/video-playlists`,
+        {
+          baseURL: `https://${baseURL}/api/v1`,
+          params: { count: 100, sort: "-updatedAt" },
+        },
+      );
+
+      return response.data.data;
+    } catch (error: unknown) {
+      return handleAxiosErrorWithRetry(error, "channel playlists");
     }
   }
 }

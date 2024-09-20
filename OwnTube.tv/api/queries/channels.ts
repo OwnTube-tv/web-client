@@ -8,7 +8,9 @@ import { GetVideosVideo } from "../models";
 
 import { QUERY_KEYS } from "../constants";
 
-export const useGetChannelInfoQuery = (backend?: string, channelHandle?: string) => {
+export const useGetChannelInfoQuery = (channelHandle?: string) => {
+  const { backend } = useLocalSearchParams<RootStackParams["index"]>();
+
   return useQuery({
     queryKey: [QUERY_KEYS.channel, backend, channelHandle],
     queryFn: async () => {
@@ -74,6 +76,21 @@ export const useInfiniteGetChannelVideosQuery = (
     },
     enabled: !!backend && !!channelHandle,
     refetchOnWindowFocus: false,
+    retry,
+  });
+};
+
+export const useGetChannelPlaylistsQuery = (channelHandle?: string) => {
+  const { backend } = useLocalSearchParams<RootStackParams["index"]>();
+
+  return useQuery({
+    queryKey: [QUERY_KEYS.channelPlaylists, backend, channelHandle],
+    queryFn: async () => {
+      return await ChannelsApiImpl.getChannelPlaylists(backend!, channelHandle!);
+    },
+    enabled: !!backend && !!channelHandle,
+    refetchOnWindowFocus: false,
+    select: (data) => data.filter(({ isLocal, videosLength }) => isLocal && videosLength > 0),
     retry,
   });
 };

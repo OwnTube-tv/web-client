@@ -24,7 +24,7 @@ export const CategoryView = ({ category, channelHandle }: CategoryViewProps) => 
     <VideoGrid
       isLoading={isFetching}
       headerLink={{
-        text: t("viewAll") + getAvailableVidsString(data?.total),
+        text: t("viewCategory") + getAvailableVidsString(data?.total),
         href: {
           pathname: `/${ROUTES.CHANNEL_CATEGORY}`,
           params: { backend, channel: channelHandle, category: category.id },

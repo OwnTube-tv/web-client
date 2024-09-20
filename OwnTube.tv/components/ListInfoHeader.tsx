@@ -1,19 +1,26 @@
 import { View, Image, StyleSheet } from "react-native";
-import { Typography } from "../../../components";
+import { Typography } from "./index";
 import { useTheme } from "@react-navigation/native";
-import { borderRadius, spacing } from "../../../theme";
-import { useBreakpoints } from "../../../hooks";
+import { borderRadius, spacing } from "../theme";
+import { useBreakpoints } from "../hooks";
+import { useMemo } from "react";
 
-interface ChannelInfoHeaderProps {
+interface ListInfoHeaderProps {
   avatarUrl?: string;
   name?: string;
   description?: string;
+  variant?: "playlist" | "channel";
 }
 
-export const ChannelInfoHeader = ({ avatarUrl, name, description }: ChannelInfoHeaderProps) => {
+export const ListInfoHeader = ({ avatarUrl, name, description, variant = "channel" }: ListInfoHeaderProps) => {
   const { colors } = useTheme();
   const { isMobile } = useBreakpoints();
-  const avatarSize = isMobile ? 64 : 96;
+  const avatarDimensions = useMemo(() => {
+    return {
+      width: isMobile ? (variant === "playlist" ? 113 : 64) : variant === "playlist" ? 170 : 96,
+      height: isMobile ? 64 : 96,
+    };
+  }, [isMobile, variant]);
 
   return (
     <View
@@ -26,10 +33,7 @@ export const ChannelInfoHeader = ({ avatarUrl, name, description }: ChannelInfoH
       ]}
     >
       {avatarUrl && (
-        <Image
-          source={{ uri: avatarUrl }}
-          style={{ width: avatarSize, height: avatarSize, borderRadius: borderRadius.radiusMd }}
-        />
+        <Image source={{ uri: avatarUrl }} style={{ ...avatarDimensions, borderRadius: borderRadius.radiusMd }} />
       )}
       <View style={styles.textContainer}>
         <Typography fontSize={isMobile ? "sizeXL" : "sizeXXL"} fontWeight="ExtraBold" color={colors.theme900}>

@@ -7,9 +7,9 @@ import { ROUTES } from "../../types";
 import { useGetChannelInfoQuery } from "../../api";
 
 export default function channel() {
-  const { backend, channel } = useLocalSearchParams<RootStackParams[ROUTES.CHANNEL]>();
+  const { channel } = useLocalSearchParams<RootStackParams[ROUTES.CHANNEL]>();
 
-  const { data: channelInfo } = useGetChannelInfoQuery(backend, channel);
+  const { data: channelInfo } = useGetChannelInfoQuery(channel);
 
   return (
     <>

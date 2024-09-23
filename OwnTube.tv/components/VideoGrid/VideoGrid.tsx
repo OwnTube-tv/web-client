@@ -65,21 +65,27 @@ export const VideoGrid = ({
       ]}
     >
       <View style={styles.headerContainer}>
-        <View style={styles.headerTextContainer}>
-          {!!channelLogoUri && <Image style={styles.image} source={{ uri: `https://${backend}${channelLogoUri}` }} />}
-          {icon && <IcoMoonIcon size={24} name={icon} color={colors.theme900} />}
-          {title && (
-            <Typography fontSize="sizeXL" fontWeight="ExtraBold" color={colors.theme900}>
-              {title}
-            </Typography>
-          )}
-        </View>
-        <View style={styles.headerLinksContainer}>
-          {!!headerLink && (
-            <Link asChild href={headerLink.href}>
-              <Button contrast="high" text={headerLink.text} style={{ marginLeft: spacing.xxl }} />
-            </Link>
-          )}
+        {!!channelLogoUri && (
+          <View style={{ alignSelf: "flex-start" }}>
+            <Image style={styles.image} source={{ uri: `https://${backend}${channelLogoUri}` }} />
+          </View>
+        )}
+        <View style={{ flexDirection: isMobile ? "column" : "row", gap: spacing.lg, flex: 1 }}>
+          <View style={styles.headerTextContainer}>
+            {icon && <IcoMoonIcon size={24} name={icon} color={colors.theme900} />}
+            {title && (
+              <Typography fontSize="sizeXL" fontWeight="ExtraBold" color={colors.theme900} numberOfLines={1}>
+                {title}
+              </Typography>
+            )}
+          </View>
+          <View style={styles.headerLinksContainer}>
+            {!!headerLink && (
+              <Link asChild href={headerLink.href}>
+                <Button contrast="high" text={headerLink.text} />
+              </Link>
+            )}
+          </View>
         </View>
       </View>
       {!!presentation && isDesktop && (
@@ -130,11 +136,15 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     flexWrap: "wrap",
     gap: spacing.xl,
-    justifyContent: "space-between",
     paddingBottom: spacing.xl,
   },
   headerLinksContainer: { flexDirection: "row", gap: spacing.xl },
-  headerTextContainer: { alignItems: "center", flexDirection: "row", gap: spacing.lg },
+  headerTextContainer: {
+    alignItems: "center",
+    flexDirection: "row",
+    flex: 1,
+    gap: spacing.lg,
+  },
   image: { borderRadius: borderRadius.radiusMd, height: 32, width: 32 },
   presentationSwitcherButton: { borderRadius: 0, height: 36 },
   presentationSwitcherContainer: {

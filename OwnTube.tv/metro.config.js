@@ -4,6 +4,6 @@ const { getDefaultConfig } = require("expo/metro-config");
 
 const config = getDefaultConfig(__dirname);
 
-config.resolver.assetExts.push("json", "ttf");
+config.resolver.assetExts.push("json", "json5", "ttf");
 
 module.exports = config;

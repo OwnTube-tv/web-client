@@ -3,18 +3,19 @@ import { Logo } from "../../components/Svg";
 import { useTheme } from "@react-navigation/native";
 import { useTranslation } from "react-i18next";
 import { InfoFooter, PlatformCard, SourceSelect, Typography } from "../../components";
-import FEATURED_INSTANCES from "../../assets/featured-instances.json";
 import { useBreakpoints } from "../../hooks";
 import { Spacer } from "../../components/shared/Spacer";
 import { spacing } from "../../theme";
 import { Screen } from "../../layouts";
 import { useState } from "react";
+import { useAppConfigContext } from "../../contexts";
 
 export const LandingScreen = () => {
   const { colors } = useTheme();
   const { t } = useTranslation();
   const { isDesktop } = useBreakpoints();
   const [isInstanceSelectVisible, setIsInstanceSelectVisible] = useState(false);
+  const { featuredInstances } = useAppConfigContext();
 
   return (
     <Screen style={{ padding: 0, paddingTop: isDesktop ? spacing.xxxl : spacing.xxl }}>
@@ -45,7 +46,7 @@ export const LandingScreen = () => {
       </Typography>
       <Spacer height={isDesktop ? spacing.xxl : spacing.xl} />
       <View style={styles.platformsContainer}>
-        {FEATURED_INSTANCES.map((platform, index) => (
+        {featuredInstances?.map((platform, index) => (
           <View
             key={index}
             style={{ width: isDesktop ? 392 : 344, alignSelf: "flex-start", height: isDesktop ? 164 : 132 }}

@@ -3,7 +3,7 @@ import { Screen } from "../../layouts";
 import { CategoryView, Loader } from "../../components";
 
 export const CategoriesScreen = () => {
-  const { data: categories, isFetching } = useGetCategoriesQuery();
+  const { data: categories, isFetching } = useGetCategoriesQuery({});
 
   return (
     <Screen style={{ padding: 0 }}>

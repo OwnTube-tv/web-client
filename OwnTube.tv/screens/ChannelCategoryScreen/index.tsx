@@ -15,7 +15,7 @@ export const ChannelCategoryScreen = () => {
   const { isMobile } = useBreakpoints();
   const { channel, category } = useLocalSearchParams<RootStackParams[ROUTES.CHANNEL_CATEGORY]>();
   const { data: channelInfo } = useGetChannelInfoQuery(channel);
-  const { data: categories } = useGetCategoriesQuery();
+  const { data: categories } = useGetCategoriesQuery({});
   const { fetchNextPage, data, hasNextPage, isFetchingNextPage, isLoading } = useInfiniteGetChannelVideosQuery({
     channelHandle: channel,
     category: Number(category),

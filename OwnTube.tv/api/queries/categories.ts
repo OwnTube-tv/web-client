@@ -5,7 +5,7 @@ import { QUERY_KEYS } from "../constants";
 import { CategoriesApiImpl } from "../categoriesApi";
 import { retry } from "../helpers";
 
-export const useGetCategoriesQuery = () => {
+export const useGetCategoriesQuery = ({ enabled = true }: { enabled?: boolean }) => {
   const { backend } = useLocalSearchParams<RootStackParams["index"]>();
 
   return useQuery({
@@ -13,7 +13,7 @@ export const useGetCategoriesQuery = () => {
     queryFn: async () => {
       return await CategoriesApiImpl.getCategories(backend!);
     },
-    enabled: !!backend,
+    enabled: !!backend && enabled,
     refetchOnWindowFocus: false,
     retry,
   });

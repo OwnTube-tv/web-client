@@ -12,14 +12,14 @@ interface PlatformCardProps {
   name: string;
   description: string;
   url: string;
-  logoUrl: string;
+  logoUrl?: string;
 }
 
 export const PlatformCard = ({ name, description, url, logoUrl }: PlatformCardProps) => {
   const { colors } = useTheme();
   const { isHovered, hoverHandlers } = useHoverState();
   const { isDesktop } = useBreakpoints();
-  const isLogoSvg = logoUrl.endsWith("svg");
+  const isLogoSvg = logoUrl?.endsWith("svg");
 
   return (
     <Link href={{ pathname: "./", params: { backend: url } }} asChild>

@@ -1,10 +1,11 @@
 import { useLocalSearchParams } from "expo-router";
 import { RootStackParams } from "../../app/_layout";
-import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
+import { useInfiniteQuery, useQueries, useQuery } from "@tanstack/react-query";
 import { QUERY_KEYS } from "../constants";
 import { PlaylistsApiImpl } from "../playlistsApi";
-import { retry } from "../helpers";
+import { combineCollectionQueryResults, retry } from "../helpers";
 import { GetVideosVideo } from "../models";
+import { VideoPlaylist } from "@peertube/peertube-types";
 
 export const useGetPlaylistsQuery = ({
   enabled = true,
@@ -78,5 +79,27 @@ export const useGetPlaylistInfoQuery = (playlistId?: number) => {
     enabled: !!backend && !!playlistId,
     refetchOnWindowFocus: false,
     retry,
+  });
+};
+
+export const useGetPlaylistsCollectionQuery = (playlists: Array<VideoPlaylist> = []) => {
+  const { backend } = useLocalSearchParams<RootStackParams["index"]>();
+
+  return useQueries({
+    queries: playlists.map(({ displayName, id, videoChannel }) => ({
+      queryKey: [QUERY_KEYS.playlistsCollection, id, backend],
+      queryFn: async () => {
+        const res = await PlaylistsApiImpl.getPlaylistVideos(backend, id, { count: 4 });
+        return { ...res, id, displayName, videoChannel };
+      },
+      retry,
+      refetchOnWindowFocus: false,
+      enabled: !!backend,
+    })),
+    combine: combineCollectionQueryResults<{
+      id: number;
+      displayName: string;
+      videoChannel: VideoPlaylist["videoChannel"];
+    }>,
   });
 };

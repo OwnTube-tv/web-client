@@ -29,7 +29,7 @@
   "peertubeInstances": "Экземпляры PeerTube:",
   "noVideosOrCategoriesFound": "Видео или категории не найдены.",
   "viewHistory": "История просмотра",
-  "viewHistoryEmpty": "История просмотра пуста",
+  "viewHistoryEmpty": "Здесь ничего нет. Почему бы не посмотреть что-нибудь?",
   "lastPlaybackTimeStamp": "Последняя позиция воспроизведения: {{timestamp}}",
   "videoDuration": "Длительность видео: {{duration}}",
   "associatedPeertubeBackend": "Связанный бэкенд PeerTube: {{backend}}",
@@ -88,5 +88,8 @@
   "currentBuild": "Текущая сборка:",
   "cancel": "Отмена",
   "otherSites": "Другие сайты",
-  "viewCategory": "Просмотреть категорию"
+  "viewCategory": "Просмотреть категорию",
+  "noChannelsAvailable": "Нет доступных каналов",
+  "noCategoriesAvailable": "Нет доступных категорий",
+  "noPlaylistsAvailable": "Нет доступных плейлистов"
 }

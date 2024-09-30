@@ -17,6 +17,7 @@ import { useLocalSearchParams } from "expo-router";
 import { RootStackParams } from "../app/_layout";
 import { ROUTES } from "../types";
 import { useFullScreenModalContext } from "../contexts";
+import { EmptyPage } from "./EmptyPage";
 
 export const ViewHistory = () => {
   const { t } = useTranslation();
@@ -81,7 +82,7 @@ export const ViewHistory = () => {
   );
 
   if (!viewHistory?.length && !isFetching) {
-    return <Typography>{t("viewHistoryEmpty")}</Typography>;
+    return <EmptyPage text={t("viewHistoryEmpty")} />;
   }
 
   if (isFetching) {

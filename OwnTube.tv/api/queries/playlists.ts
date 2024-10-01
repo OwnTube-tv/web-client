@@ -6,7 +6,13 @@ import { PlaylistsApiImpl } from "../playlistsApi";
 import { retry } from "../helpers";
 import { GetVideosVideo } from "../models";
 
-export const useGetPlaylistsQuery = () => {
+export const useGetPlaylistsQuery = ({
+  enabled = true,
+  hiddenPlaylists,
+}: {
+  enabled?: boolean;
+  hiddenPlaylists?: string[];
+}) => {
   const { backend } = useLocalSearchParams<RootStackParams["index"]>();
 
   return useQuery({
@@ -15,7 +21,10 @@ export const useGetPlaylistsQuery = () => {
       const data = await PlaylistsApiImpl.getPlaylists(backend!);
       return { ...data, data: data.data.filter(({ isLocal, videosLength }) => isLocal && videosLength > 0) };
     },
-    enabled: !!backend,
+    enabled: !!backend && enabled,
+    select: (queryData) => {
+      return { ...queryData, data: queryData.data.filter(({ id }) => !hiddenPlaylists?.includes(String(id))) };
+    },
     refetchOnWindowFocus: false,
     retry,
   });

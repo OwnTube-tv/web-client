@@ -9,7 +9,7 @@ import { StyleSheet, View } from "react-native";
 import { Button, Separator } from "./shared";
 import { spacing } from "../theme";
 import { Spacer } from "./shared/Spacer";
-import { useBreakpoints } from "../hooks";
+import { useBreakpoints, useInstanceConfig } from "../hooks";
 import { InstanceInfo } from "./InstanceInfo";
 import { Settings } from "./VideoControlsOverlay/components/modals";
 
@@ -58,6 +58,7 @@ export const Sidebar: FC<SidebarProps> = ({ backend, ...navigationProps }) => {
   const breakpoints = useBreakpoints();
   const shouldExpand = breakpoints.isDesktop || breakpoints.isMobile;
   const { toggleModal, setContent } = useFullScreenModalContext();
+  const { currentInstanceConfig } = useInstanceConfig();
 
   const handleOpenSettings = () => {
     toggleModal(true);
@@ -89,7 +90,20 @@ export const Sidebar: FC<SidebarProps> = ({ backend, ...navigationProps }) => {
         <InstanceInfo backend={backend} showText={false} />
       )}
       <View style={styles.routesContainer}>
-        {SIDEBAR_ROUTES.map(({ nameKey, icon, href, routeName }) => {
+        {SIDEBAR_ROUTES.filter(({ nameKey }) => {
+          switch (nameKey) {
+            case "history":
+              return !currentInstanceConfig?.customizations?.menuHideHistoryButton;
+            case "channels":
+              return !currentInstanceConfig?.customizations?.menuHideChannelsButton;
+            case "playlistsPageTitle":
+              return !currentInstanceConfig?.customizations?.menuHidePlaylistsButton;
+            case "categories":
+              return !currentInstanceConfig?.customizations?.menuHideCategoriesButton;
+            default:
+              return true;
+          }
+        }).map(({ nameKey, icon, href, routeName }) => {
           const isActive =
             navigationProps.state.index === navigationProps.state.routes.findIndex(({ name }) => name === routeName);
 

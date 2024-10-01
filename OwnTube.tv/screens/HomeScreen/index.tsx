@@ -3,7 +3,7 @@ import { Screen } from "../../layouts";
 import { useTheme } from "@react-navigation/native";
 import { useGetCategoriesQuery, useGetChannelsQuery, useGetPlaylistsQuery } from "../../api";
 import { useMemo } from "react";
-import { useBreakpoints, useViewHistory } from "../../hooks";
+import { useBreakpoints, useInstanceConfig, useViewHistory } from "../../hooks";
 import { spacing } from "../../theme";
 import { ROUTES } from "../../types";
 import { StyleSheet } from "react-native";
@@ -20,13 +20,22 @@ export const HomeScreen = () => {
   const { backend } = useLocalSearchParams<RootStackParams[ROUTES.INDEX]>();
   const { viewHistory } = useViewHistory({ backendToFilter: backend });
   const { isMobile } = useBreakpoints();
-  const { data: channels } = useGetChannelsQuery();
-  const { data: categories } = useGetCategoriesQuery();
-  const { data: playlistsData } = useGetPlaylistsQuery();
+  const { currentInstanceConfig } = useInstanceConfig();
+
+  const { data: channels } = useGetChannelsQuery({
+    enabled: !currentInstanceConfig?.customizations?.homeHideChannelsOverview,
+  });
+  const { data: categories } = useGetCategoriesQuery({
+    enabled: !currentInstanceConfig?.customizations?.homeHideCategoriesOverview,
+  });
+  const { data: playlistsData } = useGetPlaylistsQuery({
+    enabled: !currentInstanceConfig?.customizations?.homeHidePlaylistsOverview,
+    hiddenPlaylists: currentInstanceConfig?.customizations?.playlistsHidden,
+  });
 
   const historyData = useMemo(() => {
-    return viewHistory?.slice(0, 4) || [];
-  }, [viewHistory]);
+    return viewHistory?.slice(0, currentInstanceConfig?.customizations?.homeRecentlyWatchedVideoCount ?? 4) || [];
+  }, [viewHistory, currentInstanceConfig]);
 
   return (
     <Screen
@@ -46,11 +55,14 @@ export const HomeScreen = () => {
           variant="history"
         />
       )}
-      {playlistsData?.data?.map((playlist) => (
-        <PlaylistVideosView key={playlist.id} title={playlist.displayName} id={playlist.id} />
-      ))}
-      {channels?.map((channel) => <ChannelView key={channel.id} channel={channel} />)}
-      {categories?.map((category) => <CategoryView category={category} key={category.id} />)}
+      {!currentInstanceConfig?.customizations?.homeHidePlaylistsOverview &&
+        playlistsData?.data?.map((playlist) => (
+          <PlaylistVideosView key={playlist.id} title={playlist.displayName} id={playlist.id} />
+        ))}
+      {!currentInstanceConfig?.customizations?.homeHideChannelsOverview &&
+        channels?.map((channel) => <ChannelView key={channel.id} channel={channel} />)}
+      {!currentInstanceConfig?.customizations?.homeHideCategoriesOverview &&
+        categories?.map((category) => <CategoryView category={category} key={category.id} />)}
       <InfoFooter />
     </Screen>
   );

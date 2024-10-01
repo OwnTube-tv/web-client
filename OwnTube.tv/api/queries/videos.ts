@@ -40,22 +40,28 @@ export const useGetVideosQuery = <TResult = GetVideosVideo[]>({
 };
 
 export const useInfiniteVideosQuery = (
-  queryArg: Partial<{ pageSize: number; uniqueQueryKey: string; queryParams: VideosCommonQuery }>,
+  queryArg: Partial<{
+    firstPageSize?: number;
+    pageSize: number;
+    uniqueQueryKey: string;
+    queryParams: VideosCommonQuery;
+  }>,
 ) => {
   const { backend } = useLocalSearchParams<RootStackParams["index"]>();
-  const { pageSize = 4, uniqueQueryKey, queryParams } = queryArg;
+  const { pageSize = 4, uniqueQueryKey, queryParams, firstPageSize } = queryArg;
+  const _0PageSize = firstPageSize ?? pageSize * 4;
 
   return useInfiniteQuery({
     initialPageParam: 0,
     getNextPageParam: (lastPage: { data: GetVideosVideo[]; total: number }, _nextPage, lastPageParam) => {
-      const nextCount = (lastPageParam === 0 ? pageSize * 4 : lastPageParam) + (lastPageParam ? pageSize : 0);
+      const nextCount = (lastPageParam === 0 ? _0PageSize : lastPageParam) + (lastPageParam ? pageSize : 0);
 
       return nextCount >= lastPage.total ? null : nextCount;
     },
     queryKey: [QUERY_KEYS.videos, backend, "infinite", uniqueQueryKey],
     queryFn: async ({ pageParam }) => {
       return await ApiServiceImpl.getVideos(backend!, {
-        count: pageParam === 0 ? pageSize * 4 : pageSize,
+        count: pageParam === 0 ? _0PageSize : pageSize,
         start: pageParam,
         sort: "-publishedAt",
         ...queryParams,

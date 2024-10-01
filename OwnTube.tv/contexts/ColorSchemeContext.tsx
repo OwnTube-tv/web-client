@@ -1,20 +1,24 @@
 import { createContext, PropsWithChildren, useContext, useEffect, useState } from "react";
 import { Appearance, ColorSchemeName } from "react-native";
 import { readFromAsyncStorage, writeToAsyncStorage } from "../utils";
+import { useInstanceConfig } from "../hooks";
 
-const ColorSchemeContext = createContext<{ scheme: ColorSchemeName | null; toggleScheme?: () => void }>({
+const ColorSchemeContext = createContext<{ scheme: ColorSchemeName; toggleScheme?: () => void }>({
   scheme: null,
 });
 
 export const ColorSchemeContextProvider = ({ children }: PropsWithChildren) => {
-  const [selectedColorScheme, setSelectedColorScheme] = useState<ColorSchemeName | null>(null);
+  const [selectedColorScheme, setSelectedColorScheme] = useState<ColorSchemeName>(null);
+  const { currentInstanceConfig } = useInstanceConfig();
 
   useEffect(() => {
     if (!selectedColorScheme) {
       const deviceScheme = Appearance.getColorScheme();
 
       readFromAsyncStorage("colorScheme").then((scheme: ColorSchemeName) => {
-        setSelectedColorScheme(scheme || deviceScheme || "light");
+        setSelectedColorScheme(
+          scheme || currentInstanceConfig?.customizations?.pageDefaultTheme || deviceScheme || "light",
+        );
       });
 
       return;

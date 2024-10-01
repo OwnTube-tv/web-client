@@ -11,7 +11,9 @@
       "resizeMode": "contain",
       "backgroundColor": "#F95F1E"
     },
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "experiments": {
       "baseUrl": "/web-client"
     },
@@ -37,7 +39,9 @@
       [
         "expo-font",
         {
-          "fonts": ["assets/fonts/icomoon.ttf"]
+          "fonts": [
+            "assets/fonts/icomoon.ttf"
+          ]
         }
       ],
       "expo-localization",
@@ -46,7 +50,8 @@
         {
           "initialOrientation": "DEFAULT"
         }
-      ]
+      ],
+      "expo-asset"
     ]
   }
 }

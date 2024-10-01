@@ -12,7 +12,7 @@ export const ChannelScreen = () => {
   const { backend, channel } = useLocalSearchParams<RootStackParams[ROUTES.CHANNEL]>();
 
   const { data: channelInfo, isLoading: isLoadingChannelInfo } = useGetChannelInfoQuery(channel);
-  const { data: categories } = useGetCategoriesQuery();
+  const { data: categories } = useGetCategoriesQuery({});
   const { data: playlists } = useGetChannelPlaylistsQuery(channel);
 
   return (

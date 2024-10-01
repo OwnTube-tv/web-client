@@ -6,7 +6,7 @@ import { useBreakpoints } from "../../hooks";
 import { StyleSheet } from "react-native";
 
 export const ChannelsScreen = () => {
-  const { data: channels } = useGetChannelsQuery();
+  const { data: channels } = useGetChannelsQuery({ enabled: true });
   const { isMobile } = useBreakpoints();
 
   return (

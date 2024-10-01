@@ -6,3 +6,5 @@ export * from "./useSelectLocale";
 export * from "./useFullScreenVideoPlayback";
 export * from "./useHoverState";
 export * from "./useBreakpoints";
+export * from "./useFeaturedInstancesData";
+export * from "./useInstanceConfig";

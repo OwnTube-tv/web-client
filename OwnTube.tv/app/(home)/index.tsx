@@ -6,7 +6,7 @@ import { useCallback, useState } from "react";
 import Head from "expo-router/head";
 import { HomeScreen, LandingScreen } from "../../screens";
 import { Platform } from "react-native";
-import { useRecentInstances } from "../../hooks";
+import { useInstanceConfig, useRecentInstances } from "../../hooks";
 import { RootStackParams } from "../_layout";
 import { useTranslation } from "react-i18next";
 
@@ -16,6 +16,7 @@ export default function index() {
   const [isGettingStoredBackend, setIsGettingStoredBackend] = useState(true);
   const { recentInstances, addRecentInstance } = useRecentInstances();
   const { t } = useTranslation();
+  const { currentInstanceConfig } = useInstanceConfig();
 
   const getSourceAndRedirect = async () => {
     if (backend) {
@@ -56,8 +57,7 @@ export default function index() {
         web: (
           <Head>
             <title>
-              {t("appName")}
-              {backend ? "@" + backend : ""}
+              {currentInstanceConfig?.customizations?.pageTitle ?? `${t("appName")}${backend ? "@" + backend : ""}`}
             </title>
             <meta name="description" content="OwnTube.tv homepage" />
           </Head>

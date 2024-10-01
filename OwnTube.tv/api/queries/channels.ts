@@ -22,7 +22,7 @@ export const useGetChannelInfoQuery = (channelHandle?: string) => {
   });
 };
 
-export const useGetChannelsQuery = () => {
+export const useGetChannelsQuery = ({ enabled = true }: { enabled?: boolean }) => {
   const { backend } = useLocalSearchParams<RootStackParams["index"]>();
 
   return useQuery({
@@ -31,7 +31,7 @@ export const useGetChannelsQuery = () => {
       return await ChannelsApiImpl.getChannels(backend!);
     },
     select: ({ data }) => data.filter(({ isLocal }) => isLocal),
-    enabled: !!backend,
+    enabled: !!backend && enabled,
     refetchOnWindowFocus: false,
     retry,
   });

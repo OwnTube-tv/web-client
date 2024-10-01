@@ -22,7 +22,7 @@ const customizationsSchema = z.object({
 export const instanceConfigSchema = z.object({
   name: z.string(),
   description: z.string(),
-  url: z.string(),
+  hostname: z.string(),
   logoUrl: z.string().url().optional(),
   customizations: customizationsSchema.optional(),
   iconUrl: z.string().url().optional(),

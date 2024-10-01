@@ -11,18 +11,18 @@ import { SvgUri } from "react-native-svg";
 interface PlatformCardProps {
   name: string;
   description: string;
-  url: string;
+  hostname: string;
   logoUrl?: string;
 }
 
-export const PlatformCard = ({ name, description, url, logoUrl }: PlatformCardProps) => {
+export const PlatformCard = ({ name, description, hostname, logoUrl }: PlatformCardProps) => {
   const { colors } = useTheme();
   const { isHovered, hoverHandlers } = useHoverState();
   const { isDesktop } = useBreakpoints();
   const isLogoSvg = logoUrl?.endsWith("svg");
 
   return (
-    <Link href={{ pathname: "./", params: { backend: url } }} asChild>
+    <Link href={{ pathname: "./", params: { backend: hostname } }} asChild>
       <Pressable style={styles.pressableContainer} {...hoverHandlers}>
         <View
           style={[

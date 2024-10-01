@@ -6,5 +6,7 @@ export const useInstanceConfig = () => {
   const { backend } = useLocalSearchParams<{ backend: string }>();
   const { backend: globalBackendParam } = useGlobalSearchParams<{ backend: string }>();
 
-  return { currentInstanceConfig: featuredInstances?.find(({ url }) => [backend, globalBackendParam].includes(url)) };
+  return {
+    currentInstanceConfig: featuredInstances?.find(({ hostname }) => [backend, globalBackendParam].includes(hostname)),
+  };
 };

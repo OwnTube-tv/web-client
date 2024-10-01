@@ -15,6 +15,11 @@
 <!-- Include details of your testing environment, tests ran to see how -->
 <!-- your change affects other areas of the code, etc. -->
 
+- [ ] Web (desktop)
+- [ ] Web (mobile)
+- [ ] Mobile (iOS)
+- [ ] Mobile (Android)
+
 ## 📷 Screenshots (if appropriate)
 
 <!-- Please provide a screenshot of your change -->

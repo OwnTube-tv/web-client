@@ -29,7 +29,7 @@
   "peertubeInstances": "PeerTube instances:",
   "noVideosOrCategoriesFound": "No videos or categories found.",
   "viewHistory": "View history",
-  "viewHistoryEmpty": "View History is empty",
+  "viewHistoryEmpty": "Nothing to see here, why not try to watch something!",
   "lastPlaybackTimeStamp": "Last playback timestamp: {{timestamp}}",
   "videoDuration": "Video duration: {{duration}}",
   "associatedPeertubeBackend": "Associated PeerTube backend: {{backend}}",
@@ -88,5 +88,8 @@
   "otherSites": "Other sites",
   "playlist": "Playlist",
   "viewFullPlaylist": "View full playlist",
-  "viewCategory": "View category"
+  "viewCategory": "View category",
+  "noChannelsAvailable": "No channels are available at the moment",
+  "noCategoriesAvailable": "No categories are available at the moment",
+  "noPlaylistsAvailable": "No playlists are available at the moment"
 }

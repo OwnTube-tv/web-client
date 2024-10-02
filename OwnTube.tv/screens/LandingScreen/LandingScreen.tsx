@@ -18,7 +18,12 @@ export const LandingScreen = () => {
   const { featuredInstances } = useAppConfigContext();
 
   return (
-    <Screen style={{ padding: 0, paddingTop: isDesktop ? spacing.xxxl : spacing.xxl }}>
+    <Screen
+      style={{
+        ...styles.screenContainer,
+        paddingTop: isDesktop ? spacing.xxxl : spacing.xxl,
+      }}
+    >
       <View style={[styles.container, { maxWidth: isDesktop ? "38%" : "95%" }]}>
         <Logo textColor={colors.theme950} width={isDesktop ? "125.5" : "90"} height={isDesktop ? "56" : "40"} />
         <Spacer height={spacing.xl} />
@@ -77,4 +82,5 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     width: "76%",
   },
+  screenContainer: { alignItems: "center", justifyContent: "center", padding: 0 },
 });

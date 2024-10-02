@@ -1,6 +1,6 @@
-// Common query parameters for fetching videos that are classified as "local", "non-live", and "Safe-For-Work"
 import { VideosCommonQuery } from "@peertube/peertube-types";
 
+// Common query parameters for fetching videos that are classified as "local", "non-live", and "Safe-For-Work"
 export const commonQueryParams: VideosCommonQuery = {
   start: 0,
   count: 15,
@@ -18,10 +18,13 @@ export enum QUERY_KEYS {
   instance = "instance",
   channel = "channel",
   channels = "channels",
+  channelsCollection = "channelsCollection",
   channelVideos = "channelVideos",
   channelPlaylists = "channelPlaylists",
   categories = "categories",
+  categoriesCollection = "categoriesCollection",
   playlists = "playlists",
   playlistVideos = "playlistVideos",
   playlistInfo = "playlistInfo",
+  playlistsCollection = "playlistsCollection",
 }

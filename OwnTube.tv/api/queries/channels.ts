@@ -1,6 +1,6 @@
-import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
+import { useInfiniteQuery, useQueries, useQuery } from "@tanstack/react-query";
 import { ChannelsApiImpl } from "../channelsApi";
-import { retry } from "../helpers";
+import { combineCollectionQueryResults, retry } from "../helpers";
 import { VideosCommonQuery } from "@peertube/peertube-types";
 import { useLocalSearchParams } from "expo-router";
 import { RootStackParams } from "../../app/_layout";
@@ -92,5 +92,23 @@ export const useGetChannelPlaylistsQuery = (channelHandle?: string) => {
     refetchOnWindowFocus: false,
     select: (data) => data.filter(({ isLocal, videosLength }) => isLocal && videosLength > 0),
     retry,
+  });
+};
+
+export const useGetChannelsCollectionQuery = (channelIds: string[] = []) => {
+  const { backend } = useLocalSearchParams<RootStackParams["channels"]>();
+
+  return useQueries({
+    queries: channelIds?.map((id) => ({
+      queryKey: [QUERY_KEYS.channelsCollection, backend, id],
+      queryFn: async () => {
+        const res = await ChannelsApiImpl.getChannelVideos(backend!, id, { count: 4 });
+        return { ...res, id };
+      },
+      retry,
+      refetchOnWindowFocus: false,
+      enabled: !!backend,
+    })),
+    combine: combineCollectionQueryResults<{ id: string }>,
   });
 };

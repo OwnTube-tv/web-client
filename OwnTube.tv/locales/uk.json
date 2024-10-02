@@ -29,7 +29,7 @@
   "peertubeInstances": "Інстанції PeerTube:",
   "noVideosOrCategoriesFound": "Відео або категорії не знайдено.",
   "viewHistory": "Історія переглядів",
-  "viewHistoryEmpty": "Історія переглядів порожня",
+  "viewHistoryEmpty": "Тут нічого немає. Чому б не подивитись щось?",
   "lastPlaybackTimeStamp": "Остання позиція відтворення: {{timestamp}}",
   "videoDuration": "Тривалість відео: {{duration}}",
   "associatedPeertubeBackend": "Пов'язаний бекенд PeerTube: {{backend}}",
@@ -88,5 +88,8 @@
   "currentBuild": "Поточна збірка:",
   "cancel": "Скасувати",
   "otherSites": "Інші сайти",
-  "viewCategory": "Переглянути категорію"
+  "viewCategory": "Переглянути категорію",
+  "noChannelsAvailable": "Немає доступних каналів",
+  "noCategoriesAvailable": "Немає доступних категорій",
+  "noPlaylistsAvailable": "Немає доступних плейлістів"
 }

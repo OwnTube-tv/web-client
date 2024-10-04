@@ -78,3 +78,69 @@ This app uses the IcoMoon format for using a dedicated icon set. Usage: go to [I
 section, import the `selection.json` file from `assets/` to IcoMoon selection, press `Generate Font`, download and unzip,
 copy the new `selection.json` file to `assets` and `icomoon.ttf` to `assets/fonts`. Then use the `<IcoMoonIcon />` in the
 app.
+
+### Instance Configuration 🛠️
+
+OwnTube.tv uses a configuration system that allows for customization of different PeerTube instances. This configuration is stored in the `public/featured-instances.json5` file. The JSON5 format is used, which is a superset of JSON that allows for comments and more readable syntax.
+
+Each instance in the configuration file is represented by an object with the following key properties:
+
+1. `name`: The display name of the PeerTube instance.
+2. `description`: A brief description of the instance's content or purpose.
+3. `hostname`: The domain name where the instance is hosted.
+4. `logoUrl`: URL to the instance's logo image.
+5. `iconUrl` (optional): URL to an icon, typically used in the site's header.
+6. `customizations`: An object containing various customization options.
+
+The `customizations` object allows for fine-tuning of the instance's appearance and behavior within the OwnTube.tv client. Some key customization options include:
+
+- `pageTitle`: Overrides the default page title.
+- `pageDefaultTheme`: Sets the default color theme (e.g., "dark" or "light").
+- `menuHide*Button`: Toggles visibility of various menu items.
+- `playlistsHidden`: An array of playlist IDs to hide from the Playlists page.
+- `playlistsShowHiddenButton`: Enables a button to show all playlists, including hidden ones.
+- `home*`: Various options to customize the home page, such as video counts and section visibility.
+
+To ensure the integrity and consistency of instance configurations, OwnTube.tv employs a validation mechanism using Zod, a TypeScript-first schema declaration and validation library.
+
+The validation logic is implemented in the `instanceConfigs.test.ts` file, which performs the following steps:
+
+1. Reads the `public/featured-instances.json5` file containing the instance configurations.
+2. Parses the JSON5 content into a JavaScript object.
+3. Iterates through each instance configuration in the parsed object.
+4. Validates each instance against the `instanceConfigSchema` defined in `instanceConfigs.ts`.
+
+The `instanceConfigSchema` is a Zod schema that precisely defines the structure and types of all fields in the instance configuration. This schema ensures that:
+
+- All required fields are present
+- Field types are correct (e.g., strings, numbers, booleans)
+- Nested objects like `customizations` have the correct structure
+- Optional fields are properly handled
+
+If any instance fails to conform to the schema, the test will fail, providing detailed error information about which fields are invalid or missing. This approach offers several benefits:
+
+The instance configurations are retrieved and made available to the application through the `useFeaturedInstancesData` custom hook, defined in `hooks/useFeaturedInstancesData.ts`. It works in the following steps:
+
+1. **Asset Loading**: The hook uses Expo's `Asset` module to load the `featured-instances.json5` file as an asset. This approach ensures that the file is properly bundled with the application and can be accessed efficiently.
+
+2. **Platform-Specific Reading**: Depending on the platform (web or native), the hook uses different methods to read the file contents:
+   - For web platforms, it uses the `fetch` API to retrieve the file content.
+   - For native platforms, it uses `expo-file-system`'s `readAsStringAsync` function.
+
+3. **JSON5 Parsing**: Once the file content is retrieved, it's parsed using the `JSON5.parse` method.
+
+4. **State Management**: The parsed instance configurations are stored in the component's state using the `useState` hook, making them reactive and easily accessible to components that use this hook.
+
+The current instance configuration is retrieved using the `useInstanceConfig` custom hook, defined in `hooks/useInstanceConfig.ts`. This hook provides a convenient way to access the configuration of the currently active PeerTube instance. Here's how it works:
+
+1. **Context and Params**: The hook utilizes the `useAppConfigContext` to access the `featuredInstances` data, and both `useLocalSearchParams` and `useGlobalSearchParams` from `expo-router` to get the `backend` parameter.
+
+2. **Backend Parameter**: The `backend` parameter, which represents the hostname of the current instance, can be present in either local or global search params. This flexibility allows the instance to be specified at different levels of the application's routing (mainly for use in the Sidebar component which is not an integral part of the navigation structure and has to use the global backend param).
+
+3. **Instance Matching**: The hook searches through the `featuredInstances` array to find an instance whose `hostname` matches either the local or global `backend` parameter.
+
+4. **Return Value**: The hook returns an object with a `currentInstanceConfig` property, which contains the configuration of the matched instance, or `undefined` if no match is found.
+
+This approach allows components throughout the application to easily access the current instance's configuration by calling `useInstanceConfig()`. The returned configuration can then be used to customize the UI, set theme preferences, or control feature visibility based on the specific instance being accessed.
+
+By combining the `useFeaturedInstancesData` hook (which loads all instance configurations) with the `useInstanceConfig` hook (which selects the current instance), OwnTube.tv is able to customize the experience for the user based on the instance they are currently accessing.

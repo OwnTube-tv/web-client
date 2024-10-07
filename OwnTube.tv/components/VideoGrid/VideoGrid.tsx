@@ -14,12 +14,14 @@ import { Loader } from "../Loader";
 import "./styles.css";
 import { VideoGridContent } from "./VideoGridContent";
 import { VideoListContent } from "./VideoListContent";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { PresentationSwitch } from "./PresentationSwitch";
+import { useTranslation } from "react-i18next";
+import { ErrorTextWithRetry } from "../ErrorTextWithRetry";
 
 export interface VideoGridProps {
   data?: Array<GetVideosVideo | ViewHistoryEntry>;
-  variant?: "default" | "channel" | "history";
+  variant?: "default" | "channel" | "history" | "latest" | "playlist" | "category";
   title?: string;
   icon?: string;
   headerLink?: {
@@ -31,6 +33,8 @@ export interface VideoGridProps {
   isLoadingMore?: boolean;
   isLoading?: boolean;
   presentation?: "list" | "grid";
+  isError?: boolean;
+  refetch?: () => void;
 }
 
 export const VideoGrid = ({
@@ -44,15 +48,60 @@ export const VideoGrid = ({
   isLoadingMore,
   isLoading,
   presentation,
+  isError,
+  refetch,
 }: VideoGridProps) => {
   const { backend } = useLocalSearchParams<RootStackParams[ROUTES.INDEX]>();
   const { colors } = useTheme();
   const { isMobile, isDesktop } = useBreakpoints();
   const [customPresentation, setCustomPresentation] = useState<VideoGridProps["presentation"]>(presentation || "grid");
+  const { t } = useTranslation();
 
   const handleSetPresentation = (newPresentation: VideoGridProps["presentation"]) => {
     setCustomPresentation(newPresentation);
   };
+
+  const renderContent = useMemo(() => {
+    if (isError && !isLoading) {
+      return (
+        <View style={{ flex: 1, width: "100%", paddingVertical: spacing.xl, alignItems: "center" }}>
+          <ErrorTextWithRetry errorText={t(`failedToLoadVideoSection.${variant}`)} refetch={refetch} />
+        </View>
+      );
+    }
+
+    return (
+      <>
+        {!!presentation && isDesktop && (
+          <PresentationSwitch presentation={customPresentation} handleSetPresentation={handleSetPresentation} />
+        )}
+        {customPresentation === "grid" ? (
+          <VideoGridContent isLoading={isLoading} data={data} backend={backend} />
+        ) : (
+          <VideoListContent isLoading={isLoading} data={data} backend={backend} />
+        )}
+        {!!handleShowMore && (
+          <View style={styles.showMoreContainer}>
+            <Button contrast="low" text="Show more" onPress={handleShowMore} />
+            <View>{isLoadingMore && <Loader />}</View>
+          </View>
+        )}
+      </>
+    );
+  }, [
+    isError,
+    presentation,
+    isDesktop,
+    customPresentation,
+    isLoading,
+    data,
+    backend,
+    handleShowMore,
+    isLoadingMore,
+    colors,
+    t,
+    refetch,
+  ]);
 
   return (
     <View
@@ -89,20 +138,7 @@ export const VideoGrid = ({
           </View>
         </View>
       </View>
-      {!!presentation && isDesktop && (
-        <PresentationSwitch presentation={customPresentation} handleSetPresentation={handleSetPresentation} />
-      )}
-      {customPresentation === "grid" ? (
-        <VideoGridContent isLoading={isLoading} data={data} backend={backend} />
-      ) : (
-        <VideoListContent isLoading={isLoading} data={data} backend={backend} />
-      )}
-      {!!handleShowMore && (
-        <View style={styles.showMoreContainer}>
-          <Button contrast="low" text="Show more" onPress={handleShowMore} />
-          <View>{isLoadingMore && <Loader />}</View>
-        </View>
-      )}
+      {renderContent}
     </View>
   );
 };

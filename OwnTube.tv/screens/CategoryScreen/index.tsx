@@ -8,7 +8,7 @@ import { useMemo } from "react";
 
 export const CategoryScreen = () => {
   const { category } = useLocalSearchParams<RootStackParams[ROUTES.CATEGORY]>();
-  const { data: categories, isFetching: isFetchingCategories } = useGetCategoriesQuery();
+  const { data: categories, isFetching: isFetchingCategories } = useGetCategoriesQuery({});
 
   const categoryTitle = useMemo(() => {
     return categories?.find(({ id }) => String(id) === category)?.name;

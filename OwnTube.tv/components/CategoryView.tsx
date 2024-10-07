@@ -12,7 +12,7 @@ interface CategoryViewProps {
 export const CategoryView = ({ category }: CategoryViewProps) => {
   const { t } = useTranslation();
   const { backend } = useLocalSearchParams();
-  const { data, isFetching } = useGetVideosQuery({
+  const { data, isFetching, isError, refetch } = useGetVideosQuery({
     enabled: true,
     params: {
       categoryOneOf: [category.id],
@@ -28,6 +28,8 @@ export const CategoryView = ({ category }: CategoryViewProps) => {
 
   return (
     <VideoGrid
+      refetch={refetch}
+      isError={isError}
       isLoading={isFetching}
       headerLink={{
         text: t("viewCategory") + getAvailableVidsString(data?.total),

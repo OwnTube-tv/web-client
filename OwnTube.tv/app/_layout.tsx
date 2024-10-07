@@ -9,11 +9,11 @@ import {
   useColorSchemeContext,
   useFullScreenModalContext,
 } from "../contexts";
-import { QueryCache, QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { useFonts } from "expo-font";
 import Toast from "react-native-toast-message";
-import { AppDesktopHeader, FullScreenModal, Sidebar } from "../components";
+import { AppDesktopHeader, FullScreenModal, OfflineToast, OnlineToast, Sidebar } from "../components";
 import "../i18n";
 import { useTranslation } from "react-i18next";
 import { useCallback, useEffect } from "react";
@@ -37,7 +37,6 @@ import { Drawer } from "expo-router/drawer";
 import { AppHeader } from "../components/AppHeader";
 import { SafeAreaProvider, useSafeAreaInsets } from "react-native-safe-area-context";
 import { useBreakpoints } from "../hooks";
-import { OwnTubeError } from "../api/models";
 import { DrawerHeaderProps } from "@react-navigation/drawer";
 
 export const CLOSED_DRAWER_WIDTH = 64;
@@ -109,7 +108,7 @@ const RootStack = () => {
           <Drawer.Screen name={`(home)/${ROUTES.PLAYLISTS}`} />
           <Drawer.Screen name={`(home)/${ROUTES.PLAYLIST}`} />
         </Drawer>
-        <Toast />
+        <Toast config={{ online: () => <OnlineToast />, offline: () => <OfflineToast /> }} />
         <FullScreenModal onBackdropPress={() => toggleModal?.(false)} isVisible={isModalOpen}>
           {modalContent}
         </FullScreenModal>
@@ -118,22 +117,7 @@ const RootStack = () => {
   );
 };
 
-const queryClient = new QueryClient({
-  queryCache: new QueryCache({
-    onError: (error: Error) => {
-      const errorInfo = (error as unknown as OwnTubeError).text || error.message;
-
-      console.error(`Error ${(error as unknown as OwnTubeError).code}, ${errorInfo}`);
-
-      Toast.show({
-        type: "error",
-        text1: `Error ${(error as unknown as OwnTubeError).code}`,
-        text2: errorInfo,
-        autoHide: false,
-      });
-    },
-  }),
-});
+const queryClient = new QueryClient();
 
 export default function RootLayout() {
   const isWeb = Platform.OS === "web";

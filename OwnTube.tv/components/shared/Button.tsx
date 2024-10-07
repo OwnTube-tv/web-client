@@ -1,4 +1,4 @@
-import { PropsWithChildren, useMemo, forwardRef } from "react";
+import { PropsWithChildren, useMemo, forwardRef, useCallback } from "react";
 import { ViewStyle, Pressable, PressableProps, StyleSheet, View } from "react-native";
 import { useTheme } from "@react-navigation/native";
 import { useHoverState } from "../../hooks";
@@ -16,7 +16,7 @@ interface ButtonProps extends PropsWithChildren<PressableProps> {
 }
 
 export const Button = forwardRef<View, ButtonProps>(
-  ({ contrast = "none", text, icon, justifyContent = "center", isActive, ...props }, ref) => {
+  ({ contrast = "none", text, icon, justifyContent = "center", isActive, disabled, ...props }, ref) => {
     const { colors } = useTheme();
     const { isHovered, toggleHovered } = useHoverState();
 
@@ -27,6 +27,19 @@ export const Button = forwardRef<View, ButtonProps>(
         high: { regularColor: colors.theme500, hoverColor: colors.theme600 },
       }[contrast];
     }, [colors, contrast]);
+
+    const getBackgroundColor = useCallback(
+      (pressed: boolean) => {
+        if (disabled) {
+          return colors.theme100;
+        }
+
+        return isHovered ? hoverColor : isActive || pressed ? colors.theme100 : regularColor;
+      },
+      [colors, isHovered, hoverColor, isActive, regularColor, disabled],
+    );
+
+    const textColor = disabled ? colors.themeDesaturated500 : contrast === "high" ? colors.white94 : colors.theme900;
 
     return (
       <Pressable
@@ -43,7 +56,7 @@ export const Button = forwardRef<View, ButtonProps>(
           styles.container,
           props.style,
           {
-            backgroundColor: isHovered ? hoverColor : isActive || pressed ? colors.theme100 : regularColor,
+            backgroundColor: getBackgroundColor(pressed),
             justifyContent,
           },
         ]}
@@ -51,11 +64,7 @@ export const Button = forwardRef<View, ButtonProps>(
       >
         {icon && <IcoMoonIcon name={icon} size={24} color={contrast === "high" ? colors.white94 : colors.theme900} />}
         {text && (
-          <Typography
-            fontSize="sizeSm"
-            fontWeight="SemiBold"
-            color={contrast === "high" ? colors.white94 : colors.theme900}
-          >
+          <Typography fontSize="sizeSm" fontWeight="SemiBold" color={textColor}>
             {text}
           </Typography>
         )}

@@ -17,7 +17,6 @@ i18n.use(initReactI18next).init({
   defaultNS: "translation",
   lng: getLocales()[0]?.languageCode || undefined,
   pluralSeparator: "_",
-  keySeparator: false,
 });
 
 i18n.addResourceBundle("en", "translation", en);

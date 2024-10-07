@@ -7,7 +7,7 @@ import { useInstanceConfig } from "../../../hooks";
 export const LatestVideosView = () => {
   const { t } = useTranslation();
   const { currentInstanceConfig } = useInstanceConfig();
-  const { fetchNextPage, data, hasNextPage, isLoading, isFetchingNextPage } = useInfiniteVideosQuery({
+  const { fetchNextPage, data, hasNextPage, isLoading, isFetchingNextPage, isError, refetch } = useInfiniteVideosQuery({
     uniqueQueryKey: "homepageLatestVideosView",
     firstPageSize: currentInstanceConfig?.customizations?.homeLatestPublishedVideoCount,
   });
@@ -17,6 +17,8 @@ export const LatestVideosView = () => {
 
   return (
     <VideoGrid
+      isError={isError}
+      refetch={refetch}
       isLoading={isLoading}
       data={videos}
       title={t("latestVideos")}

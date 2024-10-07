@@ -91,5 +91,20 @@
   "viewCategory": "Просмотреть категорию",
   "noChannelsAvailable": "Нет доступных каналов",
   "noCategoriesAvailable": "Нет доступных категорий",
-  "noPlaylistsAvailable": "Нет доступных плейлистов"
+  "noPlaylistsAvailable": "Нет доступных плейлистов",
+  "noNetworkConnection": "Нет подключения к сети!",
+  "networkConnectionRestored": "Подключение к сети восстановлено!",
+  "pageCouldNotBeLoaded": "Невозможно загрузить страницу",
+  "failedToEstablishConnection": "Невозможно установить соединение",
+  "tryAgain": "Попробовать еще раз",
+  "accessDenied": "В доступе отказано",
+  "noPermissions": "Недостаточно прав для просмотра этой страницы",
+  "failedToLoadVideoSection": {
+    "latest": "Не удалось загрузить последние видео.",
+    "channel": "Не удалось загрузить видео канала.",
+    "category": "Не удалось загрузить видео категории.",
+    "playlist": "Не удалось загрузить видео плейлиста."
+  },
+  "retryQuestion": "Попробовать еще раз?",
+  "videoFailedToLoad": "Невозможно загрузить видео."
 }

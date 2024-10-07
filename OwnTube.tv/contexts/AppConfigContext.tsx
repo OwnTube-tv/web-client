@@ -1,7 +1,9 @@
-import { createContext, PropsWithChildren, useContext, useState, Dispatch, SetStateAction } from "react";
+import { createContext, PropsWithChildren, useContext, useState, Dispatch, SetStateAction, useEffect } from "react";
 import { DeviceCapabilities, useDeviceCapabilities, useFeaturedInstancesData } from "../hooks";
+import { useNetInfo } from "@react-native-community/netinfo";
 
 import { InstanceConfig } from "../instanceConfigs";
+import Toast from "react-native-toast-message";
 
 interface IAppConfigContext {
   isDebugMode: boolean;
@@ -22,6 +24,15 @@ export const AppConfigContextProvider = ({ children }: PropsWithChildren) => {
   const [isDebugMode, setIsDebugMode] = useState(false);
   const { deviceCapabilities, setPlayerImplementation } = useDeviceCapabilities();
   const { featuredInstances } = useFeaturedInstancesData();
+  const { isConnected } = useNetInfo();
+
+  useEffect(() => {
+    if (!isConnected) {
+      Toast.show({ type: "offline", autoHide: false });
+    } else {
+      Toast.show({ type: "online", autoHide: true });
+    }
+  }, [isConnected]);
 
   return (
     <AppConfigContext.Provider

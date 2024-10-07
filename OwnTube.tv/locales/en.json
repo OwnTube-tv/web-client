@@ -91,5 +91,20 @@
   "viewCategory": "View category",
   "noChannelsAvailable": "No channels are available at the moment",
   "noCategoriesAvailable": "No categories are available at the moment",
-  "noPlaylistsAvailable": "No playlists are available at the moment"
+  "noPlaylistsAvailable": "No playlists are available at the moment",
+  "noNetworkConnection": "No network connection!",
+  "networkConnectionRestored": "Network connection restored!",
+  "pageCouldNotBeLoaded": "Page could not be loaded",
+  "failedToEstablishConnection": "Failed to establish connection to server",
+  "tryAgain": "Try again",
+  "accessDenied": "Access denied",
+  "noPermissions": "You don’t have permission to access this page",
+  "failedToLoadVideoSection": {
+    "latest": "Failed to load latest videos.",
+    "channel": "Failed to load channel videos.",
+    "category": "Failed to load category videos.",
+    "playlist": "Failed to load playlist videos."
+  },
+  "retryQuestion": "Retry?",
+  "videoFailedToLoad": "Video failed to load."
 }

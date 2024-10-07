@@ -18,11 +18,23 @@ export const retry = (failureCount: number, error: OwnTubeError) => {
   return failureCount < 5;
 };
 
+export const getErrorTextKeys = (error: OwnTubeError | null): { title: string; description: string } => {
+  if (error && error.code >= 401 && error.code <= 403) {
+    return { title: "accessDenied", description: "noPermissions" };
+  } else {
+    return { title: "pageCouldNotBeLoaded", description: "failedToEstablishConnection" };
+  }
+};
+
 export const combineCollectionQueryResults = <T>(
-  result: UseQueryResult<{ data: Array<GetVideosVideo>; total: number } & T, OwnTubeError>[],
+  result: UseQueryResult<
+    { data: Array<GetVideosVideo>; total: number; isError?: boolean; error?: unknown } & T,
+    OwnTubeError
+  >[],
 ) => {
   return {
-    data: result.map(({ data }) => data).filter((item) => Number(item?.total) > 0),
-    isFetching: result.some(({ isFetching }) => isFetching),
+    data: result.filter((item) => item?.data?.isError || Number(item?.data?.total) > 0),
+    isFetching: result.filter(({ isFetching }) => isFetching).length > 1,
+    isError: result.every(({ data }) => data?.isError),
   };
 };

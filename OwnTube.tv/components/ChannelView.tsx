@@ -13,7 +13,7 @@ interface ChannelViewProps {
 
 export const ChannelView = ({ channel }: ChannelViewProps) => {
   const { backend } = useLocalSearchParams<RootStackParams[ROUTES.CHANNELS]>();
-  const { data, isFetching } = useGetChannelVideosQuery(channel.name);
+  const { data, isFetching, isError, refetch } = useGetChannelVideosQuery(channel.name);
   const { t } = useTranslation();
 
   if (!data?.data?.length && !isFetching) {
@@ -22,6 +22,8 @@ export const ChannelView = ({ channel }: ChannelViewProps) => {
 
   return (
     <VideoGrid
+      isError={isError}
+      refetch={refetch}
       isLoading={isFetching}
       headerLink={{
         text: t("visitChannel") + getAvailableVidsString(data?.total),

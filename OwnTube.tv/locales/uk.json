@@ -91,5 +91,20 @@
   "viewCategory": "Переглянути категорію",
   "noChannelsAvailable": "Немає доступних каналів",
   "noCategoriesAvailable": "Немає доступних категорій",
-  "noPlaylistsAvailable": "Немає доступних плейлістів"
+  "noPlaylistsAvailable": "Немає доступних плейлістів",
+  "noNetworkConnection": "Немає підключення до мережі!",
+  "networkConnectionRestored": "Підключення до мережі відновлено!",
+  "pageCouldNotBeLoaded": "Неможливо завантажити сторінку",
+  "failedToEstablishConnection": "Неможливо встановити зʼєднання",
+  "tryAgain": "Спробувати ще раз",
+  "accessDenied": "В доступі відмовлено",
+  "noPermissions": "Недостатньо прав для перегляду сторінки",
+  "failedToLoadVideoSection": {
+    "latest": "Не вдалося завантажити останні відео.",
+    "channel": "Не вдалося завантажити відео каналу.",
+    "category": "Не вдалося завантажити відео категорії.",
+    "playlist": "Не вдалося завантажити відео плейліста."
+  },
+  "retryQuestion": "Спробувати ще раз?",
+  "videoFailedToLoad": "Неможливо завантажити відео."
 }

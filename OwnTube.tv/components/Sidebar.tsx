@@ -12,6 +12,7 @@ import { Spacer } from "./shared/Spacer";
 import { useBreakpoints, useInstanceConfig } from "../hooks";
 import { InstanceInfo } from "./InstanceInfo";
 import { Settings } from "./VideoControlsOverlay/components/modals";
+import { useNetInfo } from "@react-native-community/netinfo";
 
 const SIDEBAR_ROUTES = [
   {
@@ -23,25 +24,26 @@ const SIDEBAR_ROUTES = [
   {
     nameKey: "history",
     icon: "History",
-    href: { pathname: ROUTES.HISTORY },
+    href: { pathname: `/${ROUTES.HISTORY}` },
     routeName: `(home)/${ROUTES.HISTORY}`,
+    isAvailableOffline: true,
   },
   {
     nameKey: "channels",
     icon: "Channel",
-    href: { pathname: ROUTES.CHANNELS },
+    href: { pathname: `/${ROUTES.CHANNELS}` },
     routeName: `(home)/${ROUTES.CHANNELS}`,
   },
   {
     nameKey: "playlistsPageTitle",
     icon: "Playlist",
-    href: { pathname: ROUTES.PLAYLISTS },
+    href: { pathname: `/${ROUTES.PLAYLISTS}` },
     routeName: `(home)/${ROUTES.PLAYLISTS}`,
   },
   {
     nameKey: "categories",
     icon: "Category",
-    href: { pathname: ROUTES.CATEGORIES },
+    href: { pathname: `/${ROUTES.CATEGORIES}` },
     routeName: `(home)/${ROUTES.CATEGORIES}`,
   },
 ];
@@ -59,6 +61,7 @@ export const Sidebar: FC<SidebarProps> = ({ backend, ...navigationProps }) => {
   const shouldExpand = breakpoints.isDesktop || breakpoints.isMobile;
   const { toggleModal, setContent } = useFullScreenModalContext();
   const { currentInstanceConfig } = useInstanceConfig();
+  const { isConnected } = useNetInfo();
 
   const handleOpenSettings = () => {
     toggleModal(true);
@@ -103,13 +106,15 @@ export const Sidebar: FC<SidebarProps> = ({ backend, ...navigationProps }) => {
             default:
               return true;
           }
-        }).map(({ nameKey, icon, href, routeName }) => {
+        }).map(({ nameKey, icon, href, routeName, isAvailableOffline }) => {
           const isActive =
             navigationProps.state.index === navigationProps.state.routes.findIndex(({ name }) => name === routeName);
+          const isDisabled = !isConnected && !isAvailableOffline;
 
           return (
             <Link href={{ ...href, params: { backend } }} key={routeName} asChild>
               <Button
+                disabled={isDisabled}
                 isActive={isActive}
                 justifyContent="flex-start"
                 icon={icon}

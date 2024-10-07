@@ -124,6 +124,7 @@ The instance configurations are retrieved and made available to the application 
 1. **Asset Loading**: The hook uses Expo's `Asset` module to load the `featured-instances.json5` file as an asset. This approach ensures that the file is properly bundled with the application and can be accessed efficiently.
 
 2. **Platform-Specific Reading**: Depending on the platform (web or native), the hook uses different methods to read the file contents:
+
    - For web platforms, it uses the `fetch` API to retrieve the file content.
    - For native platforms, it uses `expo-file-system`'s `readAsStringAsync` function.
 
@@ -144,3 +145,10 @@ The current instance configuration is retrieved using the `useInstanceConfig` cu
 This approach allows components throughout the application to easily access the current instance's configuration by calling `useInstanceConfig()`. The returned configuration can then be used to customize the UI, set theme preferences, or control feature visibility based on the specific instance being accessed.
 
 By combining the `useFeaturedInstancesData` hook (which loads all instance configurations) with the `useInstanceConfig` hook (which selects the current instance), OwnTube.tv is able to customize the experience for the user based on the instance they are currently accessing.
+
+### Error handling ❌
+
+Errors are handled throughout the application on pages and in individual sections on pages. If there is an error loading a page that is blocking the experience, e.g. the list of playlists didn't load on the playlists page, the user is presented with a fullscreen message suggesting to retry fetching the data. However, if an individual section failed to load, e.g. a single playlist failed to load on the playlists page, the user is presented with an error message and a suggestion to refetch the individual section.
+Going offline and back online is denoted by a toast message on top of the page which can be closed manually if offline, and disappears automatically if online. Some of the pages that require network connection are rendered as disabled when offline. However, the user can still try to visit the respective pages since links do not get disabled.
+Error loading video data is presented in a fullscreen message suggesting a retry of the load.
+Currently, the error handling extends to everything connected to videos, however in the future error handling should be added for info such as instance name or avatar.

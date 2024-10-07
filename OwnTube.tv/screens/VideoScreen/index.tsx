@@ -4,17 +4,19 @@ import { RootStackParams } from "../../app/_layout";
 import { ROUTES } from "../../types";
 import { useGetVideoQuery } from "../../api";
 import { useEffect, useMemo, useState } from "react";
-import { Loader, FocusWrapper, FullScreenModal } from "../../components";
+import { Loader, FocusWrapper, FullScreenModal, ErrorTextWithRetry } from "../../components";
 import { useViewHistory, useFullScreenVideoPlayback } from "../../hooks";
 import { StatusBar } from "expo-status-bar";
 import { Settings, Share, VideoDetails } from "../../components/VideoControlsOverlay/components/modals";
 import { Platform, StyleSheet, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useColorSchemeContext } from "../../contexts";
+import { useTranslation } from "react-i18next";
 
 export const VideoScreen = () => {
+  const { t } = useTranslation();
   const params = useLocalSearchParams<RootStackParams[ROUTES.VIDEO]>();
-  const { data, isFetching } = useGetVideoQuery(params?.id);
+  const { data, isFetching, isError, refetch } = useGetVideoQuery(params?.id);
   const { updateHistory } = useViewHistory();
   const { isFullscreen, toggleFullscreen } = useFullScreenVideoPlayback();
   const { top } = useSafeAreaInsets();
@@ -65,6 +67,14 @@ export const VideoScreen = () => {
 
   if (isFetching) {
     return <Loader />;
+  }
+
+  if (isError) {
+    return (
+      <View style={styles.errorContainer}>
+        <ErrorTextWithRetry refetch={refetch} errorText={t("videoFailedToLoad")} />
+      </View>
+    );
   }
 
   if (!uri) {
@@ -118,5 +128,6 @@ export const VideoScreen = () => {
 };
 
 const styles = StyleSheet.create({
+  errorContainer: { alignItems: "center", flex: 1, height: "100%", justifyContent: "center", width: "100%" },
   videoContainer: { minHeight: "100%", minWidth: "100%" },
 });

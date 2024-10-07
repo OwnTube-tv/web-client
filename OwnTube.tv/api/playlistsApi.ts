@@ -75,7 +75,6 @@ export class PlaylistsApi extends AxiosInstanceBasedApi {
         total: response.data.total,
       };
     } catch (error: unknown) {
-      console.error(error, playlistId);
       return handleAxiosErrorWithRetry(error, "playlist videos");
     }
   }

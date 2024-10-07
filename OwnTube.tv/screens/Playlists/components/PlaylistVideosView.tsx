@@ -13,7 +13,7 @@ interface PlaylistVideosViewProps {
 
 export const PlaylistVideosView = ({ id, title, channel }: PlaylistVideosViewProps) => {
   const { backend } = useLocalSearchParams();
-  const { data, isFetching } = useGetPlaylistVideosQuery(id);
+  const { data, isFetching, isError, refetch } = useGetPlaylistVideosQuery(id);
   const { t } = useTranslation();
 
   if ((!data?.data?.length || !data?.total) && !isFetching) {
@@ -22,6 +22,8 @@ export const PlaylistVideosView = ({ id, title, channel }: PlaylistVideosViewPro
 
   return (
     <VideoGrid
+      isError={isError}
+      refetch={refetch}
       isLoading={isFetching}
       title={title}
       data={data?.data}

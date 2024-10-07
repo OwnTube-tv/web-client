@@ -61,7 +61,6 @@ This folder contains setup files for information that should be available across
 for theme switching and the other is the `AppConfigContext` which is used for technical information like settings or
 device capability info.
 
-
 ### 📁`/contexts/`:
 
 This folder contains React context providers and their associated setup files. The contexts in this folder include:
@@ -104,22 +103,24 @@ Here you can find various utilities used across the app, such as time formatting
 The project root contains configuration and setup files, notable ones include:
 
 1. `build-info.json`: This file stores build-related information, including:
+
    - GitHub actor (user or system that triggered the build)
    - Short SHA of the commit
    - URL to the commit on GitHub
    - Timestamp of the build
    - Web URL of the application
-   This information is useful for debugging, tracking deployments, and providing version information to users.
+     This information is useful for debugging, tracking deployments, and providing version information to users.
 
 2. `i18n.ts`: This file sets up internationalization (i18n) for the application using the i18next library. It includes:
+
    - Initialization of i18next with React
    - Configuration of language fallbacks and separators
    - Import and registration of language resources
    - Definition of available language options with their respective date-fns locales
-   This setup enables multi-language support throughout the application.
+     This setup enables multi-language support throughout the application.
 
 3. `instanceConfigs.ts`: This file defines the schema for instance configurations using Zod. It includes:
    - Schemas for color schemes and customizations
    - The main instance configuration schema, which includes properties like name, description, hostname, logo URL, and various customization options
    - Type definition for the instance configuration
-   This allows for type-safe configuration of different instances of the application, enabling customization of appearance and behavior.
+     This allows for type-safe configuration of different instances of the application, enabling customization of appearance and behavior.

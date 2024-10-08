@@ -107,5 +107,11 @@
   },
   "retryQuestion": "Retry?",
   "videoFailedToLoad": "Video failed to load.",
+  "today": "Today",
+  "yesterday": "Yesterday",
+  "lastWeek": "Last Week",
+  "lastMonth": "Last Month",
+  "lastYear": "Last Year",
+  "olderThanAYear": "Older than a year",
   "showMore": "Show more"
 }

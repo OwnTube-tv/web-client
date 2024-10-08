@@ -107,5 +107,11 @@
   },
   "retryQuestion": "Спробувати ще раз?",
   "videoFailedToLoad": "Неможливо завантажити відео.",
+  "today": "Сьогодні",
+  "yesterday": "Вчора",
+  "lastWeek": "Минулого тижня",
+  "lastMonth": "Минулого місяця",
+  "lastYear": "Минулого року",
+  "olderThanAYear": "Старші року",
   "showMore": "Показати ще"
 }

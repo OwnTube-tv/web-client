@@ -17,6 +17,7 @@ const customizationsSchema = z.object({
   menuHideLeaveButton: z.boolean().optional(),
   playlistsHidden: z.array(z.string()).optional(),
   playlistsShowHiddenButton: z.boolean().optional(),
+  showMoreSize: z.number().optional(),
 });
 
 export const instanceConfigSchema = z.object({

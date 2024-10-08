@@ -5,13 +5,16 @@ import { ROUTES } from "../../types";
 import { BackToChannel, ListInfoHeader, Loader, VideoGrid } from "../../components";
 import { useMemo } from "react";
 import { Screen } from "../../layouts";
+import { useInstanceConfig } from "../../hooks";
 
 export const Playlist = () => {
+  const { currentInstanceConfig } = useInstanceConfig();
   const { backend, playlist, channel } = useLocalSearchParams<
     RootStackParams[ROUTES.CHANNEL_PLAYLIST] & RootStackParams[ROUTES.PLAYLIST]
   >();
   const { fetchNextPage, data, hasNextPage, isLoading, isFetchingNextPage } = useInfiniteGetPlaylistVideosQuery(
     Number(playlist),
+    currentInstanceConfig?.customizations?.showMoreSize,
   );
   const { data: channelInfo } = useGetChannelInfoQuery(channel);
   const { data: playlistInfo, isFetching: isFetchingPlaylistInfo } = useGetPlaylistInfoQuery(Number(playlist));

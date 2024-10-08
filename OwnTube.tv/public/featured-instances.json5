@@ -74,6 +74,7 @@
       homeHideChannelsOverview: true,
       homeHideCategoriesOverview: true,
       homeHidePlaylistsOverview: false,
+      showMoreSize: 28,
     },
   },
   {

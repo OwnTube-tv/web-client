@@ -55,19 +55,19 @@ export const useInfiniteGetChannelVideosQuery = (
   queryArgs: Partial<{ channelHandle: string; category: number; pageSize: number; uniqueQueryKey: string }>,
 ) => {
   const { backend } = useLocalSearchParams<RootStackParams["index"]>();
-  const { channelHandle, category, pageSize = 4, uniqueQueryKey } = queryArgs;
+  const { channelHandle, category, pageSize = 24, uniqueQueryKey } = queryArgs;
 
   return useInfiniteQuery({
     initialPageParam: 0,
     getNextPageParam: (lastPage: { data: GetVideosVideo[]; total: number }, _nextPage, lastPageParam) => {
-      const nextCount = (lastPageParam === 0 ? pageSize * 4 : lastPageParam) + (lastPageParam ? pageSize : 0);
+      const nextCount = (lastPageParam === 0 ? pageSize : lastPageParam) + (lastPageParam ? pageSize : 0);
 
       return nextCount >= lastPage.total ? null : nextCount;
     },
     queryKey: [QUERY_KEYS.channelVideos, backend, channelHandle, "infinite", uniqueQueryKey],
     queryFn: async ({ pageParam }) => {
       return await ChannelsApiImpl.getChannelVideos(backend!, channelHandle!, {
-        count: pageParam === 0 ? pageSize * 4 : pageSize,
+        count: pageSize,
         start: pageParam,
         sort: "-publishedAt",
         categoryOneOf: category ? [category] : undefined,

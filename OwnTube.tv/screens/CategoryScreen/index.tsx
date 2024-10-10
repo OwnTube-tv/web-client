@@ -5,8 +5,10 @@ import { Screen } from "../../layouts";
 import { Loader, VideoGrid } from "../../components";
 import { useGetCategoriesQuery, useInfiniteVideosQuery } from "../../api";
 import { useMemo } from "react";
+import { useInstanceConfig } from "../../hooks";
 
 export const CategoryScreen = () => {
+  const { currentInstanceConfig } = useInstanceConfig();
   const { category } = useLocalSearchParams<RootStackParams[ROUTES.CATEGORY]>();
   const { data: categories, isFetching: isFetchingCategories } = useGetCategoriesQuery({});
 
@@ -17,6 +19,7 @@ export const CategoryScreen = () => {
   const { fetchNextPage, data, hasNextPage, isLoading, isFetchingNextPage } = useInfiniteVideosQuery({
     uniqueQueryKey: "categoryVideosView",
     queryParams: { categoryOneOf: [Number(category)] },
+    pageSize: currentInstanceConfig?.customizations?.showMoreSize,
   });
 
   const videos = useMemo(() => {

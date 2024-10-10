@@ -45,20 +45,20 @@ export const useGetPlaylistVideosQuery = (playlistId?: number, count: number = 4
   });
 };
 
-export const useInfiniteGetPlaylistVideosQuery = (playlistId?: number, pageSize: number = 4) => {
+export const useInfiniteGetPlaylistVideosQuery = (playlistId?: number, pageSize: number = 24) => {
   const { backend } = useLocalSearchParams<RootStackParams["index"]>();
 
   return useInfiniteQuery({
     initialPageParam: 0,
     getNextPageParam: (lastPage: { data: GetVideosVideo[]; total: number }, _nextPage, lastPageParam) => {
-      const nextCount = (lastPageParam === 0 ? pageSize * 4 : lastPageParam) + (lastPageParam ? pageSize : 0);
+      const nextCount = (lastPageParam === 0 ? pageSize : lastPageParam) + (lastPageParam ? pageSize : 0);
 
       return nextCount >= lastPage.total ? null : nextCount;
     },
     queryKey: [QUERY_KEYS.playlistVideos, backend, playlistId, "infinite"],
     queryFn: async ({ pageParam }) => {
       return await PlaylistsApiImpl.getPlaylistVideos(backend!, playlistId!, {
-        count: pageParam === 0 ? pageSize * 4 : pageSize,
+        count: pageSize,
         start: pageParam,
       });
     },

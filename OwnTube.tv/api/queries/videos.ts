@@ -48,8 +48,8 @@ export const useInfiniteVideosQuery = (
   }>,
 ) => {
   const { backend } = useLocalSearchParams<RootStackParams["index"]>();
-  const { pageSize = 4, uniqueQueryKey, queryParams, firstPageSize } = queryArg;
-  const _0PageSize = firstPageSize ?? pageSize * 4;
+  const { pageSize = 24, uniqueQueryKey, queryParams, firstPageSize } = queryArg;
+  const _0PageSize = firstPageSize ?? pageSize;
 
   return useInfiniteQuery({
     initialPageParam: 0,

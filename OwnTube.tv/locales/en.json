@@ -106,5 +106,6 @@
     "playlist": "Failed to load playlist videos."
   },
   "retryQuestion": "Retry?",
-  "videoFailedToLoad": "Video failed to load."
+  "videoFailedToLoad": "Video failed to load.",
+  "showMore": "Show more"
 }

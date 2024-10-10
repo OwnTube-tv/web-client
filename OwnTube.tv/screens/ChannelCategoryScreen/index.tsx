@@ -8,9 +8,10 @@ import { StyleSheet } from "react-native";
 import { useTheme } from "@react-navigation/native";
 import { spacing } from "../../theme";
 import { useMemo } from "react";
-import { useBreakpoints } from "../../hooks";
+import { useBreakpoints, useInstanceConfig } from "../../hooks";
 
 export const ChannelCategoryScreen = () => {
+  const { currentInstanceConfig } = useInstanceConfig();
   const { colors } = useTheme();
   const { isMobile } = useBreakpoints();
   const { channel, category } = useLocalSearchParams<RootStackParams[ROUTES.CHANNEL_CATEGORY]>();
@@ -20,6 +21,7 @@ export const ChannelCategoryScreen = () => {
     channelHandle: channel,
     category: Number(category),
     uniqueQueryKey: "categoryView",
+    pageSize: currentInstanceConfig?.customizations?.showMoreSize,
   });
 
   const videos = useMemo(() => {

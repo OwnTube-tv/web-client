@@ -10,6 +10,7 @@ export const LatestVideosView = () => {
   const { fetchNextPage, data, hasNextPage, isLoading, isFetchingNextPage, isError, refetch } = useInfiniteVideosQuery({
     uniqueQueryKey: "homepageLatestVideosView",
     firstPageSize: currentInstanceConfig?.customizations?.homeLatestPublishedVideoCount,
+    pageSize: currentInstanceConfig?.customizations?.showMoreSize,
   });
   const videos = useMemo(() => {
     return data?.pages?.flatMap(({ data }) => data.flat());

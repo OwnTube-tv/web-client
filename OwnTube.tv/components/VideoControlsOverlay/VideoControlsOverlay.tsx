@@ -3,7 +3,7 @@ import { Pressable, StyleSheet, View } from "react-native";
 import { useTheme } from "@react-navigation/native";
 import { Typography } from "../Typography";
 import { getHumanReadableDuration } from "../../utils";
-import { Link, useLocalSearchParams, useNavigation } from "expo-router";
+import { Link, useLocalSearchParams, useRouter } from "expo-router";
 import { VolumeControl } from "./components/VolumeControl";
 import * as Device from "expo-device";
 import { DeviceType } from "expo-device";
@@ -73,7 +73,7 @@ export const VideoControlsOverlay = ({
   const { backend } = useLocalSearchParams<RootStackParams[ROUTES.VIDEO]>();
   const { t } = useTranslation();
   const { colors } = useTheme();
-  const navigation = useNavigation();
+  const router = useRouter();
   const [isSeekBarFocused, setIsSeekBarFocused] = useState(false);
 
   const centralIconName = useMemo(() => {
@@ -88,6 +88,14 @@ export const VideoControlsOverlay = ({
   }, [availableDuration, duration, position]);
 
   const isMobile = Device.deviceType !== DeviceType.DESKTOP;
+
+  const handlePressBack = () => {
+    if (router.canGoBack()) {
+      router.back();
+    } else {
+      router.navigate({ pathname: `/`, params: { backend } });
+    }
+  };
 
   return (
     // @ts-expect-error web cursor options not included in React Native core
@@ -106,7 +114,7 @@ export const VideoControlsOverlay = ({
               style={[styles.topControlsContainer, ...(isMobile ? [{ paddingTop: spacing.lg }] : [{ height: 360 }])]}
             >
               <View style={styles.topLeftControls} pointerEvents="box-none">
-                <PlayerButton onPress={navigation.goBack} icon="Arrow-Left" />
+                <PlayerButton onPress={handlePressBack} icon="Arrow-Left" />
                 <View style={styles.videoInfoContainer}>
                   <Link href={{ pathname: ROUTES.CHANNEL, params: { backend, channel: channel?.handle } }}>
                     <Typography

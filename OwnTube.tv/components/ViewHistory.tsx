@@ -108,9 +108,9 @@ export const ViewHistory = () => {
           style={styles.sectionListContainer}
           renderItem={renderItem}
           sections={sections}
-          renderSectionHeader={({ section: { title } }) => (
+          renderSectionHeader={({ section: { titleKey } }) => (
             <Typography style={styles.sectionHeader} color={colors.theme900} fontWeight="Bold" fontSize="sizeLg">
-              {title}
+              {t(titleKey)}
             </Typography>
           )}
           ItemSeparatorComponent={() => <Spacer height={spacing.xl} />}

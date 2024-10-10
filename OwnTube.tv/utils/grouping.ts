@@ -10,35 +10,35 @@ import {
 
 export const groupHistoryEntriesByTime = (
   entries: ViewHistoryEntry[],
-): Array<{ title: string; data: ViewHistoryEntry[] }> => {
+): Array<{ titleKey: string; data: ViewHistoryEntry[] }> => {
   return entries.reduce(
     (groups, entry) => {
       const date = new Date(entry.lastViewedAt);
-      let title = "";
+      let titleKey = "";
 
       if (isToday(date)) {
-        title = "Today";
+        titleKey = "today";
       } else if (isYesterday(date)) {
-        title = "Yesterday";
+        titleKey = "yesterday";
       } else if (differenceInCalendarDays(new Date(), date) <= 7) {
-        title = "Last Week";
+        titleKey = "lastWeek";
       } else if (differenceInCalendarMonths(new Date(), date) <= 1) {
-        title = "Last Month";
+        titleKey = "lastMonth";
       } else if (differenceInCalendarYears(new Date(), date) <= 1) {
-        title = "Last Year";
+        titleKey = "lastYear";
       } else {
-        title = "Older than a year";
+        titleKey = "olderThanAYear";
       }
 
-      const group = groups.find((g) => g.title === title);
+      const group = groups.find((g) => g.titleKey === titleKey);
       if (group) {
         group.data.push(entry);
       } else {
-        groups.push({ title, data: [entry] });
+        groups.push({ titleKey, data: [entry] });
       }
 
       return groups;
     },
-    [] as Array<{ title: string; data: ViewHistoryEntry[] }>,
+    [] as Array<{ titleKey: string; data: ViewHistoryEntry[] }>,
   );
 };

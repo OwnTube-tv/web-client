@@ -132,9 +132,9 @@
     logoUrl: "https://urbanists.video/static-extra/logo.svg",
   },
   {
-    name: "Pony.Tube",
-    description: "Pony.Tube is a PeerTube-enabled video streaming platform using P2P (Pony-to-Pony) technology to deliver the best pony videos directly to you.\n\nWe are a video sharing site that seeks to provide a haven for pony content that you may have issues uploading on larger sites like YouTube or you fear may be taken down for any reason. We seek to be entirely free of cost and free of ads.",
-    hostname: "pony.tube",
-    logoUrl: "https://pony.tube/client/assets/images/logo.svg?e0dbd40f0ab79f76a7794d48a5187fe59fd65dda",
+    name: "Swebbtube",
+    description: "Svensk Webbtelevision är ett medborgarfinansierat initiativ för att skapa en regelbunden och allsidig nyhets- och informationsförmedling som ger uttryck för ett breddat utbud av ämnen och perspektiv samt granskning av för demokratin grundläggande skeenden. Därför tror vi på en fri och öppen debatt där olika åsikter får komma till uttryck.",
+    hostname: "swebbtube.se",
+    logoUrl: "https://swebbtube.se/client/assets/images/logo.svg?cec19af8690344cefefeecddc5a123f4ebd980c9",
   },
 ]

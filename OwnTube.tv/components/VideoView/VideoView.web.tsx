@@ -264,11 +264,7 @@ const VideoView = ({
         handleShare={handleShare}
         handleOpenSettings={handleOpenSettings}
       >
-        <div
-          style={{ position: "relative", cursor: "pointer" }}
-          ref={videoRef}
-          data-testid={`${testID}-video-playback`}
-        />
+        <div style={{ position: "fixed", cursor: "pointer" }} ref={videoRef} data-testid={`${testID}-video-playback`} />
         {isMobile && isControlsVisible && <View style={styles.opacityOverlay} />}
       </VideoControlsOverlay>
     </View>

@@ -1,21 +1,45 @@
-import { Pressable, StyleSheet, View } from "react-native";
+import { StyleSheet, useWindowDimensions, View } from "react-native";
 import { Logo } from "../../components/Svg";
 import { useTheme } from "@react-navigation/native";
 import { useTranslation } from "react-i18next";
-import { InfoFooter, PlatformCard, SourceSelect, Typography } from "../../components";
-import { useBreakpoints } from "../../hooks";
+import { InfoFooter, PlatformCard, Typography } from "../../components";
+import { useBreakpoints, useRecentInstances } from "../../hooks";
 import { Spacer } from "../../components/shared/Spacer";
 import { spacing } from "../../theme";
 import { Screen } from "../../layouts";
-import { useState } from "react";
+import { useMemo } from "react";
 import { useAppConfigContext } from "../../contexts";
+import { useGetInstanceInfoCollectionQuery, useGetInstancesQuery } from "../../api";
+import { useRouter } from "expo-router";
+import ComboBoxInput from "../../components/ComboBoxInput";
 
 export const LandingScreen = () => {
   const { colors } = useTheme();
   const { t } = useTranslation();
   const { isDesktop } = useBreakpoints();
-  const [isInstanceSelectVisible, setIsInstanceSelectVisible] = useState(false);
   const { featuredInstances } = useAppConfigContext();
+  const { data } = useGetInstancesQuery();
+  const router = useRouter();
+  const availableInstances = useMemo(() => {
+    return data
+      ?.filter(({ totalLocalVideos }) => totalLocalVideos > 0)
+      .map(({ name, host, totalLocalVideos }) => ({
+        label: `${host} - ${name} (${totalLocalVideos})`,
+        value: host,
+      }));
+  }, [data]);
+  const handleSelectSource = (hostname: string) => {
+    router.navigate({ pathname: "./", params: { backend: hostname } });
+  };
+  const { recentInstances } = useRecentInstances();
+  const { data: recentInstancesData } = useGetInstanceInfoCollectionQuery(recentInstances?.slice(0, 12) || []);
+  const { width } = useWindowDimensions();
+
+  const searchInputWidth = useMemo(() => {
+    const calculatedWidth = width * 0.375;
+
+    return calculatedWidth < 344 ? 344 : calculatedWidth > 600 ? 600 : calculatedWidth;
+  }, [width]);
 
   return (
     <Screen
@@ -47,6 +71,18 @@ export const LandingScreen = () => {
       </View>
       <Spacer height={isDesktop ? spacing.xxxl : spacing.xxl} />
       <Typography fontWeight="Bold" fontSize={isDesktop ? "sizeXL" : "sizeLg"}>
+        {t("findAVideoSite")}
+      </Typography>
+      <Spacer height={isDesktop ? spacing.xxl : spacing.xl} />
+      <ComboBoxInput
+        width={searchInputWidth}
+        testID={"custom-instance-select"}
+        data={availableInstances}
+        onChange={handleSelectSource}
+        placeholder={t("tubeInstanceName")}
+      />
+      <Spacer height={isDesktop ? spacing.xxxl : spacing.xxl} />
+      <Typography fontWeight="Bold" fontSize={isDesktop ? "sizeXL" : "sizeLg"}>
         {t("exploreVideoSites")}
       </Typography>
       <Spacer height={isDesktop ? spacing.xxl : spacing.xl} />
@@ -60,11 +96,34 @@ export const LandingScreen = () => {
           </View>
         ))}
       </View>
-      <Spacer height={spacing.lg} />
-      <Pressable onPress={() => setIsInstanceSelectVisible(true)}>
-        <Typography style={{ textDecorationLine: "underline" }}>{t("otherSites")}</Typography>
-      </Pressable>
-      {isInstanceSelectVisible && <SourceSelect />}
+      {Number(recentInstances?.length) > 0 && (
+        <View style={{ alignItems: "center", width: "100%" }}>
+          <Spacer height={isDesktop ? spacing.xxxl : spacing.xxl} />
+          <Typography fontWeight="Bold" fontSize={isDesktop ? "sizeXL" : "sizeLg"}>
+            {t("recentlyVisited")}
+          </Typography>
+          <Spacer height={isDesktop ? spacing.xxl : spacing.xl} />
+          <View style={styles.platformsContainer}>
+            {recentInstancesData.map((platform, index) => {
+              const featuredPlatformData = featuredInstances?.find(({ hostname }) => hostname === platform?.hostname);
+
+              return (
+                <View
+                  key={index}
+                  style={{ width: isDesktop ? 392 : 344, alignSelf: "flex-start", height: isDesktop ? 164 : 132 }}
+                >
+                  <PlatformCard
+                    name={featuredPlatformData?.name || platform?.name}
+                    description={featuredPlatformData?.description || platform?.description}
+                    logoUrl={featuredPlatformData?.logoUrl || platform?.avatars[0]?.url}
+                    hostname={platform?.hostname}
+                  />
+                </View>
+              );
+            })}
+          </View>
+        </View>
+      )}
       <InfoFooter showBuildInfo />
     </Screen>
   );

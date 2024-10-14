@@ -113,5 +113,8 @@
   "lastMonth": "В прошлом месяце",
   "lastYear": "В прошлом году",
   "olderThanAYear": "Старше года",
-  "showMore": "Показать еще"
+  "showMore": "Показать еще",
+  "findAVideoSite": "Найти видео-сайт",
+  "tubeInstanceName": "Название видео-сайта",
+  "recentlyVisited": "Недавно просмотренные"
 }

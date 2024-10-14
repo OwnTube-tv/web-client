@@ -113,5 +113,8 @@
   "lastMonth": "Last Month",
   "lastYear": "Last Year",
   "olderThanAYear": "Older than a year",
-  "showMore": "Show more"
+  "showMore": "Show more",
+  "findAVideoSite": "Find a video site",
+  "tubeInstanceName": "Tube instance name",
+  "recentlyVisited": "Recently visited"
 }

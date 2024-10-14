@@ -35,6 +35,7 @@ export type PeertubeInstance = {
   host: string;
   name: string;
   shortDescription: string;
+  description: string;
   version: string;
   signupAllowed: boolean;
   signupRequiresApproval: boolean;

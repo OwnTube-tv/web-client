@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQueries, useQuery } from "@tanstack/react-query";
 import { InstanceInformationApiImpl } from "../instance";
 import { retry } from "../helpers";
 import { InstanceSearchServiceImpl } from "../instanceSearchApi";
@@ -27,5 +27,22 @@ export const useGetInstanceInfoQuery = (backend?: string) => {
     enabled: !!backend,
     refetchOnWindowFocus: false,
     retry,
+  });
+};
+
+export const useGetInstanceInfoCollectionQuery = (instances: string[]) => {
+  return useQueries({
+    queries: instances.map((instance) => ({
+      queryKey: [QUERY_KEYS.instance, instance],
+      queryFn: async () => {
+        const res = await InstanceInformationApiImpl.getInstanceInfo(instance);
+        return { instance: { ...res.instance, hostname: instance } };
+      },
+      retry,
+      refetchOnWindowFocus: false,
+    })),
+    combine: (result) => ({
+      data: result.map(({ data }) => data?.instance),
+    }),
   });
 };

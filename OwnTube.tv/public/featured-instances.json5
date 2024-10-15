@@ -3,7 +3,7 @@
     name: "XR Tube",
     description: "The PeerTube platform of Extinction Rebellion.",
     hostname: "tube.rebellion.global",
-    logoUrl: "https://joinpeertube.org/img/content-selection-thumbnails/extinction-rebellion.jpg",
+    logoUrl: "logos/tube.rebellion.global.png",
     customizations: {
       // Override default page title
       pageTitle: "XR Tube @ OwnTube.tv",

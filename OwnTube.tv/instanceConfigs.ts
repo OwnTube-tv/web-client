@@ -24,7 +24,7 @@ export const instanceConfigSchema = z.object({
   name: z.string(),
   description: z.string(),
   hostname: z.string(),
-  logoUrl: z.string().url().optional(),
+  logoUrl: z.string().optional(),
   customizations: customizationsSchema.optional(),
   iconUrl: z.string().url().optional(),
   logoExtension: z.string().optional(),

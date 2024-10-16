@@ -3,7 +3,17 @@ import { FlatList } from "react-native";
 import { ComboBoxInputProps } from "../models";
 
 export const useFilteredDropdown = (
-  { data, value, onChange }: Pick<ComboBoxInputProps, "data" | "value" | "onChange"> & { value?: string },
+  {
+    data,
+    value,
+    onChange,
+    allowCustomOptions,
+    getCustomOptionText,
+  }: Pick<ComboBoxInputProps, "data" | "value" | "onChange"> & {
+    value?: string;
+    allowCustomOptions?: boolean;
+    getCustomOptionText?: (input: string) => string;
+  },
   listRef: MutableRefObject<FlatList | null>,
 ) => {
   const [inputValue, setInputValue] = useState("");
@@ -20,8 +30,16 @@ export const useFilteredDropdown = (
       return data;
     }
 
-    return data?.filter(({ label }) => label.toLowerCase().includes(inputValue.toLowerCase()));
-  }, [data, inputValue]);
+    const filteredData = data?.filter(({ label }) => label.toLowerCase().includes(inputValue.toLowerCase()));
+
+    if (allowCustomOptions) {
+      return [
+        { label: getCustomOptionText ? getCustomOptionText(inputValue) : `${inputValue}`, value: inputValue },
+      ].concat(filteredData?.filter(({ value }) => value.toLowerCase() !== inputValue.toLowerCase()) || []);
+    }
+
+    return filteredData;
+  }, [data, inputValue, allowCustomOptions, getCustomOptionText]);
 
   useEffect(() => {
     if (value) {

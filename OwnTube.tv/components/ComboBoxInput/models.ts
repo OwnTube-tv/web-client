@@ -10,4 +10,6 @@ export interface ComboBoxInputProps {
   testID: string;
   placeholder?: string;
   width?: number;
+  allowCustomOptions?: boolean;
+  getCustomOptionText?: (input: string) => string;
 }

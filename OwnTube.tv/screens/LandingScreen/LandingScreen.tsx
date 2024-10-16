@@ -7,11 +7,18 @@ import { useBreakpoints, useRecentInstances } from "../../hooks";
 import { Spacer } from "../../components/shared/Spacer";
 import { spacing } from "../../theme";
 import { Screen } from "../../layouts";
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useAppConfigContext } from "../../contexts";
-import { useGetInstanceInfoCollectionQuery, useGetInstancesQuery } from "../../api";
+import {
+  useGetInstanceConfigQuery,
+  useGetInstanceInfoCollectionQuery,
+  useGetInstancesQuery,
+  WRONG_SERVER_VERSION_STATUS_CODE,
+} from "../../api";
 import { useRouter } from "expo-router";
 import ComboBoxInput from "../../components/ComboBoxInput";
+import Toast from "react-native-toast-message";
+import { OwnTubeError } from "../../api/models";
 
 export const LandingScreen = () => {
   const { colors } = useTheme();
@@ -28,9 +35,33 @@ export const LandingScreen = () => {
         value: host,
       }));
   }, [data]);
+
+  const [hostnameToOpen, setHostnameToOpen] = useState<string | undefined>();
+  const { isSuccess: isInstanceConfigValid, error: instanceConfigError } = useGetInstanceConfigQuery(hostnameToOpen);
   const handleSelectSource = (hostname: string) => {
-    router.navigate({ pathname: "./", params: { backend: hostname } });
+    setHostnameToOpen(hostname);
   };
+
+  useEffect(() => {
+    if (isInstanceConfigValid) {
+      Toast.hide();
+      router.push({ pathname: "./", params: { backend: hostnameToOpen } });
+    }
+
+    if (instanceConfigError) {
+      Toast.show({
+        type: "error",
+        text1:
+          (instanceConfigError as unknown as OwnTubeError)?.code === WRONG_SERVER_VERSION_STATUS_CODE
+            ? instanceConfigError.message
+            : t("siteDidNotRespondError", {
+                errorCode: (instanceConfigError as unknown as OwnTubeError)?.code || instanceConfigError.message || "",
+              }),
+      });
+    }
+    setHostnameToOpen(undefined);
+  }, [isInstanceConfigValid, instanceConfigError, t]);
+
   const { recentInstances } = useRecentInstances();
   const { data: recentInstancesData } = useGetInstanceInfoCollectionQuery(recentInstances?.slice(0, 12) || []);
   const { width } = useWindowDimensions();
@@ -80,6 +111,10 @@ export const LandingScreen = () => {
         data={availableInstances}
         onChange={handleSelectSource}
         placeholder={t("tubeInstanceName")}
+        allowCustomOptions
+        getCustomOptionText={(hostname) => {
+          return t("openCustomSite", { hostname });
+        }}
       />
       <Spacer height={isDesktop ? spacing.xxxl : spacing.xxl} />
       <Typography fontWeight="Bold" fontSize={isDesktop ? "sizeXL" : "sizeLg"}>
@@ -104,7 +139,7 @@ export const LandingScreen = () => {
           </Typography>
           <Spacer height={isDesktop ? spacing.xxl : spacing.xl} />
           <View style={styles.platformsContainer}>
-            {recentInstancesData.map((platform, index) => {
+            {recentInstancesData?.map((platform, index) => {
               const featuredPlatformData = featuredInstances?.find(({ hostname }) => hostname === platform?.hostname);
 
               return (
@@ -115,7 +150,7 @@ export const LandingScreen = () => {
                   <PlatformCard
                     name={featuredPlatformData?.name || platform?.name}
                     description={featuredPlatformData?.description || platform?.description}
-                    logoUrl={featuredPlatformData?.logoUrl || platform?.avatars[0]?.url}
+                    logoUrl={featuredPlatformData?.logoUrl || platform?.avatars?.[0]?.url}
                     hostname={platform?.hostname}
                   />
                 </View>

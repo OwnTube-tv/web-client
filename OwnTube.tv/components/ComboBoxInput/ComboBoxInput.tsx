@@ -6,7 +6,15 @@ import { styles } from "./styles";
 import { useFullScreenModalContext } from "../../contexts";
 import { FullScreenSearchBox } from "./components";
 
-const ComboBoxInput = ({ onChange, data = [], testID, placeholder, width }: ComboBoxInputProps) => {
+const ComboBoxInput = ({
+  onChange,
+  data = [],
+  testID,
+  placeholder,
+  width,
+  allowCustomOptions,
+  getCustomOptionText,
+}: ComboBoxInputProps) => {
   const { colors } = useTheme();
   const modalControls = useFullScreenModalContext();
 
@@ -17,9 +25,11 @@ const ComboBoxInput = ({ onChange, data = [], testID, placeholder, width }: Comb
         data={data}
         placeholder={placeholder}
         handleClose={() => modalControls.toggleModal(false)}
+        allowCustomOptions={allowCustomOptions}
+        getCustomOptionText={getCustomOptionText}
       />
     );
-  }, [onChange, data, placeholder, modalControls]);
+  }, [onChange, data, placeholder, modalControls, getCustomOptionText]);
 
   return (
     <Pressable

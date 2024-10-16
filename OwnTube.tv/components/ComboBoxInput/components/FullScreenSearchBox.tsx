@@ -13,13 +13,25 @@ interface FullScreenSearchBoxProps {
   placeholder?: string;
   data?: DropDownItem[];
   onChange: (newValue: string) => void;
+  allowCustomOptions?: boolean;
+  getCustomOptionText?: (input: string) => string;
 }
 
-export const FullScreenSearchBox: FC<FullScreenSearchBoxProps> = ({ handleClose, placeholder, data, onChange }) => {
+export const FullScreenSearchBox: FC<FullScreenSearchBoxProps> = ({
+  handleClose,
+  placeholder,
+  data,
+  onChange,
+  allowCustomOptions,
+  getCustomOptionText,
+}) => {
   const { colors } = useTheme();
   const listRef = useRef<FlatList | null>(null);
 
-  const { inputValue, setInputValue, filteredList } = useFilteredDropdown({ data, onChange }, listRef);
+  const { inputValue, setInputValue, filteredList } = useFilteredDropdown(
+    { data, onChange, allowCustomOptions, getCustomOptionText },
+    listRef,
+  );
 
   const renderItem = useCallback(
     ({ item }: { item: DropDownItem }) => (
@@ -48,6 +60,12 @@ export const FullScreenSearchBox: FC<FullScreenSearchBoxProps> = ({ handleClose,
         ]}
         value={inputValue}
         onChangeText={setInputValue}
+        onSubmitEditing={(event) => {
+          if (allowCustomOptions && event.nativeEvent.text) {
+            onChange(event.nativeEvent.text);
+            handleClose();
+          }
+        }}
       />
       <View
         style={[

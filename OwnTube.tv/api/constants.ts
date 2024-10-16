@@ -16,6 +16,7 @@ export enum QUERY_KEYS {
   video = "video",
   instances = "instances",
   instance = "instance",
+  instanceConfig = "instanceConfig",
   channel = "channel",
   channels = "channels",
   channelsCollection = "channelsCollection",
@@ -28,3 +29,5 @@ export enum QUERY_KEYS {
   playlistInfo = "playlistInfo",
   playlistsCollection = "playlistsCollection",
 }
+
+export const WRONG_SERVER_VERSION_STATUS_CODE = 444;

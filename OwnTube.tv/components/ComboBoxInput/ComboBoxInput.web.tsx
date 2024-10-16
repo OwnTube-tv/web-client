@@ -6,11 +6,20 @@ import { styles } from "./styles";
 import { useFilteredDropdown } from "./hooks";
 import { DropdownItem, LIST_ITEM_HEIGHT } from "./components";
 
-const ComboBoxInput = ({ value = "", onChange, data = [], testID, placeholder, width }: ComboBoxInputProps) => {
+const ComboBoxInput = ({
+  value = "",
+  onChange,
+  data = [],
+  testID,
+  placeholder,
+  width,
+  allowCustomOptions,
+  getCustomOptionText,
+}: ComboBoxInputProps) => {
   const { colors } = useTheme();
   const listRef = useRef<FlatList | null>(null);
   const { isOptionsVisible, onSelect, setIsOptionsVisible, inputValue, setInputValue, filteredList } =
-    useFilteredDropdown({ value, data, onChange }, listRef);
+    useFilteredDropdown({ value, data, onChange, allowCustomOptions, getCustomOptionText }, listRef);
 
   const renderItem = useCallback(
     ({ item }: { item: DropDownItem }) => <DropdownItem item={item} onSelect={onSelect} value={value} />,
@@ -39,6 +48,11 @@ const ComboBoxInput = ({ value = "", onChange, data = [], testID, placeholder, w
         }}
         value={inputValue}
         onChangeText={setInputValue}
+        onSubmitEditing={(event) => {
+          if (allowCustomOptions && event.nativeEvent.text && getCustomOptionText) {
+            onSelect({ label: getCustomOptionText(event.nativeEvent.text), value: event.nativeEvent.text })();
+          }
+        }}
       />
       {isOptionsVisible && (
         <View

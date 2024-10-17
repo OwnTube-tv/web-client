@@ -3,7 +3,7 @@
     name: "XR Tube",
     description: "The PeerTube platform of Extinction Rebellion.",
     hostname: "tube.rebellion.global",
-    logoUrl: "https://joinpeertube.org/img/content-selection-thumbnails/extinction-rebellion.jpg",
+    logoUrl: "https://owntube-tv.github.io/web-client/logos/tube.rebellion.global.png",
     customizations: {
       // Override default page title
       pageTitle: "XR Tube @ OwnTube.tv",
@@ -20,9 +20,7 @@
     description: "Svensk /.../ politiska och andra makthavare.",
     hostname: "swebbtv.se",
     // Logo to display when listing things by logo
-    logoUrl: "https://nyheter.swebbtv.se/wp-content/uploads/2022/10/logoblack_narduvillveta_portrait.png",
-    // Icon to use in the top-left corner of the site, for example
-    iconUrl: "https://swebbtv.se/client/assets/images/logo.svg",
+    logoUrl: "https://owntube-tv.github.io/web-client/logos/swebbtv.se.png",
     customizations: {
       // Override default page title
       pageTitle: "Swebbtv @ OwnTube.tv",
@@ -65,6 +63,9 @@
         "4535",
         "4536",
         "253",
+        "156",
+        "672",
+        "646",
       ],
       // On the Playlists page, show a button to show all playlists (even hidden ones)
       playlistsShowHiddenButton: true,
@@ -81,39 +82,37 @@
     name: "Blender",
     description: "Videos presenting the evolutions of the 3D creation software, tutorials and animated films supported by the Blender Foundation.",
     hostname: "video.blender.org",
-    logoUrl: "https://joinpeertube.org/img/content-selection-thumbnails/blender.jpg",
+    logoUrl: "https://owntube-tv.github.io/web-client/logos/video.blender.org.jpg",
   },
   {
     name: "TILvids",
     description: "A video community focused on sharing best content at the crossroads of education and entertainment, made by some of the best independent creators.",
     hostname: "tilvids.com",
-    logoUrl: "https://joinpeertube.org/img/content-selection-thumbnails/tilvids.jpg",
+    logoUrl: "https://owntube-tv.github.io/web-client/logos/tilvids.com.jpg",
   },
   {
     name: "Beeld & Geluid",
     description: "Netherland Museum for media culture, Beeld & Geluid offers online access to audiovisual archive collections to stimulate creative reuse.",
     hostname: "peertube.beeldengeluid.nl",
-    logoUrl: "https://joinpeertube.org/img/content-selection-thumbnails/beeldengeluid.jpg",
-    logoExtension: "jpg",
+    logoUrl: "https://owntube-tv.github.io/web-client/logos/peertube.beeldengeluid.nl.jpg",
   },
   {
     name: "Privacy International Media Server",
     description: "Videos presenting excessive state and corporate surveillance issues and advices on how to increase security and freedom through better privacy.",
     hostname: "media.privacyinternational.org",
-    logoUrl: "https://joinpeertube.org/img/content-selection-thumbnails/privacy-international.jpg",
+    logoUrl: "https://owntube-tv.github.io/web-client/logos/media.privacyinternational.org.jpg",
   },
   {
     name: "Basspistol",
     description: "Video platform for the Underground Artists sharing their music under free license.",
     hostname: "v.basspistol.org",
-    logoUrl: "https://joinpeertube.org/img/content-selection-thumbnails/basspistol.jpg",
+    logoUrl: "https://owntube-tv.github.io/web-client/logos/v.basspistol.org.png",
   },
   {
     name: "PeerTube Nightly",
     description: "PeerTube instance with the bleeding edge changes",
     hostname: "peertube2.cpy.re",
-    logoUrl: "https://peertube2.cpy.re/plugins/logo-framasoft/0.0.1/static/images/framasoft-logo.png",
-    logoExtension: "png",
+    logoUrl: "https://owntube-tv.github.io/web-client/logos/peertube2.cpy.re.png",
   },
   {
     name: "Fedi.Video",
@@ -129,12 +128,12 @@
     name: "urbanists.video",
     description: "Showing is more effective than telling. Check out where people are championing walkable, livable places through video around the world. \uD83C\uDF0D",
     hostname: "urbanists.video",
-    logoUrl: "https://urbanists.video/static-extra/logo.svg",
+    logoUrl: "https://owntube-tv.github.io/web-client/logos/urbanists.video.png",
   },
   {
     name: "Swebbtube",
     description: "Svensk Webbtelevision är ett medborgarfinansierat initiativ för att skapa en regelbunden och allsidig nyhets- och informationsförmedling som ger uttryck för ett breddat utbud av ämnen och perspektiv samt granskning av för demokratin grundläggande skeenden. Därför tror vi på en fri och öppen debatt där olika åsikter får komma till uttryck.",
     hostname: "swebbtube.se",
-    logoUrl: "https://swebbtube.se/client/assets/images/logo.svg?cec19af8690344cefefeecddc5a123f4ebd980c9",
+    logoUrl: "https://owntube-tv.github.io/web-client/logos/swebbtube.se.png",
   },
 ]

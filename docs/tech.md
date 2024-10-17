@@ -89,8 +89,7 @@ Each instance in the configuration file is represented by an object with the fol
 2. `description`: A brief description of the instance's content or purpose.
 3. `hostname`: The domain name where the instance is hosted.
 4. `logoUrl`: URL to the instance's logo image.
-5. `iconUrl` (optional): URL to an icon, typically used in the site's header.
-6. `customizations`: An object containing various customization options.
+5. `customizations`: An object containing various customization options.
 
 The `customizations` object allows for fine-tuning of the instance's appearance and behavior within the OwnTube.tv client. Some key customization options include:
 

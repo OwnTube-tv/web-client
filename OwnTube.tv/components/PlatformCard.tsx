@@ -9,9 +9,9 @@ import { PeertubeLogo } from "./Svg";
 import { SvgUri } from "react-native-svg";
 
 interface PlatformCardProps {
-  name: string;
-  description: string;
-  hostname: string;
+  name?: string;
+  description?: string;
+  hostname?: string;
   logoUrl?: string;
 }
 

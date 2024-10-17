@@ -12,7 +12,13 @@ export function handleAxiosErrorWithRetry(error: unknown, target: string): Promi
   return new Promise((_, reject) => {
     setTimeout(
       () => {
-        reject(new OwnTubeError(`Failed to fetch ${target}. ${message}`, response?.status, message));
+        reject(
+          new OwnTubeError({
+            text: `Failed to fetch ${target}. ${message}`,
+            code: response?.status,
+            message,
+          }),
+        );
       },
       (retryAfter ?? 0) * 1000, // QueryClient will handle the retry
     );

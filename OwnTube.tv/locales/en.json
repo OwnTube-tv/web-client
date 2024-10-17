@@ -113,5 +113,12 @@
   "lastMonth": "Last Month",
   "lastYear": "Last Year",
   "olderThanAYear": "Older than a year",
-  "showMore": "Show more"
+  "showMore": "Show more",
+  "findAVideoSite": "Find a video site",
+  "tubeInstanceName": "Site name or hostname",
+  "recentlyVisited": "Recently visited",
+  "openCustomSite": "Open \"{{hostname}}\" PeerTube site",
+  "siteDidNotRespondError": "Site did not respond, error: {{errorCode}}",
+  "checkingInstance": "Please wait, checking {{hostname}}...",
+  "incompatibleServerVersion": "Incompatible PeerTube version {{serverVersion}}, please update to v5 or above"
 }

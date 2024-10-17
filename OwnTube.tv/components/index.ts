@@ -1,4 +1,3 @@
-export * from "./SourceSelect";
 export * from "./Typography";
 export * from "./shared";
 export * from "./VideoThumbnail";
@@ -9,7 +8,6 @@ export * from "./DeviceCapabilitiesModal";
 export * from "./DeviceCapabilities";
 export * from "./ViewHistory";
 export * from "./ComboBoxInput";
-export * from "./SelectLanguage";
 export * from "./IconButton";
 export * from "./IcoMoonIcon";
 export * from "./FocusWrapper";

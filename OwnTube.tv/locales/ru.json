@@ -113,5 +113,12 @@
   "lastMonth": "В прошлом месяце",
   "lastYear": "В прошлом году",
   "olderThanAYear": "Старше года",
-  "showMore": "Показать еще"
+  "showMore": "Показать еще",
+  "findAVideoSite": "Найти видео-сайт",
+  "tubeInstanceName": "Название сайта или имя хоста",
+  "recentlyVisited": "Недавно просмотренные",
+  "openCustomSite": "Открыть сайт \"{{hostname}}\"",
+  "siteDidNotRespondError": "Сайт не отвечает, ошибка: {{errorCode}}",
+  "checkingInstance": "Пожалуйста, подождите, проверка {{hostname}}...",
+  "incompatibleServerVersion": "Несовместимая версия PeerTube {{serverVersion}}, пожалуйста, обновитесь до версии 5 или новее"
 }

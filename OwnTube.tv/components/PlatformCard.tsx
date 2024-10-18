@@ -1,12 +1,11 @@
-import { View, Image, StyleSheet, Pressable } from "react-native";
+import { View, StyleSheet, Pressable } from "react-native";
 import { Typography } from "./Typography";
 import { Link } from "expo-router";
 import { borderRadius, spacing } from "../theme";
 import { useTheme } from "@react-navigation/native";
 import { useBreakpoints, useHoverState } from "../hooks";
 import { IcoMoonIcon } from "./IcoMoonIcon";
-import { PeertubeLogo } from "./Svg";
-import { SvgUri } from "react-native-svg";
+import { InstanceLogo } from "./InstanceLogo";
 
 interface PlatformCardProps {
   name?: string;
@@ -19,7 +18,6 @@ export const PlatformCard = ({ name, description, hostname, logoUrl }: PlatformC
   const { colors } = useTheme();
   const { isHovered, hoverHandlers } = useHoverState();
   const { isDesktop } = useBreakpoints();
-  const isLogoSvg = logoUrl?.endsWith("svg");
 
   return (
     <Link href={{ pathname: "./", params: { backend: hostname } }} asChild>
@@ -34,21 +32,8 @@ export const PlatformCard = ({ name, description, hostname, logoUrl }: PlatformC
             },
           ]}
         >
-          <View
-            style={[
-              styles.imageContainer,
-              {
-                backgroundColor: colors.white94,
-              },
-            ]}
-          >
-            {!logoUrl ? (
-              <PeertubeLogo width={40} height={40} />
-            ) : isLogoSvg ? (
-              <SvgUri uri={logoUrl} width={40} height={40} fallback={<PeertubeLogo width={40} height={40} />} />
-            ) : (
-              <Image source={{ uri: logoUrl }} resizeMode="cover" style={styles.image} />
-            )}
+          <View style={styles.imageContainer}>
+            <InstanceLogo logoUrl={logoUrl} size={40} />
           </View>
           <View style={styles.textsContainer}>
             <View
@@ -108,7 +93,6 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     width: "100%",
   },
-  image: { height: 40, width: 40 },
   imageContainer: { borderRadius: borderRadius.radiusMd, height: 40, overflow: "hidden", width: 40 },
   nameTextContainer: { width: "85%" },
   pressableContainer: {

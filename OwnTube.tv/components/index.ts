@@ -32,3 +32,4 @@ export * from "./ErrorPage";
 export * from "./OfflineToast";
 export * from "./OnlineToast";
 export * from "./ErrorTextWithRetry";
+export * from "./InstanceLogo";

@@ -9,6 +9,7 @@ export enum STORAGE {
   VIEW_HISTORY = "view_history",
   RECENT_INSTANCES = "recent_instances",
   LOCALE = "locale",
+  INSTANCE_ENTRYPOINTS = "instance_entrypoints",
 }
 
 export enum ROUTES {

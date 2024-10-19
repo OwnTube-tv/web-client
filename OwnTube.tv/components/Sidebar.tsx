@@ -2,7 +2,7 @@ import { FC } from "react";
 import { DrawerContentComponentProps, DrawerContentScrollView } from "@react-navigation/drawer";
 import { Link } from "expo-router";
 import { useTheme } from "@react-navigation/native";
-import { ROUTES } from "../types";
+import { ROUTES, STORAGE } from "../types";
 import { useTranslation } from "react-i18next";
 import { useColorSchemeContext, useFullScreenModalContext } from "../contexts";
 import { StyleSheet, View } from "react-native";
@@ -13,6 +13,8 @@ import { useBreakpoints, useInstanceConfig } from "../hooks";
 import { InstanceInfo } from "./InstanceInfo";
 import { Settings } from "./VideoControlsOverlay/components/modals";
 import { useNetInfo } from "@react-native-community/netinfo";
+import { writeToAsyncStorage } from "../utils";
+import useLeaveInstancePermission from "../hooks/useLeaveInstancePermission";
 
 const SIDEBAR_ROUTES = [
   {
@@ -62,10 +64,19 @@ export const Sidebar: FC<SidebarProps> = ({ backend, ...navigationProps }) => {
   const { toggleModal, setContent } = useFullScreenModalContext();
   const { currentInstanceConfig } = useInstanceConfig();
   const { isConnected } = useNetInfo();
+  const { isLeaveInstanceAllowed } = useLeaveInstancePermission(navigationProps);
+
+  const isLeaveInstanceShown = isLeaveInstanceAllowed && !currentInstanceConfig?.customizations?.menuHideLeaveButton;
 
   const handleOpenSettings = () => {
     toggleModal(true);
     setContent(<Settings onClose={() => toggleModal(false)} />);
+  };
+
+  const handleLeaveInstance = () => {
+    writeToAsyncStorage(STORAGE.DATASOURCE, "").then(() => {
+      navigationProps.navigation.navigate(`(home)/${ROUTES.INDEX}`);
+    });
   };
 
   return (
@@ -141,6 +152,15 @@ export const Sidebar: FC<SidebarProps> = ({ backend, ...navigationProps }) => {
         icon="Settings"
         text={shouldExpand ? t("settingsPageTitle") : undefined}
       />
+      {isLeaveInstanceShown && (
+        <Button
+          justifyContent="flex-start"
+          onPress={handleLeaveInstance}
+          contrast="none"
+          icon="Exit"
+          text={shouldExpand ? t("leaveSite") : undefined}
+        />
+      )}
     </DrawerContentScrollView>
   );
 };

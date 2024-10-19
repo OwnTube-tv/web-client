@@ -13,7 +13,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { useFonts } from "expo-font";
 import Toast from "react-native-toast-message";
-import { AppDesktopHeader, FullScreenModal, OfflineToast, OnlineToast, Sidebar } from "../components";
+import { AppDesktopHeader, FullScreenModal, InfoToast, Sidebar } from "../components";
 import "../i18n";
 import { useTranslation } from "react-i18next";
 import { useCallback, useEffect } from "react";
@@ -54,7 +54,7 @@ const RootStack = () => {
   const breakpoints = useBreakpoints();
   const { backend } = useGlobalSearchParams<{ backend: string }>();
   const pathname = usePathname();
-  const { left } = useSafeAreaInsets();
+  const { left, top } = useSafeAreaInsets();
 
   const { isOpen: isModalOpen, content: modalContent, toggleModal } = useFullScreenModalContext();
 
@@ -108,7 +108,12 @@ const RootStack = () => {
           <Drawer.Screen name={`(home)/${ROUTES.PLAYLISTS}`} />
           <Drawer.Screen name={`(home)/${ROUTES.PLAYLIST}`} />
         </Drawer>
-        <Toast config={{ online: () => <OnlineToast />, offline: () => <OfflineToast /> }} />
+        <Toast
+          topOffset={top || undefined}
+          config={{
+            info: (props) => <InfoToast {...props} />,
+          }}
+        />
         <FullScreenModal onBackdropPress={() => toggleModal?.(false)} isVisible={isModalOpen}>
           {modalContent}
         </FullScreenModal>

@@ -93,7 +93,7 @@ export const VideoControlsOverlay = ({
     if (router.canGoBack()) {
       router.back();
     } else {
-      router.navigate({ pathname: `/`, params: { backend } });
+      router.navigate({ pathname: `/${ROUTES.HOME}`, params: { backend } });
     }
   };
 

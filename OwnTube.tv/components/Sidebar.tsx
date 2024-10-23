@@ -20,8 +20,8 @@ const SIDEBAR_ROUTES = [
   {
     nameKey: "home",
     icon: "Home",
-    href: { pathname: "/" },
-    routeName: "(home)/index",
+    href: { pathname: "/home" },
+    routeName: "(home)/home",
   },
   {
     nameKey: "history",

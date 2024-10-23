@@ -1,49 +1,31 @@
-import { useFocusEffect, useLocalSearchParams, useRouter } from "expo-router";
+import { useFocusEffect, useRouter } from "expo-router";
 import { ROUTES, STORAGE } from "../../types";
-import { readFromAsyncStorage, writeToAsyncStorage } from "../../utils";
+import { readFromAsyncStorage } from "../../utils";
 import { Loader } from "../../components";
 import { useCallback, useState } from "react";
 import Head from "expo-router/head";
-import { HomeScreen, LandingScreen } from "../../screens";
+import { LandingScreen } from "../../screens";
 import { Platform } from "react-native";
-import { useInstanceConfig, useRecentInstances } from "../../hooks";
-import { RootStackParams } from "../_layout";
 import { useTranslation } from "react-i18next";
 
 export default function index() {
   const router = useRouter();
-  const { backend } = useLocalSearchParams<RootStackParams[ROUTES.INDEX]>();
   const [isGettingStoredBackend, setIsGettingStoredBackend] = useState(true);
-  const { recentInstances, addRecentInstance } = useRecentInstances();
   const { t } = useTranslation();
-  const { currentInstanceConfig } = useInstanceConfig();
 
   const getSourceAndRedirect = async () => {
-    if (backend) {
-      setIsGettingStoredBackend(false);
-      return;
-    }
-
     const source = await readFromAsyncStorage(STORAGE.DATASOURCE);
     setIsGettingStoredBackend(false);
 
     if (source) {
-      router.setParams({ backend: source });
+      router.push({ pathname: `/${ROUTES.HOME}`, params: { backend: source } });
     }
   };
 
   useFocusEffect(
     useCallback(() => {
-      if (backend) {
-        writeToAsyncStorage(STORAGE.DATASOURCE, backend);
-
-        if (recentInstances?.[0] !== backend) {
-          addRecentInstance(backend);
-        }
-      }
-
       getSourceAndRedirect();
-    }, [backend, recentInstances]),
+    }, []),
   );
 
   if (isGettingStoredBackend) {
@@ -56,14 +38,12 @@ export default function index() {
         default: null,
         web: (
           <Head>
-            <title>
-              {currentInstanceConfig?.customizations?.pageTitle ?? `${t("appName")}${backend ? "@" + backend : ""}`}
-            </title>
+            <title>{t("appName")}</title>
             <meta name="description" content="OwnTube.tv homepage" />
           </Head>
         ),
       })}
-      {backend ? <HomeScreen /> : <LandingScreen />}
+      <LandingScreen />
     </>
   );
 }

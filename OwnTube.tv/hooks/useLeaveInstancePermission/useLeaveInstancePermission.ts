@@ -4,20 +4,23 @@ import { DrawerContentComponentProps } from "@react-navigation/drawer";
 
 const useLeaveInstancePermission = ({ state }: DrawerContentComponentProps) => {
   const { backend } = useGlobalSearchParams<{ backend: string }>();
-  const [instanceSessionEntrypoints, setInstanceSessionEntrypoints] = useState<Record<string, number>>({});
+  const [instanceSessionEntrypoints, setInstanceSessionEntrypoints] = useState<Record<string, "landing" | "other">>({});
   const [isLeaveInstanceAllowed, setIsLeaveInstanceAllowed] = useState(false);
 
   useEffect(() => {
     if (!backend) return;
+    const isOpeningFromLandingPage = state.history.some(
+      (entry) => "key" in entry && entry.key.includes("(home)/index"),
+    );
 
     const currentBackendEntrypoint = instanceSessionEntrypoints[backend];
 
-    if (currentBackendEntrypoint !== null && currentBackendEntrypoint !== undefined) {
-      setIsLeaveInstanceAllowed(currentBackendEntrypoint === 0);
+    if (currentBackendEntrypoint) {
+      setIsLeaveInstanceAllowed(currentBackendEntrypoint === "landing");
     } else {
-      setInstanceSessionEntrypoints((prev) => ({ ...prev, [backend]: state.index }));
+      setInstanceSessionEntrypoints((prev) => ({ ...prev, [backend]: isOpeningFromLandingPage ? "landing" : "other" }));
 
-      setIsLeaveInstanceAllowed(state.index === 0);
+      setIsLeaveInstanceAllowed(isOpeningFromLandingPage);
     }
   }, [backend]);
 

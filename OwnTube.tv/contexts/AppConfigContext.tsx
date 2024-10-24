@@ -4,6 +4,7 @@ import { useNetInfo } from "@react-native-community/netinfo";
 
 import { InstanceConfig } from "../instanceConfigs";
 import Toast from "react-native-toast-message";
+import { useTranslation } from "react-i18next";
 
 interface IAppConfigContext {
   isDebugMode: boolean;
@@ -21,6 +22,7 @@ const AppConfigContext = createContext<IAppConfigContext>({
 });
 
 export const AppConfigContextProvider = ({ children }: PropsWithChildren) => {
+  const { t } = useTranslation();
   const [isDebugMode, setIsDebugMode] = useState(false);
   const { deviceCapabilities, setPlayerImplementation } = useDeviceCapabilities();
   const { featuredInstances } = useFeaturedInstancesData();
@@ -28,9 +30,9 @@ export const AppConfigContextProvider = ({ children }: PropsWithChildren) => {
 
   useEffect(() => {
     if (!isConnected) {
-      Toast.show({ type: "offline", autoHide: false });
+      Toast.show({ type: "info", text1: t("noNetworkConnection"), props: { isError: true }, autoHide: false });
     } else {
-      Toast.show({ type: "online", autoHide: true });
+      Toast.show({ type: "info", text1: t("networkConnectionRestored"), autoHide: true });
     }
   }, [isConnected]);
 

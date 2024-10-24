@@ -29,7 +29,6 @@ export * from "./BackToChannel";
 export * from "./ListInfoHeader";
 export * from "./EmptyPage";
 export * from "./ErrorPage";
-export * from "./OfflineToast";
-export * from "./OnlineToast";
 export * from "./ErrorTextWithRetry";
 export * from "./InstanceLogo";
+export * from "./InfoToast";

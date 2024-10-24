@@ -50,13 +50,15 @@ export const LandingScreen = () => {
 
     if (instanceConfigError) {
       Toast.show({
-        type: "error",
+        type: "info",
+        props: { isError: true },
         text1:
           (instanceConfigError as unknown as OwnTubeError)?.code === WRONG_SERVER_VERSION_STATUS_CODE
             ? instanceConfigError.message
             : t("siteDidNotRespondError", {
                 errorCode: (instanceConfigError as unknown as OwnTubeError)?.code || instanceConfigError.message || "",
               }),
+        autoHide: false,
       });
     }
     setHostnameToOpen(undefined);

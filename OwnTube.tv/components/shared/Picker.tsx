@@ -1,6 +1,6 @@
 import RNPickerSelect, { PickerSelectProps } from "react-native-picker-select";
 import { borderRadius, fontSizes, fontWeights, spacing } from "../../theme";
-import { StyleSheet, View } from "react-native";
+import { Platform, StyleSheet, View } from "react-native";
 import { useTheme } from "@react-navigation/native";
 import { IcoMoonIcon } from "../IcoMoonIcon";
 import { useMemo, useState } from "react";
@@ -20,7 +20,7 @@ export const Picker = (props: PickerSelectProps) => {
     () => ({
       fontSize: fontSizes.sizeSm,
       fontWeight: fontWeights.Medium,
-      fontFamily: "Inter_500Medium",
+      fontFamily: Platform.OS === "web" ? "Inter" : "Inter_500Medium",
       lineHeight: 17,
       color: colors.theme950,
     }),

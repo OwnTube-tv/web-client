@@ -2,7 +2,7 @@ import { useLocalSearchParams } from "expo-router";
 import { RootStackParams } from "../../app/_layout";
 import { ROUTES } from "../../types";
 import { Screen } from "../../layouts";
-import { Loader, VideoGrid } from "../../components";
+import { InfoFooter, Loader, VideoGrid } from "../../components";
 import { useGetCategoriesQuery, useInfiniteVideosQuery } from "../../api";
 import { useMemo } from "react";
 import { useInstanceConfig } from "../../hooks";
@@ -39,6 +39,7 @@ export const CategoryScreen = () => {
         isLoadingMore={isFetchingNextPage}
         handleShowMore={hasNextPage ? fetchNextPage : undefined}
       />
+      <InfoFooter />
     </Screen>
   );
 };

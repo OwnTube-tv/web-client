@@ -1,7 +1,6 @@
 import { View, Image, StyleSheet } from "react-native";
-import { useColorSchemeContext } from "../contexts";
 import { useTheme } from "@react-navigation/native";
-import { FC } from "react";
+import { FC, useState } from "react";
 import { ViewHistoryEntry } from "../hooks";
 import { GetVideosVideo } from "../api/models";
 import { borderRadius, spacing } from "../theme";
@@ -16,19 +15,15 @@ interface VideoThumbnailProps {
   imageDimensions: { width: number; height: number };
 }
 
-const defaultImagePaths = {
-  dark: require("./../assets/logoDark-400x400.png"),
-  light: require("./../assets/Logo400x400.png"),
-};
+const fallback = require("../assets/thumbnailFallback.png");
 
 export const VideoThumbnail: FC<VideoThumbnailProps> = ({ video, backend, timestamp, imageDimensions }) => {
-  const { scheme } = useColorSchemeContext();
-
   const { colors } = useTheme();
+  const [isError, setIsError] = useState(false);
 
   const percentageWatched = timestamp ? (timestamp / video.duration) * 100 : 0;
 
-  const imageSource = video.previewPath ? { uri: video.previewPath } : defaultImagePaths[scheme ?? "dark"];
+  const imageSource = video.previewPath ? { uri: video.previewPath } : fallback;
 
   if (!backend) {
     return null;
@@ -36,7 +31,13 @@ export const VideoThumbnail: FC<VideoThumbnailProps> = ({ video, backend, timest
 
   return (
     <View style={[styles.videoThumbnailContainer, { backgroundColor: colors.themeDesaturated500 }]}>
-      <Image {...imageDimensions} resizeMode="cover" source={imageSource} style={styles.videoImage} />
+      <Image
+        {...imageDimensions}
+        resizeMode="cover"
+        source={isError ? fallback : imageSource}
+        style={[styles.videoImage, { width: "100%", height: "100%" }]}
+        onError={() => setIsError(true)}
+      />
       {!!percentageWatched && percentageWatched > 0 && (
         <View style={[styles.progressContainer, { backgroundColor: colors.white25 }]}>
           <View style={{ backgroundColor: colors.theme500, width: `${percentageWatched}%`, height: spacing.xs }} />

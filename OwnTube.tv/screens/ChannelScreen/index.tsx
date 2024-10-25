@@ -4,7 +4,7 @@ import { ROUTES } from "../../types";
 import { Screen } from "../../layouts";
 import { useGetCategoriesQuery, useGetChannelInfoQuery, useGetChannelPlaylistsQuery } from "../../api";
 import { CategoryView, LatestVideos } from "./components";
-import { Loader } from "../../components";
+import { InfoFooter, Loader } from "../../components";
 import { PlaylistVideosView } from "../Playlists/components";
 import { ListInfoHeader } from "../../components";
 
@@ -33,6 +33,7 @@ export const ChannelScreen = () => {
         <PlaylistVideosView channel={videoChannel?.name} id={id} title={displayName} key={uuid} />
       ))}
       {categories?.map((category) => <CategoryView channelHandle={channel} category={category} key={category.id} />)}
+      <InfoFooter />
     </Screen>
   );
 };

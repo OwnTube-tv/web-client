@@ -1,6 +1,6 @@
 import { getErrorTextKeys, QUERY_KEYS, useGetPlaylistsCollectionQuery, useGetPlaylistsQuery } from "../../api";
 import { Screen } from "../../layouts";
-import { Button, EmptyPage, ErrorPage, Loader, VideoGrid } from "../../components";
+import { Button, EmptyPage, ErrorPage, InfoFooter, Loader, VideoGrid } from "../../components";
 import { getAvailableVidsString } from "../../utils";
 import { ROUTES } from "../../types";
 import { useTranslation } from "react-i18next";
@@ -88,6 +88,7 @@ export const Playlists = () => {
           <Button contrast="low" text="Show all playlists" onPress={() => setShowHiddenPlaylists(true)} />
         </View>
       )}
+      <InfoFooter />
     </Screen>
   );
 };

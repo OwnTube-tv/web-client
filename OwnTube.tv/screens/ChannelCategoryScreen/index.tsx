@@ -3,7 +3,7 @@ import { RootStackParams } from "../../app/_layout";
 import { ROUTES } from "../../types";
 import { Screen } from "../../layouts";
 import { useGetCategoriesQuery, useGetChannelInfoQuery, useInfiniteGetChannelVideosQuery } from "../../api";
-import { BackToChannel, Typography, VideoGrid } from "../../components";
+import { BackToChannel, InfoFooter, Typography, VideoGrid } from "../../components";
 import { StyleSheet } from "react-native";
 import { useTheme } from "@react-navigation/native";
 import { spacing } from "../../theme";
@@ -50,6 +50,7 @@ export const ChannelCategoryScreen = () => {
         isLoadingMore={isFetchingNextPage}
         handleShowMore={hasNextPage ? fetchNextPage : undefined}
       />
+      <InfoFooter />
     </Screen>
   );
 };

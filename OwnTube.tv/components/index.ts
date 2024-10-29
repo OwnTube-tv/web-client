@@ -8,7 +8,6 @@ export * from "./DeviceCapabilitiesModal";
 export * from "./DeviceCapabilities";
 export * from "./ViewHistory";
 export * from "./ComboBoxInput";
-export * from "./IconButton";
 export * from "./IcoMoonIcon";
 export * from "./FocusWrapper";
 export * from "./ModalContainer";

@@ -1,7 +1,7 @@
 import { getErrorTextKeys, QUERY_KEYS, useGetChannelsCollectionQuery, useGetChannelsQuery } from "../../api";
 import { Screen } from "../../layouts";
 import { spacing } from "../../theme";
-import { EmptyPage, ErrorPage, Loader, VideoGrid } from "../../components";
+import { EmptyPage, ErrorPage, InfoFooter, Loader, VideoGrid } from "../../components";
 import { useBreakpoints } from "../../hooks";
 import { StyleSheet } from "react-native";
 import { useMemo } from "react";
@@ -86,6 +86,7 @@ export const ChannelsScreen = () => {
       }}
     >
       {renderScreenContent}
+      <InfoFooter />
     </Screen>
   );
 };

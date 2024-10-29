@@ -18,6 +18,7 @@ import { RootStackParams } from "../app/_layout";
 import { ROUTES } from "../types";
 import { useFullScreenModalContext } from "../contexts";
 import { EmptyPage } from "./EmptyPage";
+import { InfoFooter } from "./InfoFooter";
 
 export const ViewHistory = () => {
   const { t } = useTranslation();
@@ -116,6 +117,7 @@ export const ViewHistory = () => {
           ItemSeparatorComponent={() => <Spacer height={spacing.xl} />}
           renderSectionFooter={() => <Spacer height={spacing.xxl} />}
         />
+        <InfoFooter />
       </Screen>
     </>
   );

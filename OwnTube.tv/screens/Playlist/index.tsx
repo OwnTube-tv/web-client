@@ -2,7 +2,7 @@ import { useGetChannelInfoQuery, useGetPlaylistInfoQuery, useInfiniteGetPlaylist
 import { useLocalSearchParams } from "expo-router";
 import { RootStackParams } from "../../app/_layout";
 import { ROUTES } from "../../types";
-import { BackToChannel, ListInfoHeader, Loader, VideoGrid } from "../../components";
+import { BackToChannel, InfoFooter, ListInfoHeader, Loader, VideoGrid } from "../../components";
 import { useMemo } from "react";
 import { Screen } from "../../layouts";
 import { useInstanceConfig } from "../../hooks";
@@ -42,6 +42,7 @@ export const Playlist = () => {
         isLoadingMore={isFetchingNextPage}
         handleShowMore={hasNextPage ? fetchNextPage : undefined}
       />
+      <InfoFooter />
     </Screen>
   );
 };

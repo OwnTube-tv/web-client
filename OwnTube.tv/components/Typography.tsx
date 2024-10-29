@@ -1,5 +1,5 @@
 import { PropsWithChildren, useMemo } from "react";
-import { Text, TextProps } from "react-native";
+import { Platform, Text, TextProps } from "react-native";
 import { useTheme } from "@react-navigation/native";
 import { fontFamilies, fontSizes, fontWeights, lineHeights, spacing } from "../theme";
 
@@ -31,6 +31,14 @@ export const Typography = (
     return fontWeights[props.fontWeight];
   }, [props.fontWeight]);
 
+  const fontFamily = useMemo(() => {
+    if (Platform.OS === "web") {
+      return "Inter";
+    }
+
+    return props.fontWeight ? `Inter_${fontWeight}${props.fontWeight}` : fontFamilies.Regular;
+  }, [props, fontWeight]);
+
   return (
     <Text
       {...props}
@@ -42,7 +50,7 @@ export const Typography = (
           lineHeight,
           textShadowColor: props.hasOuterGlow ? colors.background : undefined,
           textShadowRadius: props.hasOuterGlow ? spacing.md : undefined,
-          fontFamily: props.fontWeight ? `Inter_${fontWeight}${props.fontWeight}` : fontFamilies.Regular,
+          fontFamily,
         },
         props.style,
       ]}

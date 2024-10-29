@@ -18,17 +18,6 @@ import "../i18n";
 import { useTranslation } from "react-i18next";
 import { useCallback, useEffect } from "react";
 import { readFromAsyncStorage } from "../utils";
-import {
-  Inter_100Thin,
-  Inter_200ExtraLight,
-  Inter_300Light,
-  Inter_400Regular,
-  Inter_500Medium,
-  Inter_600SemiBold,
-  Inter_700Bold,
-  Inter_800ExtraBold,
-  Inter_900Black,
-} from "@expo-google-fonts/inter";
 import { colorSchemes } from "../theme";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { StatusBar } from "expo-status-bar";
@@ -132,15 +121,15 @@ export default function RootLayout() {
   const isWeb = Platform.OS === "web";
 
   const [fontsLoaded, fontError] = useFonts({
-    Inter_100Thin,
-    Inter_200ExtraLight,
-    Inter_300Light,
-    Inter_400Regular,
-    Inter_500Medium,
-    Inter_600SemiBold,
-    Inter_700Bold,
-    Inter_800ExtraBold,
-    Inter_900Black,
+    Inter_100Thin: require("../assets/fonts/Inter/Inter-Thin.otf"),
+    Inter_200ExtraLight: require("../assets/fonts/Inter/Inter-ExtraLight.otf"),
+    Inter_300Light: require("../assets/fonts/Inter/Inter-Light.otf"),
+    Inter_400Regular: require("../assets/fonts/Inter/Inter-Regular.otf"),
+    Inter_500Medium: require("../assets/fonts/Inter/Inter-Medium.otf"),
+    Inter_600SemiBold: require("../assets/fonts/Inter/Inter-SemiBold.otf"),
+    Inter_700Bold: require("../assets/fonts/Inter/Inter-Bold.otf"),
+    Inter_800ExtraBold: require("../assets/fonts/Inter/Inter-ExtraBold.otf"),
+    Inter_900Black: require("../assets/fonts/Inter/Inter-Black.otf"),
     IcoMoon: require("../assets/fonts/icomoon.ttf"),
   });
 

@@ -43,6 +43,7 @@ export const HomeScreen = () => {
         ...styles.container,
         backgroundColor: colors.background,
         paddingRight: isMobile ? 0 : spacing.xl,
+        justifyContent: "space-between",
       }}
     >
       <LatestVideosView />

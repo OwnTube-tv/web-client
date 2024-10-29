@@ -1,6 +1,6 @@
 import { getErrorTextKeys, QUERY_KEYS, useGetCategoriesCollectionQuery, useGetCategoriesQuery } from "../../api";
 import { Screen } from "../../layouts";
-import { EmptyPage, ErrorPage, Loader, VideoGrid } from "../../components";
+import { EmptyPage, ErrorPage, InfoFooter, Loader, VideoGrid } from "../../components";
 import { getAvailableVidsString } from "../../utils";
 import { ROUTES } from "../../types";
 import { useTranslation } from "react-i18next";
@@ -67,6 +67,7 @@ export const CategoriesScreen = () => {
           data={data?.data}
         />
       ))}
+      <InfoFooter />
     </Screen>
   );
 };

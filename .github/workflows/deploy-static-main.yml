@@ -128,6 +128,46 @@ jobs:
           name: release apk
           path: "./OwnTube.tv/android/app/build/outputs/apk/release/app-release.apk"
 
+  build_ios_app:
+    needs: [code_quality, build_info]
+    runs-on: self-hosted
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20.x
+
+      - name: Install Dependencies
+        run: cd OwnTube.tv/ && npm install
+
+      - name: Expo Prebuild ios assets
+        run: cd OwnTube.tv/ && npx expo prebuild --clean --platform ios
+
+      - name: Inject Build Info
+        run: |
+          # Overwrite build-info.json in source root dir
+          cat <<EOF > ./OwnTube.tv/build-info.json
+          {
+            "GITHUB_ACTOR": "${{ needs.build_info.outputs.GITHUB_ACTOR }}",
+            "GITHUB_SHA_SHORT": "${{ needs.build_info.outputs.GITHUB_SHA_SHORT }}",
+            "COMMIT_URL": "${{ needs.build_info.outputs.COMMIT_URL }}",            
+            "BUILD_TIMESTAMP": "${{ needs.build_info.outputs.BUILD_TIMESTAMP }}",
+            "WEB_URL": "${{ needs.build_info.outputs.WEB_URL }}"
+          }
+          EOF
+
+      - name: "Build release .app for simulators by @${{ github.actor }}"
+        run: cd OwnTube.tv/ios/ && xcodebuild -workspace ./OwnTubetv.xcworkspace -scheme OwnTubetv -configuration Release -sdk iphonesimulator -derivedDataPath ./build-simulator
+
+      - name: Upload .app artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ios-simulator-app.app
+          path: "./OwnTube.tv/ios/build-simulator/Build/Products/Release-iphonesimulator/OwnTubetv.app"
+
   deploy_web:
     needs: [code_quality, build_info]
     runs-on: ubuntu-latest

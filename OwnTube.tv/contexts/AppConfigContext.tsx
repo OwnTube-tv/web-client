@@ -1,4 +1,13 @@
-import { createContext, PropsWithChildren, useContext, useState, Dispatch, SetStateAction, useEffect } from "react";
+import {
+  createContext,
+  PropsWithChildren,
+  useContext,
+  useState,
+  Dispatch,
+  SetStateAction,
+  useEffect,
+  useRef,
+} from "react";
 import { DeviceCapabilities, useDeviceCapabilities, useFeaturedInstancesData } from "../hooks";
 import { useNetInfo } from "@react-native-community/netinfo";
 
@@ -27,13 +36,18 @@ export const AppConfigContextProvider = ({ children }: PropsWithChildren) => {
   const { deviceCapabilities, setPlayerImplementation } = useDeviceCapabilities();
   const { featuredInstances } = useFeaturedInstancesData();
   const { isConnected } = useNetInfo();
+  const lastRecordedConnectionState = useRef<boolean | undefined | null>();
 
   useEffect(() => {
-    if (!isConnected) {
+    if (lastRecordedConnectionState.current === true && !isConnected) {
       Toast.show({ type: "info", text1: t("noNetworkConnection"), props: { isError: true }, autoHide: false });
-    } else {
+    }
+
+    if (lastRecordedConnectionState.current === false && isConnected) {
       Toast.show({ type: "info", text1: t("networkConnectionRestored"), autoHide: true });
     }
+
+    lastRecordedConnectionState.current = isConnected;
   }, [isConnected]);
 
   return (

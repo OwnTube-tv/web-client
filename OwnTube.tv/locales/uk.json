@@ -120,5 +120,6 @@
   "openCustomSite": "Відкрити сайт \"{{hostname}}\"",
   "siteDidNotRespondError": "Сайт не відповідає, помилка: {{errorCode}}",
   "checkingInstance": "Будь ласка, зачекайте, перевірка {{hostname}}...",
-  "incompatibleServerVersion": "Несумісна версія PeerTube {{serverVersion}}, будь ласка, оновіться до версії 5 або новішої"
+  "incompatibleServerVersion": "Несумісна версія PeerTube {{serverVersion}}, будь ласка, оновіться до версії 5 або новішої",
+  "leaveSite": "Покинути сайт"
 }

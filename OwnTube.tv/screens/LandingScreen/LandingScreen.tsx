@@ -19,6 +19,7 @@ import { useRouter } from "expo-router";
 import ComboBoxInput from "../../components/ComboBoxInput";
 import Toast from "react-native-toast-message";
 import { OwnTubeError } from "../../api/models";
+import { ROUTES } from "../../types";
 
 export const LandingScreen = () => {
   const { colors } = useTheme();
@@ -45,7 +46,7 @@ export const LandingScreen = () => {
   useEffect(() => {
     if (isInstanceConfigValid) {
       Toast.hide();
-      router.push({ pathname: "./", params: { backend: hostnameToOpen } });
+      router.push({ pathname: `/${ROUTES.HOME}`, params: { backend: hostnameToOpen } });
     }
 
     if (instanceConfigError) {

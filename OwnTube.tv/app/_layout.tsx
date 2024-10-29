@@ -94,7 +94,11 @@ const RootStack = () => {
           backBehavior="history"
           drawerContent={(props) => <Sidebar {...props} backend={backend} />}
         >
-          <Drawer.Screen name={"(home)/index"} />
+          <Drawer.Screen
+            name={"(home)/index"}
+            options={{ drawerStyle: { display: "none" }, swipeEnabled: false, header: () => <></> }}
+          />
+          <Drawer.Screen name={"(home)/home"} />
           <Drawer.Screen
             name={`(home)/video`}
             options={{ drawerStyle: { display: "none" }, swipeEnabled: false, header: () => <></> }}
@@ -168,6 +172,7 @@ export const unstable_settings = {
 
 export type RootStackParams = {
   [ROUTES.INDEX]: { backend: string };
+  [ROUTES.HOME]: { backend: string };
   [ROUTES.HISTORY]: { backend: string };
   [ROUTES.VIDEO]: { backend: string; id: string; timestamp?: string };
   [ROUTES.CHANNEL]: { backend: string; channel: string };
@@ -180,7 +185,7 @@ export type RootStackParams = {
 };
 
 export const SHAREABLE_ROUTE_MODAL_TITLES: Record<string, string> = {
-  "/": "shareVideoSite",
+  [`/${ROUTES.HOME}`]: "shareVideoSite",
   [`/${ROUTES.VIDEO}`]: "shareVideo",
   [`/${ROUTES.CHANNEL}`]: "shareVideoChannel",
   [`/${ROUTES.CHANNEL_CATEGORY}`]: "shareVideoChannelCategory",

@@ -6,6 +6,7 @@ import { useTheme } from "@react-navigation/native";
 import { useBreakpoints, useHoverState } from "../hooks";
 import { IcoMoonIcon } from "./IcoMoonIcon";
 import { InstanceLogo } from "./InstanceLogo";
+import { ROUTES } from "../types";
 
 interface PlatformCardProps {
   name?: string;
@@ -20,7 +21,7 @@ export const PlatformCard = ({ name, description, hostname, logoUrl }: PlatformC
   const { isDesktop } = useBreakpoints();
 
   return (
-    <Link href={{ pathname: "./", params: { backend: hostname } }} asChild>
+    <Link href={{ pathname: `/${ROUTES.HOME}`, params: { backend: hostname } }} asChild>
       <Pressable style={styles.pressableContainer} {...hoverHandlers}>
         <View
           style={[

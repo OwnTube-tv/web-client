@@ -121,5 +121,8 @@
   "siteDidNotRespondError": "Сайт не отвечает, ошибка: {{errorCode}}",
   "checkingInstance": "Пожалуйста, подождите, проверка {{hostname}}...",
   "incompatibleServerVersion": "Несовместимая версия PeerTube {{serverVersion}}, пожалуйста, обновитесь до версии 5 или новее",
-  "leaveSite": "Покинуть сайт"
+  "leaveSite": "Покинуть сайт",
+  "allPlaylists": "Все плейлисты",
+  "allChannels": "Все каналы",
+  "allCategories": "Все категории"
 }

@@ -6,6 +6,7 @@ import { ROUTES } from "../types";
 import { useLocalSearchParams } from "expo-router";
 import { RootStackParams } from "../app/_layout";
 import { getAvailableVidsString } from "../utils";
+import { ListSeparator } from "../screens/HomeScreen/components";
 
 interface ChannelViewProps {
   channel: VideoChannel;
@@ -21,19 +22,23 @@ export const ChannelView = ({ channel }: ChannelViewProps) => {
   }
 
   return (
-    <VideoGrid
-      isError={isError}
-      refetch={refetch}
-      isLoading={isFetching}
-      headerLink={{
-        text: t("visitChannel") + getAvailableVidsString(data?.total),
-        href: { pathname: `/${ROUTES.CHANNEL}`, params: { backend, channel: channel.name } },
-      }}
-      variant="channel"
-      key={channel.id}
-      title={channel.displayName}
-      data={data?.data}
-      channelLogoUri={channel.avatars?.[0]?.path}
-    />
+    <>
+      <VideoGrid
+        reduceHeaderContrast
+        isError={isError}
+        refetch={refetch}
+        isLoading={isFetching}
+        headerLink={{
+          text: t("visitChannel") + getAvailableVidsString(data?.total),
+          href: { pathname: `/${ROUTES.CHANNEL}`, params: { backend, channel: channel.name } },
+        }}
+        variant="channel"
+        key={channel.id}
+        title={channel.displayName}
+        data={data?.data}
+        channelLogoUri={channel.avatars?.[0]?.path}
+      />
+      <ListSeparator />
+    </>
   );
 };

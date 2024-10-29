@@ -35,6 +35,8 @@ export interface VideoGridProps {
   presentation?: "list" | "grid";
   isError?: boolean;
   refetch?: () => void;
+  isHeaderHidden?: boolean;
+  reduceHeaderContrast?: boolean;
 }
 
 export const VideoGrid = ({
@@ -50,6 +52,8 @@ export const VideoGrid = ({
   presentation,
   isError,
   refetch,
+  isHeaderHidden = false,
+  reduceHeaderContrast = false,
 }: VideoGridProps) => {
   const { backend } = useLocalSearchParams<RootStackParams[ROUTES.INDEX]>();
   const { colors } = useTheme();
@@ -105,46 +109,49 @@ export const VideoGrid = ({
 
   return (
     <View
-      style={[
-        {
-          paddingHorizontal: isMobile ? spacing.sm : spacing.xl,
-          paddingVertical: isMobile ? spacing.lg : spacing.xl,
-          ...styles.container,
-        },
-        ...(variant === "channel" ? [{ backgroundColor: colors.theme100 }, styles.channelContainer] : [{}]),
-      ]}
+      style={{
+        paddingHorizontal: isMobile ? spacing.sm : spacing.xl,
+        paddingVertical: isMobile ? spacing.lg : spacing.xl,
+        ...styles.container,
+      }}
     >
-      <View style={styles.headerContainer}>
-        {!!channelLogoUri && (
-          <View style={{ alignSelf: "flex-start" }}>
-            <Image style={styles.image} source={{ uri: `https://${backend}${channelLogoUri}` }} />
-          </View>
-        )}
-        <View style={{ flexDirection: isMobile ? "column" : "row", gap: spacing.lg, flex: 1 }}>
-          <View style={styles.headerTextContainer}>
-            {icon && <IcoMoonIcon size={24} name={icon} color={colors.theme900} />}
-            {title && (
-              <Typography fontSize="sizeXL" fontWeight="ExtraBold" color={colors.theme900} numberOfLines={1}>
-                {title}
-              </Typography>
-            )}
-          </View>
-          <View style={styles.headerLinksContainer}>
-            {!!headerLink && (
-              <Link asChild href={headerLink.href}>
-                <Button contrast="high" text={headerLink.text} />
-              </Link>
-            )}
+      {!isHeaderHidden && (
+        <View style={styles.headerContainer}>
+          {!!channelLogoUri && (
+            <View style={{ alignSelf: "flex-start" }}>
+              <Image style={styles.image} source={{ uri: `https://${backend}${channelLogoUri}` }} />
+            </View>
+          )}
+          <View style={{ flexDirection: isMobile ? "column" : "row", gap: spacing.lg, flex: 1 }}>
+            <View style={styles.headerTextContainer}>
+              {icon && <IcoMoonIcon size={24} name={icon} color={colors.theme900} />}
+              {title && (
+                <Typography
+                  fontSize={reduceHeaderContrast ? "sizeLg" : "sizeXL"}
+                  fontWeight={reduceHeaderContrast ? "SemiBold" : "ExtraBold"}
+                  color={colors.theme900}
+                  numberOfLines={1}
+                >
+                  {title}
+                </Typography>
+              )}
+            </View>
+            <View style={styles.headerLinksContainer}>
+              {!!headerLink && (
+                <Link asChild href={headerLink.href}>
+                  <Button contrast={reduceHeaderContrast ? "low" : "high"} text={headerLink.text} />
+                </Link>
+              )}
+            </View>
           </View>
         </View>
-      </View>
+      )}
       {renderContent}
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  channelContainer: { borderRadius: borderRadius.radiusMd },
   container: {
     width: "100%",
   },

@@ -1,18 +1,19 @@
 import { CategoryView, InfoFooter, VideoGrid } from "../../components";
-import { Screen } from "../../layouts";
 import { useTheme } from "@react-navigation/native";
 import { useGetCategoriesQuery, useGetChannelsQuery, useGetPlaylistsQuery } from "../../api";
 import { useMemo } from "react";
 import { useBreakpoints, useInstanceConfig, useViewHistory } from "../../hooks";
 import { spacing } from "../../theme";
 import { ROUTES } from "../../types";
-import { StyleSheet } from "react-native";
+import { SectionList, StyleSheet, View } from "react-native";
 import { useTranslation } from "react-i18next";
-import { LatestVideosView } from "./components";
+import { LatestVideosView, SectionHeader } from "./components";
 import { useLocalSearchParams } from "expo-router";
 import { RootStackParams } from "../../app/_layout";
 import { ChannelView } from "../../components";
 import { PlaylistVideosView } from "../Playlists/components";
+import { Spacer } from "../../components/shared/Spacer";
+import { VideoChannel, VideoPlaylist } from "@peertube/peertube-types";
 
 export const HomeScreen = () => {
   const { colors } = useTheme();
@@ -37,35 +38,70 @@ export const HomeScreen = () => {
     return viewHistory?.slice(0, currentInstanceConfig?.customizations?.homeRecentlyWatchedVideoCount ?? 4) || [];
   }, [viewHistory, currentInstanceConfig]);
 
+  const sections = useMemo(() => {
+    return [
+      {
+        title: t("latestVideos"),
+        renderItem: () => <LatestVideosView />,
+        data: ["dataItemPlaceholder"],
+        isVisible: true,
+      },
+      {
+        title: t("recentlyWatched"),
+        link: { text: t("viewHistory"), route: `/${ROUTES.HISTORY}` },
+        renderItem: () => <VideoGrid isHeaderHidden data={historyData} variant="history" />,
+        data: ["dataItemPlaceholder"],
+        isVisible: historyData.length > 0,
+      },
+      {
+        title: t("playlistsPageTitle"),
+        link: { text: t("allPlaylists"), route: `/${ROUTES.PLAYLISTS}` },
+        renderItem: ({ item }: { item: VideoPlaylist }) => (
+          <PlaylistVideosView location="home" key={item.id} title={item.displayName} id={item.id} />
+        ),
+        data: playlistsData?.data || [],
+        isVisible: !currentInstanceConfig?.customizations?.homeHidePlaylistsOverview && !!playlistsData?.data?.length,
+      },
+      {
+        title: t("channels"),
+        link: { text: t("allChannels"), route: `/${ROUTES.CHANNELS}` },
+        renderItem: ({ item }: { item: VideoChannel }) => <ChannelView key={item.id} channel={item} />,
+        data: channels || [],
+        isVisible: !currentInstanceConfig?.customizations?.homeHideChannelsOverview && !!channels?.length,
+      },
+      {
+        title: t("categories"),
+        link: { text: t("allCategories"), route: `/${ROUTES.CATEGORIES}` },
+        renderItem: ({ item }: { item: { name: string; id: number } }) => (
+          <CategoryView category={item} key={item.id} />
+        ),
+        data: categories || [],
+        isVisible: !currentInstanceConfig?.customizations?.homeHideCategoriesOverview && !!categories?.length,
+      },
+    ].filter(({ isVisible }) => isVisible);
+  }, [t, historyData, backend, playlistsData, channels, categories, currentInstanceConfig]);
+
   return (
-    <Screen
+    <View
       style={{
         ...styles.container,
         backgroundColor: colors.background,
-        paddingRight: isMobile ? 0 : spacing.xl,
-        justifyContent: "space-between",
       }}
     >
-      <LatestVideosView />
-      {historyData.length > 0 && (
-        <VideoGrid
-          headerLink={{ text: t("viewHistory"), href: { pathname: `/${ROUTES.HISTORY}`, params: { backend } } }}
-          title={t("recentlyWatched")}
-          icon="History"
-          data={historyData}
-          variant="history"
+      <View style={{ paddingLeft: isMobile ? 0 : 24, marginRight: isMobile ? 0 : 50, ...styles.paddingContainer }}>
+        <SectionList
+          // @ts-expect-error the sections do not change in runtime so we can be sure the typings match
+          sections={sections}
+          disableVirtualization
+          stickySectionHeadersEnabled
+          showsVerticalScrollIndicator={false}
+          ListFooterComponent={<InfoFooter />}
+          ListHeaderComponent={!isMobile ? <Spacer height={spacing.xl} /> : <></>}
+          style={{ paddingRight: isMobile ? 0 : spacing.xl, ...styles.paddingContainer }}
+          renderSectionHeader={({ section: { title, link } }) => <SectionHeader title={title} link={link} />}
         />
-      )}
-      {!currentInstanceConfig?.customizations?.homeHidePlaylistsOverview &&
-        playlistsData?.data?.map((playlist) => (
-          <PlaylistVideosView key={playlist.id} title={playlist.displayName} id={playlist.id} />
-        ))}
-      {!currentInstanceConfig?.customizations?.homeHideChannelsOverview &&
-        channels?.map((channel) => <ChannelView key={channel.id} channel={channel} />)}
-      {!currentInstanceConfig?.customizations?.homeHideCategoriesOverview &&
-        categories?.map((category) => <CategoryView category={category} key={category.id} />)}
-      <InfoFooter />
-    </Screen>
+      </View>
+    </View>
   );
 };
 
@@ -76,5 +112,9 @@ const styles = StyleSheet.create({
     gap: spacing.xl,
     justifyContent: "center",
     padding: 0,
+  },
+  paddingContainer: {
+    flex: 1,
+    width: "100%",
   },
 });

@@ -17,7 +17,8 @@ const styles = StyleSheet.create({
   button: { alignSelf: "flex-end", height: 36 },
   container: {
     height: 60,
-    paddingHorizontal: spacing.lg,
+    paddingLeft: spacing.lg,
+    paddingRight: spacing.xs,
     paddingVertical: spacing.xl,
     position: "absolute",
     top: 0,

@@ -4,36 +4,43 @@ import { ROUTES } from "../../../types";
 import { useLocalSearchParams } from "expo-router";
 import { useTranslation } from "react-i18next";
 import { getAvailableVidsString } from "../../../utils";
+import { ListSeparator } from "../../HomeScreen/components";
 
 interface PlaylistVideosViewProps {
   id: number;
   title: string;
   channel?: string;
+  location?: "home" | "other";
 }
 
-export const PlaylistVideosView = ({ id, title, channel }: PlaylistVideosViewProps) => {
+export const PlaylistVideosView = ({ id, title, channel, location = "other" }: PlaylistVideosViewProps) => {
   const { backend } = useLocalSearchParams();
   const { data, isFetching, isError, refetch } = useGetPlaylistVideosQuery(id);
   const { t } = useTranslation();
+  const isOnHomePage = location === "home";
 
   if ((!data?.data?.length || !data?.total) && !isFetching) {
     return null;
   }
 
   return (
-    <VideoGrid
-      isError={isError}
-      refetch={refetch}
-      isLoading={isFetching}
-      title={title}
-      data={data?.data}
-      headerLink={{
-        text: t("viewFullPlaylist") + getAvailableVidsString(data?.total),
-        href: {
-          pathname: `/${channel ? ROUTES.CHANNEL_PLAYLIST : ROUTES.PLAYLIST}`,
-          params: { backend, playlist: id, channel },
-        },
-      }}
-    />
+    <>
+      <VideoGrid
+        reduceHeaderContrast={isOnHomePage}
+        isError={isError}
+        refetch={refetch}
+        isLoading={isFetching}
+        title={title}
+        data={data?.data}
+        headerLink={{
+          text: t("viewFullPlaylist") + getAvailableVidsString(data?.total),
+          href: {
+            pathname: `/${channel ? ROUTES.CHANNEL_PLAYLIST : ROUTES.PLAYLIST}`,
+            params: { backend, playlist: id, channel },
+          },
+        }}
+      />
+      {isOnHomePage && <ListSeparator />}
+    </>
   );
 };

@@ -1,11 +1,10 @@
 import { useInfiniteVideosQuery } from "../../../api";
 import { VideoGrid } from "../../../components";
-import { useTranslation } from "react-i18next";
 import { useMemo } from "react";
 import { useInstanceConfig } from "../../../hooks";
+import { ListSeparator } from "./ListSeparator";
 
 export const LatestVideosView = () => {
-  const { t } = useTranslation();
   const { currentInstanceConfig } = useInstanceConfig();
   const { fetchNextPage, data, hasNextPage, isLoading, isFetchingNextPage, isError, refetch } = useInfiniteVideosQuery({
     uniqueQueryKey: "homepageLatestVideosView",
@@ -17,14 +16,17 @@ export const LatestVideosView = () => {
   }, [data]);
 
   return (
-    <VideoGrid
-      isError={isError}
-      refetch={refetch}
-      isLoading={isLoading}
-      data={videos}
-      title={t("latestVideos")}
-      isLoadingMore={isFetchingNextPage}
-      handleShowMore={hasNextPage ? fetchNextPage : undefined}
-    />
+    <>
+      <VideoGrid
+        isHeaderHidden
+        isError={isError}
+        refetch={refetch}
+        isLoading={isLoading}
+        data={videos}
+        isLoadingMore={isFetchingNextPage}
+        handleShowMore={hasNextPage ? fetchNextPage : undefined}
+      />
+      <ListSeparator />
+    </>
   );
 };

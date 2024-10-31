@@ -56,8 +56,42 @@ jobs:
           WEB_URL="https://${{ github.repository_owner }}.github.io/$REPO_NAME"
           echo "WEB_URL=$WEB_URL" && echo "WEB_URL=$WEB_URL" >> "$GITHUB_OUTPUT"
 
+  customizations_setup:
+    runs-on: ubuntu-latest
+    environment: owntube
+    outputs:
+      CUSTOMIZATIONS_ENV_CONTENT: ${{ steps.read_customization_file.outputs.CUSTOMIZATIONS_ENV_CONTENT }}
+    steps:
+      - name: Check for Customization Variables
+        id: check_customizations
+        run: |
+          if [[ -n ${{ vars.CLIENT_CUSTOMIZATIONS_REPO }} && -n ${{ vars.CLIENT_CUSTOMIZATIONS_FILE }} ]]; then
+            echo "should_run_customizations=true" >> $GITHUB_OUTPUT
+          else
+            echo "should_run_customizations=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Clone customizations repository
+        if: steps.check_customizations.outputs.should_run_customizations == 'true'
+        run: |
+          git clone "${{ vars.CLIENT_CUSTOMIZATIONS_REPO }}" customizations-repo
+
+      - name: Find and read the customization file
+        id: read_customization_file
+        if: steps.check_customizations.outputs.should_run_customizations == 'true'
+        run: |
+          CUSTOMIZATION_FILE_PATH="customizations-repo/${{ vars.CLIENT_CUSTOMIZATIONS_FILE }}"
+          if [[ -f "$CUSTOMIZATION_FILE_PATH" ]]; then
+            echo "$(cat "$CUSTOMIZATION_FILE_PATH")"
+            echo 'CUSTOMIZATIONS_ENV_CONTENT<<EOF' >> $GITHUB_OUTPUT
+            printf "%s\n" $(cat "$CUSTOMIZATION_FILE_PATH") >> $GITHUB_OUTPUT
+            echo 'EOF' >> $GITHUB_OUTPUT
+          else
+            exit 1
+          fi
+
   code_quality:
-    needs: build_info
+    needs: [customizations_setup, build_info]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -76,7 +110,7 @@ jobs:
         run: cd OwnTube.tv/ && npm run test
 
   build_android_apk:
-    needs: [code_quality, build_info]
+    needs: [code_quality, build_info, customizations_setup]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -89,6 +123,11 @@ jobs:
 
       - name: Install Dependencies
         run: cd OwnTube.tv/ && npm install
+
+      - name: Create .env File
+        if: ${{ needs.customizations_setup.outputs.CUSTOMIZATIONS_ENV_CONTENT != '' }}
+        run: |
+          echo "${{ needs.customizations_setup.outputs.CUSTOMIZATIONS_ENV_CONTENT }}" > ./OwnTube.tv/.env
 
       - name: Expo Prebuild android assets
         run: cd OwnTube.tv/ && npx expo prebuild --clean --platform android
@@ -119,7 +158,7 @@ jobs:
           }
           EOF
 
-      - name: "Build release .apk by @${{ github.actor }}"
+      - name: Build release .apk by @${{ github.actor }}
         run: cd OwnTube.tv/android/ && ./gradlew assembleRelease
 
       - name: Upload .apk artifact
@@ -129,7 +168,7 @@ jobs:
           path: "./OwnTube.tv/android/app/build/outputs/apk/release/app-release.apk"
 
   build_ios_app:
-    needs: [code_quality, build_info]
+    needs: [code_quality, build_info, customizations_setup]
     runs-on: self-hosted
     steps:
       - name: Checkout
@@ -142,6 +181,11 @@ jobs:
 
       - name: Install Dependencies
         run: cd OwnTube.tv/ && npm install
+
+      - name: Create .env File
+        if: ${{ needs.customizations_setup.outputs.CUSTOMIZATIONS_ENV_CONTENT != '' }}
+        run: |
+          echo "${{ needs.customizations_setup.outputs.CUSTOMIZATIONS_ENV_CONTENT }}" > ./OwnTube.tv/.env
 
       - name: Expo Prebuild ios assets
         run: cd OwnTube.tv/ && npx expo prebuild --clean --platform ios
@@ -159,7 +203,7 @@ jobs:
           }
           EOF
 
-      - name: "Build release .app for simulators by @${{ github.actor }}"
+      - name: Build release .app for simulators by @${{ github.actor }}
         run: cd OwnTube.tv/ios/ && xcodebuild -workspace ./OwnTubetv.xcworkspace -scheme OwnTubetv -configuration Release -sdk iphonesimulator -derivedDataPath ./build-simulator
 
       - name: Upload .app artifact
@@ -169,7 +213,7 @@ jobs:
           path: "./OwnTube.tv/ios/build-simulator/Build/Products/Release-iphonesimulator/OwnTubetv.app"
 
   deploy_web:
-    needs: [code_quality, build_info]
+    needs: [code_quality, build_info, customizations_setup]
     runs-on: ubuntu-latest
     environment:
       name: github-pages
@@ -183,6 +227,10 @@ jobs:
           node-version: 20.x
       - name: Install Dependencies
         run: cd OwnTube.tv/ && npm install
+      - name: Create .env File
+        if: ${{ needs.customizations_setup.outputs.CUSTOMIZATIONS_ENV_CONTENT != '' }}
+        run: |
+          echo "${{ needs.customizations_setup.outputs.CUSTOMIZATIONS_ENV_CONTENT }}" > ./OwnTube.tv/.env
       - name: Inject Build Info
         run: |
           # Overwrite build-info.json in source root dir
@@ -195,7 +243,7 @@ jobs:
             "WEB_URL": "${{ needs.build_info.outputs.WEB_URL }}"
           }
           EOF
-      - name: "Build Web App by @${{ github.actor }}"
+      - name: Build Web App by @${{ github.actor }}
         run: cd OwnTube.tv/ && cat build-info.json && npx expo export --platform web
       - name: Setup Pages
         uses: actions/configure-pages@v4

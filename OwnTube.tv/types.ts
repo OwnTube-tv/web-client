@@ -31,16 +31,3 @@ export interface Category {
   label: string;
   id: number;
 }
-
-export interface Video {
-  id: number;
-  name: string;
-  category: Category;
-  previewPath: string;
-  thumbnailUrl?: string;
-  description?: string | null;
-}
-
-export interface VideoCategory extends Category {
-  videos: Video[];
-}

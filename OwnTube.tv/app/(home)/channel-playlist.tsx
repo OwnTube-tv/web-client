@@ -2,6 +2,7 @@ import { useTranslation } from "react-i18next";
 import { Platform } from "react-native";
 import Head from "expo-router/head";
 import { Playlist } from "../../screens";
+import Constants from "expo-constants";
 
 export default function channelPlaylist() {
   const { t } = useTranslation();
@@ -13,7 +14,7 @@ export default function channelPlaylist() {
         web: (
           <Head>
             <title>{t("playlist")}</title>
-            <meta name="description" content={`${t("appName")} ${t("playlist").toLowerCase()}`} />
+            <meta name="description" content={`${Constants.expoConfig?.name} ${t("playlist").toLowerCase()}`} />
           </Head>
         ),
       })}

@@ -7,10 +7,9 @@ import { RootStackParams } from "../_layout";
 import { useInstanceConfig, useRecentInstances } from "../../hooks";
 import { Platform } from "react-native";
 import Head from "expo-router/head";
-import { useTranslation } from "react-i18next";
+import Constants from "expo-constants";
 
 export default function home() {
-  const { t } = useTranslation();
   const { backend } = useLocalSearchParams<RootStackParams[ROUTES.HOME]>();
   const { recentInstances, addRecentInstance } = useRecentInstances();
   const { currentInstanceConfig } = useInstanceConfig();
@@ -36,9 +35,10 @@ export default function home() {
         web: (
           <Head>
             <title>
-              {currentInstanceConfig?.customizations?.pageTitle ?? `${t("appName")}${backend ? "@" + backend : ""}`}
+              {currentInstanceConfig?.customizations?.pageTitle ??
+                `${backend ? backend + " @" : ""} ${Constants.expoConfig?.name}`}
             </title>
-            <meta name="description" content="OwnTube.tv homepage" />
+            <meta name="description" content="Homepage" />
           </Head>
         ),
       })}

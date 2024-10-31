@@ -6,12 +6,11 @@ import { useCallback, useState } from "react";
 import Head from "expo-router/head";
 import { LandingScreen } from "../../screens";
 import { Platform } from "react-native";
-import { useTranslation } from "react-i18next";
+import Constants from "expo-constants";
 
 export default function index() {
   const router = useRouter();
   const [isGettingStoredBackend, setIsGettingStoredBackend] = useState(true);
-  const { t } = useTranslation();
 
   const getSourceAndRedirect = async () => {
     const source = await readFromAsyncStorage(STORAGE.DATASOURCE);
@@ -38,8 +37,8 @@ export default function index() {
         default: null,
         web: (
           <Head>
-            <title>{t("appName")}</title>
-            <meta name="description" content="OwnTube.tv homepage" />
+            <title>{Constants.expoConfig?.name}</title>
+            <meta name="description" content="homepage" />
           </Head>
         ),
       })}

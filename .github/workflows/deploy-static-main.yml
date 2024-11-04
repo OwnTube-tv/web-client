@@ -21,14 +21,22 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  choose_macos_runner:
+    runs-on: ubuntu-latest
+    environment: owntube
+    outputs:
+      runner-label: ${{ steps.set-macos-runner.outputs.runner-label }}
+
+    steps:
+      - name: Set macos runner
+        id: set-macos-runner
+        run: |
+          echo "runner-label=${{ vars.PREFERRED_MACOS_RUNNER || 'macos-latest' }}" >> $GITHUB_OUTPUT
+
   build_info:
     runs-on: ubuntu-latest
     outputs:
-      GITHUB_ACTOR: ${{ steps.create.outputs.GITHUB_ACTOR }}
-      GITHUB_SHA_SHORT: ${{ steps.create.outputs.GITHUB_SHA_SHORT }}
-      COMMIT_URL: ${{ steps.create.outputs.COMMIT_URL }}
-      BUILD_TIMESTAMP: ${{ steps.create.outputs.BUILD_TIMESTAMP }}
-      WEB_URL: ${{ steps.create.outputs.WEB_URL }}
+      BUILD_INFO: ${{ steps.write.outputs.BUILD_INFO }}
     steps:
       - id: create
         name: "@${{ github.actor }} initiated GitHub Pages deployment, prepare build info"
@@ -55,6 +63,19 @@ jobs:
           # Create web url
           WEB_URL="https://${{ github.repository_owner }}.github.io/$REPO_NAME"
           echo "WEB_URL=$WEB_URL" && echo "WEB_URL=$WEB_URL" >> "$GITHUB_OUTPUT"
+
+      - id: write
+        run: |
+          echo "BUILD_INFO<<EOF" >> $GITHUB_OUTPUT
+          echo "{
+            \"GITHUB_ACTOR\": \"${{ steps.create.outputs.GITHUB_ACTOR }}\",
+            \"GITHUB_SHA_SHORT\": \"${{ steps.create.outputs.GITHUB_SHA_SHORT }}\",
+            \"COMMIT_URL\": \"${{ steps.create.outputs.COMMIT_URL }}\",
+            \"BUILD_TIMESTAMP\": \"${{ steps.create.outputs.BUILD_TIMESTAMP }}\",
+            \"WEB_URL\": \"${{ steps.create.outputs.WEB_URL }}\"
+          }
+          " >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
 
   customizations_setup:
     runs-on: ubuntu-latest
@@ -111,166 +132,22 @@ jobs:
 
   build_android_apk:
     needs: [code_quality, build_info, customizations_setup]
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup Node 20
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20.x
-
-      - name: Install Dependencies
-        run: cd OwnTube.tv/ && npm install
-
-      - name: Create .env File
-        if: ${{ needs.customizations_setup.outputs.CUSTOMIZATIONS_ENV_CONTENT != '' }}
-        run: |
-          echo "${{ needs.customizations_setup.outputs.CUSTOMIZATIONS_ENV_CONTENT }}" > ./OwnTube.tv/.env
-
-      - name: Expo Prebuild android assets
-        run: cd OwnTube.tv/ && npx expo prebuild --clean --platform android
-
-      - name: Set Up JDK
-        uses: actions/setup-java@v4
-        with:
-          distribution: "zulu"
-          java-version: "17"
-          cache: "gradle"
-
-      - name: Validate Gradle wrapper
-        uses: gradle/actions/wrapper-validation@v3
-
-      - name: Change wrapper permissions
-        run: cd OwnTube.tv/android/ && chmod +x ./gradlew
-
-      - name: Inject Build Info
-        run: |
-          # Overwrite build-info.json in source root dir
-          cat <<EOF > ./OwnTube.tv/build-info.json
-          {
-            "GITHUB_ACTOR": "${{ needs.build_info.outputs.GITHUB_ACTOR }}",
-            "GITHUB_SHA_SHORT": "${{ needs.build_info.outputs.GITHUB_SHA_SHORT }}",
-            "COMMIT_URL": "${{ needs.build_info.outputs.COMMIT_URL }}",            
-            "BUILD_TIMESTAMP": "${{ needs.build_info.outputs.BUILD_TIMESTAMP }}",
-            "WEB_URL": "${{ needs.build_info.outputs.WEB_URL }}"
-          }
-          EOF
-
-      - name: Build release .apk by @${{ github.actor }}
-        run: cd OwnTube.tv/android/ && ./gradlew assembleRelease
-
-      - name: Upload .apk artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: release apk
-          path: "./OwnTube.tv/android/app/build/outputs/apk/release/app-release.apk"
+    uses: ./.github/workflows/build_android_apk.yml
+    with:
+      customizations_env_content: ${{ needs.customizations_setup.outputs.CUSTOMIZATIONS_ENV_CONTENT }}
+      build_info: ${{ needs.build_info.outputs.BUILD_INFO }}
 
   build_ios_app:
-    needs: [code_quality, build_info, customizations_setup]
-    runs-on: self-hosted
-    outputs:
-      ARTIFACT_PATH: ${{ steps.find_app.outputs.ARTIFACT_PATH }}
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup Node 20
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20.x
-
-      - name: Install Dependencies
-        run: cd OwnTube.tv/ && npm install
-
-      - name: Create .env File
-        if: ${{ needs.customizations_setup.outputs.CUSTOMIZATIONS_ENV_CONTENT != '' }}
-        run: |
-          echo "${{ needs.customizations_setup.outputs.CUSTOMIZATIONS_ENV_CONTENT }}" > ./OwnTube.tv/.env
-
-      - name: Expo Prebuild ios assets
-        run: cd OwnTube.tv/ && npx expo prebuild --clean --platform ios
-
-      - name: Inject Build Info
-        run: |
-          # Overwrite build-info.json in source root dir
-          cat <<EOF > ./OwnTube.tv/build-info.json
-          {
-            "GITHUB_ACTOR": "${{ needs.build_info.outputs.GITHUB_ACTOR }}",
-            "GITHUB_SHA_SHORT": "${{ needs.build_info.outputs.GITHUB_SHA_SHORT }}",
-            "COMMIT_URL": "${{ needs.build_info.outputs.COMMIT_URL }}",            
-            "BUILD_TIMESTAMP": "${{ needs.build_info.outputs.BUILD_TIMESTAMP }}",
-            "WEB_URL": "${{ needs.build_info.outputs.WEB_URL }}"
-          }
-          EOF
-
-      - name: Build release .app for simulators by @${{ github.actor }}
-        run: |
-          cd OwnTube.tv/ios/ &&
-          WORKSPACE_FILE=$(find . -maxdepth 1 -name "*.xcworkspace")
-          SCHEME=$(xcodebuild -list | sed -n '/Schemes:/,$p' | tail -n +2 | head -n 1 | xargs)
-
-          if [[ -n "$WORKSPACE_FILE" && -n "$SCHEME" ]]; then
-            echo "Running xcodebuild with workspace $WORKSPACE_FILE and scheme $SCHEME"
-            xcodebuild -workspace "$WORKSPACE_FILE" -scheme "$SCHEME" -configuration Release -sdk iphonesimulator -derivedDataPath ./build-simulator
-          else
-            echo "Error: No .xcworkspace or  file found."
-            exit 1
-          fi
-
-      - name: Find .app artifact path
-        id: find_app
-        run: |
-          ARTIFACT_PATH=$(find ./OwnTube.tv/ios/build-simulator/Build/Products/Release-iphonesimulator -maxdepth 1 -name "*.app" | head -n 1)
-          echo "ARTIFACT_PATH=$ARTIFACT_PATH" >> $GITHUB_OUTPUT
-
-      - name: Upload .app artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: ios-simulator-app.app
-          path: "${{ steps.find_app.outputs.ARTIFACT_PATH }}"
+    needs: [build_info, customizations_setup, code_quality, choose_macos_runner]
+    uses: ./.github/workflows/build_ios_app.yml
+    with:
+      runner-label: ${{ needs.choose_macos_runner.outputs.runner-label }}
+      customizations_env_content: ${{ needs.customizations_setup.outputs.CUSTOMIZATIONS_ENV_CONTENT }}
+      build_info: ${{ needs.build_info.outputs.BUILD_INFO }}
 
   deploy_web:
     needs: [code_quality, build_info, customizations_setup]
-    runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-      - name: Setup Node 20
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20.x
-      - name: Install Dependencies
-        run: cd OwnTube.tv/ && npm install
-      - name: Create .env File
-        if: ${{ needs.customizations_setup.outputs.CUSTOMIZATIONS_ENV_CONTENT != '' }}
-        run: |
-          echo "${{ needs.customizations_setup.outputs.CUSTOMIZATIONS_ENV_CONTENT }}" > ./OwnTube.tv/.env
-      - name: Inject Build Info
-        run: |
-          # Overwrite build-info.json in source root dir
-          cat <<EOF > ./OwnTube.tv/build-info.json
-          {
-            "GITHUB_ACTOR": "${{ needs.build_info.outputs.GITHUB_ACTOR }}",
-            "GITHUB_SHA_SHORT": "${{ needs.build_info.outputs.GITHUB_SHA_SHORT }}",
-            "COMMIT_URL": "${{ needs.build_info.outputs.COMMIT_URL }}",            
-            "BUILD_TIMESTAMP": "${{ needs.build_info.outputs.BUILD_TIMESTAMP }}",
-            "WEB_URL": "${{ needs.build_info.outputs.WEB_URL }}"
-          }
-          EOF
-      - name: Build Web App by @${{ github.actor }}
-        run: cd OwnTube.tv/ && cat build-info.json && npx expo export --platform web
-      - name: Setup Pages
-        uses: actions/configure-pages@v4
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          # Upload Expo build output
-          path: "./OwnTube.tv/dist/"
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+    uses: ./.github/workflows/deploy_web.yml
+    with:
+      customizations_env_content: ${{ needs.customizations_setup.outputs.CUSTOMIZATIONS_ENV_CONTENT }}
+      build_info: ${{ needs.build_info.outputs.BUILD_INFO }}

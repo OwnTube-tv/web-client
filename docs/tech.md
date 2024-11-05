@@ -151,3 +151,7 @@ Errors are handled throughout the application on pages and in individual section
 Going offline and back online is denoted by a toast message on top of the page which can be closed manually if offline, and disappears automatically if online. Some of the pages that require network connection are rendered as disabled when offline. However, the user can still try to visit the respective pages since links do not get disabled.
 Error loading video data is presented in a fullscreen message suggesting a retry of the load.
 Currently, the error handling extends to everything connected to videos, however in the future error handling should be added for info such as instance name or avatar.
+
+### Fork customization 🍴
+
+Refer to [customizations](customizations.md) docs for more information on how to customize your own fork of OwnTube.

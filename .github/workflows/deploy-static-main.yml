@@ -86,7 +86,7 @@ jobs:
       - name: Check for Customization Variables
         id: check_customizations
         run: |
-          if [[ -n ${{ vars.CLIENT_CUSTOMIZATIONS_REPO }} && -n ${{ vars.CLIENT_CUSTOMIZATIONS_FILE }} ]]; then
+          if [[ -n "${{ vars.CLIENT_CUSTOMIZATIONS_REPO }}" && -n "${{ vars.CLIENT_CUSTOMIZATIONS_FILE }}" ]]; then
             echo "should_run_customizations=true" >> $GITHUB_OUTPUT
           else
             echo "should_run_customizations=false" >> $GITHUB_OUTPUT

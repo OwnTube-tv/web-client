@@ -20,6 +20,7 @@ import ComboBoxInput from "../../components/ComboBoxInput";
 import Toast from "react-native-toast-message";
 import { OwnTubeError } from "../../api/models";
 import { ROUTES } from "../../types";
+import Constants from "expo-constants";
 
 export const LandingScreen = () => {
   const { colors } = useTheme();
@@ -91,7 +92,7 @@ export const LandingScreen = () => {
           fontSize={isDesktop ? "sizeXXL" : "sizeXL"}
           color={colors.theme900}
         >
-          {t("welcomeText")}
+          {t("welcomeText", { appName: Constants.expoConfig?.name })}
         </Typography>
         <Spacer height={12} />
         <Typography

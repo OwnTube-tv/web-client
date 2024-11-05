@@ -1,0 +1,55 @@
+name: Deploy Web App
+
+on:
+  workflow_call:
+    inputs:
+      customizations_env_content:
+        required: false
+        type: string
+      build_info:
+        required: true
+        type: string
+
+jobs:
+  deploy_web:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20.x
+
+      - name: Install Dependencies
+        run: cd OwnTube.tv/ && npm install
+
+      - name: Create .env File
+        if: ${{ inputs.customizations_env_content != '' }}
+        run: |
+          echo "${{ inputs.customizations_env_content }}" > ./OwnTube.tv/.env
+
+      - name: Inject Build Info
+        run: |
+          cat > ./OwnTube.tv/build-info.json << 'EOF'
+          ${{ inputs.build_info }}
+          EOF
+
+      - name: Build Web App by @${{ github.actor }}
+        run: cd OwnTube.tv/ && cat build-info.json && npx expo export --platform web
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: "./OwnTube.tv/dist/"
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

@@ -17,6 +17,7 @@ import { STORAGE } from "../../../../types";
 import { useQueryClient } from "@tanstack/react-query";
 import { useMemo } from "react";
 import { PeertubeInstance } from "../../../../api/models";
+import Constants from "expo-constants";
 
 interface SettingsProps {
   onClose: () => void;
@@ -74,7 +75,7 @@ export const Settings = ({ onClose }: SettingsProps) => {
           </View>
           <Spacer height={spacing.lg} />
           <Typography color={colors.themeDesaturated500} fontWeight="Regular" fontSize="sizeXS">
-            {t("leaveInstanceDescription")}
+            {t("leaveInstanceDescription", { appName: Constants.expoConfig?.name })}
           </Typography>
         </ScrollView>
       </ModalContainer>

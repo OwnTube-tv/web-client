@@ -1,0 +1,70 @@
+name: Build tvOS .App
+
+on:
+  workflow_call:
+    inputs:
+      runner-label:
+        type: string
+        default: "macos-latest"
+      customizations_env_content:
+        required: false
+        type: string
+      build_info:
+        required: true
+        type: string
+
+jobs:
+  build_tvos_app:
+    runs-on: ${{ inputs.runner-label }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20.x
+
+      - name: Install Dependencies
+        run: cd OwnTube.tv/ && npm install
+
+      - name: Create .env File
+        if: ${{ inputs.customizations_env_content != '' }}
+        run: |
+          echo "${{ inputs.customizations_env_content }}" > ./OwnTube.tv/.env
+
+      - name: Expo Prebuild tvOS assets
+        run: export EXPO_TV=1 && cd OwnTube.tv/ && npx expo prebuild --clean --platform ios
+
+      - name: Inject Build Info
+        run: |
+          cat > ./OwnTube.tv/build-info.json << 'EOF'
+          ${{ inputs.build_info }}
+          EOF
+
+      - name: Build release tvOS .app for simulators by @${{ github.actor }}
+        run: |
+          export EXPO_TV=1 &&
+          cd OwnTube.tv/ios/ &&
+          WORKSPACE_FILE=$(find . -maxdepth 1 -name "*.xcworkspace")
+          SCHEME=$(xcodebuild -list | sed -n '/Schemes:/,$p' | tail -n +2 | head -n 1 | xargs)
+
+          if [[ -n "$WORKSPACE_FILE" && -n "$SCHEME" ]]; then
+            echo "Running xcodebuild with workspace $WORKSPACE_FILE and scheme $SCHEME"
+            xcodebuild -workspace "$WORKSPACE_FILE" -scheme "$SCHEME" -configuration Release -sdk appletvsimulator -derivedDataPath ./build-simulator
+          else
+            echo "Error: No .xcworkspace or scheme file found."
+            exit 1
+          fi
+
+      - name: Find .app artifact path
+        id: find_app
+        run: |
+          TVOS_APP_ARTIFACT_PATH=$(find ./OwnTube.tv/ios/build-simulator/Build/Products/Release-appletvsimulator -maxdepth 1 -name "*.app" | head -n 1)
+          echo "TVOS_APP_ARTIFACT_PATH=$TVOS_APP_ARTIFACT_PATH" >> $GITHUB_OUTPUT
+
+      - name: Upload .app artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: tvos-simulator-app.app
+          path: "${{ steps.find_app.outputs.TVOS_APP_ARTIFACT_PATH }}"

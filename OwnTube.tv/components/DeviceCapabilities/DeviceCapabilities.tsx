@@ -1,13 +1,13 @@
 import { Pressable, StyleSheet, View } from "react-native";
-import { Typography } from "./Typography";
+import { Typography } from "../Typography";
 import * as Clipboard from "expo-clipboard";
-import { useAppConfigContext } from "../contexts";
+import { useAppConfigContext } from "../../contexts";
 import { useTheme } from "@react-navigation/native";
 import { useTranslation } from "react-i18next";
-import { IcoMoonIcon } from "./IcoMoonIcon";
-import { borderRadius } from "../theme";
-import { BuildInfo } from "./BuildInfo";
-import build_info from "../build-info.json";
+import { IcoMoonIcon } from "../IcoMoonIcon";
+import { borderRadius } from "../../theme";
+import { BuildInfo } from "../BuildInfo";
+import build_info from "../../build-info.json";
 
 const CapabilityKeyValuePair = ({ label, value }: { label: string; value: string }) => {
   const { colors } = useTheme();
@@ -24,7 +24,7 @@ const CapabilityKeyValuePair = ({ label, value }: { label: string; value: string
   );
 };
 
-export const DeviceCapabilities = () => {
+const DeviceCapabilities = () => {
   const { deviceCapabilities } = useAppConfigContext();
   const { colors } = useTheme();
   const { t } = useTranslation();
@@ -82,3 +82,5 @@ const styles = StyleSheet.create({
   modalHeader: { flexDirection: "row", gap: 16, justifyContent: "space-between" },
   row: { flexWrap: "wrap", justifyContent: "space-between", width: "100%" },
 });
+
+export default DeviceCapabilities;

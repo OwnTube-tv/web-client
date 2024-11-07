@@ -14,7 +14,7 @@ export const AppDesktopHeader = () => {
 };
 
 const styles = StyleSheet.create({
-  button: { alignSelf: "flex-end", height: 36 },
+  button: { alignSelf: "flex-end", height: 36, paddingVertical: 6 },
   container: {
     height: 60,
     paddingLeft: spacing.lg,

@@ -1,0 +1,62 @@
+name: Build Android TV .APK
+
+on:
+  workflow_call:
+    inputs:
+      customizations_env_content:
+        required: false
+        type: string
+      build_info:
+        required: true
+        type: string
+
+jobs:
+  build_android_tv_apk:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20.x
+
+      - name: Install Dependencies
+        run: cd OwnTube.tv/ && npm install
+
+      - name: Create .env File
+        if: ${{ inputs.customizations_env_content != '' }}
+        run: |
+          echo "${{ inputs.customizations_env_content }}" > ./OwnTube.tv/.env
+
+      - name: Expo Prebuild Android TV Assets
+        run: export EXPO_TV=1 && cd OwnTube.tv/ && npx expo prebuild --clean --platform android
+
+      - name: Set Up JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: "zulu"
+          java-version: "17"
+          cache: "gradle"
+
+      - name: Validate Gradle Wrapper
+        uses: gradle/actions/wrapper-validation@v3
+
+      - name: Change Wrapper Permissions
+        run: cd OwnTube.tv/android/ && chmod +x ./gradlew
+
+      - name: Inject Build Info
+        run: |
+          cat > ./OwnTube.tv/build-info.json << 'EOF'
+          ${{ inputs.build_info }}
+          EOF
+
+      - name: Build Release APK by @${{ github.actor }}
+        run: export EXPO_TV=1 && cd OwnTube.tv/android/ && ./gradlew assembleRelease
+
+      - name: Upload APK Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: release TV apk
+          path: "./OwnTube.tv/android/app/build/outputs/apk/release/app-release.apk"

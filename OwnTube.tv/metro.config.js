@@ -6,4 +6,8 @@ const config = getDefaultConfig(__dirname);
 
 config.resolver.assetExts.push("json", "json5", "ttf", "otf");
 
+if (process.env.EXPO_TV) {
+  config.resolver.sourceExts.unshift(...config.resolver.sourceExts.map((e) => `tv.${e}`));
+}
+
 module.exports = config;

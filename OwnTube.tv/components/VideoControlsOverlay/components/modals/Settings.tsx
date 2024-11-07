@@ -1,7 +1,6 @@
 import Animated, { SlideInUp, SlideOutUp } from "react-native-reanimated";
 import { ModalContainer } from "../../../ModalContainer";
 import { ScrollView, StyleSheet, View } from "react-native";
-import { DeviceCapabilities } from "../../../DeviceCapabilities";
 import { Spacer } from "../../../shared/Spacer";
 import { spacing } from "../../../../theme";
 import { Button, Checkbox, Picker, Separator } from "../../../shared";
@@ -18,6 +17,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useMemo } from "react";
 import { PeertubeInstance } from "../../../../api/models";
 import Constants from "expo-constants";
+import DeviceCapabilities from "../../../DeviceCapabilities";
 
 interface SettingsProps {
   onClose: () => void;

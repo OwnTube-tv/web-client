@@ -5,13 +5,15 @@ import { ROUTES } from "../../types";
 import { useGetVideoQuery } from "../../api";
 import { useEffect, useMemo, useState } from "react";
 import { Loader, FocusWrapper, FullScreenModal, ErrorTextWithRetry } from "../../components";
-import { useViewHistory, useFullScreenVideoPlayback } from "../../hooks";
+import { useViewHistory } from "../../hooks";
 import { StatusBar } from "expo-status-bar";
-import { Settings, Share, VideoDetails } from "../../components/VideoControlsOverlay/components/modals";
+import { Settings, VideoDetails } from "../../components/VideoControlsOverlay/components/modals";
 import { Platform, StyleSheet, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useColorSchemeContext } from "../../contexts";
 import { useTranslation } from "react-i18next";
+import useFullScreenVideoPlayback from "../../hooks/useFullScreenVideoPlayback";
+import Share from "../../components/VideoControlsOverlay/components/modals/Share";
 
 export const VideoScreen = () => {
   const { t } = useTranslation();

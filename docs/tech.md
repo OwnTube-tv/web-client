@@ -155,3 +155,14 @@ Currently, the error handling extends to everything connected to videos, however
 ### Fork customization 🍴
 
 Refer to [customizations](customizations.md) docs for more information on how to customize your own fork of OwnTube.
+
+### Building for TV
+
+To run the app for Android TV and TVOS, you need to first run the following commands:
+
+`export EXPO_TV=1
+npx expo prebuild --clean`
+
+Then, run `npx expo run:ios` or `npx expo run:android`.
+
+When done developing for TV, run `unset EXPO_TV` and `npx expo prebuild --clean` before developing for mobile again.

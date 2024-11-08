@@ -137,9 +137,24 @@ jobs:
       customizations_env_content: ${{ needs.customizations_setup.outputs.CUSTOMIZATIONS_ENV_CONTENT }}
       build_info: ${{ needs.build_info.outputs.BUILD_INFO }}
 
+  build_android_tv_apk:
+    needs: [code_quality, build_info, customizations_setup]
+    uses: ./.github/workflows/build_android_tv_apk.yml
+    with:
+      customizations_env_content: ${{ needs.customizations_setup.outputs.CUSTOMIZATIONS_ENV_CONTENT }}
+      build_info: ${{ needs.build_info.outputs.BUILD_INFO }}
+
   build_ios_app:
     needs: [build_info, customizations_setup, code_quality, choose_macos_runner]
     uses: ./.github/workflows/build_ios_app.yml
+    with:
+      runner-label: ${{ needs.choose_macos_runner.outputs.runner-label }}
+      customizations_env_content: ${{ needs.customizations_setup.outputs.CUSTOMIZATIONS_ENV_CONTENT }}
+      build_info: ${{ needs.build_info.outputs.BUILD_INFO }}
+
+  build_tvos_app:
+    needs: [build_info, customizations_setup, code_quality, choose_macos_runner]
+    uses: ./.github/workflows/build_tvos_app.yml
     with:
       runner-label: ${{ needs.choose_macos_runner.outputs.runner-label }}
       customizations_env_content: ${{ needs.customizations_setup.outputs.CUSTOMIZATIONS_ENV_CONTENT }}

@@ -4,7 +4,7 @@ import * as ScreenOrientation from "expo-screen-orientation";
 import { OrientationLock } from "expo-screen-orientation";
 import * as NavigationBar from "expo-navigation-bar";
 
-export const useFullScreenVideoPlayback = () => {
+const useFullScreenVideoPlayback = () => {
   const isWeb = Platform.OS === "web";
   const [isFullscreen, setIsFullscreen] = useState(false);
 
@@ -59,3 +59,5 @@ export const useFullScreenVideoPlayback = () => {
 
   return { isFullscreen, toggleFullscreen };
 };
+
+export default useFullScreenVideoPlayback;

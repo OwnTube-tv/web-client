@@ -34,6 +34,7 @@ export default {
     favicon: process.env.EXPO_PUBLIC_FAVICON_URL || "./assets/favicon.png",
   },
   plugins: [
+    "@react-native-tvos/config-tv",
     "expo-router",
     [
       "expo-font",

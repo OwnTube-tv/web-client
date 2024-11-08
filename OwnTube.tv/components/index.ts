@@ -4,7 +4,6 @@ export * from "./VideoThumbnail";
 export * from "./VideoView/VideoView";
 export * from "./VideoControlsOverlay";
 export * from "./Loader";
-export * from "./DeviceCapabilitiesModal";
 export * from "./DeviceCapabilities";
 export * from "./ViewHistory";
 export * from "./ComboBoxInput";

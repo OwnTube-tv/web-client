@@ -1,4 +1,4 @@
-name: Build iOS .App
+name: Build tvOS .App
 
 on:
   workflow_call:
@@ -14,7 +14,7 @@ on:
         type: string
 
 jobs:
-  build_ios_app:
+  build_tvos_app:
     runs-on: ${{ inputs.runner-label }}
     steps:
       - name: Checkout
@@ -33,8 +33,8 @@ jobs:
         run: |
           echo "${{ inputs.customizations_env_content }}" > ./OwnTube.tv/.env
 
-      - name: Expo Prebuild iOS assets
-        run: export LC_CTYPE=UTF-8 && cd OwnTube.tv/ && npx expo prebuild --clean --platform ios
+      - name: Expo Prebuild tvOS assets
+        run: export EXPO_TV=1 LC_CTYPE=UTF-8 && cd OwnTube.tv/ && npx expo prebuild --clean --platform ios
 
       - name: Inject Build Info
         run: |
@@ -42,15 +42,16 @@ jobs:
           ${{ inputs.build_info }}
           EOF
 
-      - name: Build release .app for simulators by @${{ github.actor }}
+      - name: Build release tvOS .app for simulators by @${{ github.actor }}
         run: |
+          export EXPO_TV=1 &&
           cd OwnTube.tv/ios/ &&
           WORKSPACE_FILE=$(find . -maxdepth 1 -name "*.xcworkspace")
           SCHEME=$(xcodebuild -list | sed -n '/Schemes:/,$p' | tail -n +2 | head -n 1 | xargs)
 
           if [[ -n "$WORKSPACE_FILE" && -n "$SCHEME" ]]; then
             echo "Running xcodebuild with workspace $WORKSPACE_FILE and scheme $SCHEME"
-            xcodebuild -workspace "$WORKSPACE_FILE" -scheme "$SCHEME" -configuration Release -sdk iphonesimulator -derivedDataPath ./build-simulator
+            xcodebuild -workspace "$WORKSPACE_FILE" -scheme "$SCHEME" -configuration Release -sdk appletvsimulator -derivedDataPath ./build-simulator
           else
             echo "Error: No .xcworkspace or scheme file found."
             exit 1
@@ -59,11 +60,11 @@ jobs:
       - name: Find .app artifact path
         id: find_app
         run: |
-          IOS_APP_ARTIFACT_PATH=$(find ./OwnTube.tv/ios/build-simulator/Build/Products/Release-iphonesimulator -maxdepth 1 -name "*.app" | head -n 1)
-          echo "IOS_APP_ARTIFACT_PATH=$IOS_APP_ARTIFACT_PATH" >> $GITHUB_OUTPUT
+          TVOS_APP_ARTIFACT_PATH=$(find ./OwnTube.tv/ios/build-simulator/Build/Products/Release-appletvsimulator -maxdepth 1 -name "*.app" | head -n 1)
+          echo "TVOS_APP_ARTIFACT_PATH=$TVOS_APP_ARTIFACT_PATH" >> $GITHUB_OUTPUT
 
       - name: Upload .app artifact
         uses: actions/upload-artifact@v4
         with:
-          name: ios-simulator-app.app
-          path: "${{ steps.find_app.outputs.IOS_APP_ARTIFACT_PATH }}"
+          name: tvos-simulator-app.app
+          path: "${{ steps.find_app.outputs.TVOS_APP_ARTIFACT_PATH }}"

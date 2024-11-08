@@ -1,7 +1,7 @@
 import { usePathname } from "expo-router";
 import { useFullScreenModalContext } from "../contexts";
-import { Share } from "../components/VideoControlsOverlay/components/modals";
 import { SHAREABLE_ROUTE_MODAL_TITLES } from "../app/_layout";
+import Share from "../components/VideoControlsOverlay/components/modals/Share";
 
 export const useShareButton = () => {
   const pathname = usePathname();

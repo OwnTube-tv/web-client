@@ -1,37 +1,34 @@
 import Animated, { SlideInUp, SlideOutUp } from "react-native-reanimated";
-import { ModalContainer } from "../../../ModalContainer";
-import { Typography } from "../../../Typography";
+import { ModalContainer } from "../../../../ModalContainer";
+import { Typography } from "../../../../Typography";
 import { useTranslation } from "react-i18next";
-import { Checkbox, Separator } from "../../../shared";
+import { Checkbox, Separator } from "../../../../shared";
 import { ScrollView, StyleSheet, View } from "react-native";
-import build_info from "../../../../build-info.json";
+import build_info from "../../../../../build-info.json";
 import QrCode from "react-qr-code";
-import { useMemo, useRef, useState } from "react";
+import { useMemo, useState } from "react";
 import { useGlobalSearchParams, usePathname } from "expo-router";
 import { useTheme } from "@react-navigation/native";
-import { borderRadius, spacing } from "../../../../theme";
-import { Input } from "../../../shared";
-import * as Clipboard from "expo-clipboard";
-import { Spacer } from "../../../shared/Spacer";
-import { getHumanReadableDuration } from "../../../../utils";
-import { useViewHistory } from "../../../../hooks";
-import { colors } from "../../../../colors";
-import { ROUTES } from "../../../../types";
+import { borderRadius, spacing } from "../../../../../theme";
+import { Input } from "../../../../shared";
+import { Spacer } from "../../../../shared/Spacer";
+import { getHumanReadableDuration } from "../../../../../utils";
+import { useViewHistory } from "../../../../../hooks";
+import { colors } from "../../../../../colors";
+import { ROUTES } from "../../../../../types";
 
 interface ShareProps {
   onClose: () => void;
   titleKey: string;
 }
 
-export const Share = ({ onClose, titleKey }: ShareProps) => {
+const Share = ({ onClose, titleKey }: ShareProps) => {
   const { t } = useTranslation();
   const { colors } = useTheme();
   const params = useGlobalSearchParams();
-  const [copyButtonText, setCopyButtonText] = useState(t("copy"));
   const [isTimestampAdded, setIsTimestampAdded] = useState(false);
-  const timeoutRef = useRef<NodeJS.Timeout>();
-  const { getViewHistoryEntryByUuid } = useViewHistory();
   const pathname = usePathname();
+  const { getViewHistoryEntryByUuid } = useViewHistory();
 
   const addedTimestamp = useMemo(() => {
     return getViewHistoryEntryByUuid(params?.id as string)?.timestamp || 0;
@@ -45,21 +42,10 @@ export const Share = ({ onClose, titleKey }: ShareProps) => {
 
   const isTimestampShown = pathname === `/${ROUTES.VIDEO}`;
 
-  const handleCopy = async () => {
-    await Clipboard.setStringAsync(link);
-    setCopyButtonText(t("linkCopied"));
-    clearTimeout(timeoutRef.current);
-    timeoutRef.current = setTimeout(() => {
-      setCopyButtonText(t("copy"));
-    }, 3_000);
-  };
-
   return (
     <Animated.View entering={SlideInUp} exiting={SlideOutUp} style={styles.animatedContainer} pointerEvents="box-none">
       <ModalContainer onClose={onClose} title={t(titleKey)} containerStyle={styles.modalContainer}>
         <ScrollView>
-          <Input buttonText={copyButtonText} readOnly value={link} handleButtonPress={handleCopy} />
-          <Spacer height={spacing.xl} />
           {isTimestampShown && (
             <>
               <View style={styles.startAtContainer}>
@@ -100,3 +86,5 @@ const styles = StyleSheet.create({
   qrCodeContainer: { backgroundColor: colors.white, borderRadius: borderRadius.radiusMd, padding: spacing.lg },
   startAtContainer: { flexDirection: "row", gap: spacing.xl },
 });
+
+export default Share;

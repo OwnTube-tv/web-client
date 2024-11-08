@@ -34,7 +34,7 @@ jobs:
           echo "${{ inputs.customizations_env_content }}" > ./OwnTube.tv/.env
 
       - name: Expo Prebuild tvOS assets
-        run: export EXPO_TV=1 && cd OwnTube.tv/ && npx expo prebuild --clean --platform ios
+        run: export EXPO_TV=1 LC_CTYPE=UTF-8 && cd OwnTube.tv/ && npx expo prebuild --clean --platform ios
 
       - name: Inject Build Info
         run: |

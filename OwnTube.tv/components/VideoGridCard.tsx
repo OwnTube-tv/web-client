@@ -11,6 +11,7 @@ import { ChannelLink } from "./ChannelLink";
 import { formatDistanceToNow } from "date-fns";
 import { useTranslation } from "react-i18next";
 import { LANGUAGE_OPTIONS } from "../i18n";
+import { useState } from "react";
 
 interface VideoGridCardProps {
   video: GetVideosVideo;
@@ -24,16 +25,20 @@ export const VideoGridCard = ({ video, backend }: VideoGridCardProps) => {
   const { t, i18n } = useTranslation();
   const { getViewHistoryEntryByUuid } = useViewHistory({ enabled: false });
   const { timestamp } = getViewHistoryEntryByUuid(video.uuid) || {};
+  const [containerWidth, setContainerWidth] = useState(0);
 
   return (
     <View style={styles.container}>
       <Pressable style={styles.pressableContainer} onPress={null} onHoverIn={toggleHovered} onHoverOut={toggleHovered}>
         <Link
+          onLayout={(e) => {
+            setContainerWidth(e.nativeEvent.layout.width);
+          }}
           style={styles.linkWrapper}
           href={{ pathname: `/${ROUTES.VIDEO}`, params: { id: video.uuid, backend, timestamp } }}
         >
           <VideoThumbnail
-            imageDimensions={{ width: 360, height: 202.5 }}
+            imageDimensions={{ width: containerWidth, height: containerWidth * (9 / 16) }}
             video={video}
             timestamp={timestamp}
             backend={backend}
@@ -41,17 +46,15 @@ export const VideoGridCard = ({ video, backend }: VideoGridCardProps) => {
         </Link>
         <View style={styles.textContainer}>
           <Link href={{ pathname: ROUTES.VIDEO, params: { id: video.uuid, backend } }}>
-            <View>
-              <Typography
-                fontWeight="Medium"
-                color={colors.theme900}
-                fontSize={isDesktop ? "sizeMd" : "sizeSm"}
-                numberOfLines={4}
-                style={{ textDecorationLine: isHovered ? "underline" : undefined }}
-              >
-                {video.name}
-              </Typography>
-            </View>
+            <Typography
+              fontWeight="Medium"
+              color={colors.theme900}
+              fontSize={isDesktop ? "sizeMd" : "sizeSm"}
+              numberOfLines={4}
+              style={{ textDecorationLine: isHovered ? "underline" : undefined }}
+            >
+              {video.name}
+            </Typography>
           </Link>
         </View>
       </Pressable>

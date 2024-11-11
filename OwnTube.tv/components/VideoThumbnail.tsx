@@ -25,7 +25,7 @@ export const VideoThumbnail: FC<VideoThumbnailProps> = ({ video, backend, timest
 
   const imageSource = video.previewPath ? { uri: video.previewPath } : fallback;
 
-  if (!backend) {
+  if (!backend || !imageDimensions.width || !imageDimensions.height) {
     return null;
   }
 
@@ -35,7 +35,7 @@ export const VideoThumbnail: FC<VideoThumbnailProps> = ({ video, backend, timest
         {...imageDimensions}
         resizeMode="cover"
         source={isError ? fallback : imageSource}
-        style={[styles.videoImage, { width: "100%", height: "100%" }]}
+        style={styles.videoImage}
         onError={() => setIsError(true)}
       />
       {!!percentageWatched && percentageWatched > 0 && (

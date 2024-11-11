@@ -3,13 +3,22 @@ import { spacing } from "../../theme";
 import VideoGridCardLoader from "../loaders/VideoGridCardLoader";
 import { VideoGridCard } from "../VideoGridCard";
 import { VideoGridProps } from "./VideoGrid";
+import { useMemo, useState } from "react";
 
 interface VideoGridContentProps extends Pick<VideoGridProps, "data" | "variant"> {
   isLoading?: boolean;
   backend?: string;
 }
 
+const MINIMUM_COLUMN_WIDTH = 277;
+
 export const VideoGridContent = ({ isLoading, data = [], variant, backend }: VideoGridContentProps) => {
+  const [containerWidth, setContainerWidth] = useState(0);
+  const columnWidth = useMemo(() => {
+    const numCols = Math.floor(containerWidth / MINIMUM_COLUMN_WIDTH) || 1;
+    return (containerWidth - (numCols - 1) * spacing.xl) / numCols;
+  }, [containerWidth]);
+
   return (
     <View
       style={Platform.select({
@@ -22,6 +31,9 @@ export const VideoGridContent = ({ isLoading, data = [], variant, backend }: Vid
           alignItems: "flex-start",
         },
       })}
+      onLayout={(e) => {
+        setContainerWidth(e.nativeEvent.layout.width);
+      }}
     >
       {isLoading
         ? [...Array(4)].map((_, index) => {
@@ -41,9 +53,10 @@ export const VideoGridContent = ({ isLoading, data = [], variant, backend }: Vid
             return (
               <View
                 key={video.uuid}
+                // @ts-expect-error wrong typings on Platform.select and style prop
                 style={Platform.select({
                   web: styles.gridItemWeb,
-                  default: styles.gridItemNonWeb,
+                  default: { ...styles.gridItemNonWeb, width: columnWidth },
                 })}
               >
                 <VideoGridCard
@@ -60,12 +73,7 @@ export const VideoGridContent = ({ isLoading, data = [], variant, backend }: Vid
 const styles = StyleSheet.create({
   gridItemNonWeb: {
     alignSelf: "flex-start",
-    flex: 1,
     height: "auto",
-    maxHeight: "100%",
-    maxWidth: "100%",
-    minWidth: "100%",
-    width: "100%",
   },
   gridItemWeb: { flex: 1 },
   loaderGridItemNonWeb: {

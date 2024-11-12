@@ -15,7 +15,14 @@ export const ErrorTextWithRetry = ({ errorText, refetch }: ErrorTextWithRetryPro
   return (
     <Typography fontSize="sizeSm" fontWeight="Medium" color={colors.themeDesaturated500}>
       {errorText}{" "}
-      <Pressable onPress={refetch}>
+      <Pressable
+        onPress={refetch}
+        style={({ focused }) => ({
+          borderWidth: focused ? 2 : 0,
+          borderColor: colors.theme950,
+          padding: focused ? 0 : 2,
+        })}
+      >
         <Typography
           fontSize="sizeSm"
           fontWeight="Medium"

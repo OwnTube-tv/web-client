@@ -37,7 +37,7 @@ export const PresentationSwitch = ({ presentation, handleSetPresentation }: Pres
 };
 
 const styles = StyleSheet.create({
-  presentationSwitcherButton: { height: 36 },
+  presentationSwitcherButton: { height: 36, paddingVertical: 6 },
   presentationSwitcherContainer: {
     alignSelf: "flex-start",
     borderRadius: 12,

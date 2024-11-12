@@ -1,7 +1,7 @@
-import { Pressable, StyleSheet, View } from "react-native";
+import { DimensionValue, Platform, Pressable, StyleSheet, View } from "react-native";
 import { VideoThumbnail } from "./VideoThumbnail";
 import { GetVideosVideo } from "../api/models";
-import { Link } from "expo-router";
+import { Link, useRouter } from "expo-router";
 import { ROUTES } from "../types";
 import { Typography } from "./Typography";
 import { spacing } from "../theme";
@@ -11,7 +11,8 @@ import { ChannelLink } from "./ChannelLink";
 import { formatDistanceToNow } from "date-fns";
 import { useTranslation } from "react-i18next";
 import { LANGUAGE_OPTIONS } from "../i18n";
-import { useState } from "react";
+import { useMemo, useState } from "react";
+import TVFocusGuideHelper from "./helpers/TVFocusGuideHelper";
 
 interface VideoGridCardProps {
   video: GetVideosVideo;
@@ -26,25 +27,62 @@ export const VideoGridCard = ({ video, backend }: VideoGridCardProps) => {
   const { getViewHistoryEntryByUuid } = useViewHistory({ enabled: false });
   const { timestamp } = getViewHistoryEntryByUuid(video.uuid) || {};
   const [containerWidth, setContainerWidth] = useState(0);
+  const [focused, setFocused] = useState(false);
+  const router = useRouter();
+  const linkHref = useMemo(() => {
+    return { pathname: `/${ROUTES.VIDEO}`, params: { id: video.uuid, backend, timestamp } };
+  }, [video, backend, timestamp]);
+
+  const thumbnailLinkStyles = useMemo(() => {
+    return [
+      styles.linkWrapper,
+      ...(Platform.isTV
+        ? [
+            {
+              padding: focused ? 2 : 4,
+              borderWidth: focused ? 2 : 0,
+              borderColor: colors.theme950,
+              height: "100%" as DimensionValue,
+              width: "100%" as DimensionValue,
+              borderRadius: 10,
+            },
+          ]
+        : [{}]),
+    ];
+  }, [colors, focused]);
+
+  const handleTvNavigateToVideo = () => {
+    router.navigate(linkHref);
+  };
 
   return (
     <View style={styles.container}>
-      <Pressable style={styles.pressableContainer} onPress={null} onHoverIn={toggleHovered} onHoverOut={toggleHovered}>
+      <Pressable
+        onFocus={Platform.isTV ? () => setFocused(true) : null}
+        onBlur={Platform.isTV ? () => setFocused(false) : null}
+        style={styles.pressableContainer}
+        onPress={Platform.isTV ? handleTvNavigateToVideo : null}
+        onHoverIn={toggleHovered}
+        onHoverOut={toggleHovered}
+      >
         <Link
           onLayout={(e) => {
             setContainerWidth(e.nativeEvent.layout.width);
           }}
-          style={styles.linkWrapper}
-          href={{ pathname: `/${ROUTES.VIDEO}`, params: { id: video.uuid, backend, timestamp } }}
+          href={linkHref}
+          asChild
+          style={thumbnailLinkStyles}
         >
-          <VideoThumbnail
-            imageDimensions={{ width: containerWidth, height: containerWidth * (9 / 16) }}
-            video={video}
-            timestamp={timestamp}
-            backend={backend}
-          />
+          <Pressable>
+            <VideoThumbnail
+              imageDimensions={{ width: containerWidth - 8, height: containerWidth * (9 / 16) - 8 }}
+              video={video}
+              timestamp={timestamp}
+              backend={backend}
+            />
+          </Pressable>
         </Link>
-        <View style={styles.textContainer}>
+        <TVFocusGuideHelper focusable={false} style={styles.textContainer}>
           <Link href={{ pathname: ROUTES.VIDEO, params: { id: video.uuid, backend } }}>
             <Typography
               fontWeight="Medium"
@@ -56,9 +94,9 @@ export const VideoGridCard = ({ video, backend }: VideoGridCardProps) => {
               {video.name}
             </Typography>
           </Link>
-        </View>
+        </TVFocusGuideHelper>
       </Pressable>
-      <View style={styles.restInfoContainer}>
+      <TVFocusGuideHelper focusable={false} style={styles.restInfoContainer}>
         <ChannelLink
           href={{ pathname: `/${ROUTES.CHANNEL}`, params: { channel: video.channel?.name, backend } }}
           text={video.channel?.displayName}
@@ -66,7 +104,7 @@ export const VideoGridCard = ({ video, backend }: VideoGridCardProps) => {
         <Typography fontSize="sizeXS" fontWeight="Medium" color={colors.themeDesaturated500}>
           {`${video.publishedAt ? formatDistanceToNow(video.publishedAt, { addSuffix: true, locale: LANGUAGE_OPTIONS.find(({ value }) => value === i18n.language)?.dateLocale }) : ""} • ${t("views", { count: video.views })}`}
         </Typography>
-      </View>
+      </TVFocusGuideHelper>
     </View>
   );
 };

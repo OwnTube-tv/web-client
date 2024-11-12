@@ -1,5 +1,5 @@
 import { VideoThumbnail } from "./VideoThumbnail";
-import { Pressable, StyleSheet, View } from "react-native";
+import { Pressable, StyleSheet, TVFocusGuideView, View } from "react-native";
 import { Typography } from "./Typography";
 import { format, formatDistanceToNow } from "date-fns";
 import { useBreakpoints, useHoverState, ViewHistoryEntry } from "../hooks";
@@ -10,9 +10,9 @@ import { spacing } from "../theme";
 import { useTheme } from "@react-navigation/native";
 import { useMemo } from "react";
 import { ChannelLink } from "./ChannelLink";
-import { IcoMoonIcon } from "./IcoMoonIcon";
 import { LANGUAGE_OPTIONS } from "../i18n";
 import { GetVideosVideo } from "../api/models";
+import { Button } from "./shared";
 
 interface VideoListItemProps extends Partial<Pick<ViewHistoryEntry, "lastViewedAt" | "timestamp">> {
   video: GetVideosVideo;
@@ -43,26 +43,33 @@ export const VideoListItem = ({
       return null;
     }
 
-    return (
-      <Pressable onPress={handleDeleteFromHistory} style={{ padding: 6 }}>
-        <IcoMoonIcon color={colors.theme950} name="Trash" size={24} />
-      </Pressable>
-    );
+    return <Button icon="Trash" style={{ height: 48 }} />;
   }, [handleDeleteFromHistory, colors]);
 
   return (
     <View style={[styles.container, { gap: isDesktop ? spacing.xl : spacing.md }]}>
       <Link href={videoHref} style={styles.thumbLinkWrapper}>
-        <VideoThumbnail
-          imageDimensions={{ width: isDesktop ? 328 : 128, height: isDesktop ? 102 : 72 }}
-          video={video}
-          backend={backend}
-          key={video.uuid}
-          timestamp={timestamp}
-        />
+        <Pressable
+          style={({ focused }) => ({
+            padding: focused ? 2 : 4,
+            borderWidth: focused ? 2 : 0,
+            borderColor: colors.theme950,
+            height: "100%",
+            width: "100%",
+            borderRadius: 10,
+          })}
+        >
+          <VideoThumbnail
+            imageDimensions={{ width: isDesktop ? 328 : 128, height: isDesktop ? 102 : 72 }}
+            video={video}
+            backend={backend}
+            key={video.uuid}
+            timestamp={timestamp}
+          />
+        </Pressable>
       </Link>
       <View style={styles.infoContainer}>
-        <View style={styles.textContainer}>
+        <TVFocusGuideView focusable={false} style={styles.textContainer}>
           {lastViewedAt && (
             <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
               <Typography
@@ -77,7 +84,7 @@ export const VideoListItem = ({
             </View>
           )}
           <Link asChild href={videoHref}>
-            <Pressable onHoverOut={toggleHovered} onHoverIn={toggleHovered}>
+            <Pressable focusable={false} isTVSelectable={false} onHoverOut={toggleHovered} onHoverIn={toggleHovered}>
               <Typography
                 style={{ textDecorationLine: isHovered ? "underline" : undefined, maxWidth: "100%" }}
                 fontSize={isDesktop ? "sizeLg" : "sizeSm"}
@@ -96,7 +103,7 @@ export const VideoListItem = ({
           <Typography fontSize="sizeXS" fontWeight="Medium" color={colors.themeDesaturated500}>
             {`${video.publishedAt ? formatDistanceToNow(video.publishedAt, { addSuffix: true, locale: LANGUAGE_OPTIONS.find(({ value }) => value === i18n.language)?.dateLocale }) : ""} • ${t("views", { count: video.views })}`}
           </Typography>
-        </View>
+        </TVFocusGuideView>
         {isDesktop && deleteBtn}
       </View>
     </View>

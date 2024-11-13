@@ -7,6 +7,7 @@ import { useBreakpoints, useHoverState } from "../hooks";
 import { IcoMoonIcon } from "./IcoMoonIcon";
 import { InstanceLogo } from "./InstanceLogo";
 import { ROUTES } from "../types";
+import { useState } from "react";
 
 interface PlatformCardProps {
   name?: string;
@@ -19,16 +20,23 @@ export const PlatformCard = ({ name, description, hostname, logoUrl }: PlatformC
   const { colors } = useTheme();
   const { isHovered, hoverHandlers } = useHoverState();
   const { isDesktop } = useBreakpoints();
+  const [focused, setFocused] = useState(false);
 
   return (
     <Link href={{ pathname: `/${ROUTES.HOME}`, params: { backend: hostname } }} asChild>
-      <Pressable style={styles.pressableContainer} {...hoverHandlers}>
+      <Pressable
+        style={styles.pressableContainer}
+        onFocus={() => setFocused(true)}
+        onBlur={() => setFocused(false)}
+        {...hoverHandlers}
+      >
         <View
           style={[
             styles.container,
             {
-              padding: isDesktop ? spacing.xl : spacing.lg,
-              borderColor: colors.theme200,
+              borderWidth: focused ? 2 : 1,
+              padding: (isDesktop ? spacing.xl : spacing.lg) - (focused ? 1 : 0),
+              borderColor: focused ? colors.theme950 : colors.theme200,
               backgroundColor: isHovered ? colors.theme200 : colors.theme100,
             },
           ]}
@@ -79,7 +87,6 @@ const styles = StyleSheet.create({
   arrow: { transform: [{ rotate: "180deg" }] },
   container: {
     borderRadius: borderRadius.radiusMd,
-    borderWidth: 1,
     flexDirection: "row",
     flex: 1,
     gap: spacing.lg,

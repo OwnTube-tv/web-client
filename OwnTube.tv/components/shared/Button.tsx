@@ -52,12 +52,18 @@ export const Button = forwardRef<View, ButtonProps>(
           props.onHoverOut?.(e);
           toggleHovered();
         }}
-        style={({ pressed }) => [
+        style={({ pressed, focused }) => [
           styles.container,
           props.style,
           {
             backgroundColor: getBackgroundColor(pressed),
             justifyContent,
+            borderWidth: focused ? 2 : 0,
+            borderColor: colors.theme950,
+            paddingHorizontal:
+              (Number(props.style?.paddingHorizontal) || styles.container.paddingHorizontal || 0) - (focused ? 2 : 0),
+            paddingVertical:
+              (Number(props.style?.paddingVertical) || styles.container.paddingVertical || 0) - (focused ? 2 : 0),
           },
         ]}
         ref={ref}

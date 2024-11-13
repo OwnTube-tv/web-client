@@ -5,7 +5,7 @@ import { useMemo } from "react";
 import { useBreakpoints, useInstanceConfig, useViewHistory } from "../../hooks";
 import { spacing } from "../../theme";
 import { ROUTES } from "../../types";
-import { SectionList, StyleSheet, View } from "react-native";
+import { Platform, SectionList, StyleSheet, View } from "react-native";
 import { useTranslation } from "react-i18next";
 import { LatestVideosView, SectionHeader } from "./components";
 import { useLocalSearchParams } from "expo-router";
@@ -97,7 +97,11 @@ export const HomeScreen = () => {
           showsVerticalScrollIndicator={false}
           ListFooterComponent={<InfoFooter />}
           ListHeaderComponent={!isMobile ? <Spacer height={spacing.xl} /> : <></>}
-          style={{ paddingRight: isMobile ? 0 : spacing.xl, ...styles.paddingContainer }}
+          style={{
+            paddingRight: isMobile ? 0 : spacing.xl,
+            ...styles.paddingContainer,
+            flex: Platform.isTV ? 0 : 1,
+          }}
           renderSectionHeader={({ section: { title, link } }) => <SectionHeader title={title} link={link} />}
         />
       </View>

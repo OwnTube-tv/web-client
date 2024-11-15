@@ -1,6 +1,6 @@
 import Animated, { SlideInUp, SlideOutUp } from "react-native-reanimated";
 import { ModalContainer } from "../../../ModalContainer";
-import { ScrollView, StyleSheet, View } from "react-native";
+import { Platform, ScrollView, StyleSheet, View } from "react-native";
 import { Spacer } from "../../../shared/Spacer";
 import { spacing } from "../../../../theme";
 import { Button, Checkbox, Picker, Separator } from "../../../shared";
@@ -44,6 +44,14 @@ export const Settings = ({ onClose }: SettingsProps) => {
     });
   };
 
+  const handleSelectLanguage = (langCode: string) => {
+    handleChangeLang(langCode).then(() => {
+      if (Platform.isTV && Platform.OS === "android") {
+        onClose();
+      }
+    });
+  };
+
   return (
     <Animated.View entering={SlideInUp} exiting={SlideOutUp} style={styles.animatedContainer} pointerEvents="box-none">
       <ModalContainer onClose={onClose} title={t("settingsPageTitle")} containerStyle={styles.modalContainer}>
@@ -57,7 +65,7 @@ export const Settings = ({ onClose }: SettingsProps) => {
             darkTheme={isDarkTheme}
             placeholder={{}}
             value={currentLang}
-            onValueChange={handleChangeLang}
+            onValueChange={handleSelectLanguage}
             items={LANGUAGE_OPTIONS}
           />
           <Spacer height={spacing.xl} />

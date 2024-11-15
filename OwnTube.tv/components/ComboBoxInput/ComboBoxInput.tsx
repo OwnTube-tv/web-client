@@ -1,10 +1,11 @@
-import { Pressable, TextInput } from "react-native";
+import { Platform, Pressable, TextInput } from "react-native";
 import { useMemo } from "react";
 import { useTheme } from "@react-navigation/native";
 import { ComboBoxInputProps } from "./models";
 import { styles } from "./styles";
 import { useFullScreenModalContext } from "../../contexts";
 import { FullScreenSearchBox } from "./components";
+import { spacing } from "../../theme";
 
 const ComboBoxInput = ({
   onChange,
@@ -34,7 +35,10 @@ const ComboBoxInput = ({
   return (
     <Pressable
       testID={testID}
-      style={[styles.container, { backgroundColor: colors.theme100, borderColor: colors.theme200, width }]}
+      style={({ focused }) => [
+        styles.container,
+        { backgroundColor: colors.theme100, borderColor: focused ? colors.theme950 : colors.theme200, width },
+      ]}
       onPress={() => {
         modalControls.toggleModal(true);
         modalControls.setContent(modalContent);
@@ -49,8 +53,13 @@ const ComboBoxInput = ({
         placeholder={placeholder}
         placeholderTextColor={colors.text}
         style={[
-          { color: colors.theme950, backgroundColor: colors.theme100, borderColor: colors.theme200 },
           styles.input,
+          {
+            color: colors.theme950,
+            backgroundColor: colors.theme100,
+            borderColor: colors.theme200,
+            paddingLeft: Platform.isTV && Platform.OS === "ios" ? 0 : Platform.OS === "web" ? spacing.lg : spacing.lg,
+          },
         ]}
       />
     </Pressable>

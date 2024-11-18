@@ -1,5 +1,5 @@
 import { StyleSheet } from "react-native";
-import { borderRadius, fontSizes, spacing } from "../../theme";
+import { borderRadius, fontSizes } from "../../theme";
 
 export const styles = StyleSheet.create({
   container: {
@@ -16,7 +16,7 @@ export const styles = StyleSheet.create({
     fontSize: fontSizes.sizeSm,
     fontWeight: "500",
     height: "100%",
-    paddingLeft: spacing.lg,
+    paddingLeft: 16,
     width: "100%",
   },
   optionsContainer: {

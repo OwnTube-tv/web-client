@@ -25,7 +25,7 @@ export const InfoToast = ({ props: { isError }, ...toastProps }: InfoToastProps)
       <Typography numberOfLines={2} style={styles.text}>
         {toastProps.text1}
       </Typography>
-      <Button contrast="high" icon="Close" onPress={() => Toast.hide()} />
+      <Button hasTVPreferredFocus contrast="high" icon="Close" onPress={() => Toast.hide()} />
     </View>
   );
 };

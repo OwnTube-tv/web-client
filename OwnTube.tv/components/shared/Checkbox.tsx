@@ -29,7 +29,16 @@ export const Checkbox = ({ checked, onChange, disabled, label }: CheckboxProps) 
   }, [disabled, checked]);
 
   return (
-    <Pressable onPress={handleCheck} style={{ flexDirection: "row", alignItems: "center", gap: spacing.md }}>
+    <Pressable
+      onPress={handleCheck}
+      style={({ focused }) => ({
+        padding: focused ? 0 : -2,
+        margin: focused ? 0 : 2,
+        borderWidth: focused ? 2 : 0,
+        borderColor: colors.theme950,
+        ...styles.focusableContainer,
+      })}
+    >
       <View
         style={[
           styles.checkboxContainer,
@@ -60,5 +69,12 @@ const styles = StyleSheet.create({
     height: 20,
     justifyContent: "center",
     width: 20,
+  },
+  focusableContainer: {
+    alignItems: "center",
+    alignSelf: "flex-start",
+    borderRadius: borderRadius.radiusSm,
+    flexDirection: "row",
+    gap: spacing.md,
   },
 });

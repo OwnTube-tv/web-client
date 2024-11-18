@@ -5,6 +5,7 @@ import { useTheme } from "@react-navigation/native";
 import { Typography } from "./Typography";
 import { Button } from "./shared";
 import { colors } from "../colors";
+import TVFocusGuideHelper from "./helpers/TVFocusGuideHelper";
 
 interface ModalContainerProps {
   title: string;
@@ -21,15 +22,21 @@ export const ModalContainer: FC<PropsWithChildren<ModalContainerProps>> = ({
   const { colors } = useTheme();
 
   return (
-    <View style={[styles.container, { backgroundColor: colors.theme50 }, containerStyle]}>
+    <TVFocusGuideHelper
+      trapFocusDown
+      trapFocusUp
+      trapFocusLeft
+      trapFocusRight
+      style={[styles.container, { backgroundColor: colors.theme50 }, containerStyle]}
+    >
       <View style={styles.header}>
         <Typography fontSize="sizeLg" fontWeight="SemiBold" color={colors.theme950} style={styles.headerText}>
           {title}
         </Typography>
-        <Button style={styles.button} onPress={onClose} icon="Close" />
+        <Button hasTVPreferredFocus style={styles.button} onPress={onClose} icon="Close" />
       </View>
       {children}
-    </View>
+    </TVFocusGuideHelper>
   );
 };
 

@@ -13,6 +13,7 @@ interface ScrubBarProps {
   length: number;
   isExpanded: boolean;
   variant: "volume" | "seek";
+  onUpdate?: () => void;
 }
 
 const INDICATOR_SIZE = 12;
@@ -27,6 +28,7 @@ export const ScrubBar = ({
   length,
   isExpanded,
   variant,
+  onUpdate,
 }: ScrubBarProps) => {
   const { colors } = useTheme();
   const [visibleWidth, setVisibleWidth] = useState(0);
@@ -51,6 +53,7 @@ export const ScrubBar = ({
 
   const pan = Gesture.Pan()
     .onUpdate(({ x }) => {
+      onUpdate?.();
       handleTapOrPan(x);
     })
     .onStart(() => setIsDragging(true))

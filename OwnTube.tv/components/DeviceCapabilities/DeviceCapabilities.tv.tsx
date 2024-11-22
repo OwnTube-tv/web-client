@@ -3,7 +3,6 @@ import { Typography } from "../Typography";
 import { useAppConfigContext } from "../../contexts";
 import { useTheme } from "@react-navigation/native";
 import { useTranslation } from "react-i18next";
-import { BuildInfo } from "../BuildInfo";
 
 const CapabilityKeyValuePair = ({ label, value }: { label: string; value: string }) => {
   const { colors } = useTheme();
@@ -33,12 +32,6 @@ const DeviceCapabilities = () => {
         </Typography>
       </View>
       <View style={styles.capabilitiesContainer}>
-        <View style={styles.row}>
-          <Typography color={colors.themeDesaturated500} fontSize="sizeXS" fontWeight="Medium">
-            {t("currentBuild")}
-          </Typography>
-          <BuildInfo />
-        </View>
         <CapabilityKeyValuePair label={t("playerImpl")} value={deviceCapabilities.playerImplementation} />
         <CapabilityKeyValuePair label={t("deviceType")} value={deviceCapabilities.deviceType} />
         <CapabilityKeyValuePair label={t("operatingSystem")} value={deviceCapabilities.OS} />

@@ -1,7 +1,6 @@
 import { AVPlaybackStatus, AVPlaybackStatusSuccess, ResizeMode, Video } from "expo-av";
 import { useEffect, useRef, useState } from "react";
-import { View } from "react-native";
-import { VideoControlsOverlay } from "../VideoControlsOverlay";
+import { Platform, View } from "react-native";
 import { styles } from "./styles";
 import { useAppConfigContext } from "../../contexts";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
@@ -9,6 +8,7 @@ import * as Device from "expo-device";
 import { DeviceType } from "expo-device";
 import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
 import { VideoChannelSummary } from "@peertube/peertube-types";
+import VideoControlsOverlay from "../VideoControlsOverlay";
 
 export interface VideoViewProps {
   uri: string;
@@ -22,6 +22,7 @@ export interface VideoViewProps {
   handleOpenDetails: () => void;
   handleShare: () => void;
   handleOpenSettings: () => void;
+  isModalOpen: boolean;
 }
 
 const VideoView = ({
@@ -36,6 +37,7 @@ const VideoView = ({
   handleOpenDetails,
   handleShare,
   handleOpenSettings,
+  isModalOpen,
 }: VideoViewProps) => {
   const videoRef = useRef<Video>(null);
   const [playbackStatus, setPlaybackStatus] = useState<(AVPlaybackStatusSuccess & { positionSeconds: number }) | null>(
@@ -61,12 +63,12 @@ const VideoView = ({
     }
   };
 
-  const handleRW = (seconds: number) => {
-    videoRef.current?.setPositionAsync((playbackStatus?.positionMillis ?? 0) - seconds * 1000);
+  const handleRW = async (seconds: number) => {
+    await videoRef.current?.setPositionAsync((playbackStatus?.positionMillis ?? 0) - seconds * 1000);
   };
 
-  const handleFF = (seconds: number) => {
-    videoRef.current?.setPositionAsync((playbackStatus?.positionMillis ?? 0) + seconds * 1000);
+  const handleFF = async (seconds: number) => {
+    await videoRef.current?.setPositionAsync((playbackStatus?.positionMillis ?? 0) + seconds * 1000);
   };
 
   const toggleMute = () => {
@@ -97,17 +99,28 @@ const VideoView = ({
     videoRef.current?.setVolumeAsync(volume);
   };
 
+  const modalOpenRef = useRef(false);
+  useEffect(() => {
+    modalOpenRef.current = isModalOpen;
+  }, [isModalOpen]);
+
   const timeout = useRef<NodeJS.Timeout>();
   const handleOverlayPress = () => {
     setIsControlsVisible(true);
 
     clearTimeout(timeout.current);
     timeout.current = setTimeout(() => {
-      setIsControlsVisible(false);
+      setIsControlsVisible(modalOpenRef.current);
     }, 3000);
   };
 
-  const tap = Gesture.Tap().onFinalize(handleOverlayPress).runOnJS(true);
+  const tap = Gesture.Tap()
+    .onFinalize(() => {
+      if (!Platform.isTV) {
+        handleOverlayPress();
+      }
+    })
+    .runOnJS(true);
 
   return (
     <GestureDetector gesture={tap}>
@@ -116,7 +129,7 @@ const VideoView = ({
           handlePlayPause={handlePlayPause}
           isPlaying={playbackStatus?.isPlaying}
           isVisible={isControlsVisible}
-          onOverlayPress={undefined}
+          onOverlayPress={Platform.isTV ? handleOverlayPress : undefined}
           handleRW={handleRW}
           handleFF={handleFF}
           duration={playbackStatus?.durationMillis}
@@ -146,7 +159,7 @@ const VideoView = ({
             onPlaybackStatusUpdate={handlePlaybackStatusUpdate}
             style={styles.videoWrapper}
           />
-          {isMobile && isControlsVisible && (
+          {isMobile && !Platform.isTVOS && isControlsVisible && (
             <Animated.View entering={FadeIn} exiting={FadeOut} style={styles.opacityOverlay} />
           )}
         </VideoControlsOverlay>

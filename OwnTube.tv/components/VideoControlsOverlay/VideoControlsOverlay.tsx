@@ -1,30 +1,28 @@
-import { PropsWithChildren, useMemo, useState } from "react";
+import { PropsWithChildren } from "react";
 import { Pressable, StyleSheet, View } from "react-native";
-import { useTheme } from "@react-navigation/native";
 import { Typography } from "../Typography";
 import { getHumanReadableDuration } from "../../utils";
-import { Link, useLocalSearchParams, useRouter } from "expo-router";
+import { Link } from "expo-router";
 import { VolumeControl } from "./components/VolumeControl";
 import * as Device from "expo-device";
 import { DeviceType } from "expo-device";
 import { colors, spacing } from "../../theme";
-import { PlayerButton } from "./components/PlayerButton";
 import { ShareButton } from "./components/ShareButton";
 import { TextLink } from "./components/TextLink";
 import { ScrubBar } from "./components/ScrubBar";
 import { LinearGradient } from "expo-linear-gradient";
 import Animated, { SlideInDown, SlideInUp, SlideOutDown, SlideOutUp, FadeIn, FadeOut } from "react-native-reanimated";
-import { useTranslation } from "react-i18next";
 import { ROUTES } from "../../types";
-import { RootStackParams } from "../../app/_layout";
+import PlayerButton from "./components/PlayerButton";
+import { useVideoControlsOverlay } from "./hooks/useVideoControlsOverlay";
 
-interface VideoControlsOverlayProps {
+export interface VideoControlsOverlayProps {
   isVisible: boolean;
   onOverlayPress?: () => void;
   isPlaying?: boolean;
   handlePlayPause: () => void;
-  handleRW: (s: number) => void;
-  handleFF: (s: number) => void;
+  handleRW: (s: number) => Promise<void>;
+  handleFF: (s: number) => Promise<void>;
   duration?: number;
   availableDuration?: number;
   position?: number;
@@ -44,11 +42,11 @@ interface VideoControlsOverlayProps {
   handleOpenSettings: () => void;
 }
 
-export const VideoControlsOverlay = ({
+const VideoControlsOverlay = ({
   children,
   isVisible,
   onOverlayPress,
-  isPlaying,
+  isPlaying = false,
   handlePlayPause,
   handleRW,
   handleFF,
@@ -57,7 +55,7 @@ export const VideoControlsOverlay = ({
   position = 0,
   toggleMute,
   isMute = false,
-  shouldReplay,
+  shouldReplay = false,
   handleReplay,
   handleJumpTo,
   title,
@@ -70,32 +68,24 @@ export const VideoControlsOverlay = ({
   handleShare,
   handleOpenSettings,
 }: PropsWithChildren<VideoControlsOverlayProps>) => {
-  const { backend } = useLocalSearchParams<RootStackParams[ROUTES.VIDEO]>();
-  const { t } = useTranslation();
-  const { colors } = useTheme();
-  const router = useRouter();
-  const [isSeekBarFocused, setIsSeekBarFocused] = useState(false);
-
-  const centralIconName = useMemo(() => {
-    return isPlaying ? "Pause" : shouldReplay ? "Restart" : "Play";
-  }, [isPlaying, shouldReplay]);
-
-  const { percentageAvailable, percentagePosition } = useMemo(() => {
-    return {
-      percentageAvailable: (availableDuration / duration) * 100,
-      percentagePosition: (position / duration) * 100,
-    };
-  }, [availableDuration, duration, position]);
-
+  const {
+    isSeekBarFocused,
+    setIsSeekBarFocused,
+    handlePressBack,
+    percentageAvailable,
+    percentagePosition,
+    centralIconName,
+    t,
+    colors,
+    backend,
+  } = useVideoControlsOverlay({
+    isPlaying,
+    shouldReplay,
+    availableDuration,
+    duration,
+    position,
+  });
   const isMobile = Device.deviceType !== DeviceType.DESKTOP;
-
-  const handlePressBack = () => {
-    if (router.canGoBack()) {
-      router.back();
-    } else {
-      router.navigate({ pathname: `/${ROUTES.HOME}`, params: { backend } });
-    }
-  };
 
   return (
     // @ts-expect-error web cursor options not included in React Native core
@@ -289,3 +279,5 @@ const styles = StyleSheet.create({
   topRightControls: { alignItems: "center", flexDirection: "row" },
   videoInfoContainer: { gap: spacing.md, width: "100%" },
 });
+
+export default VideoControlsOverlay;

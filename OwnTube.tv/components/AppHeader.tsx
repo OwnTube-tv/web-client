@@ -1,4 +1,4 @@
-import { StyleSheet, View } from "react-native";
+import { Platform, StyleSheet, View } from "react-native";
 import { spacing } from "../theme";
 import { useTheme } from "@react-navigation/native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -20,7 +20,7 @@ export const AppHeader = ({ backend, ...props }: AppHeaderProps) => {
       style={[
         styles.container,
         {
-          marginTop: top,
+          marginTop: Platform.isTV ? 0 : top,
           backgroundColor: colors.theme50,
         },
       ]}

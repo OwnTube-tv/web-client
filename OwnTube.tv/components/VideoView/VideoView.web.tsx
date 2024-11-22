@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from "react";
 import { View } from "react-native";
-import { VideoControlsOverlay } from "../VideoControlsOverlay";
 import Player from "video.js/dist/types/player";
 import { VideoViewProps } from "./VideoView";
 import { styles } from "./styles";
@@ -8,6 +7,7 @@ import "./styles.web.css";
 import videojs from "video.js";
 import * as Device from "expo-device";
 import { DeviceType } from "expo-device";
+import VideoControlsOverlay from "../VideoControlsOverlay";
 
 declare const window: {
   videojs: typeof videojs;

@@ -1,7 +1,7 @@
 import { Pressable, StyleSheet, View } from "react-native";
 import Animated, { useSharedValue, withTiming } from "react-native-reanimated";
-import { PlayerButton } from "./PlayerButton";
 import { ScrubBar } from "./ScrubBar";
+import PlayerButton from "./PlayerButton";
 
 interface Props {
   isMute: boolean;

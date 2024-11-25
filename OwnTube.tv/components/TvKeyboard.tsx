@@ -1,4 +1,4 @@
-import { TouchableOpacity, TouchableOpacityProps } from "react-native";
+import { StyleSheet, TouchableOpacity, TouchableOpacityProps } from "react-native";
 import { Typography } from "./Typography";
 import { borderRadius, spacing } from "../theme";
 import { useTheme } from "@react-navigation/native";
@@ -98,12 +98,7 @@ export const TvKeyboard = ({ mode = "url", onKeyPress, onBackspace, nextFocusUp 
   const backspaceKeyRef = useRef();
 
   return (
-    <TVFocusGuideHelper
-      autoFocus
-      trapFocusRight
-      trapFocusLeft
-      style={{ flexDirection: "row", gap: spacing.xs, height: spacing.xl, width: "100%", justifyContent: "center" }}
-    >
+    <TVFocusGuideHelper autoFocus trapFocusRight trapFocusLeft style={styles.container}>
       <Key
         onKeyPress={() =>
           setKeyboardMode((prev) => {
@@ -137,3 +132,7 @@ export const TvKeyboard = ({ mode = "url", onKeyPress, onBackspace, nextFocusUp 
     </TVFocusGuideHelper>
   );
 };
+
+const styles = StyleSheet.create({
+  container: { flexDirection: "row", gap: spacing.xs, height: spacing.xl, justifyContent: "center", width: "100%" },
+});

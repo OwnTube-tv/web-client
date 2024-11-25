@@ -90,8 +90,9 @@ export const VideoScreen = () => {
         backgroundColor="black"
         style={Platform.OS === "android" ? "light" : scheme === "dark" ? "light" : "dark"}
       />
-      <View id="video-container" style={[{ paddingTop: top }, styles.videoContainer]}>
+      <View id="video-container" style={[{ paddingTop: Platform.isTV ? 0 : top }, styles.videoContainer]}>
         <VideoView
+          isModalOpen={!!visibleModal}
           timestamp={params?.timestamp}
           handleSetTimeStamp={handleSetTimeStamp}
           testID={`${params.id}-video-view`}

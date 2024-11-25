@@ -3,7 +3,7 @@ import { ModalContainer } from "../../../../ModalContainer";
 import { Typography } from "../../../../Typography";
 import { useTranslation } from "react-i18next";
 import { Checkbox, Separator } from "../../../../shared";
-import { ScrollView, StyleSheet, View } from "react-native";
+import { Platform, ScrollView, StyleSheet, View } from "react-native";
 import build_info from "../../../../../build-info.json";
 import QrCode from "react-qr-code";
 import { useMemo, useState } from "react";
@@ -16,6 +16,7 @@ import { getHumanReadableDuration } from "../../../../../utils";
 import { useViewHistory } from "../../../../../hooks";
 import { colors } from "../../../../../colors";
 import { ROUTES } from "../../../../../types";
+import TVFocusGuideHelper from "../../../../helpers/TVFocusGuideHelper";
 
 interface ShareProps {
   onClose: () => void;
@@ -48,15 +49,17 @@ const Share = ({ onClose, titleKey }: ShareProps) => {
         <ScrollView>
           {isTimestampShown && (
             <>
-              <View style={styles.startAtContainer}>
-                <Checkbox label={t("startAt")} checked={isTimestampAdded} onChange={setIsTimestampAdded} />
+              <TVFocusGuideHelper autoFocus style={styles.startAtContainer}>
+                <View>
+                  <Checkbox label={t("startAt")} checked={isTimestampAdded} onChange={setIsTimestampAdded} />
+                </View>
                 <Input
-                  style={{ width: 96 }}
+                  style={{ width: 96, ...(Platform.isTVOS ? { padding: 0 } : {}) }}
                   editable={false}
-                  readOnly={!isTimestampAdded}
+                  readOnly
                   value={getHumanReadableDuration(addedTimestamp * 1000)}
                 />
-              </View>
+              </TVFocusGuideHelper>
               <Spacer height={spacing.xl} />
             </>
           )}
@@ -84,7 +87,7 @@ const styles = StyleSheet.create({
   animatedContainer: { alignItems: "center", flex: 1, justifyContent: "center" },
   modalContainer: { maxHeight: "90%", maxWidth: "90%", width: 500 },
   qrCodeContainer: { backgroundColor: colors.white, borderRadius: borderRadius.radiusMd, padding: spacing.lg },
-  startAtContainer: { flexDirection: "row", gap: spacing.xl },
+  startAtContainer: { alignItems: "center", flexDirection: "row", gap: spacing.xl },
 });
 
 export default Share;

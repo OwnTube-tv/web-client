@@ -1,5 +1,5 @@
 import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
-import { Pressable, StyleSheet, View } from "react-native";
+import { Platform, Pressable, StyleSheet, View } from "react-native";
 import { FC, PropsWithChildren } from "react";
 import { colors } from "../theme";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -23,7 +23,7 @@ export const FullScreenModal: FC<PropsWithChildren<FullScreenModalProps>> = ({
   }
 
   return (
-    <View style={[styles.container, { paddingTop: top }]}>
+    <View style={[styles.container, { paddingTop: Platform.isTV ? 0 : top }]}>
       <AnimatedPressable
         onPress={onBackdropPress}
         entering={FadeIn}

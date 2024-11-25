@@ -1,4 +1,4 @@
-import { StyleSheet, View, ViewStyle } from "react-native";
+import { StyleSheet, ViewStyle } from "react-native";
 import { borderRadius, spacing } from "../theme";
 import { FC, PropsWithChildren } from "react";
 import { useTheme } from "@react-navigation/native";
@@ -29,12 +29,12 @@ export const ModalContainer: FC<PropsWithChildren<ModalContainerProps>> = ({
       trapFocusRight
       style={[styles.container, { backgroundColor: colors.theme50 }, containerStyle]}
     >
-      <View style={styles.header}>
+      <TVFocusGuideHelper autoFocus style={styles.header}>
         <Typography fontSize="sizeLg" fontWeight="SemiBold" color={colors.theme950} style={styles.headerText}>
           {title}
         </Typography>
         <Button hasTVPreferredFocus style={styles.button} onPress={onClose} icon="Close" />
-      </View>
+      </TVFocusGuideHelper>
       {children}
     </TVFocusGuideHelper>
   );
@@ -56,5 +56,5 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     marginBottom: spacing.lg,
   },
-  headerText: { alignSelf: "center" },
+  headerText: { alignSelf: "center", maxWidth: "80%" },
 });

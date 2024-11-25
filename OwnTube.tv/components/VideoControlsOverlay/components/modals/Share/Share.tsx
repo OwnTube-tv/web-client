@@ -63,7 +63,9 @@ const Share = ({ onClose, titleKey }: ShareProps) => {
           {isTimestampShown && (
             <>
               <View style={styles.startAtContainer}>
-                <Checkbox label={t("startAt")} checked={isTimestampAdded} onChange={setIsTimestampAdded} />
+                <View>
+                  <Checkbox label={t("startAt")} checked={isTimestampAdded} onChange={setIsTimestampAdded} />
+                </View>
                 <Input
                   style={{ width: 96 }}
                   editable={false}
@@ -98,7 +100,7 @@ const styles = StyleSheet.create({
   animatedContainer: { alignItems: "center", flex: 1, justifyContent: "center" },
   modalContainer: { maxHeight: "90%", maxWidth: "90%", width: 500 },
   qrCodeContainer: { backgroundColor: colors.white, borderRadius: borderRadius.radiusMd, padding: spacing.lg },
-  startAtContainer: { flexDirection: "row", gap: spacing.xl },
+  startAtContainer: { alignItems: "center", flexDirection: "row", gap: spacing.xl },
 });
 
 export default Share;

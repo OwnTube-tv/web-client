@@ -1,1 +1,1 @@
-export * from "./VideoControlsOverlay";
+export { default } from "./VideoControlsOverlay";

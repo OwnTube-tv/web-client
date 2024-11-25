@@ -3,6 +3,7 @@ import { deleteFromAsyncStorage, multiGetFromAsyncStorage, readFromAsyncStorage,
 import { STORAGE } from "../types";
 import type { DefaultError } from "@tanstack/query-core";
 import { GetVideosVideo } from "../api/models";
+import { Platform } from "react-native";
 
 export type ViewHistoryEntry = GetVideosVideo & {
   firstViewedAt?: number;
@@ -13,9 +14,16 @@ export type ViewHistoryEntry = GetVideosVideo & {
 type UpdateHistoryMutationFnArg = { data: Partial<ViewHistoryEntry> & { uuid: string } };
 type ViewHistoryBase = Record<string, ViewHistoryEntry>;
 
+const MAX_HISTORY_ITEMS_DEFAULT = 50;
+const MAX_HISTORY_ITEMS_TVOS = 40;
+
 export const useViewHistory = (queryArg?: { enabled?: boolean; maxItems?: number; backendToFilter?: string }) => {
   const queryClient = useQueryClient();
-  const { enabled = true, maxItems = 50, backendToFilter } = queryArg || {};
+  const {
+    enabled = true,
+    maxItems = Platform.isTVOS ? MAX_HISTORY_ITEMS_TVOS : MAX_HISTORY_ITEMS_DEFAULT,
+    backendToFilter,
+  } = queryArg || {};
 
   const { data: viewHistory, isFetching } = useQuery<ViewHistoryBase, DefaultError, Array<ViewHistoryEntry>>({
     queryKey: ["viewHistory"],
@@ -57,8 +65,8 @@ export const useViewHistory = (queryArg?: { enabled?: boolean; maxItems?: number
 
       await writeToAsyncStorage(data.uuid, updatedVideoEntry);
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["viewHistory"] });
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ["viewHistory"] });
     },
   });
 

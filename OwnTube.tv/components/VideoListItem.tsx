@@ -1,5 +1,5 @@
 import { VideoThumbnail } from "./VideoThumbnail";
-import { Pressable, StyleSheet, TVFocusGuideView, View } from "react-native";
+import { Pressable, StyleSheet, View } from "react-native";
 import { Typography } from "./Typography";
 import { format, formatDistanceToNow } from "date-fns";
 import { useBreakpoints, useHoverState, ViewHistoryEntry } from "../hooks";
@@ -13,6 +13,7 @@ import { ChannelLink } from "./ChannelLink";
 import { LANGUAGE_OPTIONS } from "../i18n";
 import { GetVideosVideo } from "../api/models";
 import { Button } from "./shared";
+import TVFocusGuideHelper from "./helpers/TVFocusGuideHelper";
 
 interface VideoListItemProps extends Partial<Pick<ViewHistoryEntry, "lastViewedAt" | "timestamp">> {
   video: GetVideosVideo;
@@ -43,7 +44,7 @@ export const VideoListItem = ({
       return null;
     }
 
-    return <Button icon="Trash" style={{ height: 48 }} />;
+    return <Button onPress={handleDeleteFromHistory} icon="Trash" style={{ height: 48 }} />;
   }, [handleDeleteFromHistory, colors]);
 
   return (
@@ -69,7 +70,7 @@ export const VideoListItem = ({
         </Pressable>
       </Link>
       <View style={styles.infoContainer}>
-        <TVFocusGuideView focusable={false} style={styles.textContainer}>
+        <TVFocusGuideHelper focusable={false} style={styles.textContainer}>
           {lastViewedAt && (
             <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
               <Typography
@@ -103,7 +104,7 @@ export const VideoListItem = ({
           <Typography fontSize="sizeXS" fontWeight="Medium" color={colors.themeDesaturated500}>
             {`${video.publishedAt ? formatDistanceToNow(video.publishedAt, { addSuffix: true, locale: LANGUAGE_OPTIONS.find(({ value }) => value === i18n.language)?.dateLocale }) : ""} • ${t("views", { count: video.views })}`}
           </Typography>
-        </TVFocusGuideView>
+        </TVFocusGuideHelper>
         {isDesktop && deleteBtn}
       </View>
     </View>

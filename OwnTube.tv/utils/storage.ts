@@ -1,26 +1,36 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { Platform, Settings } from "react-native";
 
 export const writeToAsyncStorage = async (key: string, value: object | string) => {
   try {
-    await AsyncStorage.setItem(key, JSON.stringify(value));
-    return true;
+    if (Platform.isTVOS) {
+      Settings.set({ [key]: JSON.stringify(value) });
+    } else {
+      await AsyncStorage.setItem(key, JSON.stringify(value));
+    }
   } catch (error) {
-    return false;
+    console.error(error);
   }
 };
 
 export const readFromAsyncStorage = async (key: string) => {
   try {
-    const value = await AsyncStorage.getItem(key);
+    const value = Platform.isTVOS ? Settings.get(key) || null : await AsyncStorage.getItem(key);
     return JSON.parse(value as string);
   } catch (error) {
-    return false;
+    console.error(error);
   }
 };
 
 export const deleteFromAsyncStorage = async (keys: string[]) => {
   try {
-    await AsyncStorage.multiRemove(keys);
+    if (Platform.isTVOS) {
+      keys.forEach((key: string) => {
+        Settings.set({ [key]: "" });
+      });
+    } else {
+      await AsyncStorage.multiRemove(keys);
+    }
     return true;
   } catch (error) {
     return false;
@@ -29,7 +39,13 @@ export const deleteFromAsyncStorage = async (keys: string[]) => {
 
 export const multiGetFromAsyncStorage = async (keys: string[]) => {
   try {
-    return await AsyncStorage.multiGet(keys);
+    if (Platform.isTVOS) {
+      return keys.map((key: string) => {
+        return [key, Settings.get(key)];
+      });
+    } else {
+      return await AsyncStorage.multiGet(keys);
+    }
   } catch (error) {
     console.error(error);
   }

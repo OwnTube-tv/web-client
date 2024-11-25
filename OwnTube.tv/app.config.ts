@@ -34,7 +34,23 @@ export default {
     favicon: process.env.EXPO_PUBLIC_FAVICON_URL || "./assets/favicon.png",
   },
   plugins: [
-    "@react-native-tvos/config-tv",
+    [
+      "@react-native-tvos/config-tv",
+      {
+        androidTVBanner: process.env.EXPO_PUBLIC_ANDROID_TV_BANNER || "./assets/android-tv-banner.png",
+        androidTVIcon: process.env.EXPO_PUBLIC_ICON || "./assets/icon.png",
+        appleTVImages: {
+          icon: process.env.EXPO_PUBLIC_APPLE_TV_ICON || "./assets/appleTV/icon_1280x760.png",
+          iconSmall: process.env.EXPO_PUBLIC_APPLE_TV_ICON_SMALL || "./assets/appleTV/iconSmall_400x240.png",
+          iconSmall2x: process.env.EXPO_PUBLIC_APPLE_TV_ICON_SMALL_2X || "./assets/appleTV/iconSmall2x_800x480.png",
+          topShelf: process.env.EXPO_PUBLIC_APPLE_TV_TOP_SHELF || "./assets/appleTV/topShelf_1920x720.png",
+          topShelf2x: process.env.EXPO_PUBLIC_APPLE_TV_TOP_SHELF_2X || "./assets/appleTV/topShelf2x_3840x1440.png",
+          topShelfWide: process.env.EXPO_PUBLIC_APPLE_TV_TOP_SHELF_WIDE || "./assets/appleTV/topShelfWide_2320x720.png",
+          topShelfWide2x:
+            process.env.EXPO_PUBLIC_APPLE_TV_TOP_SHELF_WIDE_2X || "./assets/appleTV/topShelfWide2x_4640x1440.png",
+        },
+      },
+    ],
     "expo-router",
     [
       "expo-font",

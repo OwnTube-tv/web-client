@@ -35,7 +35,7 @@ export const useGetInstanceInfoQuery = (backend?: string) => {
 
 export const useGetInstanceInfoCollectionQuery = (instances: string[]) => {
   return useQueries({
-    queries: instances.map((instance) => ({
+    queries: instances?.map((instance) => ({
       queryKey: [QUERY_KEYS.instance, instance],
       queryFn: async () => {
         const res = await InstanceInformationApiImpl.getInstanceInfo(instance);

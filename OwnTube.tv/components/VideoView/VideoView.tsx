@@ -92,7 +92,7 @@ const VideoView = ({
   }, [playbackStatus?.positionMillis]);
 
   useEffect(() => {
-    videoRef.current?.setPositionAsync(Number(timestamp) * 1000);
+    videoRef.current?.setPositionAsync(Number(timestamp || 0) * 1000);
   }, [timestamp]);
 
   const handleVolumeControl = (volume: number) => {

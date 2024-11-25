@@ -52,21 +52,21 @@ or background images for Apple TV.
 
 > [!WARNING]
 > You need to supply images of expected sizes for tvOS or the build fails automatically:
-> 
+>
 > EXPO_PUBLIC_APPLE_TV_ICON: 1280x760
-> 
+>
 > EXPO_PUBLIC_APPLE_TV_ICON_SMALL: 400x240
-> 
+>
 > EXPO_PUBLIC_APPLE_TV_ICON_SMALL_2X: 800x480
-> 
+>
 > EXPO_PUBLIC_APPLE_TV_TOP_SHELF: 1920x720
-> 
+>
 > EXPO_PUBLIC_APPLE_TV_TOP_SHELF_2X: 3840x1440
-> 
+>
 > EXPO_PUBLIC_APPLE_TV_TOP_SHELF_WIDE: 2320x720
-> 
+>
 > EXPO_PUBLIC_APPLE_TV_TOP_SHELF_WIDE_2X: 4640x1440
-> 
+>
 > More info at https://www.npmjs.com/package/@react-native-tvos/config-tv
 
 #### Build process

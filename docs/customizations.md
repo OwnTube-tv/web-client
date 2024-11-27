@@ -68,13 +68,3 @@ or background images for Apple TV.
 > EXPO_PUBLIC_APPLE_TV_TOP_SHELF_WIDE_2X: 4640x1440
 >
 > More info at https://www.npmjs.com/package/@react-native-tvos/config-tv
-
-#### Build process
-
-The main workflow in `deploy-static-main.yml` builds the application for iOS, Android and Web in the following steps:
-
-1. The build info is created and prepared for injection into app bundles in the `build_info` step. (`build_info`)
-2. A check is performed to determine if a customizations repo link and file name is provided, if yes - the customizations file content is stored for future injection (`customizations_setup`)
-3. `[iOS & tvOS - specific]`: the runner label is determined for the iOS build - a custom one from the environemnt variable "PREFERRED_MACOS_RUNNER", or if it is missing - the default, `macos-latest`. (`choose_macos_runner`)
-4. Checks for code quality and unit tests are run (`code_quality`)
-5. Parallel builds start for Android (`build_android_apk`) and iOS (`build_ios_app`) artifacts, also the web version is bundled into an artifact and deployed to GitHub Pages (`deploy_web`)

@@ -14,7 +14,7 @@ on:
         type: string
 
 jobs:
-  build_tvos_app:
+  build_tvos_simulator_app:
     runs-on: ${{ inputs.runner-label }}
     steps:
       - name: Checkout

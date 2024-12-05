@@ -1,7 +1,13 @@
+const getBuildNumber = () => {
+  const now = new Date();
+  return `${now.getUTCFullYear() % 100}${String(now.getUTCMonth() + 1).padStart(2, "0")}${String(now.getUTCDate()).padStart(2, "0")}${String(now.getUTCHours()).padStart(2, "0")}${String(now.getUTCMinutes()).padStart(2, "0")}`;
+};
+
 export default {
   slug: process.env.EXPO_PUBLIC_APP_SLUG || "OwnTube.tv",
   name: process.env.EXPO_PUBLIC_APP_NAME || "OwnTube.tv",
-  icon: process.env.EXPO_PUBLIC_ICON || "./assets/icon.png",
+  icon:
+    process.env.EXPO_PUBLIC_ICON || (process.env.EXPO_TV ? "./assets/appleTV/icon_1280x768.png" : "./assets/icon.png"),
   scheme: "owntube",
   version: process.env.EXPO_PUBLIC_APP_VERSION || "1.0.0",
   assetBundlePatterns: ["**/*"],
@@ -12,6 +18,10 @@ export default {
     backgroundColor: process.env.EXPO_PUBLIC_SPLASH_BG_COLOR || "#F95F1E",
   },
   ios: {
+    infoPlist: {
+      ITSAppUsesNonExemptEncryption: false,
+    },
+    buildNumber: getBuildNumber(),
     supportsTablet: true,
     bundleIdentifier: process.env.EXPO_PUBLIC_IOS_BUNDLE_IDENTIFIER || "com.owntubetv.owntube",
   },
@@ -40,7 +50,7 @@ export default {
         androidTVBanner: process.env.EXPO_PUBLIC_ANDROID_TV_BANNER || "./assets/android-tv-banner.png",
         androidTVIcon: process.env.EXPO_PUBLIC_ICON || "./assets/icon.png",
         appleTVImages: {
-          icon: process.env.EXPO_PUBLIC_APPLE_TV_ICON || "./assets/appleTV/icon_1280x760.png",
+          icon: process.env.EXPO_PUBLIC_APPLE_TV_ICON || "./assets/appleTV/icon_1280x768.png",
           iconSmall: process.env.EXPO_PUBLIC_APPLE_TV_ICON_SMALL || "./assets/appleTV/iconSmall_400x240.png",
           iconSmall2x: process.env.EXPO_PUBLIC_APPLE_TV_ICON_SMALL_2X || "./assets/appleTV/iconSmall2x_800x480.png",
           topShelf: process.env.EXPO_PUBLIC_APPLE_TV_TOP_SHELF || "./assets/appleTV/topShelf_1920x720.png",

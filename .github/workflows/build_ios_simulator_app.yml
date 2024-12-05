@@ -14,7 +14,7 @@ on:
         type: string
 
 jobs:
-  build_ios_app:
+  build_ios_simulator_app:
     runs-on: ${{ inputs.runner-label }}
     steps:
       - name: Checkout

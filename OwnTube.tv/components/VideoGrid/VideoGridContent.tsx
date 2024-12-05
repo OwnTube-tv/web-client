@@ -1,6 +1,6 @@
 import { Platform, StyleSheet, View } from "react-native";
 import { spacing } from "../../theme";
-import VideoGridCardLoader from "../loaders/VideoGridCardLoader";
+import { VideoGridCardLoader } from "../loaders";
 import { VideoGridCard } from "../VideoGridCard";
 import { VideoGridProps } from "./VideoGrid";
 import { useMemo, useState } from "react";
@@ -41,8 +41,8 @@ export const VideoGridContent = ({ isLoading, data = [], variant, backend }: Vid
               <View
                 key={index}
                 style={Platform.select({
-                  web: styles.gridItemWeb,
-                  default: styles.loaderGridItemNonWeb,
+                  web: styles.loaderGridItemWeb,
+                  default: { ...styles.loaderGridItemNonWeb, width: columnWidth },
                 })}
               >
                 <VideoGridCardLoader />
@@ -83,7 +83,7 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
     maxHeight: "100%",
     maxWidth: "100%",
-    minWidth: "100%",
     width: "100%",
   },
+  loaderGridItemWeb: { height: "100%", minHeight: 314 },
 });

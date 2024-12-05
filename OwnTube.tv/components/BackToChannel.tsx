@@ -33,7 +33,7 @@ export const BackToChannel = ({ channelInfo }: BackToChannelProps) => {
 };
 
 const styles = StyleSheet.create({
-  backButton: { height: 36, width: 36 },
+  backButton: { height: 36, paddingHorizontal: 6, paddingVertical: 6, width: 36 },
   infoContainer: {
     alignItems: "center",
     flexDirection: "row",

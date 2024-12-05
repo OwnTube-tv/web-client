@@ -19,6 +19,8 @@
 - [ ] Web (mobile)
 - [ ] Mobile (iOS)
 - [ ] Mobile (Android)
+- [ ] TV (Android)
+- [ ] TV (Apple)
 
 ## 📷 Screenshots (if appropriate)
 

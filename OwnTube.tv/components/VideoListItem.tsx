@@ -4,7 +4,7 @@ import { Typography } from "./Typography";
 import { format, formatDistanceToNow } from "date-fns";
 import { useBreakpoints, useHoverState, ViewHistoryEntry } from "../hooks";
 import { useTranslation } from "react-i18next";
-import { Link } from "expo-router";
+import { Link, useRouter } from "expo-router";
 import { ROUTES } from "../types";
 import { spacing } from "../theme";
 import { useTheme } from "@react-navigation/native";
@@ -28,6 +28,7 @@ export const VideoListItem = ({
   timestamp,
   lastViewedAt,
 }: VideoListItemProps) => {
+  const router = useRouter();
   const { t, i18n } = useTranslation();
   const { colors } = useTheme();
   const { isHovered, toggleHovered } = useHoverState();
@@ -59,6 +60,7 @@ export const VideoListItem = ({
             width: "100%",
             borderRadius: 10,
           })}
+          onPress={() => router.navigate(videoHref)}
         >
           <VideoThumbnail
             imageDimensions={{ width: isDesktop ? 328 : 128, height: isDesktop ? 102 : 72 }}

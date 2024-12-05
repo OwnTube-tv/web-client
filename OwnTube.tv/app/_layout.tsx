@@ -13,7 +13,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { useFonts } from "expo-font";
 import Toast from "react-native-toast-message";
-import { AppDesktopHeader, FullScreenModal, InfoToast, Sidebar } from "../components";
+import { AppDesktopHeader, FullScreenModal, InfoToast, Sidebar, ErrorBoundary } from "../components";
 import "../i18n";
 import { useTranslation } from "react-i18next";
 import { useCallback, useEffect } from "react";
@@ -70,46 +70,49 @@ const RootStack = () => {
     <>
       <StatusBar style={scheme === "dark" ? "light" : "dark"} />
       <ThemeProvider value={theme}>
-        <Drawer
-          screenOptions={{
-            drawerType: breakpoints.isMobile ? "front" : "permanent",
-            drawerStyle: {
-              display: !backend ? "none" : "flex",
-              width: (!breakpoints.isDesktop && !breakpoints.isMobile ? CLOSED_DRAWER_WIDTH : OPEN_DRAWER_WIDTH) + left,
-              borderRightWidth: 0,
-            },
-            header: (props) => renderAppHeader(props),
-          }}
-          backBehavior="history"
-          drawerContent={(props) => <Sidebar {...props} backend={backend} />}
-        >
-          <Drawer.Screen
-            name={"(home)/index"}
-            options={{ drawerStyle: { display: "none" }, swipeEnabled: false, header: () => <></> }}
+        <ErrorBoundary>
+          <Drawer
+            screenOptions={{
+              drawerType: breakpoints.isMobile ? "front" : "permanent",
+              drawerStyle: {
+                display: !backend ? "none" : "flex",
+                width:
+                  (!breakpoints.isDesktop && !breakpoints.isMobile ? CLOSED_DRAWER_WIDTH : OPEN_DRAWER_WIDTH) + left,
+                borderRightWidth: 0,
+              },
+              header: (props) => renderAppHeader(props),
+            }}
+            backBehavior="history"
+            drawerContent={(props) => <Sidebar {...props} backend={backend} />}
+          >
+            <Drawer.Screen
+              name={"(home)/index"}
+              options={{ drawerStyle: { display: "none" }, swipeEnabled: false, header: () => <></> }}
+            />
+            <Drawer.Screen name={"(home)/home"} />
+            <Drawer.Screen
+              name={`(home)/video`}
+              options={{ drawerStyle: { display: "none" }, swipeEnabled: false, header: () => <></> }}
+            />
+            <Drawer.Screen name={`(home)/${ROUTES.CHANNEL}`} />
+            <Drawer.Screen name={`(home)/${ROUTES.CHANNELS}`} />
+            <Drawer.Screen name={`(home)/${ROUTES.CHANNEL_CATEGORY}`} />
+            <Drawer.Screen name={`(home)/${ROUTES.CHANNEL_PLAYLIST}`} />
+            <Drawer.Screen name={`(home)/${ROUTES.CATEGORIES}`} />
+            <Drawer.Screen name={`(home)/${ROUTES.CATEGORY}`} />
+            <Drawer.Screen name={`(home)/${ROUTES.PLAYLISTS}`} />
+            <Drawer.Screen name={`(home)/${ROUTES.PLAYLIST}`} />
+          </Drawer>
+          <Toast
+            topOffset={top || undefined}
+            config={{
+              info: (props) => <InfoToast {...props} />,
+            }}
           />
-          <Drawer.Screen name={"(home)/home"} />
-          <Drawer.Screen
-            name={`(home)/video`}
-            options={{ drawerStyle: { display: "none" }, swipeEnabled: false, header: () => <></> }}
-          />
-          <Drawer.Screen name={`(home)/${ROUTES.CHANNEL}`} />
-          <Drawer.Screen name={`(home)/${ROUTES.CHANNELS}`} />
-          <Drawer.Screen name={`(home)/${ROUTES.CHANNEL_CATEGORY}`} />
-          <Drawer.Screen name={`(home)/${ROUTES.CHANNEL_PLAYLIST}`} />
-          <Drawer.Screen name={`(home)/${ROUTES.CATEGORIES}`} />
-          <Drawer.Screen name={`(home)/${ROUTES.CATEGORY}`} />
-          <Drawer.Screen name={`(home)/${ROUTES.PLAYLISTS}`} />
-          <Drawer.Screen name={`(home)/${ROUTES.PLAYLIST}`} />
-        </Drawer>
-        <Toast
-          topOffset={top || undefined}
-          config={{
-            info: (props) => <InfoToast {...props} />,
-          }}
-        />
-        <FullScreenModal onBackdropPress={() => toggleModal?.(false)} isVisible={isModalOpen}>
-          {modalContent}
-        </FullScreenModal>
+          <FullScreenModal onBackdropPress={() => toggleModal?.(false)} isVisible={isModalOpen}>
+            {modalContent}
+          </FullScreenModal>
+        </ErrorBoundary>
       </ThemeProvider>
     </>
   );

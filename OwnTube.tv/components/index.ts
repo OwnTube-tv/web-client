@@ -31,3 +31,4 @@ export * from "./ErrorTextWithRetry";
 export * from "./InstanceLogo";
 export * from "./InfoToast";
 export * from "./TvKeyboard";
+export * from "./ErrorBoundary";

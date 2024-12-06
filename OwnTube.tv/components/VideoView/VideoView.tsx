@@ -9,6 +9,7 @@ import { DeviceType } from "expo-device";
 import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
 import { VideoChannelSummary } from "@peertube/peertube-types";
 import VideoControlsOverlay from "../VideoControlsOverlay";
+import Toast from "react-native-toast-message";
 
 export interface VideoViewProps {
   uri: string;
@@ -122,6 +123,10 @@ const VideoView = ({
     })
     .runOnJS(true);
 
+  const handlePlayerError = (error: unknown) => {
+    Toast.show({ type: "info", text1: `Error: ${String(error)}`, props: { isError: true } });
+  };
+
   return (
     <GestureDetector gesture={tap}>
       <View collapsable={false} style={styles.container}>
@@ -158,6 +163,7 @@ const VideoView = ({
             source={{ uri }}
             onPlaybackStatusUpdate={handlePlaybackStatusUpdate}
             style={styles.videoWrapper}
+            onError={handlePlayerError}
           />
           {isMobile && !Platform.isTVOS && isControlsVisible && (
             <Animated.View entering={FadeIn} exiting={FadeOut} style={styles.opacityOverlay} />

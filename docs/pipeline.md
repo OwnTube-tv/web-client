@@ -1,21 +1,20 @@
-### Main pipeline 👷
+# Main pipeline 👷
 
-The main workflow in `deploy-static-main.yml` builds the application for all supported platforms in the following steps:
+The main workflow in `deploy-static-main.yml` builds the application for all supported platforms in the following jobs:
 
-1. The runner label is determined for the macOS runner - a custom one from the environemnt variable "PREFERRED_MACOS_RUNNER", or if it is missing - the default, `macos-latest`. (`choose_macos_runner`)
-2. The build info is created and prepared for injection into app bundles in the `build_info` step. (`build_info`)
-3. A check is performed to determine if a customizations repo link and file name is provided, if yes - the customizations file content is stored for future injection (`customizations_setup`)
-4. Checks for code quality and unit tests are run (`code_quality`)
+1. The runner label is determined for the macOS runner - a custom one from the environment variable "`PREFERRED_MACOS_RUNNER`", or if it is missing - the default, "`macos-latest`", is used (see `choose_macos_runner` job)
+2. The build info is created and prepared for injection into app bundles (see `build_info` job)
+3. A check is performed to determine if a customizations repo link and file name is provided from the environment variables "`CLIENT_CUSTOMIZATIONS_REPO`" and "`CLIENT_CUSTOMIZATIONS_FILE`", if yes - the customizations file content is stored for future injection (see `customizations_setup` job)
+4. Checks for code quality and unit tests are run (see `code_quality` job)
 5. The following build processes start:
+   - Build and deploy app as static export to GitHub Pages
+   - Build the app for iOS and tvOS simulators
+   - Build the Android and Android TV `.apk`'s
+   - \[Optional] If selected when starting the pipeline, build and upload iOS and tvOS apps to TestFlight
 
-- Build and deploy app as static export to GitHub Pages;
-- Build the app for iOS and tvOS simulators
-- Build the Android and Android TV `.apk`s
-- [Optional] If selected when starting the pipeline, build and upload iOS and tvOS apps to Testflight
+## TestFlight upload ⏫
 
-### Testflight upload
-
-Before uploading to Testflight, create an "owntube" environment in repository settings if you haven't already, then add the following secrets to the environment:
+Before uploading to TestFlight, create an "`owntube`" environment in repository settings if you haven't already, then add the following secrets to the environment:
 
 - `APPLE_API_KEY`: the ID for the Apple App Store API Key that you generated in App Store Connect;
 - `APPLE_API_KEY_ISSUER`: the issuer ID for the key;

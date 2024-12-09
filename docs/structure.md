@@ -1,21 +1,21 @@
-## Folder structure
+# React Native project folder structure
 
-For convenience, we will consider all folder names prefixed by `./OwnTube.tv/`
+For convenience, we will consider all folder names prefixed by `./OwnTube.tv/` unless another root path is indicated.
 
-### 📁`/__mocks__/`:
+## 📁 `./OwnTube.tv/__mocks__/`
 
 This is a utility folder where you can put mocks for modules that you are sure will be used in all tests across the app.
 
-File structure: `/__mocks__/<moduleName>/<fileToMockName>.js`
+File structure: `./OwnTube.tv/__mocks__/<moduleName>/<fileToMockName>.js`
 
 This is quite handy for react-native projects as some native modules will never render in a test renderer (e.g. _Camera_).
 Some libraries have instructions for creating such mock files.
 
 Alternative: 1 large `jest.setup.js` file with all the mocks.
 
-### 📁`/api/`:
+## 📁 `./OwnTube.tv/api/`
 
-`queries` folder contains React hooks that wrap around the data fetching functions and handle things like loading state, refetching, cache invalidation through the use of `tanstack-query` (formerly `react-query`) library.
+`queries` folder contains React hooks that wrap around the data fetching functions and handle things like loading state, re-fetching, cache invalidation through the use of `tanstack-query` (formerly `react-query`) library.
 Each file contains queries for a specific view, e.g. `categories.ts` contains queries for categories list and category videos + collections.
 
 `axiosInstance.ts` contains an abstract `AxiosInstanceBasedApi` class that has all the prerequisites for creating an api service with `axios` which is then used
@@ -31,7 +31,7 @@ All apis throw an `OwnTubeError` from `models.ts` which contains the error messa
 
 2. `retry`: A function used in queries that determines whether to retry a failed API request based on the failure count and error type.
 
-### 📁`/app/`:
+## 📁 `./OwnTube.tv/app/`
 
 This directory's structure is static and determined by the `expo-router` package guidelines.
 More insight on why expo-router is used can be found further in the document, and more information on the file structure can be found here: https://docs.expo.dev/router/create-pages/
@@ -45,23 +45,17 @@ Each route has a `backend` parameter and the others - depending on the route.
 All the routes come together in the `_layout.tsx` file which exports the app navigation.
 The reasoning behind the inclusion of the `+html.tsx` file will be discussed further in the document.
 
-### 📁`/assets/`:
+## 📁 `./OwnTube.tv/assets/`
 
-Contains logos, fonts and test data jsons, only the files put in this and `public` folder will be included in the build.
+Contains logos, fonts and test data jsons, only the files put in this and `./OwnTube.tv/public` folder will be included in the build.
 
-### 📁`/components/`:
+## 📁 `./OwnTube.tv/components/`
 
 A base folder for React components used in the app, the `/shared/` folder contains base component like "button" or "spacer".
 Some of the components that require a lot of supporting files (styles, tests etc.) are placed in a single folder,
 while most consist of 1 file which contains the styles (if any) and the component code.
 
-### 📁`/contexts/`:
-
-This folder contains setup files for information that should be available across the whole app - one is a color context used
-for theme switching and the other is the `AppConfigContext` which is used for technical information like settings or
-device capability info.
-
-### 📁`/contexts/`:
+## 📁 `./OwnTube.tv/contexts/`
 
 This folder contains React context providers and their associated setup files. The contexts in this folder include:
 
@@ -71,34 +65,34 @@ This folder contains React context providers and their associated setup files. T
 
 3. `FullScreenModalContext`: Provides a mechanism for managing modal dialogs throughout the application. It offers a centralized way to control the visibility, content, and behavior of modals. This context allows any component in the app to easily trigger, dismiss, or update modal content without the need for prop drilling or complex state management.
 
-### 📁`/hooks/`:
+## 📁 `./OwnTube.tv/hooks/`
 
 Each file in this folder contains a React hook and if available, a file with the same name with a `.test.ts` extension.
 
-### 📁`/layouts/`:
+## 📁 `./OwnTube.tv/layouts/`
 
 Contains layout components, currently having only one - a `<Screen />` that wraps app screens.
 
-### 📁`/locales/`:
+## 📁 `./OwnTube.tv/locales/`
 
 Contains locale files for each language in the `[language code].json` format. These files are then
 supplied to the `react-18next` library as translation resources. To translate the app in your own language
 you will need to translate the json file with a tool of you choice and make a pull request.
 
-### 📁`/screens/`:
+## 📁 `./OwnTube.tv/screens/`
 
 This folder contains screen components which are imported into the route files in the `/app/` folder. Mostly these screens
 consist of components from the `/components/` folder.
 
-### 📁`/theme/`:
+## 📁 `./OwnTube.tv/theme/`
 
 Contains stylistic values and variables, such as colors or typography, however currently the app is mostly using the built-ins from `react-navigation` (a dependency of `expo-router`)
 
-### 📁`/utils/`:
+## 📁 `./OwnTube.tv/utils/`
 
 Here you can find various utilities used across the app, such as time formatting or working with async storage, test setup helpers etc.
 
-### 📁`project root`:
+## 📁 `./OwnTube.tv/`
 
 The project root contains configuration and setup files, notable ones include:
 

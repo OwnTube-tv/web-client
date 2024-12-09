@@ -1,25 +1,25 @@
-## Technologies used
+# Technologies used
 
-### Framework 🖼️
+## Framework 🖼️
 
 This app uses Expo which is a framework of React Native which simplifies the DX drastically for a lot of use cases.
 
-### Data Fetching ⬇️
+## Data Fetching ⬇️
 
-The project uses `tanstack-query` library for its simplified data handling, automatic background refetching, and performance optimization
+The project uses `tanstack-query` library for its simplified data handling, automatic background re-fetching, and performance optimization
 through built-in caching. Its powerful DevTools and flexibility in supporting various use cases enhance our development
 efficiency, while an active community ensures we stay updated with the best practices.
 
-### Navigation 🧭
+## Navigation 🧭
 
 A significant majority of React Native projects use the `react-navigation` navigation library. This project, however, uses
 a file-based routing solution built on top of it by Expo, called `expo-router`. Expo-router comes with some additional features,
 such as deploying your application on the web in 3 different ways ('static', 'single' and 'server').
 
-The 'static' export is what allows us to deploy the app to GitHub pages as a set of html files (hence the name "static").
+The 'static' export is what allows us to deploy the app to GitHub Pages as a set of html files (hence the name "static").
 This allows us to refresh the page without 404 errors unlike a "single" export (which would be the only option if we didn't use `expo-router`).
 However, there is currently a problem that comes up when deploying the app to GH Pages, which was patched in the `/patches/` folder. Currently, an issue
-in the Expo Github repo is created and assigned to a team member there.
+in the Expo GitHub repo is created and assigned to a team member there.
 
 Each page is navigated to with a `backend` param so that the chosen instance link is determined by the URL and not the internal memory state.
 For example, if the user has `foo.bar` chosen in settings and gets a link to `owntube.tv/video?backend=bar.baz&id=123`, then they will watch a video from `bar.baz` that they were sent.
@@ -28,17 +28,17 @@ The video page also has params such as `id` (the video uuid) and `timestamp` (th
 
 The settings page has only the `backend` param and uses it to show the currently selected instance, when the user select a new one they are "navigated" to the same page with a different `backend` param.
 
-### Video playback 📼
+## Video playback 📼
 
 The turnkey solution for Expo apps is expo-video. However, this library is still in beta state and is considered unsupported
-on TV devices. So, the OwnTube.tv client uses an older `expo-av` library.
+on TV devices. So, the OwnTube.tv 📺 client uses an older `expo-av` library.
 
-A PeerTube instance outputs two variants when a video is fetched - either an mp4 video file, or an HLS streaming playlist,
+A PeerTube instance outputs two variants when a video is fetched - either a mp4 video file, or an HLS streaming playlist,
 or both. However, not all videos have both, so we need to be able to play both variants.
 
 HLS is a technology which is not supported natively on desktop browsers except for Safari. Thus, we need a custom solution to support Chrome and FF.
-The `video.js` library includes the `hls.js` library which is used by PeerTube on the frontend in their custom peer-to-peer loader. However this custom loader is not
-necessary for the current needs of OwnTube.tv.
+The `video.js` library includes the `hls.js` library which is used by PeerTube on the frontend in their custom peer-to-peer loader. However, this custom loader is not
+necessary for the current needs of OwnTube.tv 📺.
 In our case, a platform-specific component is used for the Web platform (React Native is able to determine where it is running and will supply the specific component).
 Through video.js we are converting the hls stream into a stream of mp4 chunks which are readable in any browser on the fly using ffmpeg, thus enabling the hls playback.
 
@@ -51,18 +51,18 @@ You can also control the player with your keyboard. See shortcuts below:
 - [M]: toggle mute;
 - [->]: skip forward;
 - [<-]: skip backward;
-- [spacebar]: toggle play/pause;
+- [space bar]: toggle play/pause;
 
-### Testing ⚙️
+## Testing ⚙️
 
 Jest is used throughout the app for testing, both for component tests and unit tests. For testing React components, the
 `@testing-library/react-native` package is used, which allows us to test components as real functioning entities,
 with state changes, user interactions etc. which in turn allows us to write tests similar to integration tests (e.g. user
 clicks X button and sees Y result).
 
-Data fetching is tested against a real peertube nightly instance, without mocking the API response.
+Data fetching is tested against a real PeerTube nightly instance, without mocking the API response.
 
-### Internationalization 🌍
+## Internationalization 🌍
 
 The app leverages `react-18next` library for translations, which means text strings are added to components ONLY through
 the `t` function from `useTranslation` hook, or if out of React components, through importing `i18n` from `i18n.ts` and
@@ -72,16 +72,16 @@ translations for each language you need to edit these files only.
 The default locale is chosen depending on your device's preferred language, or the language chosen in settings, and if your language
 is unavailable then `en` is chosen as fallback (this can be configured in `i18n.js` file).
 
-### Icons
+## Icons 🖼️
 
 This app uses the IcoMoon format for using a dedicated icon set. Usage: go to [IcoMoon](https://icomoon.io/), go to "App"
 section, import the `selection.json` file from `assets/` to IcoMoon selection, press `Generate Font`, download and unzip,
 copy the new `selection.json` file to `assets` and `icomoon.ttf` to `assets/fonts`. Then use the `<IcoMoonIcon />` in the
 app.
 
-### Instance Configuration 🛠️
+## Instance Configuration 🛠️
 
-OwnTube.tv uses a configuration system that allows for customization of different PeerTube instances. This configuration is stored in the `public/featured-instances.json5` file. The JSON5 format is used, which is a superset of JSON that allows for comments and more readable syntax.
+OwnTube.tv 📺 uses a configuration system that allows for customization of different PeerTube instances. This configuration is stored in the `public/featured-instances.json5` file. The JSON5 format is used, which is a superset of JSON that allows for comments and more readable syntax.
 
 Each instance in the configuration file is represented by an object with the following key properties:
 
@@ -91,7 +91,7 @@ Each instance in the configuration file is represented by an object with the fol
 4. `logoUrl`: URL to the instance's logo image.
 5. `customizations`: An object containing various customization options.
 
-The `customizations` object allows for fine-tuning of the instance's appearance and behavior within the OwnTube.tv client. Some key customization options include:
+The `customizations` object allows for fine-tuning of the instance's appearance and behavior within the OwnTube.tv 📺 client. Some key customization options include:
 
 - `pageTitle`: Overrides the default page title.
 - `pageDefaultTheme`: Sets the default color theme (e.g., "dark" or "light").
@@ -100,7 +100,7 @@ The `customizations` object allows for fine-tuning of the instance's appearance 
 - `playlistsShowHiddenButton`: Enables a button to show all playlists, including hidden ones.
 - `home*`: Various options to customize the home page, such as video counts and section visibility.
 
-To ensure the integrity and consistency of instance configurations, OwnTube.tv employs a validation mechanism using Zod, a TypeScript-first schema declaration and validation library.
+To ensure the integrity and consistency of instance configurations, OwnTube.tv 📺 employs a validation mechanism using Zod, a TypeScript-first schema declaration and validation library.
 
 The validation logic is implemented in the `instanceConfigs.test.ts` file, which performs the following steps:
 
@@ -143,20 +143,20 @@ The current instance configuration is retrieved using the `useInstanceConfig` cu
 
 This approach allows components throughout the application to easily access the current instance's configuration by calling `useInstanceConfig()`. The returned configuration can then be used to customize the UI, set theme preferences, or control feature visibility based on the specific instance being accessed.
 
-By combining the `useFeaturedInstancesData` hook (which loads all instance configurations) with the `useInstanceConfig` hook (which selects the current instance), OwnTube.tv is able to customize the experience for the user based on the instance they are currently accessing.
+By combining the `useFeaturedInstancesData` hook (which loads all instance configurations) with the `useInstanceConfig` hook (which selects the current instance), OwnTube.tv 📺 is able to customize the experience for the user based on the instance they are currently accessing.
 
-### Error handling ❌
+## Error handling ❌
 
-Errors are handled throughout the application on pages and in individual sections on pages. If there is an error loading a page that is blocking the experience, e.g. the list of playlists didn't load on the playlists page, the user is presented with a fullscreen message suggesting to retry fetching the data. However, if an individual section failed to load, e.g. a single playlist failed to load on the playlists page, the user is presented with an error message and a suggestion to refetch the individual section.
+Errors are handled throughout the application on pages and in individual sections on pages. If there is an error loading a page that is blocking the experience, e.g. the list of playlists didn't load on the playlists page, the user is presented with a fullscreen message suggesting to retry fetching the data. However, if an individual section failed to load, e.g. a single playlist failed to load on the playlists page, the user is presented with an error message and a suggestion to re-fetch the individual section.
 Going offline and back online is denoted by a toast message on top of the page which can be closed manually if offline, and disappears automatically if online. Some of the pages that require network connection are rendered as disabled when offline. However, the user can still try to visit the respective pages since links do not get disabled.
 Error loading video data is presented in a fullscreen message suggesting a retry of the load.
 Currently, the error handling extends to everything connected to videos, however in the future error handling should be added for info such as instance name or avatar.
 
-### Fork customization 🍴
+## Fork customization 🍴
 
 Refer to [customizations](customizations.md) docs for more information on how to customize your own fork of OwnTube.
 
-### Building for TV
+## Building for TV 📺
 
 To run the app for Android TV and TVOS, you need to first run the following commands:
 

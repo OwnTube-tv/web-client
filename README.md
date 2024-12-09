@@ -34,6 +34,6 @@ When a improvement is ready to be contributed in a pull request, please review t
 5. Include links and illustrations in your pull request to make it easy to review
 6. Request a review by @mykhailodanilenko, @ar9708, and @mblomdahl
 
-## Architecture
+## Documentation
 
-Refer to the [architecture documentation](docs/README.md) for additional information.
+Please refer to the [architecture documentation](docs/README.md) for information on technologies used, project structure, customizations, and the project build pipeline.

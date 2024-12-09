@@ -5,7 +5,7 @@ import { Loader } from "../../components";
 import { useCallback, useState } from "react";
 import Head from "expo-router/head";
 import { LandingScreen } from "../../screens";
-import { Platform } from "react-native";
+import { Platform, TVEventControl } from "react-native";
 import Constants from "expo-constants";
 
 export default function index() {
@@ -24,6 +24,12 @@ export default function index() {
   useFocusEffect(
     useCallback(() => {
       getSourceAndRedirect();
+
+      if (!Platform.isTV) return;
+
+      TVEventControl.disableTVMenuKey();
+
+      return () => TVEventControl.enableTVMenuKey();
     }, []),
   );
 

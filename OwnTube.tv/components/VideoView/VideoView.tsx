@@ -10,6 +10,7 @@ import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
 import { VideoChannelSummary } from "@peertube/peertube-types";
 import VideoControlsOverlay from "../VideoControlsOverlay";
 import Toast from "react-native-toast-message";
+import { setAudioModeAsync } from "expo-av/build/Audio";
 
 export interface VideoViewProps {
   uri: string;
@@ -94,6 +95,10 @@ const VideoView = ({
 
   useEffect(() => {
     videoRef.current?.setPositionAsync(Number(timestamp || 0) * 1000);
+
+    if (Platform.OS === "ios") {
+      setAudioModeAsync({ playsInSilentModeIOS: true });
+    }
   }, [timestamp]);
 
   const handleVolumeControl = (volume: number) => {

@@ -1,11 +1,11 @@
 import { HomeScreen } from "../../screens";
-import { useLocalSearchParams } from "expo-router";
-import { useEffect } from "react";
+import { useFocusEffect, useLocalSearchParams } from "expo-router";
+import { useCallback, useEffect } from "react";
 import { writeToAsyncStorage } from "../../utils";
 import { ROUTES, STORAGE } from "../../types";
 import { RootStackParams } from "../_layout";
 import { useInstanceConfig, useRecentInstances } from "../../hooks";
-import { Platform } from "react-native";
+import { Platform, TVEventControl } from "react-native";
 import Head from "expo-router/head";
 import Constants from "expo-constants";
 
@@ -23,6 +23,16 @@ export default function home() {
       }
     }
   }, [backend, recentInstances]);
+
+  useFocusEffect(
+    useCallback(() => {
+      if (!Platform.isTV) return;
+
+      TVEventControl.disableTVMenuKey();
+
+      return () => TVEventControl.enableTVMenuKey();
+    }, []),
+  );
 
   if (!backend) {
     return null;

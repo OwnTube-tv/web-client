@@ -1,5 +1,5 @@
 import { useGlobalSearchParams, usePathname } from "expo-router";
-import { Platform } from "react-native";
+import { Platform, TVEventControl } from "react-native";
 import { ROUTES, STORAGE } from "../types";
 import { ThemeProvider } from "@react-navigation/native";
 import {
@@ -65,6 +65,16 @@ const RootStack = () => {
     },
     [backend, breakpoints, pathname],
   );
+
+  useEffect(() => {
+    if (!Platform.isTV) return;
+
+    TVEventControl.enableTVMenuKey();
+
+    return () => {
+      TVEventControl.disableTVMenuKey();
+    };
+  }, []);
 
   return (
     <>

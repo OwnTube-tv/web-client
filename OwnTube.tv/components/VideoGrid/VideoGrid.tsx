@@ -18,6 +18,7 @@ import { useMemo, useState } from "react";
 import { PresentationSwitch } from "./PresentationSwitch";
 import { useTranslation } from "react-i18next";
 import { ErrorTextWithRetry } from "../ErrorTextWithRetry";
+import TVFocusGuideHelper from "../helpers/TVFocusGuideHelper";
 
 export interface VideoGridProps {
   data?: Array<GetVideosVideo | ViewHistoryEntry>;
@@ -75,7 +76,7 @@ export const VideoGrid = ({
     }
 
     return (
-      <>
+      <TVFocusGuideHelper autoFocus>
         {!!presentation && isDesktop && (
           <PresentationSwitch presentation={customPresentation} handleSetPresentation={handleSetPresentation} />
         )}
@@ -90,7 +91,7 @@ export const VideoGrid = ({
             <View>{isLoadingMore && <Loader />}</View>
           </View>
         )}
-      </>
+      </TVFocusGuideHelper>
     );
   }, [
     isError,
@@ -116,7 +117,7 @@ export const VideoGrid = ({
       }}
     >
       {!isHeaderHidden && (
-        <View style={styles.headerContainer}>
+        <TVFocusGuideHelper style={styles.headerContainer} autoFocus>
           {!!channelLogoUri && (
             <View style={{ alignSelf: "flex-start" }}>
               <Image style={styles.image} source={{ uri: `https://${backend}${channelLogoUri}` }} />
@@ -144,7 +145,7 @@ export const VideoGrid = ({
               )}
             </View>
           </View>
-        </View>
+        </TVFocusGuideHelper>
       )}
       {renderContent}
     </View>

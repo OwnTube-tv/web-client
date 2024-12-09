@@ -4,6 +4,7 @@ import { Link, useLocalSearchParams } from "expo-router";
 import { StyleSheet, View } from "react-native";
 import { useTheme } from "@react-navigation/native";
 import { useBreakpoints } from "../../../hooks";
+import TVFocusGuideHelper from "../../../components/helpers/TVFocusGuideHelper";
 
 interface SectionHeaderProps {
   title: string;
@@ -16,7 +17,8 @@ export const SectionHeader = ({ title, link }: SectionHeaderProps) => {
   const { isMobile } = useBreakpoints();
 
   return (
-    <View
+    <TVFocusGuideHelper
+      autoFocus
       style={[
         {
           paddingTop: isMobile ? spacing.sm : spacing.xl,
@@ -45,7 +47,7 @@ export const SectionHeader = ({ title, link }: SectionHeaderProps) => {
           <Button text={link.text} contrast="high" />
         </Link>
       )}
-    </View>
+    </TVFocusGuideHelper>
   );
 };
 

@@ -1,10 +1,10 @@
-import { StyleSheet, View } from "react-native";
+import { Platform, StyleSheet, View } from "react-native";
 import { useTheme } from "@react-navigation/native";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Typography } from "../../Typography";
 import { getHumanReadableDuration } from "../../../utils";
-import { borderRadius, spacing } from "../../../theme";
+import { borderRadius, fontSizes, spacing } from "../../../theme";
 
 interface ScrubBarProps {
   percentagePosition: number;
@@ -20,6 +20,7 @@ const INDICATOR_SIZE = 12;
 const HALF_INDICATOR_SIZE = INDICATOR_SIZE / 2;
 const SEEK_HINT_OFFSET = 26;
 const SEEK_HINT_COLOR = "#151E29";
+const SCRUBBING_Y_TRESHOLD = -300;
 
 export const ScrubBar = ({
   percentageAvailable,
@@ -51,15 +52,26 @@ export const ScrubBar = ({
     onDrag(Math.floor(newPositionRelation * length));
   };
 
+  const indicatorPosition = useMemo(() => {
+    return scrubberPosition > HALF_INDICATOR_SIZE ? scrubberPosition - HALF_INDICATOR_SIZE : 0;
+  }, [scrubberPosition]);
+
+  const gestureStartPosition = useRef(0);
   const pan = Gesture.Pan()
-    .onUpdate(({ x }) => {
+    .onUpdate(({ x, translationX }) => {
       onUpdate?.();
-      handleTapOrPan(x);
+      handleTapOrPan(Platform.isTV ? gestureStartPosition.current + translationX : x);
     })
-    .onStart(() => setIsDragging(true))
-    .onEnd(({ x }) => {
-      setPosition(x);
+    .onStart(() => {
+      gestureStartPosition.current = indicatorPosition;
+      setIsDragging(true);
+    })
+    .onEnd(({ x, translationX, translationY }) => {
+      setPosition(
+        Platform.isTV ? gestureStartPosition.current + (translationY < SCRUBBING_Y_TRESHOLD ? 0 : translationX) : x,
+      );
       setIsDragging(false);
+      gestureStartPosition.current = 0;
     })
     .minDistance(0)
     .runOnJS(true);
@@ -79,10 +91,6 @@ export const ScrubBar = ({
       position: newPosition < 0 ? 0 : newPosition,
     };
   }, [scrubberPosition, visibleWidth, length]);
-
-  const indicatorPosition = useMemo(() => {
-    return scrubberPosition > HALF_INDICATOR_SIZE ? scrubberPosition - HALF_INDICATOR_SIZE : 0;
-  }, [scrubberPosition]);
 
   const colorVariant = useMemo(() => {
     return {
@@ -200,6 +208,7 @@ const styles = StyleSheet.create({
   },
   seekTime: {
     borderRadius: borderRadius.radiusMd,
+    minHeight: spacing.xs + fontSizes.sizeXS,
     padding: spacing.xs,
     position: "absolute",
     top: -32,

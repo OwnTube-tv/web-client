@@ -57,10 +57,6 @@ while most consist of 1 file which contains the styles (if any) and the componen
 
 ## 📁 `./OwnTube.tv/contexts/`
 
-This folder contains setup files for information that should be available across the whole app - one is a color context used
-for theme switching and the other is the `AppConfigContext` which is used for technical information like settings or
-device capability info.
-
 This folder contains React context providers and their associated setup files. The contexts in this folder include:
 
 1. `ColorSchemeContext`: Used for managing and switching themes across the app. It provides color-related information and functions to components that need to adapt to theme changes.

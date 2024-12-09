@@ -1,15 +1,24 @@
 import { VideoScreen } from "../../screens";
 import Head from "expo-router/head";
 import { useGetVideoQuery } from "../../api";
-import { useLocalSearchParams } from "expo-router";
+import { useFocusEffect, useLocalSearchParams } from "expo-router";
 import { RootStackParams } from "../_layout";
 import { useTranslation } from "react-i18next";
-import { Platform } from "react-native";
+import { Platform, TVEventControl } from "react-native";
+import { useCallback } from "react";
 
 export default function video() {
   const { id } = useLocalSearchParams<RootStackParams["video"]>();
   const { data: title } = useGetVideoQuery(id, (data) => data.name);
   const { t } = useTranslation();
+
+  useFocusEffect(
+    useCallback(() => {
+      TVEventControl.enableTVMenuKey();
+
+      return () => TVEventControl.disableTVMenuKey();
+    }, []),
+  );
 
   return (
     <>

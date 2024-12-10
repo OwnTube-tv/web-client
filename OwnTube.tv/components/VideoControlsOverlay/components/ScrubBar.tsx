@@ -20,7 +20,8 @@ const INDICATOR_SIZE = 12;
 const HALF_INDICATOR_SIZE = INDICATOR_SIZE / 2;
 const SEEK_HINT_OFFSET = 26;
 const SEEK_HINT_COLOR = "#151E29";
-const SCRUBBING_Y_TRESHOLD = -300;
+const SCRUBBING_Y_TRESHOLD = -300; // dismiss the swipe gesture seeking if Y coordinate indicates the user is swiping up and not seeking on Apple TV
+const SCRUBBING_X_SENSITIVITY = 0.3; // adjust sensitivity of swipe seeking on Apple TV
 
 export const ScrubBar = ({
   percentageAvailable,
@@ -60,7 +61,7 @@ export const ScrubBar = ({
   const pan = Gesture.Pan()
     .onUpdate(({ x, translationX }) => {
       onUpdate?.();
-      handleTapOrPan(Platform.isTV ? gestureStartPosition.current + translationX : x);
+      handleTapOrPan(Platform.isTV ? gestureStartPosition.current + translationX * SCRUBBING_X_SENSITIVITY : x);
     })
     .onStart(() => {
       gestureStartPosition.current = indicatorPosition;
@@ -68,7 +69,10 @@ export const ScrubBar = ({
     })
     .onEnd(({ x, translationX, translationY }) => {
       setPosition(
-        Platform.isTV ? gestureStartPosition.current + (translationY < SCRUBBING_Y_TRESHOLD ? 0 : translationX) : x,
+        Platform.isTV
+          ? gestureStartPosition.current +
+              (translationY < SCRUBBING_Y_TRESHOLD ? 0 : translationX * SCRUBBING_X_SENSITIVITY)
+          : x,
       );
       setIsDragging(false);
       gestureStartPosition.current = 0;

@@ -1,9 +1,13 @@
+import { forwardRef, useImperativeHandle, useMemo, useRef, useState } from "react";
 import { Platform, StyleSheet, View } from "react-native";
 import { spacing } from "../../theme";
 import { VideoGridCardLoader } from "../loaders";
 import { VideoGridCard } from "../VideoGridCard";
 import { VideoGridProps } from "./VideoGrid";
-import { useMemo, useState } from "react";
+
+export interface VideoGridContentHandle {
+  focusLastItem: () => void;
+}
 
 interface VideoGridContentProps extends Pick<VideoGridProps, "data" | "variant"> {
   isLoading?: boolean;
@@ -12,32 +16,39 @@ interface VideoGridContentProps extends Pick<VideoGridProps, "data" | "variant">
 
 const MINIMUM_COLUMN_WIDTH = 277;
 
-export const VideoGridContent = ({ isLoading, data = [], variant, backend }: VideoGridContentProps) => {
-  const [containerWidth, setContainerWidth] = useState(0);
-  const columnWidth = useMemo(() => {
-    const numCols = Math.floor(containerWidth / MINIMUM_COLUMN_WIDTH) || 1;
-    return (containerWidth - (numCols - 1) * spacing.xl) / numCols;
-  }, [containerWidth]);
+export const VideoGridContent = forwardRef<VideoGridContentHandle, VideoGridContentProps>(
+  ({ isLoading, data = [], variant, backend }, ref) => {
+    const [containerWidth, setContainerWidth] = useState(0);
+    const lastItemRef = useRef<View>(null);
+    const columnWidth = useMemo(() => {
+      const numCols = Math.floor(containerWidth / MINIMUM_COLUMN_WIDTH) || 1;
+      return (containerWidth - (numCols - 1) * spacing.xl) / numCols;
+    }, [containerWidth]);
 
-  return (
-    <View
-      style={Platform.select({
-        web: { $$css: true, _: "grid-container" },
-        default: {
-          flex: 1,
-          flexDirection: "row",
-          flexWrap: "wrap",
-          gap: spacing.xl,
-          alignItems: "flex-start",
-        },
-      })}
-      onLayout={(e) => {
-        setContainerWidth(e.nativeEvent.layout.width);
-      }}
-    >
-      {isLoading
-        ? [...Array(4)].map((_, index) => {
-            return (
+    useImperativeHandle(ref, () => ({
+      focusLastItem: () => {
+        lastItemRef.current?.requestTVFocus?.();
+      },
+    }));
+
+    return (
+      <View
+        style={Platform.select({
+          web: { $$css: true, _: "grid-container" },
+          default: {
+            flex: 1,
+            flexDirection: "row",
+            flexWrap: "wrap",
+            gap: spacing.xl,
+            alignItems: "flex-start",
+          },
+        })}
+        onLayout={(e) => {
+          setContainerWidth(e.nativeEvent.layout.width);
+        }}
+      >
+        {isLoading
+          ? [...Array(4)].map((_, index) => (
               <View
                 key={index}
                 style={Platform.select({
@@ -47,28 +58,31 @@ export const VideoGridContent = ({ isLoading, data = [], variant, backend }: Vid
               >
                 <VideoGridCardLoader />
               </View>
-            );
-          })
-        : data.map((video) => {
-            return (
-              <View
-                key={video.uuid}
-                // @ts-expect-error wrong typings on Platform.select and style prop
-                style={Platform.select({
-                  web: styles.gridItemWeb,
-                  default: { ...styles.gridItemNonWeb, width: columnWidth },
-                })}
-              >
-                <VideoGridCard
-                  backend={variant === "history" && "backend" in video ? video.backend : backend}
-                  video={video}
-                />
-              </View>
-            );
-          })}
-    </View>
-  );
-};
+            ))
+          : data.map((video, index) => {
+              const isLastItem = index === data.length - 1;
+              return (
+                <View
+                  key={video.uuid}
+                  style={Platform.select({
+                    web: styles.gridItemWeb,
+                    default: { ...styles.gridItemNonWeb, width: columnWidth },
+                  })}
+                >
+                  <VideoGridCard
+                    ref={isLastItem ? lastItemRef : undefined}
+                    backend={variant === "history" && "backend" in video ? video.backend : backend}
+                    video={video}
+                  />
+                </View>
+              );
+            })}
+      </View>
+    );
+  },
+);
+
+VideoGridContent.displayName = "VideoGridContent";
 
 const styles = StyleSheet.create({
   gridItemNonWeb: {

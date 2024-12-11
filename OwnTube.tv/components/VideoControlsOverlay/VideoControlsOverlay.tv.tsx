@@ -133,7 +133,7 @@ const VideoControlsOverlay = ({
 
   useEffect(() => {
     let isActive = true;
-    let seekTime = 30;
+    let seekTime = 10;
 
     const scrubWithLongPress = async () => {
       if (!isActive || !longPressScrubMode) return;
@@ -299,6 +299,7 @@ const styles = StyleSheet.create({
     cursor: "auto",
     justifyContent: "flex-end",
     maxHeight: 360,
+    overflow: "visible",
     paddingHorizontal: spacing.sm,
     width: "100%",
   },

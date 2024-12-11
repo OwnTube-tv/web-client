@@ -1,15 +1,16 @@
-import { StyleSheet, View } from "react-native";
+import { StyleSheet } from "react-native";
 import { spacing } from "../theme";
 import { Button } from "./shared";
 import { useShareButton } from "../hooks/useShareButton";
+import TVFocusGuideHelper from "./helpers/TVFocusGuideHelper";
 
 export const AppDesktopHeader = () => {
   const { handleToggleShareModal } = useShareButton();
 
   return (
-    <View style={styles.container} pointerEvents="box-none">
+    <TVFocusGuideHelper autoFocus style={styles.container} pointerEvents="box-none">
       <Button onPress={handleToggleShareModal} contrast="low" style={styles.button} icon="Share" />
-    </View>
+    </TVFocusGuideHelper>
   );
 };
 

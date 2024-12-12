@@ -1,9 +1,9 @@
 import Animated, { SlideInUp, SlideOutUp } from "react-native-reanimated";
 import { ModalContainer } from "../../../ModalContainer";
-import { Platform, ScrollView, StyleSheet, View } from "react-native";
+import { ScrollView, StyleSheet, View } from "react-native";
 import { Spacer } from "../../../shared/Spacer";
 import { spacing } from "../../../../theme";
-import { Button, Checkbox, Picker, Separator } from "../../../shared";
+import { Button, Checkbox, Separator } from "../../../shared";
 import { useAppConfigContext } from "../../../../contexts";
 import { useSelectLocale } from "../../../../hooks";
 import { LANGUAGE_OPTIONS } from "../../../../i18n";
@@ -18,6 +18,7 @@ import { useMemo } from "react";
 import { PeertubeInstance } from "../../../../api/models";
 import Constants from "expo-constants";
 import DeviceCapabilities from "../../../DeviceCapabilities";
+import Picker from "../../../shared/Picker";
 
 interface SettingsProps {
   onClose: () => void;
@@ -45,11 +46,7 @@ export const Settings = ({ onClose }: SettingsProps) => {
   };
 
   const handleSelectLanguage = (langCode: string) => {
-    handleChangeLang(langCode).then(() => {
-      if (Platform.isTV && Platform.OS === "android") {
-        onClose();
-      }
-    });
+    handleChangeLang(langCode);
   };
 
   return (

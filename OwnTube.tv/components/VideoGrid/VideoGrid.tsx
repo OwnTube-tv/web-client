@@ -12,9 +12,9 @@ import { Button } from "../shared";
 import { IcoMoonIcon } from "../IcoMoonIcon";
 import { Loader } from "../Loader";
 import "./styles.css";
-import { VideoGridContent } from "./VideoGridContent";
+import { VideoGridContent, VideoGridContentHandle } from "./VideoGridContent";
 import { VideoListContent } from "./VideoListContent";
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { PresentationSwitch } from "./PresentationSwitch";
 import { useTranslation } from "react-i18next";
 import { ErrorTextWithRetry } from "../ErrorTextWithRetry";
@@ -66,6 +66,9 @@ export const VideoGrid = ({
     setCustomPresentation(newPresentation);
   };
 
+  const gridContentRef = useRef<VideoGridContentHandle>(null);
+  const listContentRef = useRef<VideoGridContentHandle>(null);
+
   const renderContent = useMemo(() => {
     if (isError && !isLoading) {
       return (
@@ -81,13 +84,20 @@ export const VideoGrid = ({
           <PresentationSwitch presentation={customPresentation} handleSetPresentation={handleSetPresentation} />
         )}
         {customPresentation === "grid" ? (
-          <VideoGridContent isLoading={isLoading} data={data} backend={backend} />
+          <VideoGridContent ref={gridContentRef} isLoading={isLoading} data={data} backend={backend} />
         ) : (
-          <VideoListContent isLoading={isLoading} data={data} backend={backend} />
+          <VideoListContent ref={listContentRef} isLoading={isLoading} data={data} backend={backend} />
         )}
         {!!handleShowMore && (
           <View style={styles.showMoreContainer}>
-            <Button contrast="low" text="Show more" onPress={handleShowMore} />
+            <Button
+              contrast="low"
+              text="Show more"
+              onPress={() => {
+                (customPresentation === "grid" ? gridContentRef : listContentRef).current?.focusLastItem();
+                handleShowMore();
+              }}
+            />
             <View>{isLoadingMore && <Loader />}</View>
           </View>
         )}

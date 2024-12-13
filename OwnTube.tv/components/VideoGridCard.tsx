@@ -11,7 +11,7 @@ import { ChannelLink } from "./ChannelLink";
 import { formatDistanceToNow } from "date-fns";
 import { useTranslation } from "react-i18next";
 import { LANGUAGE_OPTIONS } from "../i18n";
-import { useMemo, useState } from "react";
+import { forwardRef, useMemo, useState } from "react";
 import TVFocusGuideHelper from "./helpers/TVFocusGuideHelper";
 
 interface VideoGridCardProps {
@@ -19,7 +19,7 @@ interface VideoGridCardProps {
   backend?: string;
 }
 
-export const VideoGridCard = ({ video, backend }: VideoGridCardProps) => {
+export const VideoGridCard = forwardRef<View, VideoGridCardProps>(({ video, backend }, ref) => {
   const { isDesktop } = useBreakpoints();
   const { colors } = useTheme();
   const { isHovered, toggleHovered } = useHoverState();
@@ -64,6 +64,7 @@ export const VideoGridCard = ({ video, backend }: VideoGridCardProps) => {
         onPress={Platform.isTV ? handleTvNavigateToVideo : null}
         onHoverIn={toggleHovered}
         onHoverOut={toggleHovered}
+        ref={ref}
       >
         <Link
           onLayout={(e) => {
@@ -107,7 +108,9 @@ export const VideoGridCard = ({ video, backend }: VideoGridCardProps) => {
       </TVFocusGuideHelper>
     </View>
   );
-};
+});
+
+VideoGridCard.displayName = "VideoGridCard";
 
 const styles = StyleSheet.create({
   container: {

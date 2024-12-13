@@ -7,7 +7,7 @@ import { useBreakpoints, useRecentInstances } from "../../hooks";
 import { Spacer } from "../../components/shared/Spacer";
 import { spacing } from "../../theme";
 import { Screen } from "../../layouts";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useAppConfigContext } from "../../contexts";
 import {
   useGetInstanceConfigQuery,
@@ -15,7 +15,7 @@ import {
   useGetInstancesQuery,
   WRONG_SERVER_VERSION_STATUS_CODE,
 } from "../../api";
-import { useRouter } from "expo-router";
+import { useFocusEffect, useRouter } from "expo-router";
 import ComboBoxInput from "../../components/ComboBoxInput";
 import Toast from "react-native-toast-message";
 import { OwnTubeError } from "../../api/models";
@@ -67,7 +67,16 @@ export const LandingScreen = () => {
   }, [isInstanceConfigValid, instanceConfigError, t]);
 
   const { recentInstances } = useRecentInstances();
-  const { data: recentInstancesData } = useGetInstanceInfoCollectionQuery(recentInstances?.slice(0, 12) || []);
+  const { data: recentInstancesData, refetch: refetchInstancesData } = useGetInstanceInfoCollectionQuery(
+    recentInstances?.slice(0, 12) || [],
+  );
+
+  useFocusEffect(
+    useCallback(() => {
+      refetchInstancesData();
+    }, [recentInstances]),
+  );
+
   const { width } = useWindowDimensions();
 
   const searchInputWidth = useMemo(() => {
@@ -153,8 +162,12 @@ export const LandingScreen = () => {
                 >
                   <PlatformCard
                     name={featuredPlatformData?.name || platform?.name}
-                    description={featuredPlatformData?.description || platform?.description}
-                    logoUrl={featuredPlatformData?.logoUrl || platform?.avatars?.[0]?.url}
+                    description={
+                      featuredPlatformData?.description || platform?.description || platform?.shortDescription
+                    }
+                    logoUrl={
+                      featuredPlatformData?.logoUrl || `https://${platform?.hostname}${platform?.avatars?.[0]?.path}`
+                    }
                     hostname={platform?.hostname}
                   />
                 </View>

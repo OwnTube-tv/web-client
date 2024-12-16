@@ -26,7 +26,7 @@ interface SettingsProps {
 
 export const Settings = ({ onClose }: SettingsProps) => {
   const { backend } = useGlobalSearchParams<RootStackParams["index"]>();
-  const { isDebugMode, setIsDebugMode } = useAppConfigContext();
+  const { isDebugMode, setIsDebugMode, primaryBackend } = useAppConfigContext();
   const { currentLang, handleChangeLang, t } = useSelectLocale();
   const { dark: isDarkTheme, colors } = useTheme();
   const router = useRouter();
@@ -68,20 +68,24 @@ export const Settings = ({ onClose }: SettingsProps) => {
           <Spacer height={spacing.xl} />
           <Checkbox checked={isDebugMode} onChange={setIsDebugMode} label={t("debugLogging")} />
           <Spacer height={spacing.xl} />
-          <Separator />
-          <Spacer height={spacing.xl} />
-          <View style={{ alignSelf: "flex-start" }}>
-            <Button
-              onPress={handleLeaveInstance}
-              contrast="none"
-              icon="Exit"
-              text={t("leaveInstance", { instance: instanceName })}
-            />
-          </View>
-          <Spacer height={spacing.lg} />
-          <Typography color={colors.themeDesaturated500} fontWeight="Regular" fontSize="sizeXS">
-            {t("leaveInstanceDescription", { appName: Constants.expoConfig?.name })}
-          </Typography>
+          {!primaryBackend && (
+            <>
+              <Separator />
+              <Spacer height={spacing.xl} />
+              <View style={{ alignSelf: "flex-start" }}>
+                <Button
+                  onPress={handleLeaveInstance}
+                  contrast="none"
+                  icon="Exit"
+                  text={t("leaveInstance", { instance: instanceName })}
+                />
+              </View>
+              <Spacer height={spacing.lg} />
+              <Typography color={colors.themeDesaturated500} fontWeight="Regular" fontSize="sizeXS">
+                {t("leaveInstanceDescription", { appName: Constants.expoConfig?.name })}
+              </Typography>
+            </>
+          )}
         </ScrollView>
       </ModalContainer>
     </Animated.View>

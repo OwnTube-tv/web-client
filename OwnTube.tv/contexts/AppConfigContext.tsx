@@ -21,6 +21,7 @@ interface IAppConfigContext {
   deviceCapabilities: DeviceCapabilities;
   setPlayerImplementation: Dispatch<SetStateAction<string>>;
   featuredInstances?: InstanceConfig[];
+  primaryBackend?: string;
 }
 
 const AppConfigContext = createContext<IAppConfigContext>({
@@ -50,6 +51,8 @@ export const AppConfigContextProvider = ({ children }: PropsWithChildren) => {
     lastRecordedConnectionState.current = isConnected;
   }, [isConnected]);
 
+  const primaryBackend = process.env.EXPO_PUBLIC_PRIMARY_BACKEND;
+
   return (
     <AppConfigContext.Provider
       value={{
@@ -58,6 +61,7 @@ export const AppConfigContextProvider = ({ children }: PropsWithChildren) => {
         deviceCapabilities,
         setPlayerImplementation,
         featuredInstances,
+        primaryBackend,
       }}
     >
       {!featuredInstances?.length ? null : children}

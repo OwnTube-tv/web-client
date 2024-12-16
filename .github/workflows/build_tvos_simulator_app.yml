@@ -3,6 +3,14 @@ name: Build tvOS .App
 on:
   workflow_call:
     inputs:
+      owntube_source:
+        required: false
+        type: string
+        description: "The repository with OwnTube code. Defaults to the source repository."
+      use_parent_repo_customizations:
+        required: false
+        type: boolean
+        description: "Should the root repo be used for customizations? (needed for branded builds)"
       runner-label:
         type: string
         default: "macos-latest"
@@ -19,6 +27,14 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          repository: ${{ inputs.owntube_source || github.repository }}
+
+      - name: Checkout parent repo with customizations
+        uses: actions/checkout@v4
+        if: ${{ inputs.use_parent_repo_customizations }}
+        with:
+          path: customizations
 
       - name: Setup Node 20
         uses: actions/setup-node@v4

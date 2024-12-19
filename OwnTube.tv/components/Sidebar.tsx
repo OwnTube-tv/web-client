@@ -4,7 +4,7 @@ import { Link } from "expo-router";
 import { useTheme } from "@react-navigation/native";
 import { ROUTES, STORAGE } from "../types";
 import { useTranslation } from "react-i18next";
-import { useColorSchemeContext, useFullScreenModalContext } from "../contexts";
+import { useAppConfigContext, useColorSchemeContext, useFullScreenModalContext } from "../contexts";
 import { StyleSheet, View } from "react-native";
 import { Button, Separator } from "./shared";
 import { spacing } from "../theme";
@@ -65,8 +65,10 @@ export const Sidebar: FC<SidebarProps> = ({ backend, ...navigationProps }) => {
   const { currentInstanceConfig } = useInstanceConfig();
   const { isConnected } = useNetInfo();
   const { isLeaveInstanceAllowed } = useLeaveInstancePermission(navigationProps);
+  const { primaryBackend } = useAppConfigContext();
 
-  const isLeaveInstanceShown = isLeaveInstanceAllowed && !currentInstanceConfig?.customizations?.menuHideLeaveButton;
+  const isLeaveInstanceShown =
+    !primaryBackend && isLeaveInstanceAllowed && !currentInstanceConfig?.customizations?.menuHideLeaveButton;
 
   const handleOpenSettings = () => {
     toggleModal(true);

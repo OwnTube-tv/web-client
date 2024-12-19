@@ -28,7 +28,9 @@ used to populate the Expo config file (app.config.ts).
 
 Each value must be prefixed by `EXPO_PUBLIC_`. See list of available customizations below:
 
-`EXPO_PUBLIC_APP_NAME`: the app name that will be used both by Expo and in the text strings in the app.
+`EXPO_PUBLIC_PRIMARY_BACKEND`: the primary backend hostname for the app, for cases when you are building a client for a single PeerTube instance
+
+`EXPO_PUBLIC_APP_NAME`: the app name that will be used both by Expo and in the text strings in the app
 
 `EXPO_PUBLIC_APP_SLUG`: needed if using Expo managed app services
 

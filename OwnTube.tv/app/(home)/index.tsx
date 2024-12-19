@@ -7,12 +7,19 @@ import Head from "expo-router/head";
 import { LandingScreen } from "../../screens";
 import { Platform, TVEventControl } from "react-native";
 import Constants from "expo-constants";
+import { useAppConfigContext } from "../../contexts";
 
 export default function index() {
   const router = useRouter();
   const [isGettingStoredBackend, setIsGettingStoredBackend] = useState(true);
+  const { primaryBackend } = useAppConfigContext();
 
   const getSourceAndRedirect = async () => {
+    if (primaryBackend) {
+      router.push({ pathname: `/${ROUTES.HOME}`, params: { backend: primaryBackend } });
+      return;
+    }
+
     const source = await readFromAsyncStorage(STORAGE.DATASOURCE);
     setIsGettingStoredBackend(false);
 

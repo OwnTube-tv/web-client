@@ -27,5 +27,5 @@ const styles = StyleSheet.create({
     gap: 12,
     justifyContent: "center",
   },
-  text: { fontSize: 18 },
+  text: { fontSize: 18, textAlign: "center" },
 });

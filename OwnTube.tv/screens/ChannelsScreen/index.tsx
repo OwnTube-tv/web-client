@@ -2,7 +2,6 @@ import { getErrorTextKeys, QUERY_KEYS, useGetChannelsCollectionQuery, useGetChan
 import { Screen } from "../../layouts";
 import { spacing } from "../../theme";
 import { EmptyPage, ErrorPage, InfoFooter, Loader, VideoGrid } from "../../components";
-import { useBreakpoints } from "../../hooks";
 import { StyleSheet } from "react-native";
 import { useMemo } from "react";
 import { getAvailableVidsString } from "../../utils";
@@ -22,7 +21,6 @@ export const ChannelsScreen = () => {
     error: channelsError,
   } = useGetChannelsQuery({ enabled: true });
   const { t } = useTranslation();
-  const { isMobile } = useBreakpoints();
   const {
     data: channelSections,
     isFetching: isFetchingChannelsCollection,
@@ -53,42 +51,35 @@ export const ChannelsScreen = () => {
       );
     }
 
-    if (!channelSections.length) {
-      return <EmptyPage text={t("noChannelsAvailable")} />;
-    }
-
     return channelSections?.map(({ data, isFetching, refetch }) => {
       const channelInfoSection = channels?.find(({ name }) => name === data?.id);
 
       return (
-        <VideoGrid
-          isLoading={isFetching}
-          refetch={refetch}
-          headerLink={{
-            text: t("visitChannel") + getAvailableVidsString(data?.total),
-            href: { pathname: `/${ROUTES.CHANNEL}`, params: { backend, channel: channelInfoSection?.name } },
-          }}
-          variant="channel"
-          key={data?.id}
-          title={channelInfoSection?.displayName}
-          data={data?.data}
-          channelLogoUri={channelInfoSection?.avatars?.[0]?.path}
-        />
+        <>
+          <VideoGrid
+            isLoading={isFetching}
+            refetch={refetch}
+            headerLink={{
+              text: t("visitChannel") + getAvailableVidsString(data?.total),
+              href: { pathname: `/${ROUTES.CHANNEL}`, params: { backend, channel: channelInfoSection?.name } },
+            }}
+            variant="channel"
+            key={data?.id}
+            title={channelInfoSection?.displayName}
+            data={data?.data}
+            channelLogoUri={channelInfoSection?.avatars?.[0]?.path}
+          />
+          <InfoFooter />
+        </>
       );
     });
   }, [isFetching, isFetchingChannels, channelSections, channels, backend]);
 
-  return (
-    <Screen
-      style={{
-        ...styles.screenContainer,
-        paddingRight: isMobile ? 0 : spacing.xl,
-      }}
-    >
-      {renderScreenContent}
-      <InfoFooter />
-    </Screen>
-  );
+  if (!channelSections.length) {
+    return <EmptyPage text={t("noChannelsAvailable")} />;
+  }
+
+  return <Screen style={styles.screenContainer}>{renderScreenContent}</Screen>;
 };
 
 const styles = StyleSheet.create({
@@ -98,6 +89,5 @@ const styles = StyleSheet.create({
     gap: spacing.xl,
     justifyContent: "center",
     padding: 0,
-    paddingTop: spacing.xl,
   },
 });

@@ -46,6 +46,9 @@ export const useGetInstanceInfoCollectionQuery = (instances: string[]) => {
     })),
     combine: (result) => ({
       data: result.map(({ data }) => data?.instance),
+      refetch: () => {
+        result.forEach(({ refetch }) => refetch());
+      },
     }),
   });
 };

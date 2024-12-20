@@ -6,11 +6,11 @@ on:
       owntube_source:
         required: false
         type: string
-        description: "The repository with OwnTube code. Defaults to the source repository."
+        description: "The repository with OwnTube-tv/web-client code. Defaults to the source repository."
       use_parent_repo_customizations:
         required: false
         type: boolean
-        description: "Should the root repo be used for customizations? (needed for branded builds)"
+        description: "Should a parent repo be used for customizations? (Required for branded builds)"
       target:
         required: true
         type: string

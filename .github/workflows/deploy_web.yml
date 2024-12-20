@@ -9,6 +9,14 @@ on:
       build_info:
         required: true
         type: string
+      owntube_source:
+        required: false
+        type: string
+        description: "The repository with OwnTube-tv/web-client code. Defaults to the source repository."
+      use_parent_repo_customizations:
+        required: false
+        type: boolean
+        description: "Should a parent repo be used for customizations? (Required for branded builds)"
 
 jobs:
   deploy_web:
@@ -19,6 +27,14 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          repository: ${{ inputs.owntube_source || github.repository }}
+
+      - name: Checkout parent repo with customizations
+        uses: actions/checkout@v4
+        if: ${{ inputs.use_parent_repo_customizations }}
+        with:
+          path: customizations
 
       - name: Setup Node 20
         uses: actions/setup-node@v4

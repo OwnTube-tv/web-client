@@ -1,5 +1,5 @@
 import { VideoThumbnail } from "./VideoThumbnail";
-import { Pressable, StyleSheet, View } from "react-native";
+import { Platform, Pressable, StyleSheet, View } from "react-native";
 import { Typography } from "./Typography";
 import { format, formatDistanceToNow } from "date-fns";
 import { useBreakpoints, useHoverState, ViewHistoryEntry } from "../hooks";
@@ -8,12 +8,13 @@ import { Link, useRouter } from "expo-router";
 import { ROUTES } from "../types";
 import { spacing } from "../theme";
 import { useTheme } from "@react-navigation/native";
-import { forwardRef, useMemo } from "react";
+import { forwardRef, useMemo, useState } from "react";
 import { ChannelLink } from "./ChannelLink";
 import { LANGUAGE_OPTIONS } from "../i18n";
 import { GetVideosVideo } from "../api/models";
 import { Button } from "./shared";
 import TVFocusGuideHelper from "./helpers/TVFocusGuideHelper";
+import { FocusGuide } from "./helpers";
 
 interface VideoListItemProps extends Partial<Pick<ViewHistoryEntry, "lastViewedAt" | "timestamp">> {
   video: GetVideosVideo;
@@ -28,6 +29,8 @@ export const VideoListItem = forwardRef<View, VideoListItemProps>(
     const { colors } = useTheme();
     const { isHovered, toggleHovered } = useHoverState();
     const { isDesktop } = useBreakpoints();
+    const [focused, setFocused] = useState(false);
+    const [containerWidth, setContainerWidth] = useState(0);
     const videoHref = useMemo(() => {
       return {
         pathname: `/${ROUTES.VIDEO}`,
@@ -43,23 +46,41 @@ export const VideoListItem = forwardRef<View, VideoListItemProps>(
       return <Button onPress={handleDeleteFromHistory} icon="Trash" style={{ height: 48 }} />;
     }, [handleDeleteFromHistory, colors]);
 
+    const imageDimensions = useMemo(() => {
+      return { width: isDesktop ? 328 : 128, height: isDesktop ? 102 : 72 };
+    }, [isDesktop]);
+
+    const focusGuideDimensions = useMemo(() => {
+      if (Platform.isTV && Platform.OS === "android") {
+        return { width: (imageDimensions.height / 9) * 16, height: imageDimensions.height };
+      }
+
+      return { width: containerWidth + 2, height: (containerWidth / 16) * 9 + 1 };
+    }, [containerWidth, imageDimensions]);
+
     return (
       <View style={[styles.container, { gap: isDesktop ? spacing.xl : spacing.md }]}>
-        <Link href={videoHref} style={styles.thumbLinkWrapper}>
+        <Link
+          onLayout={(e) => {
+            setContainerWidth(e.nativeEvent.layout.width);
+          }}
+          href={videoHref}
+          style={styles.thumbLinkWrapper}
+        >
           <Pressable
             ref={ref}
-            style={({ focused }) => ({
-              padding: focused ? 2 : 4,
-              borderWidth: focused ? 2 : 0,
-              borderColor: colors.theme950,
+            onFocus={() => setFocused(true)}
+            onBlur={() => setFocused(false)}
+            style={{
               height: "100%",
               width: "100%",
               borderRadius: 10,
-            })}
+            }}
             onPress={() => router.navigate(videoHref)}
           >
+            {focused && <FocusGuide height={focusGuideDimensions.height} width={focusGuideDimensions.width} />}
             <VideoThumbnail
-              imageDimensions={{ width: isDesktop ? 328 : 128, height: isDesktop ? 102 : 72 }}
+              imageDimensions={imageDimensions}
               video={video}
               backend={backend}
               key={video.uuid}

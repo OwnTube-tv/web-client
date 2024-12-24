@@ -28,7 +28,7 @@ export const ChannelView = ({ channel }: ChannelViewProps) => {
         isError={isError}
         refetch={refetch}
         isLoading={isFetching}
-        headerLink={{
+        link={{
           text: t("visitChannel") + getAvailableVidsString(data?.total),
           href: { pathname: `/${ROUTES.CHANNEL}`, params: { backend, channel: channel.name } },
         }}

@@ -59,7 +59,7 @@ export const ChannelsScreen = () => {
           <VideoGrid
             isLoading={isFetching}
             refetch={refetch}
-            headerLink={{
+            link={{
               text: t("visitChannel") + getAvailableVidsString(data?.total),
               href: { pathname: `/${ROUTES.CHANNEL}`, params: { backend, channel: channelInfoSection?.name } },
             }}
@@ -69,7 +69,6 @@ export const ChannelsScreen = () => {
             data={data?.data}
             channelLogoUri={channelInfoSection?.avatars?.[0]?.path}
           />
-          <InfoFooter />
         </>
       );
     });
@@ -79,7 +78,12 @@ export const ChannelsScreen = () => {
     return <EmptyPage text={t("noChannelsAvailable")} />;
   }
 
-  return <Screen style={styles.screenContainer}>{renderScreenContent}</Screen>;
+  return (
+    <Screen style={styles.screenContainer}>
+      {renderScreenContent}
+      <InfoFooter />
+    </Screen>
+  );
 };
 
 const styles = StyleSheet.create({

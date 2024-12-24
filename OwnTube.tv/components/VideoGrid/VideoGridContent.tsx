@@ -4,6 +4,7 @@ import { spacing } from "../../theme";
 import { VideoGridCardLoader } from "../loaders";
 import { VideoGridCard } from "../VideoGridCard";
 import { VideoGridProps } from "./VideoGrid";
+import { TVActionCard, TVActionCardProps } from "../TVActionCard";
 
 export interface VideoGridContentHandle {
   focusLastItem: () => void;
@@ -12,12 +13,13 @@ export interface VideoGridContentHandle {
 interface VideoGridContentProps extends Pick<VideoGridProps, "data" | "variant"> {
   isLoading?: boolean;
   backend?: string;
+  tvActionCardProps: Omit<TVActionCardProps, "width">;
 }
 
 const MINIMUM_COLUMN_WIDTH = 277;
 
 export const VideoGridContent = forwardRef<VideoGridContentHandle, VideoGridContentProps>(
-  ({ isLoading, data = [], variant, backend }, ref) => {
+  ({ isLoading, data = [], variant, backend, tvActionCardProps }, ref) => {
     const [containerWidth, setContainerWidth] = useState(0);
     const lastItemRef = useRef<View>(null);
     const columnWidth = useMemo(() => {
@@ -30,6 +32,8 @@ export const VideoGridContent = forwardRef<VideoGridContentHandle, VideoGridCont
         lastItemRef.current?.requestTVFocus?.();
       },
     }));
+
+    const isTVActionCardVisible = Platform.isTV && !isLoading;
 
     return (
       <View
@@ -77,6 +81,7 @@ export const VideoGridContent = forwardRef<VideoGridContentHandle, VideoGridCont
                 </View>
               );
             })}
+        {isTVActionCardVisible && <TVActionCard width={columnWidth} {...tvActionCardProps} />}
       </View>
     );
   },

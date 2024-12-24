@@ -11,3 +11,13 @@ select {
   -webkit-appearance: none !important;
   appearance: none !important;
 }
+
+:focus {
+  outline: none;
+}
+
+:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px #007ef2;
+  border-radius: 8px;
+}

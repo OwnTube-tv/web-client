@@ -3,6 +3,7 @@ import { VideoGrid } from "../../../components";
 import { useMemo } from "react";
 import { useInstanceConfig } from "../../../hooks";
 import { ListSeparator } from "./ListSeparator";
+import { useTranslation } from "react-i18next";
 
 export const LatestVideosView = () => {
   const { currentInstanceConfig } = useInstanceConfig();
@@ -14,6 +15,7 @@ export const LatestVideosView = () => {
   const videos = useMemo(() => {
     return data?.pages?.flatMap(({ data }) => data.flat());
   }, [data]);
+  const { t } = useTranslation();
 
   return (
     <>
@@ -25,6 +27,7 @@ export const LatestVideosView = () => {
         data={videos}
         isLoadingMore={isFetchingNextPage}
         handleShowMore={hasNextPage ? fetchNextPage : undefined}
+        link={{ text: t("showMore") }}
       />
       <ListSeparator />
     </>

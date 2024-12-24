@@ -26,13 +26,14 @@ export const PlaylistVideosView = ({ id, title, channel, location = "other" }: P
   return (
     <>
       <VideoGrid
+        variant="playlist"
         reduceHeaderContrast={isOnHomePage}
         isError={isError}
         refetch={refetch}
         isLoading={isFetching}
         title={title}
         data={data?.data}
-        headerLink={{
+        link={{
           text: t("viewFullPlaylist") + getAvailableVidsString(data?.total),
           href: {
             pathname: `/${channel ? ROUTES.CHANNEL_PLAYLIST : ROUTES.PLAYLIST}`,

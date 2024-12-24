@@ -49,7 +49,18 @@ export const HomeScreen = () => {
       {
         title: t("recentlyWatched"),
         link: { text: t("viewHistory"), route: `/${ROUTES.HISTORY}` },
-        renderItem: () => <VideoGrid isHeaderHidden data={historyData} variant="history" />,
+        renderItem: () => (
+          <VideoGrid
+            link={
+              Platform.isTV
+                ? { text: t("viewHistory"), href: { pathname: `/${ROUTES.HISTORY}`, params: { backend } } }
+                : undefined
+            }
+            isHeaderHidden
+            data={historyData}
+            variant="history"
+          />
+        ),
         data: ["dataItemPlaceholder"],
         isVisible: historyData.length > 0,
       },

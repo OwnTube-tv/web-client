@@ -59,7 +59,7 @@ export const CategoriesScreen = () => {
           isLoading={isFetching}
           refetch={refetch}
           key={data?.id}
-          headerLink={{
+          link={{
             text: t("viewCategory") + getAvailableVidsString(data?.total),
             href: { pathname: `/${ROUTES.CATEGORY}`, params: { backend, category: data?.id } },
           }}

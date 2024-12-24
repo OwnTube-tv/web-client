@@ -1,10 +1,9 @@
 import { spacing } from "../../../theme";
 import { Button, Typography } from "../../../components";
 import { Link, useLocalSearchParams } from "expo-router";
-import { StyleSheet, View } from "react-native";
+import { Platform, StyleSheet, View } from "react-native";
 import { useTheme } from "@react-navigation/native";
 import { useBreakpoints } from "../../../hooks";
-import TVFocusGuideHelper from "../../../components/helpers/TVFocusGuideHelper";
 
 interface SectionHeaderProps {
   title: string;
@@ -16,16 +15,17 @@ export const SectionHeader = ({ title, link }: SectionHeaderProps) => {
   const { backend } = useLocalSearchParams();
   const { isMobile } = useBreakpoints();
 
+  const isLinkVisible = !!link && !Platform.isTV;
+
   return (
-    <TVFocusGuideHelper
-      autoFocus
+    <View
       style={[
         {
           paddingTop: isMobile ? spacing.sm : spacing.xl,
           backgroundColor: colors.background,
-          marginLeft: !isMobile ? spacing.xl : 0,
-          paddingLeft: isMobile ? 10 : 0,
-          paddingRight: isMobile ? spacing.sm : 50,
+          marginLeft: (!isMobile ? spacing.xl : 0) - 24,
+          paddingLeft: (isMobile ? 10 : 0) + 24,
+          paddingRight: (isMobile ? spacing.sm : 50) - 24,
         },
         styles.container,
       ]}
@@ -42,12 +42,12 @@ export const SectionHeader = ({ title, link }: SectionHeaderProps) => {
           {title}
         </Typography>
       </View>
-      {link && (
+      {isLinkVisible && (
         <Link asChild href={{ pathname: link.route, params: { backend } }}>
           <Button text={link.text} contrast="high" />
         </Link>
       )}
-    </TVFocusGuideHelper>
+    </View>
   );
 };
 

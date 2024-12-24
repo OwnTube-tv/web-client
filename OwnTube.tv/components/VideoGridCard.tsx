@@ -1,4 +1,4 @@
-import { DimensionValue, Platform, Pressable, StyleSheet, View } from "react-native";
+import { Platform, Pressable, StyleSheet, View } from "react-native";
 import { VideoThumbnail } from "./VideoThumbnail";
 import { GetVideosVideo } from "../api/models";
 import { Link, useRouter } from "expo-router";
@@ -13,6 +13,7 @@ import { useTranslation } from "react-i18next";
 import { LANGUAGE_OPTIONS } from "../i18n";
 import { forwardRef, useMemo, useState } from "react";
 import TVFocusGuideHelper from "./helpers/TVFocusGuideHelper";
+import { FocusGuide } from "./helpers";
 
 interface VideoGridCardProps {
   video: GetVideosVideo;
@@ -34,22 +35,8 @@ export const VideoGridCard = forwardRef<View, VideoGridCardProps>(({ video, back
   }, [video, backend, timestamp]);
 
   const thumbnailLinkStyles = useMemo(() => {
-    return [
-      styles.linkWrapper,
-      ...(Platform.isTV
-        ? [
-            {
-              padding: focused ? 2 : 4,
-              borderWidth: focused ? 2 : 0,
-              borderColor: colors.theme950,
-              height: "100%" as DimensionValue,
-              width: "100%" as DimensionValue,
-              borderRadius: 10,
-            },
-          ]
-        : [{}]),
-    ];
-  }, [colors, focused]);
+    return [styles.linkWrapper, ...(Platform.isTV ? [styles.linkWrapperTV] : [{}])];
+  }, []);
 
   const handleTvNavigateToVideo = () => {
     router.navigate(linkHref);
@@ -74,9 +61,10 @@ export const VideoGridCard = forwardRef<View, VideoGridCardProps>(({ video, back
           asChild
           style={thumbnailLinkStyles}
         >
-          <Pressable>
+          <Pressable onHoverIn={toggleHovered} onHoverOut={toggleHovered}>
+            {focused && <FocusGuide height={containerWidth * (9 / 16)} width={containerWidth} />}
             <VideoThumbnail
-              imageDimensions={{ width: containerWidth - 8, height: containerWidth * (9 / 16) - 8 }}
+              imageDimensions={{ width: containerWidth, height: containerWidth * (9 / 16) }}
               video={video}
               timestamp={timestamp}
               backend={backend}
@@ -120,6 +108,11 @@ const styles = StyleSheet.create({
     maxWidth: "100%",
   },
   linkWrapper: { flex: 1 },
+  linkWrapperTV: {
+    borderRadius: 10,
+    height: "100%",
+    width: "100%",
+  },
   pressableContainer: { gap: spacing.md },
   restInfoContainer: { gap: spacing.xs, paddingHorizontal: spacing.sm },
   textContainer: { gap: spacing.sm, paddingHorizontal: spacing.sm },

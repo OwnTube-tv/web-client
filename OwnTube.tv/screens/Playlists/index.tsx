@@ -74,7 +74,7 @@ export const Playlists = () => {
           key={data?.id}
           title={data?.displayName}
           data={data?.data}
-          headerLink={{
+          link={{
             text: t("viewFullPlaylist") + getAvailableVidsString(data?.total),
             href: {
               pathname: `/${ROUTES.PLAYLIST}`,

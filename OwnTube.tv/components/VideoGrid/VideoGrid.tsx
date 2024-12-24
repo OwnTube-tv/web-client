@@ -1,5 +1,5 @@
 import { LinkProps } from "expo-router/build/link/Link";
-import { Link, useLocalSearchParams } from "expo-router";
+import { Link, useLocalSearchParams, useRouter } from "expo-router";
 import { RootStackParams } from "../../app/_layout";
 import { ROUTES } from "../../types";
 import { useTheme } from "@react-navigation/native";
@@ -7,7 +7,7 @@ import { GetVideosVideo } from "../../api/models";
 import { useBreakpoints, ViewHistoryEntry } from "../../hooks";
 import { borderRadius, spacing } from "../../theme";
 import { Typography } from "../Typography";
-import { Image, StyleSheet, View } from "react-native";
+import { Image, Platform, StyleSheet, View } from "react-native";
 import { Button } from "../shared";
 import { IcoMoonIcon } from "../IcoMoonIcon";
 import { Loader } from "../Loader";
@@ -19,15 +19,16 @@ import { PresentationSwitch } from "./PresentationSwitch";
 import { useTranslation } from "react-i18next";
 import { ErrorTextWithRetry } from "../ErrorTextWithRetry";
 import TVFocusGuideHelper from "../helpers/TVFocusGuideHelper";
+import { capitalize } from "../../utils";
 
 export interface VideoGridProps {
   data?: Array<GetVideosVideo | ViewHistoryEntry>;
   variant?: "default" | "channel" | "history" | "latest" | "playlist" | "category";
   title?: string;
   icon?: string;
-  headerLink?: {
+  link?: {
     text: string;
-    href: LinkProps<ROUTES>["href"];
+    href?: LinkProps<ROUTES>["href"];
   };
   handleShowMore?: () => void;
   channelLogoUri?: string;
@@ -45,7 +46,7 @@ export const VideoGrid = ({
   variant = "default",
   title,
   icon,
-  headerLink,
+  link,
   handleShowMore,
   channelLogoUri,
   isLoadingMore,
@@ -58,6 +59,7 @@ export const VideoGrid = ({
 }: VideoGridProps) => {
   const { backend } = useLocalSearchParams<RootStackParams[ROUTES.INDEX]>();
   const { colors } = useTheme();
+  const router = useRouter();
   const { isMobile, isDesktop } = useBreakpoints();
   const [customPresentation, setCustomPresentation] = useState<VideoGridProps["presentation"]>(presentation || "grid");
   const { t } = useTranslation();
@@ -78,26 +80,43 @@ export const VideoGrid = ({
       );
     }
 
+    const isShowMoreBtnVisible = !!handleShowMore && (!Platform.isTV || presentation === "list");
+    const handleShowMorePress = () => {
+      (customPresentation === "grid" ? gridContentRef : listContentRef).current?.focusLastItem();
+      handleShowMore?.();
+    };
+
     return (
       <TVFocusGuideHelper autoFocus>
         {!!presentation && isDesktop && (
           <PresentationSwitch presentation={customPresentation} handleSetPresentation={handleSetPresentation} />
         )}
         {customPresentation === "grid" ? (
-          <VideoGridContent ref={gridContentRef} isLoading={isLoading} data={data} backend={backend} />
+          <VideoGridContent
+            tvActionCardProps={{
+              isLoading: isLoadingMore,
+              icon: variant === "default" ? "Arrow-Right" : capitalize(variant),
+              text: link?.text,
+              onPress: () => {
+                if (link?.href) {
+                  router.navigate(link?.href);
+                }
+                if (handleShowMore) {
+                  handleShowMorePress();
+                }
+              },
+            }}
+            ref={gridContentRef}
+            isLoading={isLoading}
+            data={data}
+            backend={backend}
+          />
         ) : (
           <VideoListContent ref={listContentRef} isLoading={isLoading} data={data} backend={backend} />
         )}
-        {!!handleShowMore && (
+        {isShowMoreBtnVisible && (
           <View style={styles.showMoreContainer}>
-            <Button
-              contrast="low"
-              text="Show more"
-              onPress={() => {
-                (customPresentation === "grid" ? gridContentRef : listContentRef).current?.focusLastItem();
-                handleShowMore();
-              }}
-            />
+            <Button contrast="low" text="Show more" onPress={handleShowMorePress} />
             <View>{isLoadingMore && <Loader />}</View>
           </View>
         )}
@@ -118,6 +137,8 @@ export const VideoGrid = ({
     refetch,
   ]);
 
+  const isHeaderLinkVisible = !!link && !Platform.isTV;
+
   return (
     <View
       style={{
@@ -127,7 +148,7 @@ export const VideoGrid = ({
       }}
     >
       {!isHeaderHidden && (
-        <TVFocusGuideHelper style={styles.headerContainer} autoFocus>
+        <View style={styles.headerContainer}>
           {!!channelLogoUri && (
             <View style={{ alignSelf: "flex-start" }}>
               <Image style={styles.image} source={{ uri: `https://${backend}${channelLogoUri}` }} />
@@ -148,14 +169,14 @@ export const VideoGrid = ({
               )}
             </View>
             <View style={styles.headerLinksContainer}>
-              {!!headerLink && (
-                <Link asChild href={headerLink.href}>
-                  <Button contrast={reduceHeaderContrast ? "low" : "high"} text={headerLink.text} />
+              {isHeaderLinkVisible && (
+                <Link asChild href={link.href}>
+                  <Button contrast={reduceHeaderContrast ? "low" : "high"} text={link.text} />
                 </Link>
               )}
             </View>
           </View>
-        </TVFocusGuideHelper>
+        </View>
       )}
       {renderContent}
     </View>

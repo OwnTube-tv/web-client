@@ -34,7 +34,7 @@ export const CategoryView = ({ category }: CategoryViewProps) => {
         refetch={refetch}
         isError={isError}
         isLoading={isFetching}
-        headerLink={{
+        link={{
           text: t("viewCategory") + getAvailableVidsString(data?.total),
           href: { pathname: `/${ROUTES.CATEGORY}`, params: { backend, category: category.id } },
         }}

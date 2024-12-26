@@ -34,3 +34,4 @@ export * from "./TvKeyboard";
 export * from "./ErrorBoundary";
 export * from "./helpers";
 export * from "./TVActionCard";
+export * from "./ViewOnSiteLink";

@@ -9,6 +9,7 @@ import { useTheme } from "@react-navigation/native";
 import { spacing } from "../../theme";
 import { useMemo } from "react";
 import { useBreakpoints, useInstanceConfig } from "../../hooks";
+import { useTranslation } from "react-i18next";
 
 export const ChannelCategoryScreen = () => {
   const { currentInstanceConfig } = useInstanceConfig();
@@ -23,6 +24,7 @@ export const ChannelCategoryScreen = () => {
     uniqueQueryKey: "categoryView",
     pageSize: currentInstanceConfig?.customizations?.showMoreSize,
   });
+  const { t } = useTranslation();
 
   const videos = useMemo(() => {
     return data?.pages?.flatMap(({ data }) => data.flat());
@@ -49,6 +51,8 @@ export const ChannelCategoryScreen = () => {
         isLoading={isLoading}
         isLoadingMore={isFetchingNextPage}
         handleShowMore={hasNextPage ? fetchNextPage : undefined}
+        link={{ text: t("showMore") }}
+        isTVActionCardHidden={!hasNextPage}
       />
       <InfoFooter />
     </Screen>

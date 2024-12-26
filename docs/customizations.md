@@ -49,10 +49,12 @@ Each value must be prefixed by `EXPO_PUBLIC_`. See list of available customizati
 `EXPO_PUBLIC_${ANDROID_TV | APPLE_TV}_*`: various images for Android TV and tvOS apps such as the banner for android TV
 or background images for Apple TV.
 
+`EXPO_PUBLIC_HIDE_VIDEO_SITE_LINKS`: hide or show the links to original PeerTube site in video player
+
 > [!WARNING]
 > You need to supply images of expected sizes for tvOS or the build fails automatically:
 >
-> EXPO_PUBLIC_APPLE_TV_ICON: 1280x760
+> EXPO_PUBLIC_APPLE_TV_ICON: 1280x768
 >
 > EXPO_PUBLIC_APPLE_TV_ICON_SMALL: 400x240
 >

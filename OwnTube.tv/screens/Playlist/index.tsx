@@ -6,6 +6,7 @@ import { BackToChannel, InfoFooter, ListInfoHeader, Loader, VideoGrid } from "..
 import { useMemo } from "react";
 import { Screen } from "../../layouts";
 import { useInstanceConfig } from "../../hooks";
+import { useTranslation } from "react-i18next";
 
 export const Playlist = () => {
   const { currentInstanceConfig } = useInstanceConfig();
@@ -21,6 +22,7 @@ export const Playlist = () => {
   const videos = useMemo(() => {
     return data?.pages?.flatMap(({ data }) => data.flat());
   }, [data]);
+  const { t } = useTranslation();
 
   if (isFetchingPlaylistInfo || isLoading) {
     return <Loader />;
@@ -41,6 +43,8 @@ export const Playlist = () => {
         data={videos}
         isLoadingMore={isFetchingNextPage}
         handleShowMore={hasNextPage ? fetchNextPage : undefined}
+        link={{ text: t("showMore") }}
+        isTVActionCardHidden={!hasNextPage}
       />
       <InfoFooter />
     </Screen>

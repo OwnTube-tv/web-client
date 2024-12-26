@@ -39,6 +39,7 @@ export interface VideoGridProps {
   refetch?: () => void;
   isHeaderHidden?: boolean;
   reduceHeaderContrast?: boolean;
+  isTVActionCardHidden?: boolean;
 }
 
 export const VideoGrid = ({
@@ -56,6 +57,7 @@ export const VideoGrid = ({
   refetch,
   isHeaderHidden = false,
   reduceHeaderContrast = false,
+  isTVActionCardHidden = false,
 }: VideoGridProps) => {
   const { backend } = useLocalSearchParams<RootStackParams[ROUTES.INDEX]>();
   const { colors } = useTheme();
@@ -80,7 +82,7 @@ export const VideoGrid = ({
       );
     }
 
-    const isShowMoreBtnVisible = !!handleShowMore && (!Platform.isTV || presentation === "list");
+    const isShowMoreBtnVisible = !!handleShowMore && (!Platform.isTV || customPresentation === "list");
     const handleShowMorePress = () => {
       (customPresentation === "grid" ? gridContentRef : listContentRef).current?.focusLastItem();
       handleShowMore?.();
@@ -94,6 +96,7 @@ export const VideoGrid = ({
         {customPresentation === "grid" ? (
           <VideoGridContent
             tvActionCardProps={{
+              isHidden: isTVActionCardHidden,
               isLoading: isLoadingMore,
               icon: variant === "default" ? "Arrow-Right" : capitalize(variant),
               text: link?.text,

@@ -8,6 +8,9 @@ import videojs from "video.js";
 import * as Device from "expo-device";
 import { DeviceType } from "expo-device";
 import VideoControlsOverlay from "../VideoControlsOverlay";
+import { useLocalSearchParams } from "expo-router";
+import { RootStackParams } from "../../app/_layout";
+import { ROUTES } from "../../types";
 
 declare const window: {
   videojs: typeof videojs;
@@ -25,10 +28,12 @@ const VideoView = ({
   handleOpenDetails,
   handleShare,
   handleOpenSettings,
+  viewUrl,
 }: VideoViewProps) => {
   const { videojs } = window;
   const videoRef = useRef<HTMLDivElement>(null);
   const playerRef = useRef<Player | null>(null);
+  const { backend } = useLocalSearchParams<RootStackParams[ROUTES.VIDEO]>();
   const [playbackStatus, setPlaybackStatus] = useState({
     didJustFinish: false,
     isMuted: false,
@@ -240,6 +245,7 @@ const VideoView = ({
   return (
     <View style={styles.container}>
       <VideoControlsOverlay
+        videoLinkProps={{ backend, url: viewUrl }}
         handlePlayPause={handlePlayPause}
         isPlaying={playbackStatus?.isPlaying}
         isVisible={isControlsVisible}

@@ -1,4 +1,4 @@
-import { forwardRef, PropsWithChildren, useEffect, useRef, useState } from "react";
+import { forwardRef, PropsWithChildren, useCallback, useEffect, useRef, useState } from "react";
 import {
   Pressable,
   StyleSheet,
@@ -7,6 +7,7 @@ import {
   useWindowDimensions,
   TVFocusGuideView,
   Platform,
+  BackHandler,
 } from "react-native";
 import { Typography } from "../Typography";
 import { getHumanReadableDuration } from "../../utils";
@@ -19,6 +20,7 @@ import { ROUTES } from "../../types";
 import PlayerButton from "./components/PlayerButton";
 import { VideoControlsOverlayProps } from "./VideoControlsOverlay";
 import { useVideoControlsOverlay } from "./hooks/useVideoControlsOverlay";
+import { useFocusEffect } from "expo-router";
 
 const AndroidFocusHelperContainer = forwardRef<View, PropsWithChildren<{ isVisible: boolean }>>(({ children }, ref) => {
   return Platform.select({
@@ -36,6 +38,9 @@ const AndroidFocusHelperContainer = forwardRef<View, PropsWithChildren<{ isVisib
 });
 
 AndroidFocusHelperContainer.displayName = "AndroidFocusHelperContainer";
+
+const INTERFACE_SCALE = Platform.isTVOS ? 3 : 1;
+const BUTTON_BORDER_WIDTH = 2;
 
 const VideoControlsOverlay = ({
   children,
@@ -56,6 +61,7 @@ const VideoControlsOverlay = ({
   handleOpenDetails,
   handleShare,
   handleOpenSettings,
+  handleHideOverlay,
 }: PropsWithChildren<VideoControlsOverlayProps>) => {
   const {
     isSeekBarFocused,
@@ -96,12 +102,37 @@ const VideoControlsOverlay = ({
   }, [isVisible]);
   const [longPressScrubMode, setLongPressScrubMode] = useState<"FF" | "RW" | null>(null);
 
+  const handleBackButton = () => {
+    if (isVisible) {
+      handleHideOverlay?.();
+    } else {
+      router.back();
+    }
+  };
+
+  useFocusEffect(
+    useCallback(() => {
+      const backHandler = BackHandler.addEventListener("hardwareBackPress", () => {
+        if (Platform.OS === "android") {
+          handleBackButton();
+        }
+        return true;
+      });
+
+      return () => backHandler.remove();
+    }, [handleBackButton]),
+  );
+
   useTVEventHandler((event) => {
-    if (!["blur", "focus", "playPause"].includes(event.eventType)) {
+    if (!["blur", "focus", "menu"].includes(event.eventType)) {
       onOverlayPress?.();
     }
 
     switch (event.eventType) {
+      case "menu":
+        handleBackButton();
+        break;
+
       case "playPause":
         handlePlayPause();
         break;
@@ -136,7 +167,7 @@ const VideoControlsOverlay = ({
     let seekTime = 10;
 
     const scrubWithLongPress = async () => {
-      if (!isActive || !longPressScrubMode) return;
+      if (!isActive || !longPressScrubMode || !isSeekBarFocused) return;
 
       onOverlayPress?.();
 
@@ -181,8 +212,8 @@ const VideoControlsOverlay = ({
                     nextFocusRight={shareBtnRef}
                     style={({ focused }) => ({
                       borderRadius: borderRadius.radiusMd,
-                      margin: focused ? -2 : 0,
-                      borderWidth: focused ? 2 : 0,
+                      margin: focused ? -BUTTON_BORDER_WIDTH : 0,
+                      borderWidth: focused ? BUTTON_BORDER_WIDTH : 0,
                       borderColor: colors.white94,
                       alignSelf: "flex-start",
                     })}
@@ -238,14 +269,25 @@ const VideoControlsOverlay = ({
           </View>
           <View style={styles.playbackControlsContainer}>
             <TVFocusGuideView autoFocus trapFocusRight trapFocusLeft style={styles.centerControlsContainer}>
-              <PlayerButton nextFocusUp={backRef} onPress={() => handleRW(15)} icon="Rewind-15" />
               <PlayerButton
+                scale={INTERFACE_SCALE}
+                nextFocusUp={backRef}
+                onPress={() => handleRW(15)}
+                icon="Rewind-15"
+              />
+              <PlayerButton
+                scale={INTERFACE_SCALE}
                 nextFocusUp={backRef}
                 hasTVPreferredFocus
                 onPress={shouldReplay ? handleReplay : handlePlayPause}
                 icon={centralIconName}
               />
-              <PlayerButton nextFocusUp={backRef} onPress={() => handleFF(30)} icon="Fast-forward-30" />
+              <PlayerButton
+                scale={INTERFACE_SCALE}
+                nextFocusUp={backRef}
+                onPress={() => handleFF(30)}
+                icon="Fast-forward-30"
+              />
             </TVFocusGuideView>
           </View>
           <View style={styles.animatedBottomContainer} pointerEvents="box-none">
@@ -319,6 +361,7 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   contentContainer: {
+    backgroundColor: colors.dark.black50,
     flex: 0,
     height: "100%",
     left: 0,

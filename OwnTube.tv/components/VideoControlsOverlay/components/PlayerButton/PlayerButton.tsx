@@ -8,6 +8,7 @@ export interface PlayerButtonProps extends PressableProps {
   icon: string;
   onHoverIn?: () => void;
   onHoverOut?: () => void;
+  scale?: number;
 }
 
 const PlayerButton = forwardRef<View, PlayerButtonProps>(({ onPress, icon, onHoverIn, onHoverOut }, ref) => {

@@ -3,7 +3,6 @@ import { useEffect, useRef, useState } from "react";
 import { Platform, View } from "react-native";
 import { styles } from "./styles";
 import { useAppConfigContext } from "../../contexts";
-import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import * as Device from "expo-device";
 import { DeviceType } from "expo-device";
 import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
@@ -11,6 +10,9 @@ import { VideoChannelSummary } from "@peertube/peertube-types";
 import VideoControlsOverlay from "../VideoControlsOverlay";
 import Toast from "react-native-toast-message";
 import { setAudioModeAsync } from "expo-av/build/Audio";
+import { useLocalSearchParams } from "expo-router";
+import { ROUTES } from "../../types";
+import { RootStackParams } from "../../app/_layout";
 
 export interface VideoViewProps {
   uri: string;
@@ -25,6 +27,7 @@ export interface VideoViewProps {
   handleShare: () => void;
   handleOpenSettings: () => void;
   isModalOpen: boolean;
+  viewUrl: string;
 }
 
 const VideoView = ({
@@ -40,6 +43,7 @@ const VideoView = ({
   handleShare,
   handleOpenSettings,
   isModalOpen,
+  viewUrl,
 }: VideoViewProps) => {
   const videoRef = useRef<Video>(null);
   const [playbackStatus, setPlaybackStatus] = useState<(AVPlaybackStatusSuccess & { positionSeconds: number }) | null>(
@@ -48,14 +52,17 @@ const VideoView = ({
   const [isControlsVisible, setIsControlsVisible] = useState(false);
   const { setPlayerImplementation } = useAppConfigContext();
   const isMobile = Device.deviceType !== DeviceType.DESKTOP;
+  const { backend } = useLocalSearchParams<RootStackParams[ROUTES.VIDEO]>();
 
   const handlePlayPause = () => {
     videoRef.current?.[playbackStatus?.isPlaying ? "pauseAsync" : "playAsync"]();
   };
 
+  const isPlayingRef = useRef(false);
   const handlePlaybackStatusUpdate = (status: AVPlaybackStatus) => {
     if (status?.isLoaded) {
       setPlaybackStatus({ ...status, positionSeconds: Math.floor(status.positionMillis / 1000) });
+      isPlayingRef.current = status.isPlaying;
 
       if (status.androidImplementation) {
         setPlayerImplementation(`Android ${status.androidImplementation}`);
@@ -114,68 +121,66 @@ const VideoView = ({
   const handleOverlayPress = () => {
     setIsControlsVisible(true);
 
-    clearTimeout(timeout.current);
-    timeout.current = setTimeout(() => {
-      setIsControlsVisible(modalOpenRef.current);
-    }, 3000);
+    if (Platform.isTV) {
+      clearTimeout(timeout.current);
+      timeout.current = setTimeout(() => {
+        setIsControlsVisible(modalOpenRef.current || !isPlayingRef.current);
+      }, 5000);
+    }
   };
 
-  const tap = Gesture.Tap()
-    .onFinalize(() => {
-      if (!Platform.isTV) {
-        handleOverlayPress();
-      }
-    })
-    .runOnJS(true);
+  const hideOverlay = () => {
+    setIsControlsVisible(false);
+  };
 
   const handlePlayerError = (error: unknown) => {
     Toast.show({ type: "info", text1: `Error: ${String(error)}`, props: { isError: true } });
   };
 
   return (
-    <GestureDetector gesture={tap}>
-      <View collapsable={false} style={styles.container}>
-        <VideoControlsOverlay
-          handlePlayPause={handlePlayPause}
-          isPlaying={playbackStatus?.isPlaying}
-          isVisible={isControlsVisible}
-          onOverlayPress={Platform.isTV ? handleOverlayPress : undefined}
-          handleRW={handleRW}
-          handleFF={handleFF}
-          duration={playbackStatus?.durationMillis}
-          availableDuration={playbackStatus?.playableDurationMillis}
-          position={playbackStatus?.positionMillis}
-          toggleMute={toggleMute}
-          isMute={playbackStatus?.isMuted}
-          shouldReplay={playbackStatus?.didJustFinish}
-          handleReplay={handleReplay}
-          handleJumpTo={handleJumpTo}
-          title={title}
-          channel={{ name: channel?.displayName, handle: channel?.name }}
-          handleVolumeControl={handleVolumeControl}
-          volume={playbackStatus?.volume ?? 0}
-          toggleFullscreen={toggleFullscreen}
-          isFullscreen={isFullscreen}
-          handleOpenDetails={handleOpenDetails}
-          handleShare={handleShare}
-          handleOpenSettings={handleOpenSettings}
-        >
-          <Video
-            testID={`${testID}-video-playback`}
-            shouldPlay
-            resizeMode={ResizeMode.CONTAIN}
-            ref={videoRef}
-            source={{ uri }}
-            onPlaybackStatusUpdate={handlePlaybackStatusUpdate}
-            style={styles.videoWrapper}
-            onError={handlePlayerError}
-          />
-          {isMobile && !Platform.isTVOS && isControlsVisible && (
-            <Animated.View entering={FadeIn} exiting={FadeOut} style={styles.opacityOverlay} />
-          )}
-        </VideoControlsOverlay>
-      </View>
-    </GestureDetector>
+    <View collapsable={false} style={styles.container}>
+      <VideoControlsOverlay
+        videoLinkProps={{ backend, url: viewUrl }}
+        handlePlayPause={handlePlayPause}
+        isPlaying={playbackStatus?.isPlaying}
+        isVisible={isControlsVisible}
+        onOverlayPress={Platform.OS !== "web" ? handleOverlayPress : undefined}
+        handleRW={handleRW}
+        handleFF={handleFF}
+        duration={playbackStatus?.durationMillis}
+        availableDuration={playbackStatus?.playableDurationMillis}
+        position={playbackStatus?.positionMillis}
+        toggleMute={toggleMute}
+        isMute={playbackStatus?.isMuted}
+        shouldReplay={playbackStatus?.didJustFinish}
+        handleReplay={handleReplay}
+        handleJumpTo={handleJumpTo}
+        title={title}
+        channel={{ name: channel?.displayName, handle: channel?.name }}
+        handleVolumeControl={handleVolumeControl}
+        volume={playbackStatus?.volume ?? 0}
+        toggleFullscreen={toggleFullscreen}
+        isFullscreen={isFullscreen}
+        handleOpenDetails={handleOpenDetails}
+        handleShare={handleShare}
+        handleOpenSettings={handleOpenSettings}
+        handleHideOverlay={hideOverlay}
+      >
+        <Video
+          testID={`${testID}-video-playback`}
+          shouldPlay
+          resizeMode={ResizeMode.CONTAIN}
+          ref={videoRef}
+          source={{ uri }}
+          onPlaybackStatusUpdate={handlePlaybackStatusUpdate}
+          style={styles.videoWrapper}
+          onError={handlePlayerError}
+        />
+        {isMobile && !Platform.isTVOS && isControlsVisible && (
+          <Animated.View entering={FadeIn} exiting={FadeOut} style={styles.opacityOverlay} />
+        )}
+      </VideoControlsOverlay>
+    </View>
   );
 };
 

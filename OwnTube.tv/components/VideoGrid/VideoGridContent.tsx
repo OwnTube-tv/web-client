@@ -13,7 +13,7 @@ export interface VideoGridContentHandle {
 interface VideoGridContentProps extends Pick<VideoGridProps, "data" | "variant"> {
   isLoading?: boolean;
   backend?: string;
-  tvActionCardProps: Omit<TVActionCardProps, "width">;
+  tvActionCardProps: Omit<TVActionCardProps, "width"> & { isHidden?: boolean };
 }
 
 const MINIMUM_COLUMN_WIDTH = 277;
@@ -33,7 +33,7 @@ export const VideoGridContent = forwardRef<VideoGridContentHandle, VideoGridCont
       },
     }));
 
-    const isTVActionCardVisible = Platform.isTV && !isLoading;
+    const isTVActionCardVisible = Platform.isTV && !isLoading && !tvActionCardProps.isHidden;
 
     return (
       <View

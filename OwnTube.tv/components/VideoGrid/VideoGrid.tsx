@@ -28,7 +28,7 @@ export interface VideoGridProps {
   icon?: string;
   link?: {
     text: string;
-    href?: LinkProps<ROUTES>["href"];
+    href: LinkProps<ROUTES>["href"];
   };
   handleShowMore?: () => void;
   channelLogoUri?: string;
@@ -140,7 +140,7 @@ export const VideoGrid = ({
     refetch,
   ]);
 
-  const isHeaderLinkVisible = !!link && !Platform.isTV;
+  const isHeaderLinkVisible = !!link?.href && !Platform.isTV;
 
   return (
     <View

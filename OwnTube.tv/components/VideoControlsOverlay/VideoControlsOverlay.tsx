@@ -16,6 +16,7 @@ import { ROUTES } from "../../types";
 import PlayerButton from "./components/PlayerButton";
 import { useVideoControlsOverlay } from "./hooks/useVideoControlsOverlay";
 import { ViewOnSiteLink } from "../ViewOnSiteLink";
+import { useInstanceConfig } from "../../hooks";
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
@@ -93,6 +94,10 @@ const VideoControlsOverlay = ({
     position,
   });
   const isMobile = Device.deviceType !== DeviceType.DESKTOP;
+  const { currentInstanceConfig } = useInstanceConfig();
+
+  const hideVideoSiteLink =
+    process.env.EXPO_PUBLIC_HIDE_VIDEO_SITE_LINKS || currentInstanceConfig?.customizations?.hideVideoSiteLinks;
 
   return (
     // @ts-expect-error web cursor options not included in React Native core
@@ -174,7 +179,7 @@ const VideoControlsOverlay = ({
               colors={isMobile ? ["#00000000", "#00000000", "#00000000"] : ["#00000000", "#0000004D", "#000000AB"]}
               style={[styles.bottomControlsContainer, ...(isMobile ? [{}] : [{ height: 360 }])]}
             >
-              {!process.env.EXPO_PUBLIC_HIDE_VIDEO_SITE_LINKS && (
+              {!hideVideoSiteLink && (
                 <View style={styles.videoLinkContainer}>
                   <ViewOnSiteLink site={videoLinkProps?.backend} url={videoLinkProps?.url} />
                 </View>

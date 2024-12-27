@@ -1,10 +1,10 @@
-import { Link } from "expo-router";
 import { Typography } from "./Typography";
 import { useTranslation } from "react-i18next";
-import { Platform, Pressable, StyleSheet } from "react-native";
+import { Pressable, StyleSheet } from "react-native";
 import { useHoverState } from "../hooks";
 import { IcoMoonIcon } from "./IcoMoonIcon";
 import { useTheme } from "@react-navigation/native";
+import { ExternalLink } from "./ExternalLink";
 
 interface ViewOnSiteLinkProps {
   site: string;
@@ -17,7 +17,7 @@ export const ViewOnSiteLink = ({ site, url }: ViewOnSiteLinkProps) => {
   const { colors } = useTheme();
 
   return (
-    <Link asChild={Platform.OS !== "web"} href={url} target="_blank" rel="noopener noreferrer">
+    <ExternalLink asChild absoluteHref={url} target="_blank" rel="noopener noreferrer">
       <Pressable style={styles.container} onHoverIn={toggleHovered} onHoverOut={toggleHovered}>
         <Typography
           color={colors.white80}
@@ -28,7 +28,7 @@ export const ViewOnSiteLink = ({ site, url }: ViewOnSiteLinkProps) => {
         </Typography>
         <IcoMoonIcon color={colors.white80} name="External-Link" size={16} />
       </Pressable>
-    </Link>
+    </ExternalLink>
   );
 };
 

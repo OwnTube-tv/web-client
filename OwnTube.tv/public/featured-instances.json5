@@ -55,6 +55,9 @@
     name: "Fedi.Video",
     description: "This site is intended as a safe, easy-to-use way to search and browse the PeerTube network. Accounts are only listed here if they are run responsibly and create good videos. Anything involving bigotry, conspiracy theories, NSFW or junk content is not allowed.",
     hostname: "fedi.video",
+    customizations: {
+      hideVideoSiteLinks: true,
+    },
   },
   {
     name: "LinuxRocks",

@@ -122,5 +122,6 @@
   "leaveSite": "Leave site",
   "allPlaylists": "All playlists",
   "allChannels": "All channels",
-  "allCategories": "All categories"
+  "allCategories": "All categories",
+  "viewOnSite": "View on {{site}}"
 }

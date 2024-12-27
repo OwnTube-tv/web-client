@@ -112,7 +112,7 @@ export const ScrubBar = ({
   return (
     <View style={styles.gestureHandlerContainer}>
       <GestureDetector gesture={pan}>
-        <View collapsable={false} style={styles.scrubBarHitSlop}>
+        <View hitSlop={20} collapsable={false} style={styles.scrubBarHitSlop}>
           <View
             style={[
               styles.scrubBarContainer,

@@ -15,6 +15,10 @@ import Animated, { SlideInDown, SlideInUp, SlideOutDown, SlideOutUp, FadeIn, Fad
 import { ROUTES } from "../../types";
 import PlayerButton from "./components/PlayerButton";
 import { useVideoControlsOverlay } from "./hooks/useVideoControlsOverlay";
+import { ViewOnSiteLink } from "../ViewOnSiteLink";
+import { useInstanceConfig } from "../../hooks";
+
+const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
 export interface VideoControlsOverlayProps {
   isVisible: boolean;
@@ -40,6 +44,8 @@ export interface VideoControlsOverlayProps {
   handleOpenDetails: () => void;
   handleShare: () => void;
   handleOpenSettings: () => void;
+  videoLinkProps: { url: string; backend: string };
+  handleHideOverlay?: () => void;
 }
 
 const VideoControlsOverlay = ({
@@ -67,6 +73,8 @@ const VideoControlsOverlay = ({
   handleOpenDetails,
   handleShare,
   handleOpenSettings,
+  videoLinkProps,
+  handleHideOverlay,
 }: PropsWithChildren<VideoControlsOverlayProps>) => {
   const {
     isSeekBarFocused,
@@ -86,6 +94,10 @@ const VideoControlsOverlay = ({
     position,
   });
   const isMobile = Device.deviceType !== DeviceType.DESKTOP;
+  const { currentInstanceConfig } = useInstanceConfig();
+
+  const hideVideoSiteLink =
+    process.env.EXPO_PUBLIC_HIDE_VIDEO_SITE_LINKS || currentInstanceConfig?.customizations?.hideVideoSiteLinks;
 
   return (
     // @ts-expect-error web cursor options not included in React Native core
@@ -139,16 +151,22 @@ const VideoControlsOverlay = ({
             </LinearGradient>
           </Animated.View>
           {isMobile && (
-            <Animated.View
+            <AnimatedPressable
               entering={FadeIn}
               exiting={FadeOut}
               style={styles.playbackControlsContainer}
-              pointerEvents="box-none"
+              onPress={() => {
+                if (isVisible) {
+                  handleHideOverlay?.();
+                } else {
+                  onOverlayPress?.();
+                }
+              }}
             >
               <PlayerButton onPress={() => handleRW(15)} icon="Rewind-15" />
               <PlayerButton onPress={shouldReplay ? handleReplay : handlePlayPause} icon={centralIconName} />
               <PlayerButton onPress={() => handleFF(30)} icon="Fast-forward-30" />
-            </Animated.View>
+            </AnimatedPressable>
           )}
           <Animated.View
             exiting={SlideOutDown}
@@ -161,6 +179,11 @@ const VideoControlsOverlay = ({
               colors={isMobile ? ["#00000000", "#00000000", "#00000000"] : ["#00000000", "#0000004D", "#000000AB"]}
               style={[styles.bottomControlsContainer, ...(isMobile ? [{}] : [{ height: 360 }])]}
             >
+              {!hideVideoSiteLink && (
+                <View style={styles.videoLinkContainer}>
+                  <ViewOnSiteLink site={videoLinkProps?.backend} url={videoLinkProps?.url} />
+                </View>
+              )}
               <Pressable
                 onHoverIn={() => setIsSeekBarFocused(true)}
                 onHoverOut={() => setIsSeekBarFocused(false)}
@@ -255,7 +278,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     position: "relative",
     width: "100%",
-    zIndex: 2,
+    zIndex: -1,
   },
   scrubBarContainer: { height: spacing.md, width: "100%" },
   timingContainer: {
@@ -278,6 +301,7 @@ const styles = StyleSheet.create({
   topLeftControls: { flexDirection: "row", gap: spacing.sm, maxWidth: 600, width: "60%" },
   topRightControls: { alignItems: "center", flexDirection: "row" },
   videoInfoContainer: { gap: spacing.md, width: "100%" },
+  videoLinkContainer: { alignSelf: "flex-end", justifyContent: "flex-end", marginBottom: spacing.lg },
 });
 
 export default VideoControlsOverlay;

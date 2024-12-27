@@ -108,6 +108,7 @@ export const VideoScreen = () => {
           handleShare={() => {
             setVisibleModal("share");
           }}
+          viewUrl={data?.url}
         />
         <FullScreenModal onBackdropPress={closeModal} isVisible={visibleModal === "details"}>
           <VideoDetails

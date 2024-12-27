@@ -28,6 +28,7 @@ export const LatestVideosView = () => {
         isLoadingMore={isFetchingNextPage}
         handleShowMore={hasNextPage ? fetchNextPage : undefined}
         link={{ text: t("showMore") }}
+        isTVActionCardHidden={!hasNextPage}
       />
       <ListSeparator />
     </>

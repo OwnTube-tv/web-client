@@ -4,10 +4,14 @@ import { IcoMoonIcon } from "../../../IcoMoonIcon";
 import { StyleSheet, TouchableOpacity, TouchableOpacityProps } from "react-native";
 import { useTheme } from "@react-navigation/native";
 
-const PlayerButton = forwardRef<TouchableOpacity, TouchableOpacityProps & { icon: string }>(
-  ({ onPress, icon, ...restProps }, ref) => {
+const BORDER_WIDTH = 2;
+
+const PlayerButton = forwardRef<TouchableOpacity, TouchableOpacityProps & { icon: string; scale?: number }>(
+  ({ onPress, icon, scale = 1, ...restProps }, ref) => {
     const { colors } = useTheme();
     const [focused, setFocused] = useState(false);
+
+    const borderWidth = BORDER_WIDTH * scale;
 
     return (
       <TouchableOpacity
@@ -19,14 +23,17 @@ const PlayerButton = forwardRef<TouchableOpacity, TouchableOpacityProps & { icon
         style={[
           styles.container,
           {
-            padding: focused ? -2 : 0,
-            borderWidth: focused ? 2 : 0,
+            width: styles.container.width * scale,
+            height: styles.container.height * scale,
+            padding: focused ? -borderWidth : 0,
+            borderWidth: focused ? borderWidth : 0,
             borderColor: colors.white94,
+            borderRadius: borderRadius.radiusMd * scale,
           },
         ]}
         {...restProps}
       >
-        <IcoMoonIcon name={icon} size={spacing.xl} color={colors.white80} />
+        <IcoMoonIcon name={icon} size={spacing.xl * scale} color={colors.white80} />
       </TouchableOpacity>
     );
   },
@@ -35,7 +42,6 @@ const PlayerButton = forwardRef<TouchableOpacity, TouchableOpacityProps & { icon
 const styles = StyleSheet.create({
   container: {
     alignItems: "center",
-    borderRadius: borderRadius.radiusMd,
     flexDirection: "row",
     height: 48,
     justifyContent: "center",

@@ -25,6 +25,7 @@ const mockUpdHistory = jest.fn();
 jest.mock("../../hooks", () => ({
   ...jest.requireActual("../../hooks"),
   useViewHistory: jest.fn(() => ({ updateHistory: mockUpdHistory })),
+  useInstanceConfig: jest.fn(() => ({ currentInstanceConfig: { hideVideoSiteLink: false } })),
 }));
 (useLocalSearchParams as jest.Mock).mockReturnValue({ id: 123, backend: "example.com" });
 jest.mock("@react-navigation/native", () => ({
@@ -64,7 +65,6 @@ describe("VideoScreen", () => {
         duration: 200,
         lastViewedAt: 1607775160000,
         name: "fastest car",
-        previewPath: "/thumb.jpg",
         previewPath: "https://example.com/thumb.jpg",
         uuid: "123",
         files: [

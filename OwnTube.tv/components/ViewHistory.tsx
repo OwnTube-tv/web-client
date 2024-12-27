@@ -134,5 +134,5 @@ const styles = StyleSheet.create({
   },
   screenContainer: { maxWidth: 900, paddingVertical: spacing.xl },
   sectionHeader: { paddingBottom: spacing.xl },
-  sectionListContainer: { width: "100%" },
+  sectionListContainer: { overflow: "visible", width: "100%" },
 });

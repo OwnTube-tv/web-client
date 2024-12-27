@@ -10,7 +10,7 @@ export const ExternalLink = (
     <>
       {Platform.select({
         web: (
-          <a href={props.absoluteHref} style={{ textDecoration: "none" }}>
+          <a target={props.target} rel={props.rel} href={props.absoluteHref} style={{ textDecoration: "none" }}>
             {props.children}
           </a>
         ),

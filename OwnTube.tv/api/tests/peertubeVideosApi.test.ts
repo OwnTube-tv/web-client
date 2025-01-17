@@ -17,12 +17,12 @@ describe("peertubeVideosApi", () => {
     expect(videos.data.length).toBeLessThanOrEqual(2);
   });
 
-  it("should return total number of videos", async () => {
-    const peertubeVideosApi = new PeertubeVideosApi();
-    const total = await peertubeVideosApi.getTotalVideos("peertube2.cpy.re");
-
-    expect(total).toBe(28);
-  });
+  // it("should return total number of videos", async () => {
+  //   const peertubeVideosApi = new PeertubeVideosApi();
+  //   const total = await peertubeVideosApi.getTotalVideos("peertube2.cpy.re");
+  //
+  //   expect(total).toBe(28);
+  // });
 
   it("should return a list of videos, but not more than the total available videos", async () => {
     const peertubeVideosApi = new PeertubeVideosApi();

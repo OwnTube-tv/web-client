@@ -10,7 +10,8 @@ The main workflow in `deploy-static-main.yml` builds the application for all sup
    - Build and deploy app as static export to GitHub Pages
    - Build the app for iOS and tvOS simulators
    - Build the Android and Android TV `.apk`'s
-   - \[Optional] If selected when starting the pipeline, build and upload iOS and tvOS apps to TestFlight
+   - \[Optional] If selected when starting the pipeline, build and upload iOS and/or tvOS apps to TestFlight
+   - \[Optional] If selected when starting the pipeline, build and upload Android and/or Android TV apps to Google Play
 
 ## TestFlight upload ⏫
 
@@ -35,3 +36,19 @@ Before uploading to TestFlight, create an "`owntube`" environment in repository 
   - paste the provisioning profile file contents in secret value;
 - `[IOS/TVOS]_P12_PASSWORD`: the password to the certificate that you set when exporting;
 - `[IOS/TVOS]_PROVISIONING_PROFILE_SPECIFIER`: the name of the provisioning profile used;
+
+## Google Play upload ⏫
+
+Like with TestFlight, before uploading create an "`owntube`" environment in repository settings if you haven't already, then add the following secrets to the environment:
+
+- `ANDROID_RELEASE_KEYSTORE_CONTENT_BASE64`: base64-encoded contents of the .jks keystore that you use to sign the app for release. You need to create the keystore locally,
+  to do this you need to:
+  - run `keytool -genkeypair -v -keystore release-key.jks -keyalg RSA -keysize 2048 -validity 10000 -alias release-key` in the terminal and follow the prompts;
+  - run `base64 -i release-key.jks | pbcopy` in the same location, then paste in the secret value;
+- `ANDROID_KEYSTORE_PASSWORD`: the password you specified when generating the keystore;
+- `ANDROID_SIGNING_KEY_ALIAS`: the key alias you specified when generating the keystore;
+- `ANDROID_SIGNING_KEY_PASSWORD`: the signing key password you specified when generating the keystore;
+- `ANDROID_SERVICE_ACCOUNT_JSON`: the json signing key of the service account that you added to Google Play Console for app bundle uploads through API in plain text;
+
+According to Google Play rules, your first upload of an app has to be done through the Google Play interface, manually.
+To generate a bundle for the first upload you can use the `google_play_initial_bundle` action. The resulting .aab artifact will be available for upload to Google Play.

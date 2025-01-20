@@ -1,6 +1,9 @@
 const getBuildNumber = () => {
   const now = new Date();
-  return `${now.getUTCFullYear() % 100}${String(now.getUTCMonth() + 1).padStart(2, "0")}${String(now.getUTCDate()).padStart(2, "0")}${String(now.getUTCHours()).padStart(2, "0")}${String(now.getUTCMinutes()).padStart(2, "0")}`;
+  return `${now.getUTCFullYear() % 100}${String(now.getUTCMonth() + 1).padStart(2, "0")}${String(now.getUTCDate()).padStart(2, "0")}${String(now.getUTCHours()).padStart(2, "0")}${String(now.getUTCMinutes() + 20 * Number(!!process.env.EXPO_TV)).padStart(2, "0")}`.slice(
+    0,
+    -1,
+  );
 };
 
 export default {
@@ -29,6 +32,8 @@ export default {
     baseUrl: process.env.EXPO_PUBLIC_BASE_URL || "/web-client",
   },
   android: {
+    blockedPermissions: ["RECORD_AUDIO"],
+    versionCode: getBuildNumber(),
     adaptiveIcon: {
       foregroundImage:
         process.env.EXPO_PUBLIC_ANDROID_ADAPTIVE_ICON_FOREGROUND || "./assets/adaptive-icon-foreground.png",
@@ -47,8 +52,9 @@ export default {
     [
       "@react-native-tvos/config-tv",
       {
+        androidTVRequired: Boolean(process.env.EXPO_TV),
         androidTVBanner: process.env.EXPO_PUBLIC_ANDROID_TV_BANNER || "./assets/android-tv-banner.png",
-        androidTVIcon: process.env.EXPO_PUBLIC_ICON || "./assets/icon.png",
+        // androidTVIcon: process.env.EXPO_PUBLIC_ICON || "./assets/icon.png",
         appleTVImages: {
           icon: process.env.EXPO_PUBLIC_APPLE_TV_ICON || "./assets/appleTV/icon_1280x768.png",
           iconSmall: process.env.EXPO_PUBLIC_APPLE_TV_ICON_SMALL || "./assets/appleTV/iconSmall_400x240.png",
@@ -76,5 +82,14 @@ export default {
       },
     ],
     "expo-asset",
+    [
+      "./plugins/withReleaseSigningConfig.js",
+      {
+        storeFile: process.env.EXPO_PUBLIC_ANDROID_RELEASE_SIGNING_STORE_FILE_NAME || "release-key.jks",
+        storePassword: process.env.EXPO_PUBLIC_ANDROID_RELEASE_SIGNING_STORE_FILE_PASSWORD,
+        keyAlias: process.env.EXPO_PUBLIC_ANDROID_RELEASE_SIGNING_KEY_ALIAS,
+        keyPassword: process.env.EXPO_PUBLIC_ANDROID_RELEASE_SIGNING_KEY_PASSWORD,
+      },
+    ],
   ],
 };

@@ -1,0 +1,223 @@
+name: Generate initial bundle(s) for manual upload to Google Play Console
+
+on:
+  workflow_call:
+    inputs:
+      isTV:
+        description: "Bundle for Android TV?"
+        type: boolean
+      owntube_source:
+        required: false
+        type: string
+        description: "The repository with OwnTube-tv/web-client code. Defaults to the source repository."
+      use_parent_repo_customizations:
+        required: false
+        type: boolean
+        description: "Should a parent repo be used for customizations? (Required for branded builds)"
+
+    secrets:
+      ANDROID_KEYSTORE_PASSWORD:
+        required: true
+        description: The password to your keystore used to sign the .aab file
+      ANDROID_SIGNING_KEY_ALIAS:
+        required: true
+        description: The alias for the signing key from the keystore
+      ANDROID_SIGNING_KEY_PASSWORD:
+        required: true
+        description: The password to the signing key from the keystore
+      ANDROID_RELEASE_KEYSTORE_CONTENT_BASE64:
+        required: true
+        description: Contents of the keystore file
+      ANDROID_SERVICE_ACCOUNT_JSON:
+        required: true
+        description: The JSON corresponding to the service account attached to Google Play console
+
+  workflow_dispatch:
+    inputs:
+      isTV:
+        description: "Bundle for Android TV?"
+        type: boolean
+      owntube_source:
+        required: false
+        type: string
+        description: "The repository with OwnTube-tv/web-client code. Defaults to the source repository."
+      use_parent_repo_customizations:
+        required: false
+        type: boolean
+        description: "Should a parent repo be used for customizations? (Required for branded builds)"
+
+jobs:
+  build_info:
+    runs-on: ubuntu-latest
+    outputs:
+      BUILD_INFO: ${{ steps.write.outputs.BUILD_INFO }}
+    steps:
+      - id: create
+        name: "@${{ github.actor }} initiated GitHub Pages deployment, prepare build info"
+        run: |
+          # Builder username on GitHub
+          echo "GITHUB_ACTOR=${{ github.actor }}" && echo "GITHUB_ACTOR=${{ github.actor }}" >> "$GITHUB_OUTPUT"
+
+          # Create short Git SHA equivalent to `$(git rev-parse --short HEAD)` e.g. "d1f5cfd"
+          GITHUB_SHA_SHORT="${GITHUB_SHA::7}"
+          echo "GITHUB_SHA_SHORT=$GITHUB_SHA_SHORT" && echo "GITHUB_SHA_SHORT=$GITHUB_SHA_SHORT" >> "$GITHUB_OUTPUT"
+
+          # Create commit URL, e.g. "https://github.com/OwnTube-tv/web-client/commit/d1f5cfd"
+          COMMIT_URL="https://github.com/${{ github.repository }}/commit/$GITHUB_SHA_SHORT"
+          echo "COMMIT_URL=$COMMIT_URL" && echo "COMMIT_URL=$COMMIT_URL" >> "$GITHUB_OUTPUT"
+
+          # Create ISO format build timestamp in UTC, e.g. "2024-02-19T13:12:52Z"
+          BUILD_TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+          echo "BUILD_TIMESTAMP=$BUILD_TIMESTAMP" && echo "BUILD_TIMESTAMP=$BUILD_TIMESTAMP" >> "$GITHUB_OUTPUT"
+
+          # Extract part after '/' in github.repository
+          REPO_NAME=$(echo "${{ github.repository }}" | awk -F/ '{print $2}')
+          echo "REPO_NAME=$REPO_NAME" && echo "REPO_NAME=$REPO_NAME" >> "$GITHUB_OUTPUT"
+
+          # Create web url
+          WEB_URL="https://${{ github.repository_owner }}.github.io/$REPO_NAME"
+          echo "WEB_URL=$WEB_URL" && echo "WEB_URL=$WEB_URL" >> "$GITHUB_OUTPUT"
+
+      - id: write
+        run: |
+          echo "BUILD_INFO<<EOF" >> $GITHUB_OUTPUT
+          echo "{
+            \"GITHUB_ACTOR\": \"${{ steps.create.outputs.GITHUB_ACTOR }}\",
+            \"GITHUB_SHA_SHORT\": \"${{ steps.create.outputs.GITHUB_SHA_SHORT }}\",
+            \"COMMIT_URL\": \"${{ steps.create.outputs.COMMIT_URL }}\",
+            \"BUILD_TIMESTAMP\": \"${{ steps.create.outputs.BUILD_TIMESTAMP }}\",
+            \"WEB_URL\": \"${{ steps.create.outputs.WEB_URL }}\"
+          }
+          " >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+  setup_external_customizations:
+    runs-on: ubuntu-latest
+    environment: owntube
+    outputs:
+      CUSTOMIZATIONS_ENV_CONTENT: ${{ steps.read_customization_file.outputs.CUSTOMIZATIONS_ENV_CONTENT }}
+    steps:
+      - name: Check for Customization Variables
+        id: check_customizations
+        run: |
+          if [[ -n "${{ vars.CLIENT_CUSTOMIZATIONS_REPO }}" && -n "${{ vars.CLIENT_CUSTOMIZATIONS_FILE }}" ]]; then
+            echo "should_run_customizations=true" >> $GITHUB_OUTPUT
+          else
+            echo "should_run_customizations=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Clone customizations repository
+        if: steps.check_customizations.outputs.should_run_customizations == 'true'
+        run: |
+          git clone "${{ vars.CLIENT_CUSTOMIZATIONS_REPO }}" customizations-repo
+
+      - name: Find and read the customization file
+        id: read_customization_file
+        if: steps.check_customizations.outputs.should_run_customizations == 'true'
+        run: |
+          CUSTOMIZATION_FILE_PATH="customizations-repo/${{ vars.CLIENT_CUSTOMIZATIONS_FILE }}"
+          if [[ -f "$CUSTOMIZATION_FILE_PATH" ]]; then
+            echo "$(cat "$CUSTOMIZATION_FILE_PATH")"
+            echo 'CUSTOMIZATIONS_ENV_CONTENT<<EOF' >> $GITHUB_OUTPUT
+            printf "%s\n" $(cat "$CUSTOMIZATION_FILE_PATH") >> $GITHUB_OUTPUT
+            echo 'EOF' >> $GITHUB_OUTPUT
+          else
+            exit 1
+          fi
+
+  setup_local_customizations:
+    runs-on: ubuntu-latest
+    environment: owntube
+    outputs:
+      CUSTOMIZATIONS_ENV_CONTENT: ${{ steps.read_customization_file.outputs.CUSTOMIZATIONS_ENV_CONTENT }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Read the customization env file
+        id: read_customization_file
+        run: |
+          echo "$(cat "./.customizations")"
+          echo 'CUSTOMIZATIONS_ENV_CONTENT<<EOF' >> $GITHUB_OUTPUT
+          printf "%s\n" $(cat "./.customizations") >> $GITHUB_OUTPUT
+          echo 'EOF' >> $GITHUB_OUTPUT
+
+  build_artifact:
+    runs-on: ubuntu-latest
+    environment: owntube
+    needs: [build_info, setup_external_customizations, setup_local_customizations]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ inputs.owntube_source || github.repository }}
+          ref: feature/google-play-setup
+
+      - name: Setup Node 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20.x
+
+      - name: Install Dependencies
+        run: cd OwnTube.tv/ && npm install
+
+      - name: Inject Build Info
+        run: |
+          cat > ./OwnTube.tv/build-info.json << 'EOF'
+          ${{ needs.build_info.outputs.BUILD_INFO }}
+          EOF
+
+      - name: Create .env File from external customizations repo
+        id: create_env_external
+        if: ${{ needs.setup_external_customizations.outputs.CUSTOMIZATIONS_ENV_CONTENT != '' }}
+        run: |
+          echo "BUNDLE_ID=$(echo "${{ needs.setup_external_customizations.outputs.CUSTOMIZATIONS_ENV_CONTENT }}" | grep '^EXPO_PUBLIC_IOS_BUNDLE_IDENTIFIER=' | cut -d'=' -f2)" >> $GITHUB_OUTPUT
+          echo "APP_NAME=$(echo "${{ needs.setup_external_customizations.outputs.CUSTOMIZATIONS_ENV_CONTENT }}" | grep '^EXPO_PUBLIC_APP_NAME=' | cut -d'=' -f2)" >> $GITHUB_OUTPUT
+          echo "${{ needs.setup_external_customizations.outputs.CUSTOMIZATIONS_ENV_CONTENT }}" > ./OwnTube.tv/.env
+
+      - name: Create .env File from local customizations in the repo
+        id: create_env_local
+        if: ${{ needs.setup_local_customizations.outputs.CUSTOMIZATIONS_ENV_CONTENT != '' }}
+        run: |
+          echo "BUNDLE_ID=$(echo "${{ needs.setup_local_customizations.outputs.CUSTOMIZATIONS_ENV_CONTENT }}" | grep '^EXPO_PUBLIC_IOS_BUNDLE_IDENTIFIER=' | cut -d'=' -f2)" >> $GITHUB_OUTPUT
+          echo "APP_NAME=$(echo "${{ needs.setup_local_customizations.outputs.CUSTOMIZATIONS_ENV_CONTENT }}" | grep '^EXPO_PUBLIC_APP_NAME=' | cut -d'=' -f2)" >> $GITHUB_OUTPUT
+          echo "${{ needs.setup_local_customizations.outputs.CUSTOMIZATIONS_ENV_CONTENT }}" > ./OwnTube.tv/.env
+
+      - name: Expo Prebuild assets
+        env:
+          EXPO_PUBLIC_ANDROID_RELEASE_SIGNING_STORE_FILE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          EXPO_PUBLIC_ANDROID_RELEASE_SIGNING_KEY_ALIAS: ${{ secrets.ANDROID_SIGNING_KEY_ALIAS }}
+          EXPO_PUBLIC_ANDROID_RELEASE_SIGNING_KEY_PASSWORD: ${{ secrets.ANDROID_SIGNING_KEY_PASSWORD }}
+        run: |
+          if [ "${{ inputs.isTV }}" == "true" ]; then
+            export EXPO_TV=1
+          fi
+          cd OwnTube.tv/ && npx expo prebuild --clean --platform android
+
+      - name: Set Up JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: "zulu"
+          java-version: "17"
+          cache: "gradle"
+
+      - name: Validate Gradle Wrapper
+        uses: gradle/actions/wrapper-validation@v3
+
+      - name: Add keystore file
+        run: |
+          echo "${{ secrets.ANDROID_RELEASE_KEYSTORE_CONTENT_BASE64 }}" | base64 --decode > ./OwnTube.tv/android/app/release-key.jks
+
+      - name: Build artifact
+        run: |
+          if [ "${{ inputs.isTV }}" == "true" ]; then
+            export EXPO_TV=1
+          fi
+          cd OwnTube.tv/android
+          ./gradlew clean bundleRelease
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: bundle${{ inputs.isTV == true && '-tv' || '' }}
+          path: "./OwnTube.tv/android/app/build/outputs/bundle/release/app-release.aab"

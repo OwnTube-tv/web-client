@@ -1,6 +1,6 @@
 const getBuildNumber = () => {
   const now = new Date();
-  return `${String(now.getUTCMonth() + 1).padStart(2, "0")}${String(now.getUTCDate()).padStart(2, "0")}${now.getUTCFullYear() % 100}${String(now.getUTCHours()).padStart(2, "0")}${String(now.getUTCMinutes()).padStart(2, "0")}`;
+  return `${now.getUTCFullYear() % 100}${String(now.getUTCMonth() + 1).padStart(2, "0")}${String(now.getUTCDate()).padStart(2, "0")}${String(now.getUTCHours()).padStart(2, "0")}${String(now.getUTCMinutes()).padStart(2, "0")}`;
 };
 
 export default {
@@ -29,7 +29,7 @@ export default {
     baseUrl: process.env.EXPO_PUBLIC_BASE_URL || "/web-client",
   },
   android: {
-    versionCode: getBuildNumber(),
+    versionCode: Math.floor(new Date().getTime() / 1000),
     adaptiveIcon: {
       foregroundImage:
         process.env.EXPO_PUBLIC_ANDROID_ADAPTIVE_ICON_FOREGROUND || "./assets/adaptive-icon-foreground.png",

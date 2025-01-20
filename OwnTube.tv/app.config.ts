@@ -29,6 +29,7 @@ export default {
     baseUrl: process.env.EXPO_PUBLIC_BASE_URL || "/web-client",
   },
   android: {
+    versionCode: getBuildNumber(),
     adaptiveIcon: {
       foregroundImage:
         process.env.EXPO_PUBLIC_ANDROID_ADAPTIVE_ICON_FOREGROUND || "./assets/adaptive-icon-foreground.png",
@@ -76,5 +77,14 @@ export default {
       },
     ],
     "expo-asset",
+    [
+      "./plugins/withReleaseSigningConfig.js",
+      {
+        storeFile: "release-key.jks",
+        storePassword: process.env.EXPO_PUBLIC_ANDROID_RELEASE_SIGNING_STORE_FILE_PASSWORD,
+        keyAlias: process.env.EXPO_PUBLIC_ANDROID_RELEASE_SIGNING_KEY_ALIAS,
+        keyPassword: process.env.EXPO_PUBLIC_ANDROID_RELEASE_SIGNING_KEY_PASSWORD,
+      },
+    ],
   ],
 };

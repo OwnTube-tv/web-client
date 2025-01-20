@@ -1,0 +1,127 @@
+name: Upload to Google Play
+
+on:
+  workflow_call:
+    inputs:
+      owntube_source:
+        required: false
+        type: string
+        description: "The repository with OwnTube-tv/web-client code. Defaults to the source repository."
+      use_parent_repo_customizations:
+        required: false
+        type: boolean
+        description: "Should a parent repo be used for customizations? (Required for branded builds)"
+      isTV:
+        required: true
+        type: boolean
+        description: Upload TV app version?
+      customizations_env_content:
+        required: false
+        type: string
+      build_info:
+        required: true
+        type: string
+      track:
+        required: true
+        type: string
+        description: The track to release this version on
+
+    secrets:
+      KEYSTORE_PASSWORD:
+        required: true
+        description: The password to your keystore used to sign the .aab file
+      SIGNING_KEY_ALIAS:
+        required: true
+        description: The alias for the signing key from the keystore
+      SIGNING_KEY_PASSWORD:
+        required: true
+        description: The password to the signing key from the keystore
+      RELEASE_KEYSTORE_CONTENT:
+        required: true
+        description: Contents of the keystore file
+      SERVICE_ACCOUNT_JSON:
+        required: true
+        description: The JSON corresponding to the service account attached to Google Play console
+
+jobs:
+  google_play:
+    runs-on: ubuntu-latest
+    environment: owntube
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ inputs.owntube_source || github.repository }}
+
+      - name: Checkout parent repo with customizations
+        uses: actions/checkout@v4
+        if: ${{ inputs.use_parent_repo_customizations }}
+        with:
+          path: customizations
+
+      - name: Setup Node 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20.x
+
+      - name: Install Dependencies
+        run: cd OwnTube.tv/ && npm install
+
+      - name: Create .env File
+        id: create_env
+        if: ${{ inputs.customizations_env_content != '' }}
+        run: |
+          echo "BUNDLE_ID=$(echo "${{ inputs.customizations_env_content }}" | grep '^EXPO_PUBLIC_IOS_BUNDLE_IDENTIFIER=' | cut -d'=' -f2)" >> $GITHUB_OUTPUT
+          echo "APP_NAME=$(echo "${{ inputs.customizations_env_content }}" | grep '^EXPO_PUBLIC_APP_NAME=' | cut -d'=' -f2)" >> $GITHUB_OUTPUT
+          echo "${{ inputs.customizations_env_content }}" > ./OwnTube.tv/.env
+
+      - name: Expo Prebuild assets
+        env:
+          EXPO_PUBLIC_ANDROID_RELEASE_SIGNING_STORE_FILE_PASSWORD: ${{secrets.KEYSTORE_PASSWORD}}
+          EXPO_PUBLIC_ANDROID_RELEASE_SIGNING_KEY_ALIAS: ${{secrets.SIGNING_KEY_ALIAS}}
+          EXPO_PUBLIC_ANDROID_RELEASE_SIGNING_KEY_PASSWORD: ${{secrets.SIGNING_KEY_PASSWORD}}
+        run: |
+          if [ "${{ inputs.isTV }}" == true ]; then
+            export EXPO_TV=1
+          fi
+          cd OwnTube.tv/ && npx expo prebuild --clean --platform android
+
+      - name: Set Up JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: "zulu"
+          java-version: "17"
+          cache: "gradle"
+
+      - name: Validate Gradle Wrapper
+        uses: gradle/actions/wrapper-validation@v3
+
+      - name: Inject Build Info
+        run: |
+          cat > ./OwnTube.tv/build-info.json << 'EOF'
+          ${{ inputs.build_info }}
+          EOF
+
+      - name: Add keystore file
+        run: |
+          cat > ./OwnTube.tv/android/app/release-key.jks << 'EOF'
+          ${{ secrets.RELEASE_KEYSTORE_CONTENT }}
+          EOF
+
+      - name: Build app artifact
+        run: |
+          if [ "${{ inputs.isTV }}" == true ]; then
+            export EXPO_TV=1
+          fi
+          cd OwnTube.tv/android
+          ./gradlew clean bundleRelease
+
+      - name: Upload app to Google Play beta
+        uses: r0adkll/upload-google-play@v1
+        with:
+          serviceAccountJsonPlainText: ${{ secrets.SERVICE_ACCOUNT_JSON }}
+          packageName: ${{ steps.create_env.outputs.BUNDLE_ID }}
+          releaseFiles: ./OwnTube.tv/android/app/build/outputs/bundle/release/app-release.aab
+          track: ${{ inputs.isTV == true && 'tv:' || '' }}${{ inputs.track }}
+          status: completed
+          inAppUpdatePriority: 1

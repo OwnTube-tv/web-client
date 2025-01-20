@@ -16,6 +16,15 @@ on:
         description: "Upload the tvOS build to Testflight"
         type: boolean
 
+      google_play_track:
+        description: "Upload the app to the following Google Play track:"
+        type: choice
+        options:
+          - qa
+          - alpha
+          - beta
+          - production
+
 # Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
 permissions:
   contents: read
@@ -158,6 +167,20 @@ jobs:
     with:
       customizations_env_content: ${{ needs.customizations_setup.outputs.CUSTOMIZATIONS_ENV_CONTENT }}
       build_info: ${{ needs.build_info.outputs.BUILD_INFO }}
+
+  google_play_phone:
+    needs: [code_quality, build_info, customizations_setup]
+    uses: ./.github/workflows/google_play.yml
+    secrets:
+      KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+      SIGNING_KEY_ALIAS: ${{ secrets.ANDROID_SIGNING_KEY_ALIAS }}
+      SIGNING_KEY_PASSWORD: ${{ secrets.ANDROID_SIGNING_KEY_PASSWORD }}
+      RELEASE_KEYSTORE_CONTENT: ${{ secrets.ANDROID_RELEASE_KEYSTORE_CONTENT }}
+      SERVICE_ACCOUNT_JSON: ${{ secrets.ANDROID_SERVICE_ACCOUNT_JSON }}
+    with:
+      customizations_env_content: ${{ needs.customizations_setup.outputs.CUSTOMIZATIONS_ENV_CONTENT }}
+      build_info: ${{ needs.build_info.outputs.BUILD_INFO }}
+      track: ${{ github.event.inputs.google_play_track }}
 
   testflight_ios:
     if: ${{ github.event.inputs.upload_ios_to_testflight == 'true' }}

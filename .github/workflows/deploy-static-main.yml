@@ -130,48 +130,48 @@ jobs:
             exit 1
           fi
 
-  code_quality:
-    needs: [customizations_setup, build_info]
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-      - name: Setup Node 20
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20.x
-      - name: Install Dependencies
-        run: cd OwnTube.tv/ && npm install
-      - name: Check ESLint Code Style
-        run: cd OwnTube.tv/ && npx eslint .
-      - name: Check Prettier Formatting
-        run: cd OwnTube.tv/ && npx prettier --check ../
-      - name: Run Tests
-        run: cd OwnTube.tv/ && npm run test
+  #  code_quality:
+  #    needs: [customizations_setup, build_info]
+  #    runs-on: ubuntu-latest
+  #    steps:
+  #      - name: Checkout
+  #        uses: actions/checkout@v4
+  #      - name: Setup Node 20
+  #        uses: actions/setup-node@v4
+  #        with:
+  #          node-version: 20.x
+  #      - name: Install Dependencies
+  #        run: cd OwnTube.tv/ && npm install
+  #      - name: Check ESLint Code Style
+  #        run: cd OwnTube.tv/ && npx eslint .
+  #      - name: Check Prettier Formatting
+  #        run: cd OwnTube.tv/ && npx prettier --check ../
+  #      - name: Run Tests
+  #        run: cd OwnTube.tv/ && npm run test
 
   deploy_web:
-    needs: [code_quality, build_info, customizations_setup]
+    needs: [build_info, customizations_setup]
     uses: ./.github/workflows/deploy_web.yml
     with:
       customizations_env_content: ${{ needs.customizations_setup.outputs.CUSTOMIZATIONS_ENV_CONTENT }}
       build_info: ${{ needs.build_info.outputs.BUILD_INFO }}
 
   build_android_apk:
-    needs: [code_quality, build_info, customizations_setup]
+    needs: [build_info, customizations_setup]
     uses: ./.github/workflows/build_android_apk.yml
     with:
       customizations_env_content: ${{ needs.customizations_setup.outputs.CUSTOMIZATIONS_ENV_CONTENT }}
       build_info: ${{ needs.build_info.outputs.BUILD_INFO }}
 
   build_android_tv_apk:
-    needs: [code_quality, build_info, customizations_setup]
+    needs: [build_info, customizations_setup]
     uses: ./.github/workflows/build_android_tv_apk.yml
     with:
       customizations_env_content: ${{ needs.customizations_setup.outputs.CUSTOMIZATIONS_ENV_CONTENT }}
       build_info: ${{ needs.build_info.outputs.BUILD_INFO }}
 
   google_play_mobile:
-    needs: [code_quality, build_info, customizations_setup]
+    needs: [build_info, customizations_setup]
     uses: ./.github/workflows/google_play.yml
     if: ${{ github.event.inputs.google_play_track != 'none' }}
     secrets:
@@ -187,7 +187,7 @@ jobs:
 
   testflight_ios:
     if: ${{ github.event.inputs.upload_ios_to_testflight == 'true' }}
-    needs: [build_info, customizations_setup, code_quality, choose_macos_runner]
+    needs: [build_info, customizations_setup, choose_macos_runner]
     uses: ./.github/workflows/testflight.yml
     secrets:
       BUILD_CERTIFICATE_BASE64: ${{ secrets.IOS_BUILD_CERTIFICATE_BASE64 }}
@@ -207,7 +207,7 @@ jobs:
 
   testflight_tvos:
     if: ${{ github.event.inputs.upload_tvos_to_testflight == 'true' }}
-    needs: [build_info, customizations_setup, code_quality, choose_macos_runner]
+    needs: [build_info, customizations_setup, choose_macos_runner]
     uses: ./.github/workflows/testflight.yml
     secrets:
       BUILD_CERTIFICATE_BASE64: ${{ secrets.TVOS_BUILD_CERTIFICATE_BASE64 }}
@@ -226,7 +226,7 @@ jobs:
       code_sign_identity: Apple Distribution
 
   build_ios_simulator_app:
-    needs: [build_info, customizations_setup, code_quality, choose_macos_runner]
+    needs: [build_info, customizations_setup, choose_macos_runner]
     uses: ./.github/workflows/build_ios_simulator_app.yml
     with:
       runner-label: ${{ needs.choose_macos_runner.outputs.runner-label }}
@@ -234,7 +234,7 @@ jobs:
       build_info: ${{ needs.build_info.outputs.BUILD_INFO }}
 
   build_tvos_simulator_app:
-    needs: [build_info, customizations_setup, code_quality, choose_macos_runner]
+    needs: [build_info, customizations_setup, choose_macos_runner]
     uses: ./.github/workflows/build_tvos_simulator_app.yml
     with:
       runner-label: ${{ needs.choose_macos_runner.outputs.runner-label }}

@@ -12,7 +12,7 @@ on:
         type: boolean
         description: "Should a parent repo be used for customizations? (Required for branded builds)"
       isTV:
-        required: true
+        required: false
         type: boolean
         description: Upload TV app version?
       customizations_env_content:

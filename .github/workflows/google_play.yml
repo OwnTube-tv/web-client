@@ -121,5 +121,5 @@ jobs:
           packageName: ${{ steps.create_env.outputs.BUNDLE_ID }}
           releaseFiles: ./OwnTube.tv/android/app/build/outputs/bundle/release/app-release.aab
           track: ${{ inputs.isTV == true && 'tv:' || '' }}${{ inputs.track }}
-          status: completed
+          status: draft
           inAppUpdatePriority: 1

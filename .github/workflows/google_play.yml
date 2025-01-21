@@ -36,7 +36,7 @@ on:
       SIGNING_KEY_PASSWORD:
         required: true
         description: The password to the signing key from the keystore
-      RELEASE_KEYSTORE_CONTENT:
+      RELEASE_KEYSTORE_CONTENT_BASE64:
         required: true
         description: Contents of the keystore file
       SERVICE_ACCOUNT_JSON:
@@ -104,9 +104,7 @@ jobs:
 
       - name: Add keystore file
         run: |
-          cat > ./OwnTube.tv/android/app/release-key.jks << 'EOF'
-          ${{ secrets.RELEASE_KEYSTORE_CONTENT }}
-          EOF
+          echo "${{ secrets.RELEASE_KEYSTORE_CONTENT_BASE64 }}" | base64 --decode > ./OwnTube.tv/android/app/release-key.jks
 
       - name: Build app artifact
         run: |

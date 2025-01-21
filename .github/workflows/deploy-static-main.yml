@@ -22,7 +22,7 @@ on:
         required: false
         options:
           - none
-          - qa
+          - internal
           - alpha
           - beta
           - production

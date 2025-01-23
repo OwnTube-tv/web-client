@@ -1,3 +1,5 @@
+name: Generate initial bundles for manual upload to Google Play Console
+
 on:
   workflow_dispatch:
     inputs:

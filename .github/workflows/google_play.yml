@@ -81,7 +81,7 @@ jobs:
           EXPO_PUBLIC_ANDROID_RELEASE_SIGNING_KEY_ALIAS: ${{secrets.SIGNING_KEY_ALIAS}}
           EXPO_PUBLIC_ANDROID_RELEASE_SIGNING_KEY_PASSWORD: ${{secrets.SIGNING_KEY_PASSWORD}}
         run: |
-          if [ "${{ inputs.isTV }}" == true ]; then
+          if [ "${{ inputs.isTV }}" == "true" ]; then
             export EXPO_TV=1
           fi
           cd OwnTube.tv/ && npx expo prebuild --clean --platform android
@@ -108,7 +108,7 @@ jobs:
 
       - name: Build app artifact
         run: |
-          if [ "${{ inputs.isTV }}" == true ]; then
+          if [ "${{ inputs.isTV }}" == "true" ]; then
             export EXPO_TV=1
           fi
           cd OwnTube.tv/android

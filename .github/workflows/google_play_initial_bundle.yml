@@ -1,6 +1,7 @@
 name: Generate initial bundles for manual upload to Google Play Console
 
 on:
+  pull_request:
   workflow_dispatch:
     inputs:
       isTV:

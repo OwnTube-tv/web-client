@@ -1,6 +1,7 @@
 name: Generate initial bundles for manual upload to Google Play Console
 
 on:
+  pull_request:
   workflow_dispatch:
     inputs:
       isTV:
@@ -174,7 +175,7 @@ jobs:
 
       - name: Add keystore file
         run: |
-          echo "${{ secrets.RELEASE_KEYSTORE_CONTENT_BASE64 }}" | base64 --decode > ./OwnTube.tv/android/app/release-key.jks
+          echo "${{ secrets.ANDROID_RELEASE_KEYSTORE_CONTENT_BASE64 }}" | base64 --decode > ./OwnTube.tv/android/app/release-key.jks
 
       - name: Build app artifact
         run: |

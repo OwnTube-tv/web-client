@@ -53,7 +53,7 @@ export default {
       "@react-native-tvos/config-tv",
       {
         androidTVRequired: Boolean(process.env.EXPO_TV),
-        androidTVBanner: process.env.EXPO_PUBLIC_ANDROID_TV_BANNER || "./assets/android-tv-banner.png",
+        // androidTVBanner: process.env.EXPO_PUBLIC_ANDROID_TV_BANNER || "./assets/android-tv-banner.png",
         // androidTVIcon: process.env.EXPO_PUBLIC_ICON || "./assets/icon.png",
         appleTVImages: {
           icon: process.env.EXPO_PUBLIC_APPLE_TV_ICON || "./assets/appleTV/icon_1280x768.png",

@@ -47,6 +47,11 @@ jobs:
           echo "${{ inputs.customizations_env_content }}" > ./OwnTube.tv/.env
 
       - name: Expo Prebuild Android Assets
+        env:
+          EXPO_PUBLIC_ANDROID_RELEASE_SIGNING_STORE_FILE_NAME: "debug.keystore"
+          EXPO_PUBLIC_ANDROID_RELEASE_SIGNING_STORE_FILE_PASSWORD: "android"
+          EXPO_PUBLIC_ANDROID_RELEASE_SIGNING_KEY_ALIAS: "androiddebugkey"
+          EXPO_PUBLIC_ANDROID_RELEASE_SIGNING_KEY_PASSWORD: "android"
         run: cd OwnTube.tv/ && npx expo prebuild --clean --platform android
 
       - name: Set Up JDK

@@ -151,7 +151,12 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: ${{ inputs.owntube_source || github.repository }}
-          ref: feature/google-play-setup
+
+      - name: Checkout parent repo with customizations
+        uses: actions/checkout@v4
+        if: ${{ inputs.use_parent_repo_customizations }}
+        with:
+          path: customizations
 
       - name: Setup Node 20
         uses: actions/setup-node@v4

@@ -209,10 +209,12 @@ jobs:
           APPLE_API_KEY: ${{ secrets.APPLE_API_KEY }}
           APPLE_API_KEY_ISSUER: ${{ secrets.APPLE_API_KEY_ISSUER }}
         run: |
-          cd OwnTube.tv/ios && \
+          IPA_NAME="${{ steps.create_env.outputs.APP_NAME }}"
+          IPA_NAME="${IPA_NAME// /}"
+          cd OwnTube.tv/ios
           xcrun altool --upload-app \
           --type ${{ inputs.target }} \
-          --file build/OwnTube/${{ steps.create_env.outputs.APP_NAME || 'OwnTube' }}.ipa \
+          --file build/OwnTube/$IPA_NAME.ipa \
           --apiKey "$APPLE_API_KEY" \
           --apiIssuer "$APPLE_API_KEY_ISSUER"
 

@@ -72,7 +72,6 @@ jobs:
         if: ${{ inputs.customizations_env_content != '' }}
         run: |
           echo "BUNDLE_ID=$(echo "${{ inputs.customizations_env_content }}" | grep '^EXPO_PUBLIC_IOS_BUNDLE_IDENTIFIER=' | cut -d'=' -f2)" >> $GITHUB_OUTPUT
-          echo "APP_NAME=$(echo "${{ inputs.customizations_env_content }}" | grep '^EXPO_PUBLIC_APP_NAME=' | cut -d'=' -f2)" >> $GITHUB_OUTPUT
           echo "${{ inputs.customizations_env_content }}" > ./OwnTube.tv/.env
 
       - name: Expo Prebuild assets

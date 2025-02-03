@@ -128,7 +128,7 @@ jobs:
           if [[ -f "$CUSTOMIZATION_FILE_PATH" ]]; then
             echo "$(cat "$CUSTOMIZATION_FILE_PATH")"
             echo 'CUSTOMIZATIONS_ENV_CONTENT<<EOF' >> $GITHUB_OUTPUT
-            printf "%s\n" $(cat "$CUSTOMIZATION_FILE_PATH") >> $GITHUB_OUTPUT
+            cat "$CUSTOMIZATION_FILE_PATH" >> $GITHUB_OUTPUT
             echo 'EOF' >> $GITHUB_OUTPUT
           else
             exit 1

@@ -1,9 +1,9 @@
-const getBuildNumber = () => {
+const getBuildNumber = ({ platform }: { platform: "ios" | "android" }) => {
   const now = new Date();
-  return `${now.getUTCFullYear() % 100}${String(now.getUTCMonth() + 1).padStart(2, "0")}${String(now.getUTCDate()).padStart(2, "0")}${String(now.getUTCHours()).padStart(2, "0")}${String(now.getUTCMinutes() + 20 * Number(!!process.env.EXPO_TV)).padStart(2, "0")}`.slice(
-    0,
-    -1,
-  );
+  const isAndroid = platform === "android";
+
+  const buildNumber = `${now.getUTCFullYear() % 100}${String(now.getUTCMonth() + 1).padStart(2, "0")}${String(now.getUTCDate()).padStart(2, "0")}${String(now.getUTCHours()).padStart(2, "0")}${String(now.getUTCMinutes() + 20 * Number(!!process.env.EXPO_TV) * Number(isAndroid)).padStart(2, "0")}`;
+  return isAndroid ? buildNumber.slice(0, -1) : buildNumber;
 };
 
 export default {
@@ -24,7 +24,7 @@ export default {
     infoPlist: {
       ITSAppUsesNonExemptEncryption: false,
     },
-    buildNumber: getBuildNumber(),
+    buildNumber: getBuildNumber({ platform: "ios" }),
     supportsTablet: true,
     bundleIdentifier: process.env.EXPO_PUBLIC_IOS_BUNDLE_IDENTIFIER || "com.owntubetv.owntube",
   },
@@ -33,7 +33,7 @@ export default {
   },
   android: {
     blockedPermissions: ["RECORD_AUDIO"],
-    versionCode: getBuildNumber(),
+    versionCode: getBuildNumber({ platform: "android" }),
     adaptiveIcon: {
       foregroundImage:
         process.env.EXPO_PUBLIC_ANDROID_ADAPTIVE_ICON_FOREGROUND || "./assets/adaptive-icon-foreground.png",

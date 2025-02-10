@@ -25,8 +25,8 @@ export interface VideoControlsOverlayProps {
   onOverlayPress?: () => void;
   isPlaying?: boolean;
   handlePlayPause: () => void;
-  handleRW: (s: number) => Promise<void>;
-  handleFF: (s: number) => Promise<void>;
+  handleRW: (s: number) => void;
+  handleFF: (s: number) => void;
   duration?: number;
   availableDuration?: number;
   position?: number;
@@ -44,7 +44,7 @@ export interface VideoControlsOverlayProps {
   handleOpenDetails: () => void;
   handleShare: () => void;
   handleOpenSettings: () => void;
-  videoLinkProps: { url: string; backend: string };
+  videoLinkProps: { url?: string; backend: string };
   handleHideOverlay?: () => void;
 }
 
@@ -179,7 +179,7 @@ const VideoControlsOverlay = ({
               colors={isMobile ? ["#00000000", "#00000000", "#00000000"] : ["#00000000", "#0000004D", "#000000AB"]}
               style={[styles.bottomControlsContainer, ...(isMobile ? [{}] : [{ height: 360 }])]}
             >
-              {!hideVideoSiteLink && (
+              {!hideVideoSiteLink && !!videoLinkProps?.url && (
                 <View style={styles.videoLinkContainer}>
                   <ViewOnSiteLink site={videoLinkProps?.backend} url={videoLinkProps?.url} />
                 </View>
@@ -219,7 +219,7 @@ const VideoControlsOverlay = ({
                     style={[styles.timingContainer, { paddingLeft: isMobile ? spacing.sm : null }]}
                     color={colors.white94}
                   >
-                    {`${getHumanReadableDuration(position)} / ${getHumanReadableDuration(duration)}`}
+                    {`${getHumanReadableDuration(position * 1000)} / ${getHumanReadableDuration(duration * 1000)}`}
                   </Typography>
                 </View>
                 <PlayerButton onPress={toggleFullscreen} icon={`Fullscreen${isFullscreen ? "-Exit" : ""}`} />

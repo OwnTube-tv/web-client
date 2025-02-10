@@ -21,12 +21,14 @@ import Toast from "react-native-toast-message";
 import { OwnTubeError } from "../../api/models";
 import { ROUTES } from "../../types";
 import Constants from "expo-constants";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export const LandingScreen = () => {
   const { colors } = useTheme();
   const { t } = useTranslation();
   const { isDesktop } = useBreakpoints();
   const { featuredInstances } = useAppConfigContext();
+  const insets = useSafeAreaInsets();
   const { data } = useGetInstancesQuery();
   const router = useRouter();
   const availableInstances = useMemo(() => {
@@ -89,7 +91,7 @@ export const LandingScreen = () => {
     <Screen
       style={{
         ...styles.screenContainer,
-        paddingTop: isDesktop ? spacing.xxxl : spacing.xxl,
+        paddingTop: isDesktop ? spacing.xxxl : insets.top,
       }}
     >
       <View style={[styles.container, { maxWidth: isDesktop ? "38%" : "95%" }]}>

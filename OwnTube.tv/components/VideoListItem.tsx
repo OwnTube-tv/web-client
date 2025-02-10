@@ -1,5 +1,5 @@
 import { VideoThumbnail } from "./VideoThumbnail";
-import { Platform, Pressable, StyleSheet, View } from "react-native";
+import { Pressable, StyleSheet, View } from "react-native";
 import { Typography } from "./Typography";
 import { format, formatDistanceToNow } from "date-fns";
 import { useBreakpoints, useHoverState, ViewHistoryEntry } from "../hooks";
@@ -51,22 +51,15 @@ export const VideoListItem = forwardRef<View, VideoListItemProps>(
     }, [isDesktop]);
 
     const focusGuideDimensions = useMemo(() => {
-      if (Platform.isTV && Platform.OS === "android") {
-        return { width: (imageDimensions.height / 9) * 16, height: imageDimensions.height };
-      }
-
-      return { width: containerWidth + 2, height: (containerWidth / 16) * 9 + 1 };
+      return {
+        width: containerWidth,
+        height: (containerWidth / 16) * 9,
+      };
     }, [containerWidth, imageDimensions]);
 
     return (
       <View style={[styles.container, { gap: isDesktop ? spacing.xl : spacing.md }]}>
-        <Link
-          onLayout={(e) => {
-            setContainerWidth(e.nativeEvent.layout.width);
-          }}
-          href={videoHref}
-          style={styles.thumbLinkWrapper}
-        >
+        <Link href={videoHref} style={styles.thumbLinkWrapper} asChild>
           <Pressable
             ref={ref}
             onFocus={() => setFocused(true)}
@@ -77,6 +70,9 @@ export const VideoListItem = forwardRef<View, VideoListItemProps>(
               borderRadius: 10,
             }}
             onPress={() => router.navigate(videoHref)}
+            onLayout={(e) => {
+              setContainerWidth(e.nativeEvent.layout.width);
+            }}
           >
             {focused && <FocusGuide height={focusGuideDimensions.height} width={focusGuideDimensions.width} />}
             <VideoThumbnail

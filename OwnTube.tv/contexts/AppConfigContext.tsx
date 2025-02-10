@@ -19,7 +19,6 @@ interface IAppConfigContext {
   isDebugMode: boolean;
   setIsDebugMode: Dispatch<SetStateAction<boolean>>;
   deviceCapabilities: DeviceCapabilities;
-  setPlayerImplementation: Dispatch<SetStateAction<string>>;
   featuredInstances?: InstanceConfig[];
   primaryBackend?: string;
 }
@@ -28,13 +27,12 @@ const AppConfigContext = createContext<IAppConfigContext>({
   isDebugMode: false,
   setIsDebugMode: () => {},
   deviceCapabilities: {} as DeviceCapabilities,
-  setPlayerImplementation: () => {},
 });
 
 export const AppConfigContextProvider = ({ children }: PropsWithChildren) => {
   const { t } = useTranslation();
   const [isDebugMode, setIsDebugMode] = useState(false);
-  const { deviceCapabilities, setPlayerImplementation } = useDeviceCapabilities();
+  const { deviceCapabilities } = useDeviceCapabilities();
   const { featuredInstances } = useFeaturedInstancesData();
   const { isConnected } = useNetInfo();
   const lastRecordedConnectionState = useRef<boolean | undefined | null>();
@@ -59,7 +57,6 @@ export const AppConfigContextProvider = ({ children }: PropsWithChildren) => {
         isDebugMode,
         setIsDebugMode,
         deviceCapabilities,
-        setPlayerImplementation,
         featuredInstances,
         primaryBackend,
       }}

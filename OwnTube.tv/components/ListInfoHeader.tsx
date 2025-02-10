@@ -1,5 +1,5 @@
 import { View, Image, StyleSheet } from "react-native";
-import { Typography } from "./index";
+import { Typography } from "./Typography";
 import { useTheme } from "@react-navigation/native";
 import { borderRadius, spacing } from "../theme";
 import { useBreakpoints } from "../hooks";
@@ -54,7 +54,7 @@ export const ListInfoHeader = ({ avatarUrl, name, description, variant = "channe
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, flexDirection: "row", paddingVertical: spacing.xl, width: "100%" },
+  container: { alignSelf: "flex-start", flexDirection: "row", paddingVertical: spacing.xl, width: "100%" },
   descriptionContainer: { flexShrink: 1, flexWrap: "wrap" },
   textContainer: { flex: 1, gap: spacing.md },
 });

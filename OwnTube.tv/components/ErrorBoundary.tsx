@@ -25,7 +25,7 @@ export class ErrorBoundary extends Component<
     if (this.state.hasError) {
       return (
         <ErrorPage
-          title={`An error occured${this.state.error?.message ? ": " + this.state.error.message : ""}`}
+          title={`An error occured${(this.state.error as { message: string })?.message ? ": " + (this.state.error as { message: string }).message : ""}`}
           description={this.state.info?.componentStack || ""}
           logo={<ErrorUnavailableLogo />}
           button={{ text: "Reload", action: () => Expo.reloadAppAsync("crash") }}

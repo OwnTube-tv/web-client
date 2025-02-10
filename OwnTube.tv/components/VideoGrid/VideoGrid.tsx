@@ -28,7 +28,7 @@ export interface VideoGridProps {
   icon?: string;
   link?: {
     text: string;
-    href: LinkProps<ROUTES>["href"];
+    href?: LinkProps["href"];
   };
   handleShowMore?: () => void;
   channelLogoUri?: string;

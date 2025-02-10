@@ -1,5 +1,5 @@
 import { forwardRef, useImperativeHandle, useMemo, useRef, useState } from "react";
-import { Platform, StyleSheet, View } from "react-native";
+import { Platform, StyleSheet, View, ViewStyle } from "react-native";
 import { spacing } from "../../theme";
 import { VideoGridCardLoader } from "../loaders";
 import { VideoGridCard } from "../VideoGridCard";
@@ -55,9 +55,9 @@ export const VideoGridContent = forwardRef<VideoGridContentHandle, VideoGridCont
           ? [...Array(4)].map((_, index) => (
               <View
                 key={index}
-                style={Platform.select({
+                style={Platform.select<ViewStyle>({
                   web: styles.loaderGridItemWeb,
-                  default: { ...styles.loaderGridItemNonWeb, width: columnWidth },
+                  native: { ...styles.loaderGridItemNonWeb, width: columnWidth },
                 })}
               >
                 <VideoGridCardLoader />
@@ -68,7 +68,7 @@ export const VideoGridContent = forwardRef<VideoGridContentHandle, VideoGridCont
               return (
                 <View
                   key={video.uuid}
-                  style={Platform.select({
+                  style={Platform.select<ViewStyle>({
                     web: styles.gridItemWeb,
                     default: { ...styles.gridItemNonWeb, width: columnWidth },
                   })}
@@ -94,7 +94,7 @@ const styles = StyleSheet.create({
     alignSelf: "flex-start",
     height: "auto",
   },
-  gridItemWeb: { flex: 1 },
+  gridItemWeb: { flex: 1, width: "auto" },
   loaderGridItemNonWeb: {
     aspectRatio: 1.145,
     flexDirection: "row",

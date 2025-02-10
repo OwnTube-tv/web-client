@@ -1,5 +1,4 @@
-import { VideoChannelSummary } from "@peertube/peertube-types";
-import { Video } from "@peertube/peertube-types/peertube-models/videos/video.model";
+import { VideoChannelSummary, Video } from "@peertube/peertube-types";
 
 export interface Channel {
   id: number;

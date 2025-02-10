@@ -9,3 +9,4 @@ export * from "./useBreakpoints";
 export * from "./useFeaturedInstancesData";
 export * from "./useInstanceConfig";
 export * from "./useLeaveInstancePermission";
+export * from "./useShareButton";

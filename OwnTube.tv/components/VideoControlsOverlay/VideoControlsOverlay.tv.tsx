@@ -22,20 +22,22 @@ import { VideoControlsOverlayProps } from "./VideoControlsOverlay";
 import { useVideoControlsOverlay } from "./hooks/useVideoControlsOverlay";
 import { useFocusEffect } from "expo-router";
 
-const AndroidFocusHelperContainer = forwardRef<View, PropsWithChildren<{ isVisible: boolean }>>(({ children }, ref) => {
-  return Platform.select({
-    android: (
-      <Pressable style={styles.overlay} ref={ref}>
-        {children}
-      </Pressable>
-    ),
-    default: (
-      <View style={styles.overlay} ref={ref}>
-        {children}
-      </View>
-    ),
-  });
-});
+const AndroidFocusHelperContainer = forwardRef<View, PropsWithChildren<{ isVisible: boolean; onPress: () => void }>>(
+  ({ isVisible, onPress, children }, ref) => {
+    return Platform.select({
+      android: (
+        <Pressable hasTVPreferredFocus style={styles.overlay} ref={ref}>
+          {children}
+        </Pressable>
+      ),
+      default: (
+        <Pressable isTVSelectable={!isVisible} onPress={onPress} style={styles.overlay} ref={ref}>
+          {children}
+        </Pressable>
+      ),
+    });
+  },
+);
 
 AndroidFocusHelperContainer.displayName = "AndroidFocusHelperContainer";
 
@@ -90,9 +92,7 @@ const VideoControlsOverlay = ({
   const { height } = useWindowDimensions();
 
   useEffect(() => {
-    if (Platform.OS === "android") {
-      containerRef.current?.requestTVFocus();
-    }
+    containerRef.current?.requestTVFocus();
   }, []);
 
   useEffect(() => {
@@ -123,7 +123,7 @@ const VideoControlsOverlay = ({
     }, [handleBackButton]),
   );
 
-  useTVEventHandler((event) => {
+  useTVEventHandler(async (event) => {
     if (!["blur", "focus", "menu"].includes(event.eventType)) {
       onOverlayPress?.();
     }
@@ -166,15 +166,15 @@ const VideoControlsOverlay = ({
     let isActive = true;
     let seekTime = 10;
 
-    const scrubWithLongPress = async () => {
+    const scrubWithLongPress = () => {
       if (!isActive || !longPressScrubMode || !isSeekBarFocused) return;
 
       onOverlayPress?.();
 
       const scrubFn = longPressScrubMode === "FF" ? handleFF : handleRW;
-      await scrubFn(seekTime);
+      scrubFn(seekTime);
 
-      seekTime *= 1.7;
+      seekTime *= 1.1;
 
       setTimeout(scrubWithLongPress, 300);
     };
@@ -190,7 +190,7 @@ const VideoControlsOverlay = ({
   }, [longPressScrubMode]);
 
   return (
-    <AndroidFocusHelperContainer isVisible={isVisible} ref={containerRef}>
+    <AndroidFocusHelperContainer onPress={onOverlayPress} isVisible={isVisible} ref={containerRef}>
       <View style={styles.videoContainer}>{children}</View>
       {isVisible && (
         <View style={[styles.contentContainer, { height }]}>
@@ -320,7 +320,7 @@ const VideoControlsOverlay = ({
                     style={styles.timingContainer}
                     color={colors.white94}
                   >
-                    {`${getHumanReadableDuration(position)} / ${getHumanReadableDuration(duration)}`}
+                    {`${getHumanReadableDuration(position * 1000)} / ${getHumanReadableDuration(duration * 1000)}`}
                   </Typography>
                 </View>
                 <View />

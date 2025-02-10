@@ -1,5 +1,4 @@
-import { VideoChannel, VideoPlaylist, VideosCommonQuery } from "@peertube/peertube-types";
-import { Video } from "@peertube/peertube-types/peertube-models/videos/video.model";
+import { VideoChannel, VideoPlaylist, VideosCommonQuery, Video } from "@peertube/peertube-types";
 import { GetVideosVideo } from "./models";
 import { AxiosInstanceBasedApi } from "./axiosInstance";
 import { commonQueryParams } from "./constants";

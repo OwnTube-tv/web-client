@@ -1,5 +1,5 @@
-import { useFocusEffect, useRouter } from "expo-router";
-import { ROUTES, STORAGE } from "../../types";
+import { useFocusEffect, useNavigation } from "expo-router";
+import { STORAGE } from "../../types";
 import { readFromAsyncStorage } from "../../utils";
 import { Loader } from "../../components";
 import { useCallback, useState } from "react";
@@ -8,15 +8,16 @@ import { LandingScreen } from "../../screens";
 import { Platform, TVEventControl } from "react-native";
 import Constants from "expo-constants";
 import { useAppConfigContext } from "../../contexts";
+import { NavigationProp } from "@react-navigation/native";
 
 export default function index() {
-  const router = useRouter();
+  const navigation = useNavigation<NavigationProp<{ "(home)/home": { backend: string } }>>();
   const [isGettingStoredBackend, setIsGettingStoredBackend] = useState(true);
   const { primaryBackend } = useAppConfigContext();
 
   const getSourceAndRedirect = async () => {
     if (primaryBackend) {
-      router.push({ pathname: `/${ROUTES.HOME}`, params: { backend: primaryBackend } });
+      navigation.reset({ routes: [{ name: "(home)/home", params: { backend: primaryBackend } }] });
       return;
     }
 
@@ -24,7 +25,7 @@ export default function index() {
     setIsGettingStoredBackend(false);
 
     if (source) {
-      router.push({ pathname: `/${ROUTES.HOME}`, params: { backend: source } });
+      navigation.reset({ routes: [{ name: "(home)/home", params: { backend: source } }] });
     }
   };
 

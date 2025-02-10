@@ -86,7 +86,6 @@ export const FullScreenSearchBox: FC<FullScreenSearchBoxProps> = ({
           onPress={handleClose}
           icon="Close"
           style={componentStyles.closeBtn}
-          // @ts-expect-error ref typings broken in react-native-tvos
           nextFocusLeft={inputRef?.current}
         />
       </View>
@@ -103,7 +102,6 @@ export const FullScreenSearchBox: FC<FullScreenSearchBoxProps> = ({
               })
             }
             onKeyPress={(key: string) => setInputValue((prev) => prev + key)}
-            // @ts-expect-error ref typings broken in react-native-tvos
             nextFocusUp={closeButtonRef}
           />
         </View>

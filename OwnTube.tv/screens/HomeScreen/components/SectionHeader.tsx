@@ -23,9 +23,9 @@ export const SectionHeader = ({ title, link }: SectionHeaderProps) => {
         {
           paddingTop: isMobile ? spacing.sm : spacing.xl,
           backgroundColor: colors.background,
-          marginLeft: (!isMobile ? spacing.xl : 0) - 24,
-          paddingLeft: (isMobile ? 10 : 0) + 24,
-          paddingRight: (isMobile ? spacing.sm : 50) - 24,
+          marginLeft: (!isMobile ? spacing.xl : 0) - Number(Platform.isTV) * 24,
+          paddingLeft: (isMobile ? 10 : 0) + Number(Platform.isTV) * 24,
+          paddingRight: (isMobile ? spacing.sm : 50) - Number(Platform.isTV) * 24,
         },
         styles.container,
       ]}
@@ -55,8 +55,10 @@ const styles = StyleSheet.create({
   container: {
     alignItems: "center",
     flexDirection: "row",
+    flexWrap: "wrap",
     justifyContent: "space-between",
     paddingBottom: spacing.sm,
+    rowGap: spacing.md,
     width: "100%",
   },
   text: { lineHeight: 36 },

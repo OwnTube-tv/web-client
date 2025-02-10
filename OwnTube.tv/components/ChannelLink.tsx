@@ -5,10 +5,9 @@ import { useTheme } from "@react-navigation/native";
 import { useHoverState } from "../hooks";
 import { Pressable } from "react-native";
 import { LinkProps } from "expo-router/build/link/Link";
-import { ROUTES } from "../types";
 
 interface ChannelLinkProps {
-  href: LinkProps<ROUTES>["href"];
+  href: LinkProps["href"];
   text: string;
   enableOnTV?: boolean;
 }

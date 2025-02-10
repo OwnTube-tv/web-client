@@ -128,7 +128,7 @@ jobs:
           if [[ -f "$CUSTOMIZATION_FILE_PATH" ]]; then
             echo "$(cat "$CUSTOMIZATION_FILE_PATH")"
             echo 'CUSTOMIZATIONS_ENV_CONTENT<<EOF' >> $GITHUB_OUTPUT
-            printf "%s\n" $(cat "$CUSTOMIZATION_FILE_PATH") >> $GITHUB_OUTPUT
+            cat "$CUSTOMIZATION_FILE_PATH" >> $GITHUB_OUTPUT
             echo 'EOF' >> $GITHUB_OUTPUT
           else
             exit 1
@@ -177,7 +177,7 @@ jobs:
   google_play_mobile:
     needs: [code_quality, build_info, customizations_setup]
     uses: ./.github/workflows/google_play.yml
-    if: ${{ github.event.inputs.google_play_track != 'none' }}
+    if: ${{ github.event.inputs.google_play_track != '' && github.event.inputs.google_play_track != 'none' }}
     secrets:
       KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
       SIGNING_KEY_ALIAS: ${{ secrets.ANDROID_SIGNING_KEY_ALIAS }}
@@ -192,7 +192,7 @@ jobs:
   google_play_tv:
     needs: [code_quality, build_info, customizations_setup]
     uses: ./.github/workflows/google_play.yml
-    if: ${{ github.event.inputs.google_play_track != 'none' && github.event.inputs.google_play_upload_tv == 'true' }}
+    if: ${{ github.event.inputs.google_play_track != '' && github.event.inputs.google_play_track != 'none' && github.event.inputs.google_play_upload_tv == 'true' }}
     secrets:
       KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
       SIGNING_KEY_ALIAS: ${{ secrets.ANDROID_SIGNING_KEY_ALIAS }}

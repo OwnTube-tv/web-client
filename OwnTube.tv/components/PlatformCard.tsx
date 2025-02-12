@@ -23,7 +23,7 @@ export const PlatformCard = ({ name, description, hostname, logoUrl }: PlatformC
   const [focused, setFocused] = useState(false);
 
   return (
-    <Link href={{ pathname: `/${ROUTES.HOME}`, params: { backend: hostname } }} asChild>
+    <Link href={{ pathname: `/${ROUTES.HOME}`, params: { backend: hostname } }} replace asChild>
       <Pressable
         style={styles.pressableContainer}
         onFocus={() => setFocused(true)}

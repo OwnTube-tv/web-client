@@ -1,4 +1,3 @@
-import { ExternalLink } from "./ExternalLink";
 import build_info from "../build-info.json";
 import { Typography } from "./Typography";
 import { removeSecondsFromISODate } from "../utils";
@@ -6,6 +5,7 @@ import { useTranslation } from "react-i18next";
 import { useTheme } from "@react-navigation/native";
 import { StyleSheet } from "react-native";
 import { borderRadius, spacing } from "../theme";
+import { Link } from "expo-router";
 
 interface BuildInfoProps {
   alignCenter?: boolean;
@@ -22,7 +22,7 @@ export const BuildInfo = ({ alignCenter }: BuildInfoProps) => {
       color={colors.themeDesaturated500}
     >
       {t("revision")}{" "}
-      <ExternalLink absoluteHref={build_info.COMMIT_URL}>
+      <Link target="_blank" rel="noopener noreferrer" href={build_info.COMMIT_URL}>
         <Typography
           style={[
             styles.externalLink,
@@ -35,10 +35,10 @@ export const BuildInfo = ({ alignCenter }: BuildInfoProps) => {
         >
           {build_info.GITHUB_SHA_SHORT}
         </Typography>
-      </ExternalLink>
-      {", "}
+      </Link>
+      {",\n"}
       {t("builtAtBy", { builtAt: removeSecondsFromISODate(build_info.BUILD_TIMESTAMP) })}{" "}
-      <ExternalLink absoluteHref={"https://github.com/" + build_info.GITHUB_ACTOR}>
+      <Link target="_blank" rel="noopener noreferrer" href={"https://github.com/" + build_info.GITHUB_ACTOR}>
         <Typography
           style={[
             styles.externalLink,
@@ -51,7 +51,7 @@ export const BuildInfo = ({ alignCenter }: BuildInfoProps) => {
         >
           {build_info.GITHUB_ACTOR}
         </Typography>
-      </ExternalLink>
+      </Link>
     </Typography>
   );
 };

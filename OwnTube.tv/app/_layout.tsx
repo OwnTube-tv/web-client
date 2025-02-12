@@ -27,6 +27,7 @@ import { AppHeader } from "../components/AppHeader";
 import { SafeAreaProvider, useSafeAreaInsets } from "react-native-safe-area-context";
 import { useBreakpoints } from "../hooks";
 import { DrawerHeaderProps } from "@react-navigation/drawer";
+import { SHAREABLE_ROUTE_MODAL_TITLES } from "../navigation/constants";
 
 export const CLOSED_DRAWER_WIDTH = 64;
 export const OPEN_DRAWER_WIDTH = 272;
@@ -184,13 +185,4 @@ export type RootStackParams = {
   [ROUTES.CATEGORIES]: { backend: string };
   [ROUTES.CATEGORY]: { backend: string; category: string };
   [ROUTES.PLAYLIST]: { backend: string; playlist: string };
-};
-
-export const SHAREABLE_ROUTE_MODAL_TITLES: Record<string, string> = {
-  [`/${ROUTES.HOME}`]: "shareVideoSite",
-  [`/${ROUTES.VIDEO}`]: "shareVideo",
-  [`/${ROUTES.CHANNEL}`]: "shareVideoChannel",
-  [`/${ROUTES.CHANNEL_CATEGORY}`]: "shareVideoChannelCategory",
-  [`/${ROUTES.PLAYLIST}`]: "sharePlaylist",
-  [`/${ROUTES.CHANNEL_PLAYLIST}`]: "shareChannelPlaylist",
 };

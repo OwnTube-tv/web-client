@@ -91,7 +91,7 @@ export const ScrubBar = ({
     const hintMs = scrubberPosition / visibleWidth;
 
     return {
-      text: getHumanReadableDuration(length * (hintMs > 0 ? hintMs : 0)),
+      text: getHumanReadableDuration(length * (hintMs > 0 ? hintMs : 0) * 1000),
       position: newPosition < 0 ? 0 : newPosition,
     };
   }, [scrubberPosition, visibleWidth, length]);
@@ -162,7 +162,7 @@ export const ScrubBar = ({
                 styles.percentagePositionBar,
                 {
                   backgroundColor: colorVariant.position,
-                  width: scrubberPosition,
+                  width: scrubberPosition || 0,
                   height: isExpanded ? 6 : 4,
                 },
               ]}

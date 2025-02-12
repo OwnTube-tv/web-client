@@ -3,10 +3,9 @@ import { RootStackParams } from "../../app/_layout";
 import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import { GetVideosVideo } from "../models";
 import { ApiServiceImpl } from "../peertubeVideosApi";
-import { VideosCommonQuery } from "@peertube/peertube-types";
+import { VideosCommonQuery, Video } from "@peertube/peertube-types";
 import { SOURCES } from "../../types";
 import { getLocalData, retry } from "../helpers";
-import { Video } from "@peertube/peertube-types/peertube-models/videos/video.model";
 
 import { QUERY_KEYS } from "../constants";
 

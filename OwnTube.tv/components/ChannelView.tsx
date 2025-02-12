@@ -1,5 +1,5 @@
 import { useGetChannelVideosQuery } from "../api";
-import { VideoGrid } from "./index";
+import { VideoGrid } from "./VideoGrid";
 import { VideoChannel } from "@peertube/peertube-types";
 import { useTranslation } from "react-i18next";
 import { ROUTES } from "../types";

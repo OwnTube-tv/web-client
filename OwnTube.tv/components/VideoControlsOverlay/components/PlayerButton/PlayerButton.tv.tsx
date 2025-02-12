@@ -1,12 +1,12 @@
 import { forwardRef, useState } from "react";
 import { borderRadius, spacing } from "../../../../theme";
 import { IcoMoonIcon } from "../../../IcoMoonIcon";
-import { StyleSheet, TouchableOpacity, TouchableOpacityProps } from "react-native";
+import { StyleSheet, TouchableOpacity, TouchableOpacityProps, View } from "react-native";
 import { useTheme } from "@react-navigation/native";
 
 const BORDER_WIDTH = 2;
 
-const PlayerButton = forwardRef<TouchableOpacity, TouchableOpacityProps & { icon: string; scale?: number }>(
+const PlayerButton = forwardRef<View, TouchableOpacityProps & { icon: string; scale?: number }>(
   ({ onPress, icon, scale = 1, ...restProps }, ref) => {
     const { colors } = useTheme();
     const [focused, setFocused] = useState(false);

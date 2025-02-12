@@ -1,0 +1,15 @@
+diff --git a/node_modules/@react-native-tvos/config-tv/build/withTVAndroidIconImage.js b/node_modules/@react-native-tvos/config-tv/build/withTVAndroidIconImage.js
+index 898882b..52ec6cc 100644
+--- a/node_modules/@react-native-tvos/config-tv/build/withTVAndroidIconImage.js
++++ b/node_modules/@react-native-tvos/config-tv/build/withTVAndroidIconImage.js
+@@ -45,7 +45,9 @@ const withTVAndroidIconImage = (c, params = {}) => {
+                     if (!(0, fs_1.existsSync)(path_1.default.join(drawableDirectoryPath, "ic_launcher.webp"))) {
+                         await fs_1.promises.copyFile(androidTVIconPath, path_1.default.join(drawableDirectoryPath, "ic_launcher.png"));
+                     }
+-                    await fs_1.promises.copyFile(androidTVIconPath, path_1.default.join(drawableDirectoryPath, "ic_launcher_round.png"));
++                    if (!(0, fs_1.existsSync)(path_1.default.join(drawableDirectoryPath, "ic_launcher_round.webp"))) {
++                      await fs_1.promises.copyFile(androidTVIconPath, path_1.default.join(drawableDirectoryPath, "ic_launcher_round.png"));
++                    }
+                 }
+             }
+             return config;

@@ -19,7 +19,7 @@ export const retry = (failureCount: number, error: OwnTubeError) => {
 };
 
 export const getErrorTextKeys = (error: OwnTubeError | null): { title: string; description: string } => {
-  if (error && error.code >= 401 && error.code <= 403) {
+  if (error && Number(error.code) >= 401 && Number(error.code) <= 403) {
     return { title: "accessDenied", description: "noPermissions" };
   } else {
     return { title: "pageCouldNotBeLoaded", description: "failedToEstablishConnection" };

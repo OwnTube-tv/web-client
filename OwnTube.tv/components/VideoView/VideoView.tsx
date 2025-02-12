@@ -1,18 +1,20 @@
-import { AVPlaybackStatus, AVPlaybackStatusSuccess, ResizeMode, Video } from "expo-av";
 import { useEffect, useRef, useState } from "react";
 import { Platform, View } from "react-native";
 import { styles } from "./styles";
-import { useAppConfigContext } from "../../contexts";
 import * as Device from "expo-device";
 import { DeviceType } from "expo-device";
 import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
 import { VideoChannelSummary } from "@peertube/peertube-types";
 import VideoControlsOverlay from "../VideoControlsOverlay";
 import Toast from "react-native-toast-message";
-import { setAudioModeAsync } from "expo-av/build/Audio";
 import { useLocalSearchParams } from "expo-router";
 import { ROUTES } from "../../types";
 import { RootStackParams } from "../../app/_layout";
+import { Video, VideoRef } from "react-native-video";
+import { SelectedTrackType } from "react-native-video/src/types/video";
+import type { OnProgressData, OnVideoErrorData } from "react-native-video/src/specs/VideoNativeComponent";
+import { OnLoadData } from "react-native-video/src/types/events";
+import { Video as PeertubeVideoModel } from "@peertube/peertube-types";
 
 export interface VideoViewProps {
   uri: string;
@@ -27,7 +29,8 @@ export interface VideoViewProps {
   handleShare: () => void;
   handleOpenSettings: () => void;
   isModalOpen: boolean;
-  viewUrl: string;
+  viewUrl?: string;
+  videoData?: PeertubeVideoModel;
 }
 
 const VideoView = ({
@@ -44,72 +47,59 @@ const VideoView = ({
   handleOpenSettings,
   isModalOpen,
   viewUrl,
+  videoData,
 }: VideoViewProps) => {
-  const videoRef = useRef<Video>(null);
-  const [playbackStatus, setPlaybackStatus] = useState<(AVPlaybackStatusSuccess & { positionSeconds: number }) | null>(
-    null,
-  );
+  const videoRef = useRef<VideoRef>(null);
+
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [currentTime, setCurrentTime] = useState(0);
+  const [duration, setDuration] = useState(0);
+  const [muted, setMuted] = useState(false);
+  const [volume, setVolume] = useState(1);
+  const [playableDuration, setPlayableDuration] = useState(0);
+  const [shouldReplay, setShouldReplay] = useState(false);
+
   const [isControlsVisible, setIsControlsVisible] = useState(false);
-  const { setPlayerImplementation } = useAppConfigContext();
   const isMobile = Device.deviceType !== DeviceType.DESKTOP;
   const { backend } = useLocalSearchParams<RootStackParams[ROUTES.VIDEO]>();
 
   const handlePlayPause = () => {
-    videoRef.current?.[playbackStatus?.isPlaying ? "pauseAsync" : "playAsync"]();
+    videoRef.current?.[isPlaying ? "pause" : "resume"]();
   };
 
   const isPlayingRef = useRef(false);
-  const handlePlaybackStatusUpdate = (status: AVPlaybackStatus) => {
-    if (status?.isLoaded) {
-      setPlaybackStatus({ ...status, positionSeconds: Math.floor(status.positionMillis / 1000) });
-      isPlayingRef.current = status.isPlaying;
 
-      if (status.androidImplementation) {
-        setPlayerImplementation(`Android ${status.androidImplementation}`);
-      }
-    } else if (status?.error) {
-      console.error(status.error);
-    }
+  const handleRW = (seconds: number) => {
+    videoRef.current?.seek(currentTime - seconds);
   };
 
-  const handleRW = async (seconds: number) => {
-    await videoRef.current?.setPositionAsync((playbackStatus?.positionMillis ?? 0) - seconds * 1000);
-  };
-
-  const handleFF = async (seconds: number) => {
-    await videoRef.current?.setPositionAsync((playbackStatus?.positionMillis ?? 0) + seconds * 1000);
+  const handleFF = (seconds: number) => {
+    videoRef.current?.seek(currentTime + seconds);
   };
 
   const toggleMute = () => {
-    videoRef.current?.setIsMutedAsync(!playbackStatus?.isMuted);
+    setMuted((prev) => !prev);
   };
 
   const handleReplay = () => {
-    videoRef.current?.playFromPositionAsync(0);
+    videoRef.current?.seek(0);
+    videoRef.current?.resume();
+    setShouldReplay(false);
   };
 
   const handleJumpTo = (position: number) => {
-    videoRef.current?.setPositionAsync(position);
+    videoRef.current?.seek(position);
   };
 
   useEffect(() => {
-    if (!playbackStatus) return;
+    if (!currentTime) return;
 
-    const { positionSeconds } = playbackStatus;
-
-    handleSetTimeStamp(positionSeconds);
-  }, [playbackStatus?.positionMillis]);
-
-  useEffect(() => {
-    videoRef.current?.setPositionAsync(Number(timestamp || 0) * 1000);
-
-    if (Platform.OS === "ios") {
-      setAudioModeAsync({ playsInSilentModeIOS: true });
-    }
-  }, [timestamp]);
+    handleSetTimeStamp(currentTime);
+  }, [currentTime]);
 
   const handleVolumeControl = (volume: number) => {
-    videoRef.current?.setVolumeAsync(volume);
+    videoRef.current?.setVolume(volume);
+    setVolume(volume);
   };
 
   const modalOpenRef = useRef(false);
@@ -133,8 +123,17 @@ const VideoView = ({
     setIsControlsVisible(false);
   };
 
-  const handlePlayerError = (error: unknown) => {
-    Toast.show({ type: "info", text1: `Error: ${String(error)}`, props: { isError: true } });
+  const handlePlayerError = (error: OnVideoErrorData) => {
+    Toast.show({ type: "info", text1: `Error: ${String(error.error.errorString)}`, props: { isError: true } });
+  };
+
+  const handleProgress = ({ currentTime, playableDuration }: OnProgressData) => {
+    setCurrentTime(currentTime);
+    setPlayableDuration(playableDuration);
+  };
+
+  const handleVideoLoaded = ({ duration }: OnLoadData) => {
+    setDuration(duration);
   };
 
   return (
@@ -142,23 +141,23 @@ const VideoView = ({
       <VideoControlsOverlay
         videoLinkProps={{ backend, url: viewUrl }}
         handlePlayPause={handlePlayPause}
-        isPlaying={playbackStatus?.isPlaying}
+        isPlaying={isPlaying}
         isVisible={isControlsVisible}
         onOverlayPress={Platform.OS !== "web" ? handleOverlayPress : undefined}
         handleRW={handleRW}
         handleFF={handleFF}
-        duration={playbackStatus?.durationMillis}
-        availableDuration={playbackStatus?.playableDurationMillis}
-        position={playbackStatus?.positionMillis}
+        duration={duration}
+        availableDuration={playableDuration}
+        position={currentTime}
         toggleMute={toggleMute}
-        isMute={playbackStatus?.isMuted}
-        shouldReplay={playbackStatus?.didJustFinish}
+        isMute={muted}
+        shouldReplay={shouldReplay}
         handleReplay={handleReplay}
         handleJumpTo={handleJumpTo}
         title={title}
         channel={{ name: channel?.displayName, handle: channel?.name }}
         handleVolumeControl={handleVolumeControl}
-        volume={playbackStatus?.volume ?? 0}
+        volume={volume}
         toggleFullscreen={toggleFullscreen}
         isFullscreen={isFullscreen}
         handleOpenDetails={handleOpenDetails}
@@ -167,14 +166,39 @@ const VideoView = ({
         handleHideOverlay={hideOverlay}
       >
         <Video
+          onEnd={() => setShouldReplay(true)}
+          onLoad={handleVideoLoaded}
+          onProgress={handleProgress}
+          showNotificationControls
+          resizeMode="contain"
+          ignoreSilentSwitch={"ignore"}
+          playInBackground={!Platform.isTV}
           testID={`${testID}-video-playback`}
-          shouldPlay
-          resizeMode={ResizeMode.CONTAIN}
           ref={videoRef}
-          source={{ uri }}
-          onPlaybackStatusUpdate={handlePlaybackStatusUpdate}
+          source={{
+            uri,
+            startPosition: Number(timestamp || 0) * 1000,
+            metadata: {
+              title: videoData?.name,
+              subtitle: videoData?.truncatedDescription,
+              artist: `${videoData?.channel?.displayName} (${videoData?.channel?.host})`,
+              description: videoData?.description,
+              imageUri: `https://${videoData?.channel?.host}${videoData?.thumbnailPath}`,
+            },
+          }}
+          onPlaybackStateChanged={({ isPlaying: isPlayingState }) => {
+            isPlayingRef.current = isPlayingState;
+            setIsPlaying(isPlayingState);
+            if (!isPlayingState && Platform.isTVOS) {
+              handleOverlayPress();
+            }
+          }}
           style={styles.videoWrapper}
           onError={handlePlayerError}
+          selectedAudioTrack={{
+            type: SelectedTrackType.INDEX,
+            value: 0,
+          }}
         />
         {isMobile && !Platform.isTVOS && isControlsVisible && (
           <Animated.View entering={FadeIn} exiting={FadeOut} style={styles.opacityOverlay} />

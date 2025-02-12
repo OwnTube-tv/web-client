@@ -59,11 +59,11 @@ const VideoView = ({
   };
 
   const handleRW = (seconds: number) => {
-    playerRef.current?.currentTime(playbackStatus.position / 1000 - seconds);
+    playerRef.current?.currentTime(playbackStatus.position - seconds);
   };
 
   const handleFF = (seconds: number) => {
-    playerRef.current?.currentTime(playbackStatus.position / 1000 + seconds);
+    playerRef.current?.currentTime(playbackStatus.position + seconds);
   };
 
   const toggleMute = () => {
@@ -78,7 +78,7 @@ const VideoView = ({
   };
 
   const handleJumpTo = (position: number) => {
-    playerRef.current?.tech().setCurrentTime(position / 1000);
+    playerRef.current?.tech().setCurrentTime(position);
   };
 
   const options = {
@@ -103,7 +103,7 @@ const VideoView = ({
 
     player.on("loadedmetadata", () => {
       updatePlaybackStatus({
-        duration: Math.floor(playerRef.current?.duration() ?? 0) * 1000,
+        duration: Math.floor(playerRef.current?.duration() ?? 0),
         playableDuration: playerRef.current?.bufferedEnd(),
       });
     });
@@ -118,7 +118,7 @@ const VideoView = ({
 
     player.on("timeupdate", () => {
       updatePlaybackStatus({
-        position: Math.floor(playerRef.current?.currentTime() ?? 0) * 1000,
+        position: Math.floor(playerRef.current?.currentTime() ?? 0),
         didJustFinish: false,
       });
     });
@@ -172,9 +172,8 @@ const VideoView = ({
 
   useEffect(() => {
     const { position } = playbackStatus;
-    const positionFormatted = position / 1000;
 
-    handleSetTimeStamp(positionFormatted);
+    handleSetTimeStamp(position);
   }, [playbackStatus.position]);
 
   useEffect(() => {

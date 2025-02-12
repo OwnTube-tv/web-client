@@ -1,4 +1,4 @@
-import { VideoGrid } from "./index";
+import { VideoGrid } from "./VideoGrid";
 import { useTranslation } from "react-i18next";
 import { useGetVideosQuery } from "../api";
 import { ROUTES } from "../types";

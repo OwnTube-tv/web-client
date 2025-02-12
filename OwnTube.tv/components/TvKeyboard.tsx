@@ -1,4 +1,4 @@
-import { StyleSheet, TouchableOpacity, TouchableOpacityProps } from "react-native";
+import { StyleSheet, TouchableOpacity, TouchableOpacityProps, View } from "react-native";
 import { Typography } from "./Typography";
 import { borderRadius, spacing } from "../theme";
 import { useTheme } from "@react-navigation/native";
@@ -43,7 +43,7 @@ const symbolSets = {
 };
 
 const Key = forwardRef<
-  TouchableOpacity,
+  View,
   PropsWithChildren<
     {
       onKeyPress: () => void;
@@ -94,8 +94,8 @@ export const TvKeyboard = ({ mode = "url", onKeyPress, onBackspace, nextFocusUp 
   const { colors } = useTheme();
 
   const [keyboardMode, setKeyboardMode] = useState<"chars" | "symbols">("chars");
-  const symbolsKeyRef = useRef();
-  const backspaceKeyRef = useRef();
+  const symbolsKeyRef = useRef(null);
+  const backspaceKeyRef = useRef(null);
 
   return (
     <TVFocusGuideHelper autoFocus trapFocusRight trapFocusLeft style={styles.container}>
@@ -105,7 +105,6 @@ export const TvKeyboard = ({ mode = "url", onKeyPress, onBackspace, nextFocusUp 
             return prev === "chars" ? "symbols" : "chars";
           })
         }
-        // @ts-expect-error ref typings broken in react-native-tvos
         ref={symbolsKeyRef}
         nextFocusLeft={backspaceKeyRef?.current}
         nextFocusUp={nextFocusUp}
@@ -123,7 +122,6 @@ export const TvKeyboard = ({ mode = "url", onKeyPress, onBackspace, nextFocusUp 
       <Key
         nextFocusUp={nextFocusUp}
         nextFocusRight={symbolsKeyRef?.current}
-        // @ts-expect-error ref typings broken in react-native-tvos
         ref={backspaceKeyRef}
         onKeyPress={onBackspace}
       >

@@ -1,5 +1,5 @@
 import { Pressable, StyleSheet, View } from "react-native";
-import Animated, { useSharedValue, withTiming } from "react-native-reanimated";
+import Animated, { useAnimatedStyle, useSharedValue, withTiming } from "react-native-reanimated";
 import { ScrubBar } from "./ScrubBar";
 import PlayerButton from "./PlayerButton";
 
@@ -13,19 +13,23 @@ interface Props {
 const ANIMATION_DURATION = 350;
 
 export const VolumeControl = ({ isMute, volume, toggleMute, setVolume }: Props) => {
-  const width = useSharedValue(0);
+  const isExpanded = useSharedValue(0);
 
   const showVolumeBar = () => {
-    width.value = withTiming(64, { duration: ANIMATION_DURATION });
+    isExpanded.value = 1;
   };
   const hideVolumeBar = () => {
-    width.value = withTiming(0, { duration: ANIMATION_DURATION });
+    isExpanded.value = 0;
   };
+
+  const animatedWidthStyle = useAnimatedStyle(() => ({
+    width: withTiming(isExpanded.value ? 64 : 0, { duration: ANIMATION_DURATION }),
+  }));
 
   return (
     <Pressable style={styles.container} onHoverOut={hideVolumeBar}>
       <PlayerButton onPress={toggleMute} icon={`Volume${isMute ? "-Off" : ""}`} onHoverIn={showVolumeBar} />
-      <Animated.View style={[styles.animatedContainer, { width: width }]}>
+      <Animated.View style={[styles.animatedContainer, animatedWidthStyle]}>
         <View style={styles.scrubBarContainer}>
           <ScrubBar
             variant="volume"

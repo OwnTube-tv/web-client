@@ -30,6 +30,12 @@ jest.mock("../../hooks", () => ({
 (useLocalSearchParams as jest.Mock).mockReturnValue({ id: 123, backend: "example.com" });
 jest.mock("@react-navigation/native", () => ({
   ...jest.requireActual("@react-navigation/native"),
+  useTheme: jest.fn(() => ({
+    colors: {
+      dark: {},
+      light: {},
+    },
+  })),
   useIsFocused: jest.fn(() => true),
 }));
 jest.mock("react-native-safe-area-context", () => ({
@@ -44,7 +50,7 @@ describe("VideoScreen", () => {
 
   it("should form a correct video uri and choose highest available quality no more than 1080", () => {
     render(<VideoScreen />);
-    expect(screen.getByTestId("123-video-view-video-playback").props.source.uri).toBe(
+    expect(screen.getByTestId("123-video-view-video-playback").props.src.uri).toBe(
       "http://abc.xyz/static/web-videos/123-1080.mp4",
     );
   });

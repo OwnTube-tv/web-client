@@ -29,7 +29,10 @@ export const useGetInstanceInfoQuery = (backend?: string) => {
     select: ({ instance }) => instance,
     enabled: !!backend,
     refetchOnWindowFocus: false,
+    refetchOnMount: false,
     retry,
+    gcTime: 1000 * 3600, // 1 day
+    staleTime: 1000 * 3600, // 1 day
   });
 };
 

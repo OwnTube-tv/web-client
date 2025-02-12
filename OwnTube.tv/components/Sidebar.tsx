@@ -5,7 +5,7 @@ import { useTheme } from "@react-navigation/native";
 import { ROUTES, STORAGE } from "../types";
 import { useTranslation } from "react-i18next";
 import { useAppConfigContext, useColorSchemeContext, useFullScreenModalContext } from "../contexts";
-import { StyleSheet, View } from "react-native";
+import { Platform, StyleSheet, View } from "react-native";
 import { Button, Separator } from "./shared";
 import { spacing } from "../theme";
 import { Spacer } from "./shared/Spacer";
@@ -15,6 +15,7 @@ import { Settings } from "./VideoControlsOverlay/components/modals";
 import { useNetInfo } from "@react-native-community/netinfo";
 import { writeToAsyncStorage } from "../utils";
 import useLeaveInstancePermission from "../hooks/useLeaveInstancePermission";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 const SIDEBAR_ROUTES = [
   {
@@ -66,6 +67,7 @@ export const Sidebar: FC<SidebarProps> = ({ backend, ...navigationProps }) => {
   const { isConnected } = useNetInfo();
   const { isLeaveInstanceAllowed } = useLeaveInstancePermission(navigationProps);
   const { primaryBackend } = useAppConfigContext();
+  const safeArea = useSafeAreaInsets();
 
   const isLeaveInstanceShown =
     !primaryBackend && isLeaveInstanceAllowed && !currentInstanceConfig?.customizations?.menuHideLeaveButton;
@@ -84,11 +86,15 @@ export const Sidebar: FC<SidebarProps> = ({ backend, ...navigationProps }) => {
   return (
     <DrawerContentScrollView
       {...navigationProps}
+      contentContainerStyle={{
+        padding: 0,
+        paddingTop: safeArea.top,
+      }}
       style={[
         styles.container,
         {
           backgroundColor: colors.theme50,
-          paddingHorizontal: shouldExpand ? spacing.md : spacing.sm,
+          paddingHorizontal: shouldExpand ? spacing.md : ["ios", "android"].includes(Platform.OS) ? 0 : spacing.sm,
           width: "100%",
         },
       ]}
@@ -98,7 +104,7 @@ export const Sidebar: FC<SidebarProps> = ({ backend, ...navigationProps }) => {
           <View style={styles.header}>
             <InstanceInfo backend={backend} />
             {breakpoints.isMobile && (
-              <Button style={styles.backButton} icon="Arrow-Left" onPress={navigationProps.navigation.toggleDrawer} />
+              <Button style={styles.button} icon="Arrow-Left" onPress={navigationProps.navigation.toggleDrawer} />
             )}
           </View>
         </View>
@@ -132,7 +138,7 @@ export const Sidebar: FC<SidebarProps> = ({ backend, ...navigationProps }) => {
                 justifyContent="flex-start"
                 icon={icon}
                 text={shouldExpand ? t(nameKey) : undefined}
-                style={styles.backButton}
+                style={{ ...styles.button, ...styles.paddingHHelper }}
               />
             </Link>
           );
@@ -147,12 +153,14 @@ export const Sidebar: FC<SidebarProps> = ({ backend, ...navigationProps }) => {
         onPress={toggleScheme}
         icon={isDarkMode ? "Light-mode" : "Dark-mode"}
         text={shouldExpand ? t(isDarkMode ? "lightMode" : "darkMode") : undefined}
+        style={styles.paddingHHelper}
       />
       <Button
         justifyContent="flex-start"
         onPress={handleOpenSettings}
         icon="Settings"
         text={shouldExpand ? t("settingsPageTitle") : undefined}
+        style={styles.paddingHHelper}
       />
       {isLeaveInstanceShown && (
         <Button
@@ -161,6 +169,7 @@ export const Sidebar: FC<SidebarProps> = ({ backend, ...navigationProps }) => {
           contrast="none"
           icon="Exit"
           text={shouldExpand ? t("leaveSite") : undefined}
+          style={styles.paddingHHelper}
         />
       )}
     </DrawerContentScrollView>
@@ -168,7 +177,10 @@ export const Sidebar: FC<SidebarProps> = ({ backend, ...navigationProps }) => {
 };
 
 const styles = StyleSheet.create({
-  backButton: { height: 36, paddingVertical: 6 },
+  button: {
+    height: 36,
+    paddingVertical: 6,
+  },
   container: {
     paddingTop: 18,
   },
@@ -186,6 +198,9 @@ const styles = StyleSheet.create({
     gap: spacing.md,
     justifyContent: "space-between",
     width: "100%",
+  },
+  paddingHHelper: {
+    paddingHorizontal: ["ios", "android"].includes(Platform.OS) ? 8 : undefined,
   },
   routesContainer: { gap: 4 },
   separatorContainer: { paddingVertical: spacing.sm },

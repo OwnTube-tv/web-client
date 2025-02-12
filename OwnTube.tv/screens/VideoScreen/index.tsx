@@ -92,6 +92,7 @@ export const VideoScreen = () => {
       />
       <View id="video-container" style={[{ paddingTop: Platform.isTV ? 0 : top }, styles.videoContainer]}>
         <VideoView
+          videoData={data}
           isModalOpen={!!visibleModal}
           timestamp={params?.timestamp}
           handleSetTimeStamp={handleSetTimeStamp}

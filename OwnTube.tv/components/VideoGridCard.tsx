@@ -48,7 +48,7 @@ export const VideoGridCard = forwardRef<View, VideoGridCardProps>(({ video, back
         onFocus={Platform.isTV ? () => setFocused(true) : null}
         onBlur={Platform.isTV ? () => setFocused(false) : null}
         style={styles.pressableContainer}
-        onPress={Platform.isTV ? handleTvNavigateToVideo : null}
+        onPress={Platform.isTV || Platform.OS === "web" ? handleTvNavigateToVideo : null}
         onHoverIn={toggleHovered}
         onHoverOut={toggleHovered}
         ref={ref}
@@ -61,7 +61,7 @@ export const VideoGridCard = forwardRef<View, VideoGridCardProps>(({ video, back
           asChild
           style={thumbnailLinkStyles}
         >
-          <Pressable onHoverIn={toggleHovered} onHoverOut={toggleHovered}>
+          <Pressable tabIndex={-1} onHoverIn={toggleHovered} onHoverOut={toggleHovered}>
             {focused && <FocusGuide height={containerWidth * (9 / 16)} width={containerWidth} />}
             <VideoThumbnail
               imageDimensions={{ width: containerWidth, height: containerWidth * (9 / 16) }}
@@ -72,7 +72,7 @@ export const VideoGridCard = forwardRef<View, VideoGridCardProps>(({ video, back
           </Pressable>
         </Link>
         <TVFocusGuideHelper focusable={false} style={styles.textContainer}>
-          <Link href={{ pathname: ROUTES.VIDEO, params: { id: video.uuid, backend } }}>
+          <Link tabIndex={-1} href={{ pathname: ROUTES.VIDEO, params: { id: video.uuid, backend } }}>
             <Typography
               fontWeight="Medium"
               color={colors.theme900}

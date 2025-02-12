@@ -1,3 +1,7 @@
+:root {
+  --focus-color: #007ef2; /* Default focus color, changes with theme to black/white  */
+}
+
 body {
   min-height: 100dvh;
 }
@@ -17,7 +21,7 @@ select {
 }
 
 :focus-visible {
-  outline: none;
-  box-shadow: 0 0 0 2px #007ef2;
+  outline: 6px solid var(--focus-color);
+  outline-offset: 4px;
   border-radius: 8px;
 }

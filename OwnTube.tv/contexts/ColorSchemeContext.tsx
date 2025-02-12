@@ -1,7 +1,8 @@
 import { createContext, PropsWithChildren, useContext, useEffect, useState } from "react";
-import { Appearance, ColorSchemeName } from "react-native";
+import { Appearance, ColorSchemeName, Platform } from "react-native";
 import { readFromAsyncStorage, writeToAsyncStorage } from "../utils";
 import { useInstanceConfig } from "../hooks";
+import { colorSchemes } from "../theme";
 
 const ColorSchemeContext = createContext<{ scheme: ColorSchemeName; toggleScheme?: () => void }>({
   scheme: null,
@@ -25,6 +26,10 @@ export const ColorSchemeContextProvider = ({ children }: PropsWithChildren) => {
     }
 
     writeToAsyncStorage("colorScheme", selectedColorScheme);
+
+    if (Platform.OS === "web") {
+      document?.documentElement?.style?.setProperty("--focus-color", colorSchemes[selectedColorScheme].colors.theme950);
+    }
   }, [selectedColorScheme]);
 
   const toggleScheme = () => setSelectedColorScheme((prev) => (prev === "light" ? "dark" : "light"));

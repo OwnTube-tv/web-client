@@ -9,6 +9,7 @@ import { useTheme } from "@react-navigation/native";
 import { ROUTES } from "../../../../types";
 import { useLocalSearchParams } from "expo-router";
 import { RootStackParams } from "../../../../app/_layout";
+import { FormattedVideoDescription } from "../../../FormattedVideoDescription";
 
 interface VideoDetailsProps {
   onClose: () => void;
@@ -44,9 +45,7 @@ export const VideoDetails = ({
         </View>
         <Spacer height={16} />
         <ScrollView>
-          <Typography fontSize="sizeSm" fontWeight="Regular">
-            {description}
-          </Typography>
+          <FormattedVideoDescription>{description}</FormattedVideoDescription>
         </ScrollView>
       </ModalContainer>
     </Animated.View>

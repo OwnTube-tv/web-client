@@ -4,7 +4,6 @@ import { Typography } from "../../../../Typography";
 import { useTranslation } from "react-i18next";
 import { Checkbox, Separator } from "../../../../shared";
 import { Platform, ScrollView, StyleSheet, View } from "react-native";
-import build_info from "../../../../../build-info.json";
 import QrCode from "react-qr-code";
 import { useMemo, useState } from "react";
 import { useGlobalSearchParams, usePathname } from "expo-router";
@@ -13,7 +12,7 @@ import { borderRadius, spacing } from "../../../../../theme";
 import { Input } from "../../../../shared";
 import { Spacer } from "../../../../shared/Spacer";
 import { getHumanReadableDuration } from "../../../../../utils";
-import { useViewHistory } from "../../../../../hooks";
+import { useVideoLink, useViewHistory } from "../../../../../hooks";
 import { colors } from "../../../../../colors";
 import { ROUTES } from "../../../../../types";
 import TVFocusGuideHelper from "../../../../helpers/TVFocusGuideHelper";
@@ -35,11 +34,7 @@ const Share = ({ onClose, titleKey }: ShareProps) => {
     return getViewHistoryEntryByUuid(params?.id as string)?.timestamp || 0;
   }, [params?.id]);
 
-  const link = useMemo(() => {
-    const paramsCopy = { ...params };
-    delete paramsCopy.timestamp;
-    return `${build_info.WEB_URL?.toLowerCase()}${pathname}?${new URLSearchParams(paramsCopy as Record<string, string>)}${isTimestampAdded ? `&timestamp=${addedTimestamp}` : ""}`;
-  }, [isTimestampAdded, pathname, params, addedTimestamp]);
+  const link = useVideoLink({ isTimestampAdded, addedTimestamp });
 
   const isTimestampShown = pathname === `/${ROUTES.VIDEO}`;
 

@@ -3,6 +3,7 @@ import { Typography } from "./Typography";
 import { Link } from "expo-router";
 import { FC, PropsWithChildren } from "react";
 import { useTheme } from "@react-navigation/native";
+import { spacing } from "../theme";
 
 const SelectableBodyText: FC<PropsWithChildren> = ({ children }) => {
   const { colors } = useTheme();
@@ -34,8 +35,18 @@ const formatterRules: RenderRules = {
 };
 
 export const FormattedVideoDescription: FC<PropsWithChildren> = ({ children }) => {
+  const { colors } = useTheme();
+
   return (
-    <Markdown markdownit={MarkdownIt({ linkify: true }).disable(["code"])} rules={formatterRules}>
+    <Markdown
+      style={{
+        bullet_list_icon: { color: colors.theme900 },
+        bullet_list_content: { marginBottom: spacing.md },
+        ordered_list_content: { marginBottom: spacing.md },
+      }}
+      markdownit={MarkdownIt({ linkify: true }).disable(["code"])}
+      rules={formatterRules}
+    >
       {children}
     </Markdown>
   );

@@ -10,13 +10,26 @@ interface ButtonProps extends PropsWithChildren<PressableProps> {
   style?: ViewStyle;
   contrast?: "high" | "low" | "none";
   icon?: string;
+  iconPosition?: "leading" | "trailing";
   text?: string;
   justifyContent?: ViewStyle["justifyContent"];
   isActive?: boolean;
 }
 
 export const Button = forwardRef<View, ButtonProps>(
-  ({ contrast = "none", text, icon, justifyContent = "center", isActive, disabled, ...props }, ref) => {
+  (
+    {
+      contrast = "none",
+      text,
+      icon,
+      iconPosition = "leading",
+      justifyContent = "center",
+      isActive,
+      disabled,
+      ...props
+    },
+    ref,
+  ) => {
     const { colors } = useTheme();
     const { isHovered, toggleHovered } = useHoverState();
 
@@ -68,11 +81,16 @@ export const Button = forwardRef<View, ButtonProps>(
         ]}
         ref={ref}
       >
-        {icon && <IcoMoonIcon name={icon} size={24} color={contrast === "high" ? colors.white94 : colors.theme900} />}
+        {icon && iconPosition === "leading" && (
+          <IcoMoonIcon name={icon} size={24} color={contrast === "high" ? colors.white94 : colors.theme900} />
+        )}
         {text && (
           <Typography fontSize="sizeSm" fontWeight="SemiBold" color={textColor}>
             {text}
           </Typography>
+        )}
+        {icon && iconPosition === "trailing" && (
+          <IcoMoonIcon name={icon} size={24} color={contrast === "high" ? colors.white94 : colors.theme900} />
         )}
       </Pressable>
     );

@@ -46,16 +46,12 @@ export const VideoListItem = forwardRef<View, VideoListItemProps>(
       return <Button onPress={handleDeleteFromHistory} icon="Trash" style={{ height: 48 }} />;
     }, [handleDeleteFromHistory, colors]);
 
-    const imageDimensions = useMemo(() => {
-      return { width: isDesktop ? 328 : 128, height: isDesktop ? 102 : 72 };
-    }, [isDesktop]);
-
     const focusGuideDimensions = useMemo(() => {
       return {
         width: containerWidth,
         height: (containerWidth / 16) * 9,
       };
-    }, [containerWidth, imageDimensions]);
+    }, [containerWidth]);
 
     return (
       <View style={[styles.container, { gap: isDesktop ? spacing.xl : spacing.md }]}>
@@ -65,18 +61,18 @@ export const VideoListItem = forwardRef<View, VideoListItemProps>(
             onFocus={() => setFocused(true)}
             onBlur={() => setFocused(false)}
             style={{
-              height: "100%",
+              height: focusGuideDimensions.height,
               width: "100%",
               borderRadius: 10,
             }}
             onPress={() => router.navigate(videoHref)}
-            onLayout={(e) => {
-              setContainerWidth(e.nativeEvent.layout.width);
+            onLayout={({ nativeEvent }) => {
+              setContainerWidth(nativeEvent.layout.width);
             }}
           >
             {focused && <FocusGuide height={focusGuideDimensions.height} width={focusGuideDimensions.width} />}
             <VideoThumbnail
-              imageDimensions={imageDimensions}
+              imageDimensions={focusGuideDimensions}
               video={video}
               backend={backend}
               key={video.uuid}
@@ -141,5 +137,5 @@ const styles = StyleSheet.create({
     gap: spacing.sm,
     height: "100%",
   },
-  thumbLinkWrapper: { maxWidth: 328, width: "37%" },
+  thumbLinkWrapper: { maxWidth: "37%" },
 });

@@ -5,7 +5,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Button } from "./shared";
 import { InstanceInfo } from "./InstanceInfo";
 import { DrawerHeaderProps } from "@react-navigation/drawer";
-import { useShareButton } from "../hooks/useShareButton";
+import { useShareButton } from "../hooks";
 
 interface AppHeaderProps extends DrawerHeaderProps {
   backend?: string;
@@ -44,6 +44,6 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     padding: spacing.sm,
   },
-  menuBtn: { height: 36, paddingVertical: 6 },
+  menuBtn: { height: 48, paddingVertical: 6 },
   requiredElementsContainer: { flexDirection: "row", gap: spacing.xl },
 });

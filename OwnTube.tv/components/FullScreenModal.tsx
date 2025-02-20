@@ -25,6 +25,7 @@ export const FullScreenModal: FC<PropsWithChildren<FullScreenModalProps>> = ({
   return (
     <View style={[styles.container, { paddingTop: Platform.isTV ? 0 : top }]}>
       <AnimatedPressable
+        accessible={false}
         onPress={onBackdropPress}
         entering={FadeIn}
         exiting={FadeOut}

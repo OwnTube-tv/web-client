@@ -185,6 +185,7 @@ const VideoControlsOverlay = ({
                 </View>
               )}
               <Pressable
+                accessible={false}
                 onHoverIn={() => setIsSeekBarFocused(true)}
                 onHoverOut={() => setIsSeekBarFocused(false)}
                 style={styles.scrubBarContainer}
@@ -301,7 +302,7 @@ const styles = StyleSheet.create({
   topLeftControls: { flexDirection: "row", gap: spacing.sm, maxWidth: 600, width: "60%" },
   topRightControls: { alignItems: "center", flexDirection: "row" },
   videoInfoContainer: { gap: spacing.md, width: "100%" },
-  videoLinkContainer: { alignSelf: "flex-end", justifyContent: "flex-end", marginBottom: spacing.lg },
+  videoLinkContainer: { alignSelf: "flex-end", justifyContent: "flex-end", marginBottom: spacing.xl },
 });
 
 export default VideoControlsOverlay;

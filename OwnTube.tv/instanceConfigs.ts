@@ -20,6 +20,7 @@ const customizationsSchema = z
     playlistsShowHiddenButton: z.boolean(),
     showMoreSize: z.number(),
     hideVideoSiteLinks: z.boolean(),
+    hideChannelPlaylistLinks: z.boolean(),
   })
   .partial();
 

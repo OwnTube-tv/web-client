@@ -26,6 +26,7 @@ export const ChannelScreen = () => {
           }
           name={channelInfo?.displayName}
           description={channelInfo?.description}
+          linkHref={channelInfo?.url}
         />
       )}
       <LatestVideos />

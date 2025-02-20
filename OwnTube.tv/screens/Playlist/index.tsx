@@ -36,6 +36,7 @@ export const Playlist = () => {
         name={playlistInfo?.displayName}
         description={playlistInfo?.description}
         avatarUrl={`https://${backend}${playlistInfo?.thumbnailPath}`}
+        linkHref={`https://${backend}/w/p/${playlistInfo?.uuid}`}
       />
       <VideoGrid
         presentation="list"

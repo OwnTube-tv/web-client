@@ -122,5 +122,7 @@
   "leaveSite": "Покинути сайт",
   "allPlaylists": "Всі плейлісти",
   "allChannels": "Всі канали",
-  "allCategories": "Всі категорії"
+  "allCategories": "Всі категорії",
+  "copyVideoDetails": "Копіювати деталі відео:",
+  "detailsCopied": "Деталі відео скопійовані!"
 }

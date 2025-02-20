@@ -123,5 +123,7 @@
   "allPlaylists": "All playlists",
   "allChannels": "All channels",
   "allCategories": "All categories",
-  "viewOnSite": "View on {{site}}"
+  "viewOnSite": "View on {{site}}",
+  "copyVideoDetails": "Copy video details:",
+  "detailsCopied": "Video details copied!"
 }

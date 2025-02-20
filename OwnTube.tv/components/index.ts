@@ -35,3 +35,4 @@ export * from "./ErrorBoundary";
 export * from "./helpers";
 export * from "./TVActionCard";
 export * from "./ViewOnSiteLink";
+export * from "./FormattedVideoDescription";

@@ -1,14 +1,15 @@
 import Animated, { SlideInLeft, SlideOutLeft } from "react-native-reanimated";
-import { ModalContainer } from "../../../ModalContainer";
 import { ScrollView, StyleSheet, View } from "react-native";
-import { ChannelLink } from "../../../ChannelLink";
-import { Typography } from "../../../Typography";
 import { format } from "date-fns";
-import { Spacer } from "../../../shared/Spacer";
 import { useTheme } from "@react-navigation/native";
-import { ROUTES } from "../../../../types";
 import { useLocalSearchParams } from "expo-router";
-import { RootStackParams } from "../../../../app/_layout";
+import { RootStackParams } from "../../../../../app/_layout";
+import { ROUTES } from "../../../../../types";
+import { ModalContainer } from "../../../../ModalContainer";
+import { ChannelLink } from "../../../../ChannelLink";
+import { Typography } from "../../../../Typography";
+import { Spacer } from "../../../../shared/Spacer";
+import { FormattedVideoDescription } from "../../../../FormattedVideoDescription";
 
 interface VideoDetailsProps {
   onClose: () => void;
@@ -19,14 +20,7 @@ interface VideoDetailsProps {
   description: string;
 }
 
-export const VideoDetails = ({
-  onClose,
-  name,
-  channelName,
-  channelHandle,
-  datePublished,
-  description,
-}: VideoDetailsProps) => {
+const VideoDetails = ({ onClose, name, channelName, channelHandle, datePublished, description }: VideoDetailsProps) => {
   const { colors } = useTheme();
   const { backend } = useLocalSearchParams<RootStackParams[ROUTES.VIDEO]>();
 
@@ -44,9 +38,7 @@ export const VideoDetails = ({
         </View>
         <Spacer height={16} />
         <ScrollView>
-          <Typography fontSize="sizeSm" fontWeight="Regular">
-            {description}
-          </Typography>
+          <FormattedVideoDescription>{description}</FormattedVideoDescription>
         </ScrollView>
       </ModalContainer>
     </Animated.View>
@@ -67,3 +59,5 @@ const styles = StyleSheet.create({
     width: "100%",
   },
 });
+
+export default VideoDetails;

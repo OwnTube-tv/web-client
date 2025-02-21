@@ -1,7 +1,7 @@
 import { StyleSheet } from "react-native";
 import { spacing } from "../theme";
 import { Button } from "./shared";
-import { useShareButton } from "../hooks/useShareButton";
+import { useShareButton } from "../hooks";
 import TVFocusGuideHelper from "./helpers/TVFocusGuideHelper";
 
 export const AppDesktopHeader = () => {
@@ -15,7 +15,7 @@ export const AppDesktopHeader = () => {
 };
 
 const styles = StyleSheet.create({
-  button: { alignSelf: "flex-end", height: 36, paddingVertical: 6 },
+  button: { alignSelf: "flex-end", height: 48, paddingVertical: 6 },
   container: {
     height: 60,
     paddingLeft: spacing.lg,

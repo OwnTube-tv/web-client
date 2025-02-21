@@ -1,18 +1,27 @@
-import { View, Image, StyleSheet } from "react-native";
+import { View, Image, StyleSheet, Platform } from "react-native";
 import { Typography } from "./Typography";
 import { useTheme } from "@react-navigation/native";
 import { borderRadius, spacing } from "../theme";
-import { useBreakpoints } from "../hooks";
+import { useBreakpoints, useInstanceConfig } from "../hooks";
 import { useMemo } from "react";
+import { Link } from "expo-router";
+import { IcoMoonIcon } from "./IcoMoonIcon";
 
 interface ListInfoHeaderProps {
   avatarUrl?: string;
   name?: string;
   description?: string;
   variant?: "playlist" | "channel";
+  linkHref?: string;
 }
 
-export const ListInfoHeader = ({ avatarUrl, name, description, variant = "channel" }: ListInfoHeaderProps) => {
+export const ListInfoHeader = ({
+  avatarUrl,
+  name,
+  description,
+  variant = "channel",
+  linkHref,
+}: ListInfoHeaderProps) => {
   const { colors } = useTheme();
   const { isMobile } = useBreakpoints();
   const avatarDimensions = useMemo(() => {
@@ -21,6 +30,10 @@ export const ListInfoHeader = ({ avatarUrl, name, description, variant = "channe
       height: isMobile ? 64 : 96,
     };
   }, [isMobile, variant]);
+
+  const { currentInstanceConfig } = useInstanceConfig();
+
+  const isLinkShown = linkHref && !currentInstanceConfig?.customizations?.hideChannelPlaylistLinks && !Platform.isTV;
 
   return (
     <View
@@ -36,9 +49,16 @@ export const ListInfoHeader = ({ avatarUrl, name, description, variant = "channe
         <Image source={{ uri: avatarUrl }} style={{ ...avatarDimensions, borderRadius: borderRadius.radiusMd }} />
       )}
       <View style={styles.textContainer}>
-        <Typography fontSize={isMobile ? "sizeXL" : "sizeXXL"} fontWeight="ExtraBold" color={colors.theme900}>
-          {name}
-        </Typography>
+        <View style={styles.headerContainer}>
+          <Typography fontSize={isMobile ? "sizeXL" : "sizeXXL"} fontWeight="ExtraBold" color={colors.theme900}>
+            {name}
+          </Typography>
+          {isLinkShown && (
+            <Link target="_blank" rel="noreferrer noopener" href={linkHref}>
+              <IcoMoonIcon color={colors.theme900} name="External-Link" size={16} />
+            </Link>
+          )}
+        </View>
         <Typography
           style={styles.descriptionContainer}
           fontSize="sizeMd"
@@ -56,5 +76,6 @@ export const ListInfoHeader = ({ avatarUrl, name, description, variant = "channe
 const styles = StyleSheet.create({
   container: { alignSelf: "flex-start", flexDirection: "row", paddingVertical: spacing.xl, width: "100%" },
   descriptionContainer: { flexShrink: 1, flexWrap: "wrap" },
+  headerContainer: { alignItems: "center", flexDirection: "row", flexWrap: "wrap", gap: spacing.md },
   textContainer: { flex: 1, gap: spacing.md },
 });

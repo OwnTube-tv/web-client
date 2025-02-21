@@ -148,37 +148,39 @@ export const Sidebar: FC<SidebarProps> = ({ backend, ...navigationProps }) => {
       <View style={styles.separatorContainer}>
         <Separator />
       </View>
-      <Button
-        justifyContent="flex-start"
-        onPress={toggleScheme}
-        icon={isDarkMode ? "Light-mode" : "Dark-mode"}
-        text={shouldExpand ? t(isDarkMode ? "lightMode" : "darkMode") : undefined}
-        style={styles.paddingHHelper}
-      />
-      <Button
-        justifyContent="flex-start"
-        onPress={handleOpenSettings}
-        icon="Settings"
-        text={shouldExpand ? t("settingsPageTitle") : undefined}
-        style={styles.paddingHHelper}
-      />
-      {isLeaveInstanceShown && (
+      <View style={styles.routesContainer}>
         <Button
           justifyContent="flex-start"
-          onPress={handleLeaveInstance}
-          contrast="none"
-          icon="Exit"
-          text={shouldExpand ? t("leaveSite") : undefined}
+          onPress={toggleScheme}
+          icon={isDarkMode ? "Light-mode" : "Dark-mode"}
+          text={shouldExpand ? t(isDarkMode ? "lightMode" : "darkMode") : undefined}
           style={styles.paddingHHelper}
         />
-      )}
+        <Button
+          justifyContent="flex-start"
+          onPress={handleOpenSettings}
+          icon="Settings"
+          text={shouldExpand ? t("settingsPageTitle") : undefined}
+          style={styles.paddingHHelper}
+        />
+        {isLeaveInstanceShown && (
+          <Button
+            justifyContent="flex-start"
+            onPress={handleLeaveInstance}
+            contrast="none"
+            icon="Exit"
+            text={shouldExpand ? t("leaveSite") : undefined}
+            style={styles.paddingHHelper}
+          />
+        )}
+      </View>
     </DrawerContentScrollView>
   );
 };
 
 const styles = StyleSheet.create({
   button: {
-    height: 36,
+    height: 48,
     paddingVertical: 6,
   },
   container: {
@@ -200,6 +202,7 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   paddingHHelper: {
+    height: 48,
     paddingHorizontal: ["ios", "android"].includes(Platform.OS) ? 8 : undefined,
   },
   routesContainer: { gap: 4 },

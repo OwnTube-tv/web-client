@@ -34,7 +34,7 @@ const light: ColorScheme = {
   theme800: "#2E4357",
   theme900: "#1E2F3F",
   theme950: "#0D151D",
-  themeDesaturated500: "#7A8D9F",
+  themeDesaturated500: "#607385",
   ...blackAndWhite,
 };
 

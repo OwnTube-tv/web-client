@@ -30,7 +30,9 @@ export default {
     bundleIdentifier: process.env.EXPO_PUBLIC_IOS_BUNDLE_IDENTIFIER || "com.owntubetv.owntube",
   },
   experiments: {
-    baseUrl: process.env.EXPO_PUBLIC_BASE_URL || "/web-client",
+    baseUrl: !process.env.EXPO_PUBLIC_CUSTOM_DEPLOYMENT_URL
+      ? process.env.EXPO_PUBLIC_BASE_URL || "/web-client"
+      : undefined,
   },
   android: {
     blockedPermissions: ["RECORD_AUDIO"],

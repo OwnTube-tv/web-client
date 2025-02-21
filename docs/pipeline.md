@@ -13,6 +13,12 @@ The main workflow in `deploy-static-main.yml` builds the application for all sup
    - \[Optional] If selected when starting the pipeline, build and upload iOS and/or tvOS apps to TestFlight
    - \[Optional] If selected when starting the pipeline, build and upload Android and/or Android TV apps to Google Play
 
+## GitHub Pages deployment 🌍
+
+You can set up a custom domain for your web client deployments, for this configure the repository on GitHub and add a `CUSTOM_DEPLOYMENT_URL` variable to the 
+`github-pages` environment in repository environments settings. From then on, OwnTube should automatically switch to your
+custom website address. Please note that some of the changes needed to configure this may take considerable time, such as DNS cache propagation.
+
 ## TestFlight upload ⏫
 
 Before uploading to TestFlight, create an "`owntube`" environment in repository settings if you haven't already, then add the following secrets to the environment:

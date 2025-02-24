@@ -58,6 +58,7 @@ jobs:
 
   build_info:
     runs-on: ubuntu-latest
+    environment: github-pages
     outputs:
       BUILD_INFO: ${{ steps.write.outputs.BUILD_INFO }}
     steps:
@@ -84,7 +85,11 @@ jobs:
           echo "REPO_NAME=$REPO_NAME" && echo "REPO_NAME=$REPO_NAME" >> "$GITHUB_OUTPUT"
 
           # Create web url
-          WEB_URL="https://${{ github.repository_owner }}.github.io/$REPO_NAME"
+          if [[ -n "${{ vars.CUSTOM_DEPLOYMENT_URL }}" ]]; then
+            WEB_URL="${{ vars.CUSTOM_DEPLOYMENT_URL }}"
+          else
+            WEB_URL="https://${{ github.repository_owner }}.github.io/$REPO_NAME"
+          fi
           echo "WEB_URL=$WEB_URL" && echo "WEB_URL=$WEB_URL" >> "$GITHUB_OUTPUT"
 
       - id: write

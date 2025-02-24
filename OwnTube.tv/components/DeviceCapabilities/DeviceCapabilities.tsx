@@ -30,11 +30,7 @@ const DeviceCapabilities = () => {
   const { t } = useTranslation();
 
   const handleCopyToClipboard = async () => {
-    await Clipboard.setStringAsync(
-      JSON.stringify({ buildInfo: { ...build_info, WEB_URL: null }, ...deviceCapabilities }, (_key, value) => {
-        return value === null ? undefined : value;
-      }),
-    );
+    await Clipboard.setStringAsync(JSON.stringify({ buildInfo: build_info, ...deviceCapabilities }));
   };
 
   return (

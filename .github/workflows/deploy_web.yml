@@ -17,6 +17,10 @@ on:
         required: false
         type: boolean
         description: "Should a parent repo be used for customizations? (Required for branded builds)"
+      custom_deployment_url:
+        required: false
+        type: string
+        description: "Here you can specify a custom deployment url that you have configured in GitHub Pages settings"
 
 jobs:
   deploy_web:
@@ -56,6 +60,8 @@ jobs:
           EOF
 
       - name: Build Web App by @${{ github.actor }}
+        env:
+          EXPO_PUBLIC_CUSTOM_DEPLOYMENT_URL: ${{ vars.CUSTOM_DEPLOYMENT_URL }}
         run: cd OwnTube.tv/ && cat build-info.json && npx expo export --platform web
 
       - name: Setup Pages

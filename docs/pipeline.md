@@ -15,7 +15,7 @@ The main workflow in `deploy-static-main.yml` builds the application for all sup
 
 ## GitHub Pages deployment 🌍
 
-You can set up a custom domain for your web client deployments, for this configure the repository on GitHub and add a `CUSTOM_DEPLOYMENT_URL` variable to the 
+You can set up a custom domain for your web client deployments, for this configure the repository on GitHub and add a `CUSTOM_DEPLOYMENT_URL` variable to the
 `github-pages` environment in repository environments settings. From then on, OwnTube should automatically switch to your
 custom website address. Please note that some of the changes needed to configure this may take considerable time, such as DNS cache propagation.
 

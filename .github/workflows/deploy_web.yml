@@ -17,10 +17,6 @@ on:
         required: false
         type: boolean
         description: "Should a parent repo be used for customizations? (Required for branded builds)"
-      custom_deployment_url:
-        required: false
-        type: string
-        description: "Here you can specify a custom deployment url that you have configured in GitHub Pages settings"
 
 jobs:
   deploy_web:
@@ -53,6 +49,38 @@ jobs:
         run: |
           echo "${{ inputs.customizations_env_content }}" > ./OwnTube.tv/.env
 
+      - name: Create association files for deeplinking
+        run: |
+          mkdir -p ./OwnTube.tv/public/.well-known
+
+          cat > ./OwnTube.tv/public/.well-known/apple-app-site-association << 'EOF'
+          {
+            "applinks": {
+              "details": [
+                {
+                  "appID": "${{ vars.APPLE_DEVELOPMENT_TEAM }}.${{ vars.APPLE_BUNDLE_ID }}",
+                  "paths": ["*"]
+                }
+              ]
+            }
+          }
+          EOF
+
+          cat > ./OwnTube.tv/public/.well-known/assetlinks.json << 'EOF'
+          [
+            {
+              "relation": ["delegate_permission/common.handle_all_urls"],
+              "target": {
+                "namespace": "android_app",
+                "package_name": "${{ vars.ANDROID_PACKAGE }}",
+                "sha256_cert_fingerprints": [
+                  "${{ vars.ANDROID_FINGERPRINT }}"
+                ]
+              }
+            }
+          ]
+          EOF
+
       - name: Inject Build Info
         run: |
           cat > ./OwnTube.tv/build-info.json << 'EOF'
@@ -60,8 +88,6 @@ jobs:
           EOF
 
       - name: Build Web App by @${{ github.actor }}
-        env:
-          EXPO_PUBLIC_CUSTOM_DEPLOYMENT_URL: ${{ vars.CUSTOM_DEPLOYMENT_URL }}
         run: cd OwnTube.tv/ && cat build-info.json && npx expo export --platform web
 
       - name: Setup Pages

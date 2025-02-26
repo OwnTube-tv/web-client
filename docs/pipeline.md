@@ -19,6 +19,15 @@ You can set up a custom domain for your web client deployments, for this configu
 `github-pages` environment in repository environments settings. From then on, OwnTube should automatically switch to your
 custom website address. Please note that some of the changes needed to configure this may take considerable time, such as DNS cache propagation.
 
+Setting up a custom domain also opens the road to having deep links set up. Fortunately, the build pipeline can handle this
+process automatically, all you need to do is add the following values to `github-pages` environment variables:
+
+- `ANDROID_FINGERPRINT`: the SHA256 fingerprint of you app signing key certificate (obtained from Google Play console after first manual release);
+- `ANDROID_PACKAGE`: the Android package name for the app;
+- `APPLE_BUNDLE_ID`: bundle ID for the Apple version of the app;
+- `APPLE_DEVELOPMENT_TEAM`: Apple Development Team ID from App Store Connect;
+- `CUSTOM_DEPLOYMENT_URL`: should be added for custom domains to work in the first step;
+
 ## TestFlight upload ⏫
 
 Before uploading to TestFlight, create an "`owntube`" environment in repository settings if you haven't already, then add the following secrets to the environment:

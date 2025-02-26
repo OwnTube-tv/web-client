@@ -28,6 +28,9 @@ export default {
     buildNumber: getBuildNumber({ platform: "ios" }),
     supportsTablet: true,
     bundleIdentifier: process.env.EXPO_PUBLIC_IOS_BUNDLE_IDENTIFIER || "com.owntubetv.owntube",
+    associatedDomains: process.env.EXPO_PUBLIC_CUSTOM_DEPLOYMENT_URL
+      ? [`applinks:${process.env.EXPO_PUBLIC_CUSTOM_DEPLOYMENT_URL}`]
+      : undefined,
   },
   experiments: {
     baseUrl: !process.env.EXPO_PUBLIC_CUSTOM_DEPLOYMENT_URL
@@ -45,6 +48,22 @@ export default {
       backgroundColor: process.env.EXPO_PUBLIC_ANDROID_ADAPTIVE_ICON_BG_COLOR || "#F95F1E",
     },
     package: process.env.EXPO_PUBLIC_ANDROID_PACKAGE || "com.owntubetv.owntube",
+    intentFilters: process.env.EXPO_PUBLIC_CUSTOM_DEPLOYMENT_URL
+      ? [
+          {
+            action: "VIEW",
+            autoVerify: true,
+            data: [
+              {
+                scheme: "https",
+                host: process.env.EXPO_PUBLIC_CUSTOM_DEPLOYMENT_URL,
+                pathPrefix: "/",
+              },
+            ],
+            category: ["BROWSABLE", "DEFAULT"],
+          },
+        ]
+      : undefined,
   },
   web: {
     output: "static",

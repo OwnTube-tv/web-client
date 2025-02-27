@@ -11,6 +11,7 @@ export default function Root({ children }: PropsWithChildren) {
           name="viewport"
           content="height=device-height, width=device-width, initial-scale=1, shrink-to-fit=no, viewport-fit=cover"
         />
+        <meta name="apple-itunes-app" content={`app-id=${process.env.EXPO_PUBLIC_IOS_BUNDLE_IDENTIFIER}`} />
         {/* Link the PWA manifest file. */}
         <link rel="manifest" href="manifest.json" />
         <style id="expo-reset">{"html, body { height: 100%; } #root { display: flex; height: 100%; flex: 1; }"}</style>

@@ -91,7 +91,7 @@ export const LandingScreen = () => {
     <Screen
       style={{
         ...styles.screenContainer,
-        paddingTop: isDesktop ? spacing.xxxl : insets.top,
+        paddingTop: insets.top || spacing.xxxl,
       }}
     >
       <View style={[styles.container, { maxWidth: isDesktop ? "38%" : "95%" }]}>

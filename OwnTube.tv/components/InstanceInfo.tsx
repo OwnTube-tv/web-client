@@ -37,7 +37,13 @@ export const InstanceInfo = ({ backend, showText = true }: InstanceInfoProps) =>
           {isFetching ? (
             <ActivityIndicator size="small" />
           ) : (
-            <Typography fontSize="sizeSm" fontWeight="SemiBold" color={colors.theme950} numberOfLines={1}>
+            <Typography
+              style={styles.textContainer}
+              fontSize="sizeSm"
+              fontWeight="SemiBold"
+              color={colors.theme950}
+              numberOfLines={1}
+            >
               {data?.name}
             </Typography>
           )}
@@ -48,5 +54,8 @@ export const InstanceInfo = ({ backend, showText = true }: InstanceInfoProps) =>
 };
 
 const styles = StyleSheet.create({
-  container: { alignItems: "center", flexDirection: "row", gap: spacing.md },
+  container: { alignItems: "center", flexDirection: "row", flex: 1, gap: spacing.md },
+  textContainer: {
+    flex: 1,
+  },
 });

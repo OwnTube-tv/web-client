@@ -45,5 +45,5 @@ const styles = StyleSheet.create({
     padding: spacing.sm,
   },
   menuBtn: { height: 48, paddingVertical: 6 },
-  requiredElementsContainer: { flexDirection: "row", gap: spacing.xl },
+  requiredElementsContainer: { flexDirection: "row", flex: 1, gap: spacing.xl },
 });

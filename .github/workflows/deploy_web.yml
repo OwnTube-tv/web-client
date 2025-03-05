@@ -49,6 +49,56 @@ jobs:
         run: |
           echo "${{ inputs.customizations_env_content }}" > ./OwnTube.tv/.env
 
+      - name: Overwrite Manifest file && logo files for PWA customization
+        run: |
+          source ./OwnTube.tv/.env
+
+          # Write the manifest file
+          cat > ./OwnTube.tv/public/manifest.json << EOF
+          {
+            "short_name": "${EXPO_PUBLIC_APP_NAME:-OwnTube.tv}",
+            "name": "${EXPO_PUBLIC_APP_NAME:-OwnTube.tv}",
+            "description": "${EXPO_PUBLIC_APP_DESCRIPTION:-A web client for OwnTube.tv}",
+            "icons": [
+              {
+                "src": "favicon.ico",
+                "sizes": "32x32",
+                "type": "image/x-icon"
+              },
+              {
+                "src": "${EXPO_PUBLIC_ICON_192:-logo192.png}",
+                "type": "image/png",
+                "sizes": "192x192"
+              },
+              {
+                "src": "${EXPO_PUBLIC_ICON_512:-logo512.png}",
+                "type": "image/png",
+                "sizes": "512x512"
+              }
+            ],
+            "start_url": ".",
+            "display": "standalone",
+            "theme_color": "${EXPO_PUBLIC_APP_THEME_COLOR:-#000000}",
+            "background_color": "${EXPO_PUBLIC_APP_BG_COLOR:-#F95F1E}",
+            "screenshots": [
+              {
+                "src": "screenshot_wide.jpeg",
+                "sizes": "1280x576",
+                "type": "image/jpeg",
+                "form_factor": "wide",
+                "label": "${EXPO_PUBLIC_APP_NAME:-OwnTube.tv}"
+              },
+              {
+                "src": "screenshot_narrow.jpeg",
+                "sizes": "576x1280",
+                "type": "image/jpeg",
+                "form_factor": "narrow",
+                "label": "${EXPO_PUBLIC_APP_NAME:-OwnTube.tv}"
+              }
+            ]
+          }
+          EOF
+
       - name: Create association files for deeplinking
         run: |
           mkdir -p ./OwnTube.tv/public/.well-known

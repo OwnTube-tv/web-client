@@ -96,17 +96,16 @@ export const Sidebar: FC<SidebarProps> = ({ backend, ...navigationProps }) => {
           backgroundColor: colors.theme50,
           paddingHorizontal: shouldExpand ? spacing.md : ["ios", "android"].includes(Platform.OS) ? 0 : spacing.sm,
           width: "100%",
+          paddingTop: breakpoints.isDesktop ? 18 : undefined,
         },
       ]}
     >
       {shouldExpand ? (
         <View style={styles.expandedInstanceInfo}>
-          <View style={styles.header}>
-            <InstanceInfo backend={backend} />
-            {breakpoints.isMobile && (
-              <Button style={styles.button} icon="Arrow-Left" onPress={navigationProps.navigation.toggleDrawer} />
-            )}
-          </View>
+          <InstanceInfo backend={backend} />
+          {breakpoints.isMobile && (
+            <Button style={styles.button} icon="Arrow-Left" onPress={navigationProps.navigation.toggleDrawer} />
+          )}
         </View>
       ) : (
         <InstanceInfo backend={backend} showText={false} />
@@ -184,7 +183,7 @@ const styles = StyleSheet.create({
     paddingVertical: 6,
   },
   container: {
-    paddingTop: 18,
+    paddingTop: 8,
   },
   expandedInstanceInfo: {
     alignItems: "center",
@@ -193,13 +192,6 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     paddingBottom: spacing.lg,
     paddingLeft: spacing.xs,
-  },
-  header: {
-    alignItems: "center",
-    flexDirection: "row",
-    gap: spacing.md,
-    justifyContent: "space-between",
-    width: "100%",
   },
   paddingHHelper: {
     height: 48,

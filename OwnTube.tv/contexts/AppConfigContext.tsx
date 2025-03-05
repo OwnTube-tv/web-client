@@ -8,12 +8,15 @@ import {
   useEffect,
   useRef,
 } from "react";
-import { DeviceCapabilities, useDeviceCapabilities, useFeaturedInstancesData } from "../hooks";
+import { DeviceCapabilities, useDeviceCapabilities, useFeaturedInstancesData, useRecentInstances } from "../hooks";
 import { useNetInfo } from "@react-native-community/netinfo";
 
 import { InstanceConfig } from "../instanceConfigs";
 import Toast from "react-native-toast-message";
 import { useTranslation } from "react-i18next";
+import { useGlobalSearchParams } from "expo-router";
+import { writeToAsyncStorage } from "../utils";
+import { STORAGE } from "../types";
 
 interface IAppConfigContext {
   isDebugMode: boolean;
@@ -36,6 +39,8 @@ export const AppConfigContextProvider = ({ children }: PropsWithChildren) => {
   const { featuredInstances } = useFeaturedInstancesData();
   const { isConnected } = useNetInfo();
   const lastRecordedConnectionState = useRef<boolean | undefined | null>();
+  const { recentInstances, addRecentInstance } = useRecentInstances();
+  const { backend } = useGlobalSearchParams<{ backend: string }>();
 
   useEffect(() => {
     if (lastRecordedConnectionState.current === true && !isConnected) {
@@ -50,6 +55,13 @@ export const AppConfigContextProvider = ({ children }: PropsWithChildren) => {
   }, [isConnected]);
 
   const primaryBackend = process.env.EXPO_PUBLIC_PRIMARY_BACKEND;
+
+  useEffect(() => {
+    if (backend && !recentInstances?.length) {
+      addRecentInstance(backend);
+      writeToAsyncStorage(STORAGE.DATASOURCE, backend);
+    }
+  }, [backend]);
 
   return (
     <AppConfigContext.Provider

@@ -16,6 +16,7 @@ import { FormattedVideoDescription } from "../../../../FormattedVideoDescription
 import { Button, Separator } from "../../../../shared";
 import { spacing } from "../../../../../theme";
 import * as Clipboard from "expo-clipboard";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 interface VideoDetailsProps {
   onClose: () => void;
@@ -59,9 +60,15 @@ ${description}
     }, 3_000);
   };
 
+  const safeAreaInsets = useSafeAreaInsets();
+
   return (
     <Animated.View entering={SlideInLeft} exiting={SlideOutLeft} style={styles.animatedContainer}>
-      <ModalContainer onClose={onClose} title={name} containerStyle={styles.modalContainer}>
+      <ModalContainer
+        onClose={onClose}
+        title={name}
+        containerStyle={{ ...styles.modalContainer, paddingLeft: safeAreaInsets.left || spacing.xl }}
+      >
         <View style={styles.metadataContainer}>
           <ChannelLink
             text={channelName}

@@ -22,7 +22,7 @@ custom website address. Please note that some of the changes needed to configure
 Setting up a custom domain also opens the road to having deep links set up. Fortunately, the build pipeline can handle this
 process automatically, all you need to do is add the following values to `github-pages` environment variables:
 
-- `ANDROID_FINGERPRINT`: the SHA256 fingerprint of you app signing key certificate (obtained from Google Play console after first manual release);
+- `ANDROID_FINGERPRINT`: the SHA256 fingerprint of your app signing key certificate (obtained from Google Play console after first manual release);
 - `ANDROID_PACKAGE`: the Android package name for the app;
 - `APPLE_BUNDLE_ID`: bundle ID for the Apple version of the app;
 - `APPLE_DEVELOPMENT_TEAM`: Apple Development Team ID from App Store Connect;

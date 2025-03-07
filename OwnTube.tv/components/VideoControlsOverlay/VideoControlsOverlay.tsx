@@ -17,6 +17,7 @@ import PlayerButton from "./components/PlayerButton";
 import { useVideoControlsOverlay } from "./hooks/useVideoControlsOverlay";
 import { ViewOnSiteLink } from "../ViewOnSiteLink";
 import { useInstanceConfig } from "../../hooks";
+import AvRoutePickerButton from "../AvRoutePickerButton/AvRoutePickerButton";
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
@@ -223,7 +224,10 @@ const VideoControlsOverlay = ({
                     {`${getHumanReadableDuration(position * 1000)} / ${getHumanReadableDuration(duration * 1000)}`}
                   </Typography>
                 </View>
-                <PlayerButton onPress={toggleFullscreen} icon={`Fullscreen${isFullscreen ? "-Exit" : ""}`} />
+                <View style={styles.functionButtonsContainer}>
+                  <AvRoutePickerButton />
+                  <PlayerButton onPress={toggleFullscreen} icon={`Fullscreen${isFullscreen ? "-Exit" : ""}`} />
+                </View>
               </View>
             </LinearGradient>
           </Animated.View>
@@ -261,6 +265,7 @@ const styles = StyleSheet.create({
     width: "100%",
     zIndex: 1,
   },
+  functionButtonsContainer: { alignItems: "center", flexDirection: "row" },
   overlay: {
     alignItems: "center",
     alignSelf: "center",

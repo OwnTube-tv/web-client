@@ -49,8 +49,9 @@ jobs:
         run: |
           echo "${{ inputs.customizations_env_content }}" > ./OwnTube.tv/.env
 
-      - name: Overwrite Manifest file && logo files for PWA customization
+      - name: Overwrite Manifest file for PWA customization
         run: |
+          # Source the environment variables
           source ./OwnTube.tv/.env
 
           # Write the manifest file

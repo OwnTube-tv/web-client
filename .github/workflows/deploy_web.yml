@@ -50,6 +50,7 @@ jobs:
           echo "${{ inputs.customizations_env_content }}" > ./OwnTube.tv/.env
 
       - name: Overwrite Manifest file for PWA customization
+        if: ${{ inputs.customizations_env_content != '' }}
         run: |
           # Source the environment variables
           source ./OwnTube.tv/.env

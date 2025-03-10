@@ -52,6 +52,7 @@
     "react-dom": "18.3.1",
     "react-i18next": "^14.1.2",
     "react-native": "npm:react-native-tvos@~0.76.5-0",
+    "react-native-airplay-button": "^1.1.0",
     "react-native-gesture-handler": "~2.20.2",
     "react-native-markdown-display": "^7.0.2",
     "react-native-picker-select": "^9.2.0",

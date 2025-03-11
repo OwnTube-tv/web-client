@@ -6,11 +6,13 @@ const getBuildNumber = ({ platform }: { platform: "ios" | "android" }) => {
   return isAndroid ? buildNumber.slice(0, -1) : buildNumber;
 };
 
+const icon =
+  process.env.EXPO_PUBLIC_ICON || (process.env.EXPO_TV ? "./assets/appleTV/icon_1280x768.png" : "./assets/icon.png");
+
 export default {
   slug: process.env.EXPO_PUBLIC_APP_SLUG || "OwnTube.tv",
   name: process.env.EXPO_PUBLIC_APP_NAME || "OwnTube.tv",
-  icon:
-    process.env.EXPO_PUBLIC_ICON || (process.env.EXPO_TV ? "./assets/appleTV/icon_1280x768.png" : "./assets/icon.png"),
+  icon,
   scheme: "owntube",
   version: process.env.EXPO_PUBLIC_APP_VERSION || "1.0.0",
   assetBundlePatterns: ["**/*"],
@@ -41,11 +43,9 @@ export default {
     blockedPermissions: ["RECORD_AUDIO"],
     versionCode: getBuildNumber({ platform: "android" }),
     adaptiveIcon: {
-      foregroundImage:
-        process.env.EXPO_PUBLIC_ANDROID_ADAPTIVE_ICON_FOREGROUND || "./assets/adaptive-icon-foreground.png",
-      monochromeImage:
-        process.env.EXPO_PUBLIC_ANDROID_ADAPTIVE_ICON_MONOCHROME || "./assets/adaptive-icon-foreground.png",
-      backgroundColor: process.env.EXPO_PUBLIC_ANDROID_ADAPTIVE_ICON_BG_COLOR || "#F95F1E",
+      foregroundImage: process.env.EXPO_PUBLIC_ANDROID_ADAPTIVE_ICON_FOREGROUND,
+      monochromeImage: process.env.EXPO_PUBLIC_ANDROID_ADAPTIVE_ICON_MONOCHROME,
+      backgroundColor: process.env.EXPO_PUBLIC_ANDROID_ADAPTIVE_ICON_BG_COLOR,
     },
     package: process.env.EXPO_PUBLIC_ANDROID_PACKAGE || "com.owntubetv.owntube",
     intentFilters: process.env.EXPO_PUBLIC_CUSTOM_DEPLOYMENT_URL

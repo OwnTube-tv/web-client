@@ -42,11 +42,6 @@ export default {
   android: {
     blockedPermissions: ["RECORD_AUDIO"],
     versionCode: getBuildNumber({ platform: "android" }),
-    adaptiveIcon: {
-      foregroundImage: process.env.EXPO_PUBLIC_ANDROID_ADAPTIVE_ICON_FOREGROUND,
-      monochromeImage: process.env.EXPO_PUBLIC_ANDROID_ADAPTIVE_ICON_MONOCHROME,
-      backgroundColor: process.env.EXPO_PUBLIC_ANDROID_ADAPTIVE_ICON_BG_COLOR,
-    },
     package: process.env.EXPO_PUBLIC_ANDROID_PACKAGE || "com.owntubetv.owntube",
     intentFilters: process.env.EXPO_PUBLIC_CUSTOM_DEPLOYMENT_URL
       ? [

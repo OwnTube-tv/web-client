@@ -1,0 +1,236 @@
+import { Platform, Pressable, StyleSheet, View } from "react-native";
+import { borderRadius, spacing } from "../theme";
+import { useTheme } from "@react-navigation/native";
+import { useMemo, useState } from "react";
+import { Typography } from "./Typography";
+import { IcoMoonIcon } from "./IcoMoonIcon";
+import { Spacer } from "./shared/Spacer";
+import { useGetVideoQuery } from "../api";
+import { useLocalSearchParams } from "expo-router";
+import { RootStackParams } from "../app/_layout";
+import { ROUTES } from "../types";
+import { useHoverState } from "../hooks";
+import TVFocusGuideHelper from "./helpers/TVFocusGuideHelper";
+
+interface PlaybackSettingsPopupProps {
+  selectedSpeed: number;
+  handleSetSpeed: (speed: number) => void;
+  selectedQuality: string;
+  handleSetQuality: (quality: string) => void;
+  onSelectOption?: () => void;
+}
+
+const Setting = ({ name, state, onPress }: { name: string; state?: string; onPress: () => void }) => {
+  const { colors } = useTheme();
+  const { isHovered, toggleHovered } = useHoverState();
+  const [isFocused, setIsFocused] = useState(false);
+
+  return (
+    <Pressable
+      onHoverOut={toggleHovered}
+      onHoverIn={toggleHovered}
+      onFocus={() => setIsFocused(true)}
+      onBlur={() => setIsFocused(false)}
+      style={[
+        styles.settingContainer,
+        { backgroundColor: isHovered || (isFocused && Platform.isTV) ? colors.white10 : undefined },
+      ]}
+      onPress={onPress}
+      hasTVPreferredFocus
+    >
+      <View style={styles.settingContent}>
+        <Typography fontSize="sizeXS" color={colors.white94} fontWeight="SemiBold">
+          {name}
+        </Typography>
+        <Typography fontSize="sizeXS" color={colors.white94} fontWeight="Regular">
+          {state}
+        </Typography>
+      </View>
+      <Spacer width={spacing.xs} />
+      <IcoMoonIcon name="Chevron-Right" size={24} color={colors.white94} />
+    </Pressable>
+  );
+};
+
+const OptionsHeader = ({ onBackPress, text }: { onBackPress: () => void; text: string }) => {
+  const { colors } = useTheme();
+  const { isHovered, toggleHovered } = useHoverState();
+  const [isFocused, setIsFocused] = useState(false);
+
+  return (
+    <Pressable
+      onHoverOut={toggleHovered}
+      onHoverIn={toggleHovered}
+      onFocus={() => setIsFocused(true)}
+      onBlur={() => setIsFocused(false)}
+      style={[
+        styles.headerContainer,
+        { backgroundColor: isHovered || (isFocused && Platform.isTV) ? colors.white10 : undefined },
+      ]}
+      onPress={onBackPress}
+      hasTVPreferredFocus
+    >
+      <IcoMoonIcon name="Chevron-Left" size={24} color={colors.white94} />
+      <Spacer width={spacing.xs} />
+      <Typography fontSize="sizeXS" color={colors.white94} fontWeight="SemiBold">
+        {text}
+      </Typography>
+    </Pressable>
+  );
+};
+
+const Option = ({
+  id,
+  text,
+  isSelected,
+  onPress,
+}: {
+  id: string;
+  text: string;
+  isSelected: boolean;
+  onPress: (arg: string) => void;
+}) => {
+  const { colors } = useTheme();
+  const { isHovered, toggleHovered } = useHoverState();
+  const [isFocused, setIsFocused] = useState(false);
+
+  return (
+    <Pressable
+      onHoverOut={toggleHovered}
+      onHoverIn={toggleHovered}
+      onFocus={() => setIsFocused(true)}
+      onBlur={() => setIsFocused(false)}
+      style={[
+        styles.optionContainer,
+        { backgroundColor: isHovered || (isFocused && Platform.isTV) ? colors.white10 : undefined },
+      ]}
+      onPress={() => onPress(id)}
+    >
+      <View style={styles.optionContent}>
+        {isSelected ? (
+          <IcoMoonIcon name="Check" size={24} color={colors.white94} />
+        ) : (
+          <Spacer width={24} height={24 + Number(Platform.OS === "web") + 0.5 * Number(Platform.OS !== "web")} />
+        )}
+        <Spacer width={spacing.xs} />
+        <Typography fontSize="sizeXS" color={colors.white94} fontWeight="Regular">
+          {text}
+        </Typography>
+      </View>
+    </Pressable>
+  );
+};
+
+export const PlaybackSettingsPopup = ({
+  selectedQuality,
+  selectedSpeed,
+  handleSetSpeed,
+  handleSetQuality,
+  onSelectOption,
+}: PlaybackSettingsPopupProps) => {
+  const { colors } = useTheme();
+  const [selectedScreen, setSelectedScreen] = useState<keyof typeof screens>("settings");
+  const { id } = useLocalSearchParams<RootStackParams[ROUTES.VIDEO]>();
+  const { data: videoData } = useGetVideoQuery({ id, enabled: false });
+
+  const screens = useMemo(() => {
+    const qualityOptions = (
+      videoData?.streamingPlaylists?.[0]?.files?.length ? videoData?.streamingPlaylists?.[0]?.files : videoData?.files
+    )
+      ?.map(({ resolution }) => ({ ...resolution, id: String(resolution.id) }))
+      .concat([{ id: "auto", label: "Auto" }]);
+
+    return {
+      settings: (
+        [
+          {
+            name: "Playback speed",
+            id: "playbackSpeed",
+            state: selectedSpeed === 1 ? "Normal" : String(selectedSpeed),
+          },
+          { name: "Quality", id: "quality", state: qualityOptions?.find(({ id }) => selectedQuality === id)?.label },
+        ] as const
+      ).map(({ name, id, state }) => (
+        <Setting key={id} name={name} state={state} onPress={() => setSelectedScreen(id)} />
+      )),
+      playbackSpeed: (
+        <>
+          <OptionsHeader text={"Playback Speed"} onBackPress={() => setSelectedScreen("settings")} />
+          {[1.5, 1.25, 1, 0.75, 0.5].map((speed) => (
+            <Option
+              key={speed.toString()}
+              id={speed.toString()}
+              isSelected={speed === selectedSpeed}
+              text={speed === 1 ? "Normal" : speed.toString()}
+              onPress={(speed: string) => {
+                handleSetSpeed(Number(speed));
+                onSelectOption?.();
+              }}
+            />
+          ))}
+        </>
+      ),
+      quality: (
+        <>
+          <OptionsHeader text={"Quality"} onBackPress={() => setSelectedScreen("settings")} />
+          {qualityOptions?.map(({ id, label }) => (
+            <Option
+              onPress={(quality: string) => {
+                handleSetQuality(quality);
+                onSelectOption?.();
+              }}
+              key={id}
+              id={id}
+              isSelected={id === selectedQuality}
+              text={label}
+            />
+          ))}
+        </>
+      ),
+    };
+  }, [colors, selectedSpeed, selectedQuality, videoData]);
+
+  return (
+    <TVFocusGuideHelper style={[styles.container, { backgroundColor: colors.black80 }]}>
+      {screens[selectedScreen]}
+    </TVFocusGuideHelper>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    borderRadius: borderRadius.radiusMd,
+    paddingVertical: spacing.sm,
+    width: 256,
+  },
+  headerContainer: {
+    alignItems: "center",
+    flexDirection: "row",
+    paddingHorizontal: spacing.lg,
+    paddingVertical: spacing.sm,
+  },
+  optionContainer: {
+    alignItems: "center",
+    flexDirection: "row",
+    height: spacing.xxl,
+    paddingHorizontal: spacing.lg,
+    paddingVertical: spacing.sm,
+  },
+  optionContent: {
+    alignItems: "center",
+    flexDirection: "row",
+    flex: 1,
+  },
+  settingContainer: {
+    alignItems: "center",
+    flexDirection: "row",
+    paddingHorizontal: spacing.lg,
+    paddingVertical: spacing.sm,
+  },
+  settingContent: {
+    alignItems: "center",
+    flexDirection: "row",
+    flex: 1,
+    justifyContent: "space-between",
+  },
+});

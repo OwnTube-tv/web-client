@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { View } from "react-native";
 import Player from "video.js/dist/types/player";
 import { VideoViewProps } from "./VideoView";
@@ -8,7 +8,7 @@ import videojs from "video.js";
 import * as Device from "expo-device";
 import { DeviceType } from "expo-device";
 import VideoControlsOverlay from "../VideoControlsOverlay";
-import { useLocalSearchParams } from "expo-router";
+import { useFocusEffect, useLocalSearchParams } from "expo-router";
 import { RootStackParams } from "../../app/_layout";
 import { ROUTES } from "../../types";
 
@@ -29,6 +29,8 @@ const VideoView = ({
   handleShare,
   handleOpenSettings,
   viewUrl,
+  selectedQuality,
+  handleSetQuality,
 }: VideoViewProps) => {
   const { videojs } = window;
   const videoRef = useRef<HTMLDivElement>(null);
@@ -42,6 +44,7 @@ const VideoView = ({
     duration: 1,
     playableDuration: 0,
     volume: 1,
+    rate: 1,
   });
   const isMobile = Device.deviceType !== DeviceType.DESKTOP;
   const [isControlsVisible, setIsControlsVisible] = useState(false);
@@ -132,6 +135,12 @@ const VideoView = ({
 
       updatePlaybackStatus({ volume: vol });
     });
+
+    player.on("ratechange", () => {
+      const rate = playerRef.current?.playbackRate();
+
+      updatePlaybackStatus({ rate });
+    });
   };
 
   useEffect(() => {
@@ -163,12 +172,6 @@ const VideoView = ({
       }
     };
   }, []);
-
-  useEffect(() => {
-    if (timestamp) {
-      playerRef.current?.currentTime(Number(timestamp));
-    }
-  }, [timestamp]);
 
   useEffect(() => {
     const { position } = playbackStatus;
@@ -221,6 +224,27 @@ const VideoView = ({
     };
   }, []);
 
+  const isInitialVideoLoadDone = useRef(false);
+
+  useFocusEffect(
+    useCallback(() => {
+      const position = playerRef.current?.currentTime();
+      if (playerRef.current?.paused() && isInitialVideoLoadDone) {
+        playerRef.current?.autoplay(false);
+      }
+
+      playerRef.current?.src(uri);
+
+      playerRef.current?.currentTime(!isInitialVideoLoadDone.current ? Number(timestamp) : position);
+
+      isInitialVideoLoadDone.current = true;
+
+      return () => {
+        playerRef.current?.autoplay(true);
+      };
+    }, [uri]),
+  );
+
   const handleVolumeControl = (volume: number) => {
     const formattedVolume = (volume < 0 ? 0 : volume) * 0.01;
 
@@ -239,6 +263,10 @@ const VideoView = ({
     if (!isMobile) {
       handlePlayPause();
     }
+  };
+
+  const handleSetSpeed = (speed: number) => {
+    playerRef.current?.playbackRate(speed);
   };
 
   return (
@@ -268,6 +296,10 @@ const VideoView = ({
         handleOpenDetails={handleOpenDetails}
         handleShare={handleShare}
         handleOpenSettings={handleOpenSettings}
+        handleSetSpeed={handleSetSpeed}
+        speed={playbackStatus.rate}
+        selectedQuality={selectedQuality}
+        handleSetQuality={handleSetQuality}
       >
         <div style={{ position: "fixed", cursor: "pointer" }} ref={videoRef} data-testid={`${testID}-video-playback`} />
         {isMobile && isControlsVisible && <View style={styles.opacityOverlay} />}

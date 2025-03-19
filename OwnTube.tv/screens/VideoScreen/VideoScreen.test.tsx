@@ -41,6 +41,10 @@ jest.mock("@react-navigation/native", () => ({
 jest.mock("react-native-safe-area-context", () => ({
   useSafeAreaInsets: jest.fn(() => mockSafeAreaContext),
 }));
+jest.mock("react-native-video", () => ({
+  Video: "Video",
+}));
+jest.mock("../../components/VideoView", () => "VideoView");
 
 describe("VideoScreen", () => {
   beforeAll(() => {
@@ -50,9 +54,7 @@ describe("VideoScreen", () => {
 
   it("should form a correct video uri and choose highest available quality no more than 1080", () => {
     render(<VideoScreen />);
-    expect(screen.getByTestId("123-video-view-video-playback").props.src.uri).toBe(
-      "http://abc.xyz/static/web-videos/123-1080.mp4",
-    );
+    expect(screen.getByTestId("123-video-view").props.uri).toBe("http://abc.xyz/static/web-videos/123-1080.mp4");
   });
 
   it("should not render video if there is no id", () => {

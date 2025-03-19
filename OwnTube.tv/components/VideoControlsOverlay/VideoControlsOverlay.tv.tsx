@@ -21,8 +21,9 @@ import PlayerButton from "./components/PlayerButton";
 import { VideoControlsOverlayProps } from "./VideoControlsOverlay";
 import { useVideoControlsOverlay } from "./hooks/useVideoControlsOverlay";
 import { useFocusEffect } from "expo-router";
+import { PlaybackSettingsPopup } from "../PlaybackSettingsPopup";
 
-const AndroidFocusHelperContainer = forwardRef<View, PropsWithChildren<{ isVisible: boolean; onPress: () => void }>>(
+const AndroidFocusHelperContainer = forwardRef<View, PropsWithChildren<{ isVisible: boolean; onPress?: () => void }>>(
   ({ isVisible, onPress, children }, ref) => {
     return Platform.select({
       android: (
@@ -64,6 +65,10 @@ const VideoControlsOverlay = ({
   handleShare,
   handleOpenSettings,
   handleHideOverlay,
+  handleSetSpeed,
+  speed,
+  selectedQuality,
+  handleSetQuality,
 }: PropsWithChildren<VideoControlsOverlayProps>) => {
   const {
     isSeekBarFocused,
@@ -76,18 +81,22 @@ const VideoControlsOverlay = ({
     colors,
     backend,
     router,
+    isSettingsMenuVisible,
+    setIsSettingsMenuVisible,
   } = useVideoControlsOverlay({
     isPlaying,
     shouldReplay,
     availableDuration,
     duration,
     position,
+    isVisible,
   });
 
   const [backRef, setBackRef] = useState<View | null>(null);
   const [detailsRef, setDetailsRef] = useState<View | null>(null);
   const [shareBtnRef, setShareBtnRef] = useState<View | null>(null);
   const containerRef = useRef<View | null>(null);
+  const settingsRef = useRef<View | null>(null);
 
   const { height } = useWindowDimensions();
 
@@ -289,6 +298,20 @@ const VideoControlsOverlay = ({
                 icon="Fast-forward-30"
               />
             </TVFocusGuideView>
+            {isSettingsMenuVisible && (
+              <View style={styles.playbackSettingsContainer}>
+                <PlaybackSettingsPopup
+                  handleSetQuality={handleSetQuality}
+                  selectedQuality={selectedQuality}
+                  handleSetSpeed={handleSetSpeed}
+                  selectedSpeed={speed}
+                  onSelectOption={() => {
+                    setIsSettingsMenuVisible(false);
+                    settingsRef.current?.requestTVFocus();
+                  }}
+                />
+              </View>
+            )}
           </View>
           <View style={styles.animatedBottomContainer} pointerEvents="box-none">
             <LinearGradient
@@ -323,7 +346,11 @@ const VideoControlsOverlay = ({
                     {`${getHumanReadableDuration(position * 1000)} / ${getHumanReadableDuration(duration * 1000)}`}
                   </Typography>
                 </View>
-                <View />
+                <PlayerButton
+                  ref={settingsRef}
+                  icon="Settings"
+                  onPress={() => setIsSettingsMenuVisible((cur) => !cur)}
+                />
               </View>
             </LinearGradient>
           </View>
@@ -384,6 +411,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
   },
+  playbackSettingsContainer: { bottom: spacing.xs, position: "absolute", right: spacing.xs },
   scrubBarContainer: {
     borderColor: colors.light.white94,
     borderRadius: borderRadius.radiusSm,

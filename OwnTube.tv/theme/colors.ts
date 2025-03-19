@@ -10,18 +10,22 @@ export interface ColorScheme {
   theme900: string;
   theme950: string;
   themeDesaturated500: string;
+  white10: string;
   white25: string;
   white80: string;
   white94: string;
   black50: string;
+  black80: string;
   black100: string;
 }
 
 const blackAndWhite = {
+  white10: "#FFFFFF1A",
   white25: "#FFFFFF40",
   white80: "#FFFFFFCC",
   white94: "#FFFFFFF0",
   black50: "#00000080",
+  black80: "#000000CC",
   black100: "#000000",
 };
 

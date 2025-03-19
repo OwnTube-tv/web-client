@@ -20,10 +20,11 @@ export const VideoScreen = () => {
   const { t } = useTranslation();
   const router = useRouter();
   const params = useLocalSearchParams<RootStackParams[ROUTES.VIDEO]>();
-  const { data, isFetching, isError, refetch } = useGetVideoQuery(params?.id);
+  const { data, isFetching, isError, refetch } = useGetVideoQuery({ id: params?.id });
   const { updateHistory } = useViewHistory();
   const { isFullscreen, toggleFullscreen } = useFullScreenVideoPlayback();
   const { top } = useSafeAreaInsets();
+  const [quality, setQuality] = useState("auto");
 
   useEffect(() => {
     if (data && params?.backend) {
@@ -46,14 +47,20 @@ export const VideoScreen = () => {
     if (data?.streamingPlaylists?.length) {
       const hlsStream = data.streamingPlaylists[0];
 
-      return hlsStream.playlistUrl;
+      const streamByQuality = hlsStream.files.find(({ resolution }) => String(resolution.id) === quality);
+
+      if (!streamByQuality) return hlsStream.playlistUrl;
+
+      // fallback to .replace() is for older instances without playlistUrl support
+      return streamByQuality.playlistUrl || streamByQuality.fileUrl.replace(`-fragmented.mp4`, ".m3u8");
     }
 
-    const files = data.files?.filter(({ resolution }) => resolution.id <= 1080);
+    const webVideoFileByQuality = data.files?.find(({ resolution }) => String(resolution.id) === quality);
 
-    // temporarily choose the highest quality
-    return files?.[0].fileUrl;
-  }, [params, data]);
+    if (!webVideoFileByQuality) return data.files?.filter(({ resolution }) => resolution.id <= 1080)[0]?.fileUrl;
+
+    return webVideoFileByQuality?.fileUrl;
+  }, [params, data, quality]);
 
   const handleSetTimeStamp = (timestamp: number) => {
     if (!params?.id) {
@@ -72,6 +79,7 @@ export const VideoScreen = () => {
     useCallback(() => {
       return () => {
         closeModal();
+        setQuality("auto");
       };
     }, []),
   );
@@ -128,6 +136,8 @@ export const VideoScreen = () => {
             setVisibleModal("share");
           }}
           viewUrl={data?.url}
+          selectedQuality={quality}
+          handleSetQuality={setQuality}
         />
         <FullScreenModal onBackdropPress={closeModal} isVisible={visibleModal === "details"}>
           <VideoDetails

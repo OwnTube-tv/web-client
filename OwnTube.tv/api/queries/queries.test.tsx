@@ -47,13 +47,13 @@ describe("useGetVideoQuery", () => {
 
   it("should fetch test data if selected", async () => {
     (useLocalSearchParams as jest.Mock).mockReturnValue({ backend: SOURCES.TEST_DATA });
-    renderHook(() => useGetVideoQuery("123"), { wrapper });
+    renderHook(() => useGetVideoQuery({ id: "123" }), { wrapper });
     await waitFor(() => expect(getLocalData).toHaveBeenCalledWith("video"));
   });
 
   it("should fetch live data", async () => {
     (useLocalSearchParams as jest.Mock).mockReturnValue({ backend: "abc.xyz" });
-    const { result } = renderHook(() => useGetVideoQuery("123"), { wrapper });
+    const { result } = renderHook(() => useGetVideoQuery({ id: "123" }), { wrapper });
     await waitFor(() => expect(getLocalData).not.toHaveBeenCalled());
     await waitFor(() => expect(ApiServiceImpl.getVideo).toHaveBeenCalledWith("abc.xyz", "123"));
     await waitFor(() => expect(result.current.data).toStrictEqual({ description: "desc", uuid: "123" }));

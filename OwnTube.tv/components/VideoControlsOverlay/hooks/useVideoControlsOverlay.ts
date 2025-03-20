@@ -3,7 +3,7 @@ import { RootStackParams } from "../../../app/_layout";
 import { ROUTES } from "../../../types";
 import { useTranslation } from "react-i18next";
 import { useTheme } from "@react-navigation/native";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { VideoControlsOverlayProps } from "../VideoControlsOverlay";
 
 export const useVideoControlsOverlay = ({
@@ -12,8 +12,12 @@ export const useVideoControlsOverlay = ({
   availableDuration,
   duration,
   position,
+  isVisible,
 }: Required<
-  Pick<VideoControlsOverlayProps, "isPlaying" | "shouldReplay" | "availableDuration" | "duration" | "position">
+  Pick<
+    VideoControlsOverlayProps,
+    "isPlaying" | "shouldReplay" | "availableDuration" | "duration" | "position" | "isVisible"
+  >
 >) => {
   const { backend } = useLocalSearchParams<RootStackParams[ROUTES.VIDEO]>();
   const { t } = useTranslation();
@@ -40,6 +44,14 @@ export const useVideoControlsOverlay = ({
     }
   };
 
+  const [isSettingsMenuVisible, setIsSettingsMenuVisible] = useState(false);
+
+  useEffect(() => {
+    if (!isVisible) {
+      setIsSettingsMenuVisible(false);
+    }
+  }, [isVisible]);
+
   return {
     isSeekBarFocused,
     setIsSeekBarFocused,
@@ -51,5 +63,7 @@ export const useVideoControlsOverlay = ({
     colors,
     backend,
     router,
+    isSettingsMenuVisible,
+    setIsSettingsMenuVisible,
   };
 };

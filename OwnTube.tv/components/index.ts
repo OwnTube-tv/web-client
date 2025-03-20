@@ -37,3 +37,4 @@ export * from "./TVActionCard";
 export * from "./ViewOnSiteLink";
 export * from "./FormattedVideoDescription";
 export * from "./AvRoutePickerButton";
+export * from "./PlaybackSettingsPopup";

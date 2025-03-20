@@ -18,6 +18,7 @@ import { useVideoControlsOverlay } from "./hooks/useVideoControlsOverlay";
 import { ViewOnSiteLink } from "../ViewOnSiteLink";
 import { useInstanceConfig } from "../../hooks";
 import AvRoutePickerButton from "../AvRoutePickerButton/AvRoutePickerButton";
+import { PlaybackSettingsPopup } from "../PlaybackSettingsPopup";
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
@@ -47,6 +48,10 @@ export interface VideoControlsOverlayProps {
   handleOpenSettings: () => void;
   videoLinkProps: { url?: string; backend: string };
   handleHideOverlay?: () => void;
+  handleSetSpeed: (speed: number) => void;
+  speed: number;
+  selectedQuality: string;
+  handleSetQuality: (quality: string) => void;
 }
 
 const VideoControlsOverlay = ({
@@ -76,6 +81,10 @@ const VideoControlsOverlay = ({
   handleOpenSettings,
   videoLinkProps,
   handleHideOverlay,
+  handleSetSpeed,
+  speed,
+  selectedQuality,
+  handleSetQuality,
 }: PropsWithChildren<VideoControlsOverlayProps>) => {
   const {
     isSeekBarFocused,
@@ -87,12 +96,15 @@ const VideoControlsOverlay = ({
     t,
     colors,
     backend,
+    isSettingsMenuVisible,
+    setIsSettingsMenuVisible,
   } = useVideoControlsOverlay({
     isPlaying,
     shouldReplay,
     availableDuration,
     duration,
     position,
+    isVisible,
   });
   const isMobile = Device.deviceType !== DeviceType.DESKTOP;
   const { currentInstanceConfig } = useInstanceConfig();
@@ -147,7 +159,7 @@ const VideoControlsOverlay = ({
               </View>
               <View style={styles.topRightControls}>
                 <ShareButton onPress={handleShare} isMobile={isMobile} />
-                <PlayerButton onPress={handleOpenSettings} icon="Settings" />
+                <PlayerButton onPress={handleOpenSettings} icon="Kebab-menu" />
               </View>
             </LinearGradient>
           </Animated.View>
@@ -180,11 +192,21 @@ const VideoControlsOverlay = ({
               colors={isMobile ? ["#00000000", "#00000000", "#00000000"] : ["#00000000", "#0000004D", "#000000AB"]}
               style={[styles.bottomControlsContainer, ...(isMobile ? [{}] : [{ height: 360 }])]}
             >
-              {!hideVideoSiteLink && !!videoLinkProps?.url && (
-                <View style={styles.videoLinkContainer}>
+              <View style={styles.videoLinkContainer}>
+                {isSettingsMenuVisible && (
+                  <View style={styles.playbackSettingsContainer}>
+                    <PlaybackSettingsPopup
+                      handleSetQuality={handleSetQuality}
+                      selectedQuality={selectedQuality}
+                      handleSetSpeed={handleSetSpeed}
+                      selectedSpeed={speed}
+                    />
+                  </View>
+                )}
+                {!hideVideoSiteLink && !!videoLinkProps?.url && (
                   <ViewOnSiteLink site={videoLinkProps?.backend} url={videoLinkProps?.url} />
-                </View>
-              )}
+                )}
+              </View>
               <Pressable
                 accessible={false}
                 onHoverIn={() => setIsSeekBarFocused(true)}
@@ -226,6 +248,7 @@ const VideoControlsOverlay = ({
                 </View>
                 <View style={styles.functionButtonsContainer}>
                   <AvRoutePickerButton />
+                  <PlayerButton icon="Settings" onPress={() => setIsSettingsMenuVisible((cur) => !cur)} />
                   <PlayerButton onPress={toggleFullscreen} icon={`Fullscreen${isFullscreen ? "-Exit" : ""}`} />
                 </View>
               </View>
@@ -286,6 +309,7 @@ const styles = StyleSheet.create({
     width: "100%",
     zIndex: -1,
   },
+  playbackSettingsContainer: { bottom: -spacing.xxl, position: "relative", zIndex: 1 },
   scrubBarContainer: { height: spacing.md, width: "100%" },
   timingContainer: {
     height: 48,
@@ -307,7 +331,12 @@ const styles = StyleSheet.create({
   topLeftControls: { flexDirection: "row", gap: spacing.sm, maxWidth: 600, width: "60%" },
   topRightControls: { alignItems: "center", flexDirection: "row" },
   videoInfoContainer: { gap: spacing.md, width: "100%" },
-  videoLinkContainer: { alignSelf: "flex-end", justifyContent: "flex-end", marginBottom: spacing.xl },
+  videoLinkContainer: {
+    alignItems: "flex-end",
+    alignSelf: "flex-end",
+    justifyContent: "flex-end",
+    marginBottom: spacing.xl,
+  },
 });
 
 export default VideoControlsOverlay;

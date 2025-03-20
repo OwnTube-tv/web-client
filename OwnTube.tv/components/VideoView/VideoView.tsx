@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Platform, View } from "react-native";
 import { styles } from "./styles";
 import * as Device from "expo-device";
@@ -31,6 +31,8 @@ export interface VideoViewProps {
   isModalOpen: boolean;
   viewUrl?: string;
   videoData?: PeertubeVideoModel;
+  selectedQuality: string;
+  handleSetQuality: (quality: string) => void;
 }
 
 const VideoView = ({
@@ -48,9 +50,10 @@ const VideoView = ({
   isModalOpen,
   viewUrl,
   videoData,
+  selectedQuality,
+  handleSetQuality,
 }: VideoViewProps) => {
   const videoRef = useRef<VideoRef>(null);
-
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
@@ -136,6 +139,34 @@ const VideoView = ({
     setDuration(duration);
   };
 
+  const [playbackSpeed, setPlaybackSpeed] = useState(1);
+
+  const videoSource = useMemo(() => {
+    return {
+      startPosition: Number(timestamp || 0) * 1000,
+      metadata: {
+        title: videoData?.name,
+        subtitle: videoData?.truncatedDescription,
+        artist: `${videoData?.channel?.displayName} (${videoData?.channel?.host})`,
+        description: videoData?.description,
+        imageUri: `https://${videoData?.channel?.host}${videoData?.thumbnailPath}`,
+      },
+    };
+  }, [timestamp, videoData]);
+
+  const isInitialVideoLoadDone = useRef(false);
+
+  useEffect(() => {
+    if (uri) {
+      videoRef.current?.setSource({
+        ...videoSource,
+        uri,
+        startPosition: Number(!isInitialVideoLoadDone.current ? Number(timestamp) : currentTime) * 1000,
+      });
+      isInitialVideoLoadDone.current = true;
+    }
+  }, [uri]);
+
   return (
     <View collapsable={false} style={styles.container}>
       <VideoControlsOverlay
@@ -164,6 +195,10 @@ const VideoView = ({
         handleShare={handleShare}
         handleOpenSettings={handleOpenSettings}
         handleHideOverlay={hideOverlay}
+        handleSetSpeed={setPlaybackSpeed}
+        speed={playbackSpeed}
+        selectedQuality={selectedQuality}
+        handleSetQuality={handleSetQuality}
       >
         <Video
           onEnd={() => setShouldReplay(true)}
@@ -175,17 +210,7 @@ const VideoView = ({
           playInBackground={!Platform.isTV}
           testID={`${testID}-video-playback`}
           ref={videoRef}
-          source={{
-            uri,
-            startPosition: Number(timestamp || 0) * 1000,
-            metadata: {
-              title: videoData?.name,
-              subtitle: videoData?.truncatedDescription,
-              artist: `${videoData?.channel?.displayName} (${videoData?.channel?.host})`,
-              description: videoData?.description,
-              imageUri: `https://${videoData?.channel?.host}${videoData?.thumbnailPath}`,
-            },
-          }}
+          rate={playbackSpeed}
           onPlaybackStateChanged={({ isPlaying: isPlayingState }) => {
             isPlayingRef.current = isPlayingState;
             setIsPlaying(isPlayingState);

@@ -8,7 +8,7 @@ import { Platform } from "react-native";
 
 export default function video() {
   const { id } = useLocalSearchParams<RootStackParams["video"]>();
-  const { data: title } = useGetVideoQuery(id, (data) => data.name);
+  const { data: title } = useGetVideoQuery<string>({ id, select: (data) => data.name });
   const { t } = useTranslation();
 
   return (

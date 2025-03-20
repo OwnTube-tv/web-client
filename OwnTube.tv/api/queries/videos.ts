@@ -72,7 +72,15 @@ export const useInfiniteVideosQuery = (
   });
 };
 
-export const useGetVideoQuery = <TResult = Video>(id?: string, select?: (data: Video) => TResult) => {
+export const useGetVideoQuery = <TResult = Video>({
+  id,
+  select,
+  enabled = true,
+}: {
+  id?: string;
+  select?: (data: Video) => TResult;
+  enabled?: boolean;
+}) => {
   const { backend } = useLocalSearchParams<RootStackParams["index"]>();
 
   return useQuery({
@@ -85,7 +93,7 @@ export const useGetVideoQuery = <TResult = Video>(id?: string, select?: (data: V
       return await ApiServiceImpl.getVideo(backend!, id!);
     },
     refetchOnWindowFocus: false,
-    enabled: !!backend && !!id,
+    enabled: !!backend && !!id && enabled,
     select,
     retry,
   });

@@ -1,4 +1,6 @@
-const AvRoutePickerButton = () => {
+import { AvRoutePickerButtonProps } from "./AvRoutePickerButton.web";
+
+const AvRoutePickerButton = (_props: AvRoutePickerButtonProps) => {
   return <></>;
 };
 

@@ -7,7 +7,7 @@ describe("peertubeVideosApi", () => {
 
     expect(videos).toBeDefined();
     expect(videos.data.length).toBeLessThanOrEqual(15);
-  });
+  }, 10000);
 
   it("should return a list of videos, limited to maximum 2 when specified", async () => {
     const peertubeVideosApi = new PeertubeVideosApi();
@@ -15,7 +15,7 @@ describe("peertubeVideosApi", () => {
 
     expect(videos).toBeDefined();
     expect(videos.data.length).toBeLessThanOrEqual(2);
-  });
+  }, 10000);
 
   // it("should return total number of videos", async () => {
   //   const peertubeVideosApi = new PeertubeVideosApi();
@@ -37,7 +37,7 @@ describe("peertubeVideosApi", () => {
     videos = await peertubeVideosApi.getVideos("peertube2.cpy.re", { count: totalVideos + 1 });
     expect(videos).toBeDefined();
     expect(videos.data.length).toBe(totalVideos);
-  });
+  }, 10000);
 
   it("should get video info by uuid", async () => {
     const peertubeVideosApi = new PeertubeVideosApi();
@@ -45,5 +45,5 @@ describe("peertubeVideosApi", () => {
 
     expect(videoInfo).toBeDefined();
     expect(videoInfo.name).toBe("The Internet's Own Boy");
-  });
+  }, 10000);
 });

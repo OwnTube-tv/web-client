@@ -17,6 +17,7 @@ export default function video() {
         default: null,
         web: (
           <Head>
+            <script src="https://www.gstatic.com/cv/js/sender/v1/cast_sender.js?loadCastFramework=1" />
             <title>{title}</title>
             <meta name="description" content={t("viewVideo")} />
           </Head>

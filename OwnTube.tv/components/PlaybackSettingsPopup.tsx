@@ -11,6 +11,7 @@ import { RootStackParams } from "../app/_layout";
 import { ROUTES } from "../types";
 import { useHoverState } from "../hooks";
 import TVFocusGuideHelper from "./helpers/TVFocusGuideHelper";
+import { useTranslation } from "react-i18next";
 
 interface PlaybackSettingsPopupProps {
   selectedSpeed: number;
@@ -129,6 +130,7 @@ export const PlaybackSettingsPopup = ({
   onSelectOption,
 }: PlaybackSettingsPopupProps) => {
   const { colors } = useTheme();
+  const { t } = useTranslation();
   const [selectedScreen, setSelectedScreen] = useState<keyof typeof screens>("settings");
   const { id } = useLocalSearchParams<RootStackParams[ROUTES.VIDEO]>();
   const { data: videoData } = useGetVideoQuery({ id, enabled: false });
@@ -138,30 +140,30 @@ export const PlaybackSettingsPopup = ({
       videoData?.streamingPlaylists?.[0]?.files?.length ? videoData?.streamingPlaylists?.[0]?.files : videoData?.files
     )
       ?.map(({ resolution }) => ({ ...resolution, id: String(resolution.id) }))
-      .concat([{ id: "auto", label: "Auto" }]);
+      .concat([{ id: "auto", label: t("auto") }]);
 
     return {
       settings: (
         [
           {
-            name: "Playback speed",
+            name: t("playbackSpeed"),
             id: "playbackSpeed",
-            state: selectedSpeed === 1 ? "Normal" : String(selectedSpeed),
+            state: selectedSpeed === 1 ? t("normal") : String(selectedSpeed),
           },
-          { name: "Quality", id: "quality", state: qualityOptions?.find(({ id }) => selectedQuality === id)?.label },
+          { name: t("quality"), id: "quality", state: qualityOptions?.find(({ id }) => selectedQuality === id)?.label },
         ] as const
       ).map(({ name, id, state }) => (
         <Setting key={id} name={name} state={state} onPress={() => setSelectedScreen(id)} />
       )),
       playbackSpeed: (
         <>
-          <OptionsHeader text={"Playback Speed"} onBackPress={() => setSelectedScreen("settings")} />
+          <OptionsHeader text={t("playbackSpeed")} onBackPress={() => setSelectedScreen("settings")} />
           {[1.5, 1.25, 1, 0.75, 0.5].map((speed) => (
             <Option
               key={speed.toString()}
               id={speed.toString()}
               isSelected={speed === selectedSpeed}
-              text={speed === 1 ? "Normal" : speed.toString()}
+              text={speed === 1 ? t("normal") : speed.toString()}
               onPress={(speed: string) => {
                 handleSetSpeed(Number(speed));
                 onSelectOption?.();
@@ -172,7 +174,7 @@ export const PlaybackSettingsPopup = ({
       ),
       quality: (
         <>
-          <OptionsHeader text={"Quality"} onBackPress={() => setSelectedScreen("settings")} />
+          <OptionsHeader text={t("quality")} onBackPress={() => setSelectedScreen("settings")} />
           {qualityOptions?.map(({ id, label }) => (
             <Option
               onPress={(quality: string) => {
@@ -188,7 +190,7 @@ export const PlaybackSettingsPopup = ({
         </>
       ),
     };
-  }, [colors, selectedSpeed, selectedQuality, videoData]);
+  }, [colors, selectedSpeed, selectedQuality, videoData, t]);
 
   return (
     <TVFocusGuideHelper style={[styles.container, { backgroundColor: colors.black80 }]}>

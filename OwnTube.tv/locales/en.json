@@ -96,7 +96,7 @@
   "failedToEstablishConnection": "Failed to establish connection to server",
   "tryAgain": "Try again",
   "accessDenied": "Access denied",
-  "noPermissions": "You don’t have permission to access this page",
+  "noPermissions": "You don't have permission to access this page",
   "failedToLoadVideoSection": {
     "latest": "Failed to load latest videos.",
     "channel": "Failed to load channel videos.",
@@ -125,5 +125,9 @@
   "allCategories": "All categories",
   "viewOnSite": "View on {{site}}",
   "copyVideoDetails": "Copy video details:",
-  "detailsCopied": "Video details copied!"
+  "detailsCopied": "Video details copied!",
+  "quality": "Quality",
+  "playbackSpeed": "Playback speed",
+  "normal": "Normal",
+  "auto": "Auto"
 }

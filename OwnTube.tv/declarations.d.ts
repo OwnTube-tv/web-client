@@ -20,4 +20,16 @@ declare global {
   interface Element {
     webkitEnterFullscreen?: () => Promise<void>;
   }
+
+  interface Window {
+    WebKitPlaybackTargetAvailabilityEvent: typeof Event;
+  }
+
+  interface Event {
+    availability: "available" | "not-available";
+  }
+
+  interface HTMLVideoElement {
+    webkitShowPlaybackTargetPicker(): void;
+  }
 }

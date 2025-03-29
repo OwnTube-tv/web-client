@@ -2,6 +2,17 @@ import { StyleSheet } from "react-native";
 import { colors } from "../../theme";
 
 export const styles = StyleSheet.create({
+  chromecastOverlay: {
+    alignItems: "center",
+    backgroundColor: colors.dark.black100,
+    bottom: 0,
+    justifyContent: "center",
+    left: 0,
+    position: "absolute",
+    right: 0,
+    top: 0,
+    zIndex: 1,
+  },
   container: {
     alignItems: "center",
     flex: 1,

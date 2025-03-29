@@ -122,5 +122,9 @@
   "leaveSite": "Lämna videosajten",
   "allPlaylists": "Alla spellistor",
   "allChannels": "Alla kanaler",
-  "allCategories": "Alla kategorier"
+  "allCategories": "Alla kategorier",
+  "quality": "Kvalitet",
+  "playbackSpeed": "Uppspelningshastighet",
+  "normal": "Normal",
+  "auto": "Auto"
 }

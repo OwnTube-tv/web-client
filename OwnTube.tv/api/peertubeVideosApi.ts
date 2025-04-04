@@ -149,6 +149,31 @@ export class PeertubeVideosApi extends AxiosInstanceBasedApi {
       return handleAxiosErrorWithRetry(error, "video data");
     }
   }
+  /**
+   * Post a view for a specified video
+   *
+   * @param [baseURL] - Selected instance url
+   * @param [id] - Video uuid
+   * @param [viewData] - Object containing view data (currentTime, viewEvent, sessionId)
+   * @returns void
+   */
+  async postVideoView(
+    baseURL: string,
+    id: string,
+    viewData: {
+      currentTime?: number;
+      viewEvent?: "seek";
+      sessionId?: string;
+    } = { currentTime: 0 },
+  ): Promise<void> {
+    try {
+      await this.instance.post(`videos/${id}/views`, viewData, {
+        baseURL: `https://${baseURL}/api/v1`,
+      });
+    } catch (error: unknown) {
+      handleAxiosErrorWithRetry(error, "post video view");
+    }
+  }
 }
 
 export const ApiServiceImpl = new PeertubeVideosApi();

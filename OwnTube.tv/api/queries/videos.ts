@@ -1,6 +1,6 @@
 import { useLocalSearchParams } from "expo-router";
 import { RootStackParams } from "../../app/_layout";
-import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
+import { useInfiniteQuery, useMutation, useQuery } from "@tanstack/react-query";
 import { GetVideosVideo } from "../models";
 import { ApiServiceImpl } from "../peertubeVideosApi";
 import { VideosCommonQuery, Video } from "@peertube/peertube-types";
@@ -8,6 +8,7 @@ import { SOURCES } from "../../types";
 import { getLocalData, retry } from "../helpers";
 
 import { QUERY_KEYS } from "../constants";
+import { useAppConfigContext } from "../../contexts";
 
 export const useGetVideosQuery = <TResult = GetVideosVideo[]>({
   enabled = true,
@@ -96,5 +97,28 @@ export const useGetVideoQuery = <TResult = Video>({
     enabled: !!backend && !!id && enabled,
     select,
     retry,
+  });
+};
+
+export const usePostVideoViewMutation = () => {
+  const { backend } = useLocalSearchParams<RootStackParams["index"]>();
+  const { sessionId } = useAppConfigContext();
+
+  return useMutation({
+    mutationFn: async ({
+      videoId,
+      currentTime = 0,
+      viewEvent,
+    }: {
+      videoId?: string;
+      currentTime?: number;
+      viewEvent?: "seek";
+    }) => {
+      return await ApiServiceImpl.postVideoView(backend!, videoId!, {
+        currentTime,
+        viewEvent,
+        sessionId,
+      });
+    },
   });
 };

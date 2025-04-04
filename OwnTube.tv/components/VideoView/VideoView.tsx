@@ -21,6 +21,7 @@ import GoogleCast, {
 import { IcoMoonIcon } from "../IcoMoonIcon";
 import { useTheme } from "@react-navigation/native";
 import { styles } from "./styles";
+import { usePostVideoViewMutation } from "../../api";
 
 export interface VideoViewProps {
   uri: string;
@@ -74,6 +75,7 @@ const VideoView = ({
   const { colors } = useTheme();
 
   const googleCastClient = useRemoteMediaClient({ ignoreSessionUpdatesInBackground: Platform.OS === "ios" });
+  const { mutate: postVideoView } = usePostVideoViewMutation();
 
   const handlePlayPause = () => {
     videoRef.current?.[isPlaying ? "pause" : "resume"]();
@@ -83,13 +85,17 @@ const VideoView = ({
   const isPlayingRef = useRef(false);
 
   const handleRW = (seconds: number) => {
-    videoRef.current?.seek(currentTime - seconds);
+    const updatedTime = currentTime - seconds;
+    videoRef.current?.seek(updatedTime);
     googleCastClient?.seek({ position: currentTime - seconds, resumeState: isPlaying ? "play" : "pause" });
+    postVideoView({ videoId: videoData?.uuid, currentTime: updatedTime, viewEvent: "seek" });
   };
 
   const handleFF = (seconds: number) => {
-    videoRef.current?.seek(currentTime + seconds);
+    const updatedTime = currentTime + seconds;
+    videoRef.current?.seek(updatedTime);
     googleCastClient?.seek({ position: currentTime + seconds, resumeState: isPlaying ? "play" : "pause" });
+    postVideoView({ videoId: videoData?.uuid, currentTime: updatedTime, viewEvent: "seek" });
   };
 
   const toggleMute = () => {
@@ -106,12 +112,22 @@ const VideoView = ({
   const handleJumpTo = (position: number) => {
     videoRef.current?.seek(position);
     googleCastClient?.seek({ position, resumeState: isPlaying ? "play" : "pause" });
+    postVideoView({ videoId: videoData?.uuid, currentTime: position, viewEvent: "seek" });
   };
+
+  const lastReportedTime = useRef<number>(0);
 
   useEffect(() => {
     if (!currentTime) return;
 
     handleSetTimeStamp(currentTime);
+
+    const currentTimeInt = Math.trunc(currentTime);
+
+    if (currentTimeInt % 5 === 0 && currentTimeInt !== lastReportedTime.current) {
+      lastReportedTime.current = currentTimeInt;
+      postVideoView({ videoId: videoData?.uuid, currentTime });
+    }
   }, [currentTime]);
 
   const handleVolumeControl = (volume: number) => {

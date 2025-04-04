@@ -19,7 +19,8 @@ import { ViewOnSiteLink } from "../ViewOnSiteLink";
 import { useInstanceConfig } from "../../hooks";
 import AvRoutePickerButton from "../AvRoutePickerButton/AvRoutePickerButton";
 import { PlaybackSettingsPopup } from "../PlaybackSettingsPopup";
-
+import GoogleCastButton from "../GoogleCastButton";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
 export interface VideoControlsOverlayProps {
@@ -52,6 +53,10 @@ export interface VideoControlsOverlayProps {
   speed: number;
   selectedQuality: string;
   handleSetQuality: (quality: string) => void;
+  isWebAirPlayAvailable?: boolean;
+  isChromeCastAvailable?: boolean;
+  castState?: "airPlay" | "chromecast";
+  handleLoadGoogleCastMedia?: () => void;
 }
 
 const VideoControlsOverlay = ({
@@ -85,6 +90,10 @@ const VideoControlsOverlay = ({
   speed,
   selectedQuality,
   handleSetQuality,
+  isWebAirPlayAvailable,
+  isChromeCastAvailable,
+  castState,
+  handleLoadGoogleCastMedia,
 }: PropsWithChildren<VideoControlsOverlayProps>) => {
   const {
     isSeekBarFocused,
@@ -111,6 +120,8 @@ const VideoControlsOverlay = ({
 
   const hideVideoSiteLink =
     process.env.EXPO_PUBLIC_HIDE_VIDEO_SITE_LINKS || currentInstanceConfig?.customizations?.hideVideoSiteLinks;
+
+  const insets = useSafeAreaInsets();
 
   return (
     // @ts-expect-error web cursor options not included in React Native core
@@ -183,7 +194,7 @@ const VideoControlsOverlay = ({
           )}
           <Animated.View
             exiting={SlideOutDown}
-            style={styles.animatedBottomContainer}
+            style={[styles.animatedBottomContainer, { paddingBottom: insets.bottom }]}
             entering={SlideInDown}
             pointerEvents="box-none"
           >
@@ -247,7 +258,13 @@ const VideoControlsOverlay = ({
                   </Typography>
                 </View>
                 <View style={styles.functionButtonsContainer}>
-                  <AvRoutePickerButton />
+                  {castState !== "airPlay" && (
+                    <GoogleCastButton
+                      isChromeCastAvailable={isChromeCastAvailable}
+                      handleLoadGoogleCastMedia={handleLoadGoogleCastMedia}
+                    />
+                  )}
+                  {castState !== "chromecast" && <AvRoutePickerButton isWebAirPlayAvailable={isWebAirPlayAvailable} />}
                   <PlayerButton icon="Settings" onPress={() => setIsSettingsMenuVisible((cur) => !cur)} />
                   <PlayerButton onPress={toggleFullscreen} icon={`Fullscreen${isFullscreen ? "-Exit" : ""}`} />
                 </View>
@@ -286,7 +303,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: 0,
     width: "100%",
-    zIndex: 1,
+    zIndex: 2,
   },
   functionButtonsContainer: { alignItems: "center", flexDirection: "row" },
   overlay: {

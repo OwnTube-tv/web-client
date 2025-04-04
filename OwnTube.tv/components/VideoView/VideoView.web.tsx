@@ -11,6 +11,20 @@ import VideoControlsOverlay from "../VideoControlsOverlay";
 import { useFocusEffect, useLocalSearchParams } from "expo-router";
 import { RootStackParams } from "../../app/_layout";
 import { ROUTES } from "../../types";
+import { IcoMoonIcon } from "../IcoMoonIcon";
+import { useTheme } from "@react-navigation/native";
+import { useChromeCast } from "../../hooks";
+
+export interface PlaybackStatus {
+  didJustFinish: boolean;
+  isMuted: boolean;
+  isPlaying: boolean;
+  position: number;
+  duration: number;
+  playableDuration: number;
+  volume: number;
+  rate: number;
+}
 
 declare const window: {
   videojs: typeof videojs;
@@ -31,12 +45,14 @@ const VideoView = ({
   viewUrl,
   selectedQuality,
   handleSetQuality,
+  videoData,
 }: VideoViewProps) => {
   const { videojs } = window;
   const videoRef = useRef<HTMLDivElement>(null);
   const playerRef = useRef<Player | null>(null);
+  const isPlayingRef = useRef(false);
   const { backend } = useLocalSearchParams<RootStackParams[ROUTES.VIDEO]>();
-  const [playbackStatus, setPlaybackStatus] = useState({
+  const [playbackStatus, setPlaybackStatus] = useState<PlaybackStatus>({
     didJustFinish: false,
     isMuted: false,
     isPlaying: false,
@@ -48,12 +64,38 @@ const VideoView = ({
   });
   const isMobile = Device.deviceType !== DeviceType.DESKTOP;
   const [isControlsVisible, setIsControlsVisible] = useState(false);
+  const [isAirPlayAvailable, setIsAirPlayAvailable] = useState(false);
+  const { colors } = useTheme();
 
   const updatePlaybackStatus = (updatedStatus: Partial<typeof playbackStatus>) => {
-    setPlaybackStatus((prev) => ({ ...prev, ...updatedStatus }));
+    setPlaybackStatus((prev) => {
+      const newState = { ...prev, ...updatedStatus };
+      isPlayingRef.current = newState.isPlaying;
+      return newState;
+    });
   };
 
+  const {
+    isChromecastConnected,
+    isChromeCastAvailable,
+    handleCreateSession,
+    handlePlayPause: handleChromeCastPlayPause,
+    handleSeek: handleChromeCastSeek,
+    handleVolume: handleChromeCastVolume,
+    handleMute: handleChromeCastMute,
+    isChromecastConnectedRef,
+  } = useChromeCast({
+    uri,
+    videoData,
+    playerRef,
+    updatePlaybackStatus,
+    isPlayingRef,
+  });
+
   const handlePlayPause = () => {
+    const handledByChromeCast = handleChromeCastPlayPause();
+    if (handledByChromeCast) return;
+
     if (playerRef.current?.paused()) {
       playerRef.current?.play();
     } else {
@@ -62,10 +104,12 @@ const VideoView = ({
   };
 
   const handleRW = (seconds: number) => {
+    handleChromeCastSeek(playbackStatus.position - seconds);
     playerRef.current?.currentTime(playbackStatus.position - seconds);
   };
 
   const handleFF = (seconds: number) => {
+    handleChromeCastSeek(playbackStatus.position + seconds);
     playerRef.current?.currentTime(playbackStatus.position + seconds);
   };
 
@@ -73,6 +117,7 @@ const VideoView = ({
     const newValue = !playerRef.current?.muted();
     playerRef.current?.muted(newValue);
     updatePlaybackStatus({ isMuted: newValue });
+    handleChromeCastMute(newValue);
   };
 
   const handleReplay = () => {
@@ -81,6 +126,7 @@ const VideoView = ({
   };
 
   const handleJumpTo = (position: number) => {
+    handleChromeCastSeek(position);
     playerRef.current?.tech().setCurrentTime(position);
   };
 
@@ -88,9 +134,10 @@ const VideoView = ({
     autoplay: true,
     controls: false,
     playsinline: true,
+    preload: false,
     html5: {
       vhs: {
-        overrideNative: true,
+        overrideNative: !videojs.browser.IS_ANY_SAFARI,
       },
     },
     sources: [
@@ -101,8 +148,17 @@ const VideoView = ({
     children: ["MediaLoader"],
   };
 
+  const handleAirPlayAvailabilityChange = function (event: Event) {
+    setIsAirPlayAvailable(event.availability === "available");
+  };
+
   const onReady = (player: Player) => {
     playerRef.current = player;
+    const video = document.getElementsByTagName("video")[0];
+
+    if (window.WebKitPlaybackTargetAvailabilityEvent) {
+      video?.addEventListener("webkitplaybacktargetavailabilitychanged", handleAirPlayAvailabilityChange);
+    }
 
     player.on("loadedmetadata", () => {
       updatePlaybackStatus({
@@ -112,11 +168,15 @@ const VideoView = ({
     });
 
     player.on("play", () => {
-      updatePlaybackStatus({ isPlaying: true, didJustFinish: false });
+      if (!isChromecastConnectedRef.current) {
+        updatePlaybackStatus({ isPlaying: true, didJustFinish: false });
+      }
     });
 
     player.on("pause", () => {
-      updatePlaybackStatus({ isPlaying: false });
+      if (!isChromecastConnectedRef.current) {
+        updatePlaybackStatus({ isPlaying: false });
+      }
     });
 
     player.on("timeupdate", () => {
@@ -132,13 +192,11 @@ const VideoView = ({
 
     player.on("volumechange", () => {
       const vol = playerRef.current?.volume?.() ?? 1;
-
       updatePlaybackStatus({ volume: vol });
     });
 
     player.on("ratechange", () => {
       const rate = playerRef.current?.playbackRate();
-
       updatePlaybackStatus({ rate });
     });
   };
@@ -148,7 +206,6 @@ const VideoView = ({
 
     if (!playerRef.current) {
       const videoElement = document.createElement("video-js");
-
       videoElement.classList.add("vjs-big-play-centered");
       videoRef.current?.appendChild(videoElement);
 
@@ -157,7 +214,6 @@ const VideoView = ({
       }));
     } else {
       const player = playerRef.current;
-
       player.options(options);
     }
   }, [options, videojs]);
@@ -170,12 +226,13 @@ const VideoView = ({
         player.dispose();
         playerRef.current = null;
       }
+      const video = document.getElementsByTagName("video")[0];
+      video?.removeEventListener("webkitplaybacktargetavailabilitychanged", handleAirPlayAvailabilityChange);
     };
   }, []);
 
   useEffect(() => {
     const { position } = playbackStatus;
-
     handleSetTimeStamp(position);
   }, [playbackStatus.position]);
 
@@ -199,7 +256,6 @@ const VideoView = ({
     };
 
     window.addEventListener("keydown", handleKeyboard);
-
     return () => window.removeEventListener("keydown", handleKeyboard);
   }, [handleFF, handleRW, handlePlayPause, toggleMute]);
 
@@ -207,7 +263,6 @@ const VideoView = ({
     let timeout: NodeJS.Timeout;
     const handleAction = () => {
       setIsControlsVisible(true);
-
       clearTimeout(timeout);
       timeout = setTimeout(() => {
         setIsControlsVisible(false);
@@ -234,9 +289,7 @@ const VideoView = ({
       }
 
       playerRef.current?.src(uri);
-
       playerRef.current?.currentTime(!isInitialVideoLoadDone.current ? Number(timestamp) : position);
-
       isInitialVideoLoadDone.current = true;
 
       return () => {
@@ -247,6 +300,7 @@ const VideoView = ({
 
   const handleVolumeControl = (volume: number) => {
     const formattedVolume = (volume < 0 ? 0 : volume) * 0.01;
+    handleChromeCastVolume(formattedVolume);
 
     if (formattedVolume === 0) {
       playerRef.current?.muted(true);
@@ -300,7 +354,15 @@ const VideoView = ({
         speed={playbackStatus.rate}
         selectedQuality={selectedQuality}
         handleSetQuality={handleSetQuality}
+        isWebAirPlayAvailable={isAirPlayAvailable}
+        isChromeCastAvailable={isChromeCastAvailable}
+        handleLoadGoogleCastMedia={handleCreateSession}
       >
+        {isChromecastConnected && (
+          <View style={styles.chromecastOverlay}>
+            <IcoMoonIcon color={colors.white80} name="Chromecast" size={72} />
+          </View>
+        )}
         <div style={{ position: "fixed", cursor: "pointer" }} ref={videoRef} data-testid={`${testID}-video-playback`} />
         {isMobile && isControlsVisible && <View style={styles.opacityOverlay} />}
       </VideoControlsOverlay>

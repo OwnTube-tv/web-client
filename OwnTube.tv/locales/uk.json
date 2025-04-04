@@ -124,5 +124,9 @@
   "allChannels": "Всі канали",
   "allCategories": "Всі категорії",
   "copyVideoDetails": "Копіювати деталі відео:",
-  "detailsCopied": "Деталі відео скопійовані!"
+  "detailsCopied": "Деталі відео скопійовані!",
+  "quality": "Якість",
+  "playbackSpeed": "Швидкість відтворення",
+  "normal": "Нормальна",
+  "auto": "Авто"
 }

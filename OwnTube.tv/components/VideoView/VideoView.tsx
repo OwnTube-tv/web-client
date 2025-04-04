@@ -1,20 +1,26 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Platform, View } from "react-native";
-import { styles } from "./styles";
 import * as Device from "expo-device";
 import { DeviceType } from "expo-device";
 import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
-import { VideoChannelSummary } from "@peertube/peertube-types";
+import { Video as PeertubeVideoModel, VideoChannelSummary } from "@peertube/peertube-types";
 import VideoControlsOverlay from "../VideoControlsOverlay";
 import Toast from "react-native-toast-message";
-import { useLocalSearchParams } from "expo-router";
+import { useFocusEffect, useLocalSearchParams } from "expo-router";
 import { ROUTES } from "../../types";
 import { RootStackParams } from "../../app/_layout";
 import { Video, VideoRef } from "react-native-video";
 import { SelectedTrackType } from "react-native-video/src/types/video";
 import type { OnProgressData, OnVideoErrorData } from "react-native-video/src/specs/VideoNativeComponent";
 import { OnLoadData } from "react-native-video/src/types/events";
-import { Video as PeertubeVideoModel } from "@peertube/peertube-types";
+import GoogleCast, {
+  MediaHlsSegmentFormat,
+  MediaHlsVideoSegmentFormat,
+  useRemoteMediaClient,
+} from "react-native-google-cast";
+import { IcoMoonIcon } from "../IcoMoonIcon";
+import { useTheme } from "@react-navigation/native";
+import { styles } from "./styles";
 
 export interface VideoViewProps {
   uri: string;
@@ -61,26 +67,33 @@ const VideoView = ({
   const [volume, setVolume] = useState(1);
   const [playableDuration, setPlayableDuration] = useState(0);
   const [shouldReplay, setShouldReplay] = useState(false);
-
+  const [castState, setCastState] = useState<"airPlay" | "chromecast">();
   const [isControlsVisible, setIsControlsVisible] = useState(false);
   const isMobile = Device.deviceType !== DeviceType.DESKTOP;
   const { backend } = useLocalSearchParams<RootStackParams[ROUTES.VIDEO]>();
+  const { colors } = useTheme();
+
+  const googleCastClient = useRemoteMediaClient({ ignoreSessionUpdatesInBackground: Platform.OS === "ios" });
 
   const handlePlayPause = () => {
     videoRef.current?.[isPlaying ? "pause" : "resume"]();
+    googleCastClient?.[isPlaying ? "pause" : "play"]();
   };
 
   const isPlayingRef = useRef(false);
 
   const handleRW = (seconds: number) => {
     videoRef.current?.seek(currentTime - seconds);
+    googleCastClient?.seek({ position: currentTime - seconds, resumeState: isPlaying ? "play" : "pause" });
   };
 
   const handleFF = (seconds: number) => {
     videoRef.current?.seek(currentTime + seconds);
+    googleCastClient?.seek({ position: currentTime + seconds, resumeState: isPlaying ? "play" : "pause" });
   };
 
   const toggleMute = () => {
+    googleCastClient?.setStreamMuted(!muted);
     setMuted((prev) => !prev);
   };
 
@@ -92,6 +105,7 @@ const VideoView = ({
 
   const handleJumpTo = (position: number) => {
     videoRef.current?.seek(position);
+    googleCastClient?.seek({ position, resumeState: isPlaying ? "play" : "pause" });
   };
 
   useEffect(() => {
@@ -161,11 +175,62 @@ const VideoView = ({
       videoRef.current?.setSource({
         ...videoSource,
         uri,
-        startPosition: Number(!isInitialVideoLoadDone.current ? Number(timestamp) : currentTime) * 1000,
+        startPosition: Number(!isInitialVideoLoadDone.current ? Number(timestamp || 0) : currentTime) * 1000,
       });
       isInitialVideoLoadDone.current = true;
     }
   }, [uri]);
+
+  const isCastActivated = useRef(false);
+
+  useEffect(() => {
+    if (googleCastClient) {
+      isCastActivated.current = true;
+      setCastState("chromecast");
+      googleCastClient.loadMedia({
+        mediaInfo: {
+          metadata: {
+            type: "generic",
+            ...videoSource.metadata,
+          },
+          contentUrl: uri,
+          ...(Number(videoData?.streamingPlaylists?.length) > 0
+            ? {
+                contentType: "application/x-mpegurl",
+                hlsSegmentFormat: MediaHlsSegmentFormat.AAC,
+                hlsVideoSegmentFormat: MediaHlsVideoSegmentFormat.FMP4,
+              }
+            : {}),
+        },
+        playbackRate: playbackSpeed,
+        startTime: Number(!isInitialVideoLoadDone.current ? Number(timestamp || 0) : currentTime),
+      });
+      googleCastClient?.onMediaProgressUpdated((progress) => {
+        setCurrentTime(progress);
+      });
+      googleCastClient?.onMediaStatusUpdated((mediaStatus) => {
+        setIsPlaying(mediaStatus?.playerState === "playing");
+      });
+    } else if (isCastActivated.current) {
+      isCastActivated.current = false;
+      setCastState(undefined);
+      videoRef.current?.setSource({
+        ...videoSource,
+        uri,
+        startPosition: Number(currentTime) * 1000,
+      });
+      videoRef.current?.[isPlaying ? "resume" : "pause"]();
+    }
+  }, [googleCastClient]);
+
+  useFocusEffect(
+    useCallback(() => {
+      return () => {
+        const sessionManager = GoogleCast?.getSessionManager();
+        sessionManager?.endCurrentSession(true);
+      };
+    }, []),
+  );
 
   return (
     <View collapsable={false} style={styles.container}>
@@ -199,32 +264,41 @@ const VideoView = ({
         speed={playbackSpeed}
         selectedQuality={selectedQuality}
         handleSetQuality={handleSetQuality}
+        castState={castState}
+        isChromeCastAvailable
       >
-        <Video
-          onEnd={() => setShouldReplay(true)}
-          onLoad={handleVideoLoaded}
-          onProgress={handleProgress}
-          showNotificationControls
-          resizeMode="contain"
-          ignoreSilentSwitch={"ignore"}
-          playInBackground={!Platform.isTV}
-          testID={`${testID}-video-playback`}
-          ref={videoRef}
-          rate={playbackSpeed}
-          onPlaybackStateChanged={({ isPlaying: isPlayingState }) => {
-            isPlayingRef.current = isPlayingState;
-            setIsPlaying(isPlayingState);
-            if (!isPlayingState && Platform.isTVOS) {
-              handleOverlayPress();
-            }
-          }}
-          style={styles.videoWrapper}
-          onError={handlePlayerError}
-          selectedAudioTrack={{
-            type: SelectedTrackType.INDEX,
-            value: 0,
-          }}
-        />
+        {googleCastClient ? (
+          <IcoMoonIcon name="Chromecast" size={72} color={colors.white80} />
+        ) : (
+          <Video
+            onEnd={() => setShouldReplay(true)}
+            onLoad={handleVideoLoaded}
+            onProgress={handleProgress}
+            showNotificationControls
+            resizeMode="contain"
+            ignoreSilentSwitch={"ignore"}
+            playInBackground={!Platform.isTV}
+            testID={`${testID}-video-playback`}
+            ref={videoRef}
+            rate={playbackSpeed}
+            onPlaybackStateChanged={({ isPlaying: isPlayingState }) => {
+              isPlayingRef.current = isPlayingState;
+              setIsPlaying(isPlayingState);
+              if (!isPlayingState && Platform.isTVOS) {
+                handleOverlayPress();
+              }
+            }}
+            style={styles.videoWrapper}
+            onError={handlePlayerError}
+            selectedAudioTrack={{
+              type: SelectedTrackType.INDEX,
+              value: 0,
+            }}
+            onExternalPlaybackChange={(e) => {
+              setCastState(e.isExternalPlaybackActive ? "airPlay" : undefined);
+            }}
+          />
+        )}
         {isMobile && !Platform.isTVOS && isControlsVisible && (
           <Animated.View entering={FadeIn} exiting={FadeOut} style={styles.opacityOverlay} />
         )}

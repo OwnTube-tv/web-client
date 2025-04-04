@@ -99,6 +99,7 @@ export default {
       },
     ],
     "expo-asset",
+    "react-native-google-cast",
     [
       "./plugins/withReleaseSigningConfig.js",
       {
@@ -108,5 +109,7 @@ export default {
         keyPassword: process.env.EXPO_PUBLIC_ANDROID_RELEASE_SIGNING_KEY_PASSWORD,
       },
     ],
+    "./plugins/fixAndroidChromecastLib.js",
+    "./plugins/withAndroidNotificationControls.js",
   ],
 };

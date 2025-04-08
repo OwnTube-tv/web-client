@@ -11,6 +11,7 @@ import VideoControlsOverlay from "../VideoControlsOverlay";
 import { useFocusEffect, useLocalSearchParams } from "expo-router";
 import { RootStackParams } from "../../app/_layout";
 import { ROUTES } from "../../types";
+import { usePostVideoViewMutation } from "../../api";
 import { IcoMoonIcon } from "../IcoMoonIcon";
 import { useTheme } from "@react-navigation/native";
 import { useChromeCast } from "../../hooks";
@@ -52,6 +53,8 @@ const VideoView = ({
   const playerRef = useRef<Player | null>(null);
   const isPlayingRef = useRef(false);
   const { backend } = useLocalSearchParams<RootStackParams[ROUTES.VIDEO]>();
+  const { mutate: postVideoView } = usePostVideoViewMutation();
+  const lastReportedTime = useRef<number>(0);
   const [playbackStatus, setPlaybackStatus] = useState<PlaybackStatus>({
     didJustFinish: false,
     isMuted: false,
@@ -104,13 +107,17 @@ const VideoView = ({
   };
 
   const handleRW = (seconds: number) => {
+    const updatedTime = playbackStatus.position - seconds;
+    playerRef.current?.currentTime(updatedTime);
+    postVideoView({ videoId: videoData?.uuid, currentTime: updatedTime, viewEvent: "seek" });
     handleChromeCastSeek(playbackStatus.position - seconds);
-    playerRef.current?.currentTime(playbackStatus.position - seconds);
   };
 
   const handleFF = (seconds: number) => {
-    handleChromeCastSeek(playbackStatus.position + seconds);
-    playerRef.current?.currentTime(playbackStatus.position + seconds);
+    const updatedTime = playbackStatus.position + seconds;
+    handleChromeCastSeek(updatedTime);
+    playerRef.current?.currentTime(updatedTime);
+    postVideoView({ videoId: videoData?.uuid, currentTime: updatedTime, viewEvent: "seek" });
   };
 
   const toggleMute = () => {
@@ -128,6 +135,7 @@ const VideoView = ({
   const handleJumpTo = (position: number) => {
     handleChromeCastSeek(position);
     playerRef.current?.tech().setCurrentTime(position);
+    postVideoView({ videoId: videoData?.uuid, currentTime: position, viewEvent: "seek" });
   };
 
   const options = {
@@ -234,6 +242,13 @@ const VideoView = ({
   useEffect(() => {
     const { position } = playbackStatus;
     handleSetTimeStamp(position);
+
+    const currentTimeInt = Math.trunc(position);
+
+    if (currentTimeInt % 5 === 0 && currentTimeInt !== lastReportedTime.current) {
+      lastReportedTime.current = currentTimeInt;
+      postVideoView({ videoId: videoData?.uuid, currentTime: position });
+    }
   }, [playbackStatus.position]);
 
   useEffect(() => {

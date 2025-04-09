@@ -22,6 +22,7 @@
   "clear": "Очистити",
   "clearSiteHistory": "Очистити історію сайту",
   "clearSiteHistoryQuestion": "Очистити історію сайту?",
+  "clearAllHistory": "Очистити всю історію",
   "yourWatchHistory": "Ваша історія перегляду",
   "predefinedInstances": "Передвстановлені інстанції:",
   "peertubeInstances": "Інстанції PeerTube:",
@@ -57,6 +58,7 @@
   "sharePlaylist": "Поділитися плейлістом",
   "shareChannelPlaylist": "Поділитися плейлістом каналу",
   "qrCode": "QR-код",
+  "qrCodeForURL": "QR-код для URL",
   "copy": "Копіювати",
   "linkCopied": "Скопійовано!",
   "startAt": "Почати з",
@@ -128,5 +130,7 @@
   "quality": "Якість",
   "playbackSpeed": "Швидкість відтворення",
   "normal": "Нормальна",
-  "auto": "Авто"
+  "auto": "Авто",
+  "channelNotSupported": "Канал не підтримується в OwnTube, хочете перейти до зовнішнього каналу {{channelName}}?",
+  "confirm": "Підтвердити"
 }

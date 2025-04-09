@@ -10,17 +10,17 @@ import { ChannelLink } from "../../../../ChannelLink";
 import { Typography } from "../../../../Typography";
 import { Spacer } from "../../../../shared/Spacer";
 import { FormattedVideoDescription } from "../../../../FormattedVideoDescription";
+import { VideoChannel } from "@peertube/peertube-types";
 
 interface VideoDetailsProps {
   onClose: () => void;
   name: string;
-  channelName: string;
-  channelHandle?: string;
+  channel?: VideoChannel;
   datePublished: string | Date;
   description: string;
 }
 
-const VideoDetails = ({ onClose, name, channelName, channelHandle, datePublished, description }: VideoDetailsProps) => {
+const VideoDetails = ({ onClose, name, channel, datePublished, description }: VideoDetailsProps) => {
   const { colors } = useTheme();
   const { backend } = useLocalSearchParams<RootStackParams[ROUTES.VIDEO]>();
 
@@ -29,8 +29,9 @@ const VideoDetails = ({ onClose, name, channelName, channelHandle, datePublished
       <ModalContainer onClose={onClose} title={name} containerStyle={styles.modalContainer}>
         <View style={styles.metadataContainer}>
           <ChannelLink
-            text={channelName}
-            href={{ pathname: ROUTES.CHANNEL, params: { backend, channel: channelHandle } }}
+            text={channel?.displayName || ""}
+            href={{ pathname: ROUTES.CHANNEL, params: { backend, channel: channel?.name } }}
+            sourceLink={channel?.url || ""}
           />
           <Typography fontSize="sizeSm" fontWeight="SemiBold" color={colors.themeDesaturated500}>
             {format(datePublished, "dd MMMM yyyy")}

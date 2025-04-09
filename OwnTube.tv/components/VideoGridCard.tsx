@@ -72,6 +72,7 @@ export const VideoGridCard = forwardRef<View, VideoGridCardProps>(({ video, back
           </Pressable>
         </Link>
         <TVFocusGuideHelper focusable={false} style={styles.textContainer}>
+          {/* @ts-expect-error tabIndex is passed to anchor tag but is not officially supported by Expo Router */}
           <Link tabIndex={-1} href={{ pathname: ROUTES.VIDEO, params: { id: video.uuid, backend } }}>
             <Typography
               fontWeight="Medium"
@@ -87,8 +88,12 @@ export const VideoGridCard = forwardRef<View, VideoGridCardProps>(({ video, back
       </Pressable>
       <TVFocusGuideHelper focusable={false} style={styles.restInfoContainer}>
         <ChannelLink
-          href={{ pathname: `/${ROUTES.CHANNEL}`, params: { channel: video.channel?.name, backend } }}
+          href={{
+            pathname: `/${ROUTES.CHANNEL}`,
+            params: { channel: video.channel?.name, backend: video.channel?.host },
+          }}
           text={video.channel?.displayName}
+          sourceLink={video.channel?.url}
         />
         <Typography fontSize="sizeXS" fontWeight="Medium" color={colors.themeDesaturated500}>
           {`${video.publishedAt ? formatDistanceToNow(video.publishedAt, { addSuffix: true, locale: LANGUAGE_OPTIONS.find(({ value }) => value === i18n.language)?.dateLocale }) : ""} • ${t("views", { count: video.views })}`}

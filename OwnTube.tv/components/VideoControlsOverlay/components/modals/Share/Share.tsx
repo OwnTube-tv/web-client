@@ -4,18 +4,17 @@ import { Typography } from "../../../../Typography";
 import { useTranslation } from "react-i18next";
 import { Checkbox, Separator } from "../../../../shared";
 import { ScrollView, StyleSheet, View } from "react-native";
-import QrCode from "react-qr-code";
 import { useMemo, useRef, useState } from "react";
 import { useGlobalSearchParams, usePathname } from "expo-router";
 import { useTheme } from "@react-navigation/native";
-import { borderRadius, spacing } from "../../../../../theme";
+import { spacing } from "../../../../../theme";
 import { Input } from "../../../../shared";
 import * as Clipboard from "expo-clipboard";
 import { Spacer } from "../../../../shared/Spacer";
 import { getHumanReadableDuration } from "../../../../../utils";
 import { useVideoLink, useViewHistory } from "../../../../../hooks";
-import { colors } from "../../../../../colors";
 import { ROUTES } from "../../../../../types";
+import { QRCodeSection } from "../../../../../components";
 
 interface ShareProps {
   onClose: () => void;
@@ -80,11 +79,7 @@ const Share = ({ onClose, titleKey }: ShareProps) => {
           >
             {t("qrCode")}
           </Typography>
-          <View accessible={false} style={{ alignItems: "center" }}>
-            <View style={styles.qrCodeContainer}>
-              <QrCode value={link} size={224} />
-            </View>
-          </View>
+          <QRCodeSection link={link} />
         </ScrollView>
       </ModalContainer>
     </Animated.View>
@@ -94,7 +89,6 @@ const Share = ({ onClose, titleKey }: ShareProps) => {
 const styles = StyleSheet.create({
   animatedContainer: { alignItems: "center", flex: 1, justifyContent: "center" },
   modalContainer: { maxHeight: "90%", maxWidth: "90%", width: 500 },
-  qrCodeContainer: { backgroundColor: colors.white, borderRadius: borderRadius.radiusMd, padding: spacing.lg },
   startAtContainer: { alignItems: "center", flexDirection: "row", gap: spacing.xl },
 });
 

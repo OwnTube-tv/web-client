@@ -143,8 +143,7 @@ export const VideoScreen = () => {
           <VideoDetails
             onClose={closeModal}
             name={data?.name || ""}
-            channelName={data?.channel?.displayName || ""}
-            channelHandle={data?.channel?.name}
+            channel={data?.channel}
             description={data?.description || ""}
             datePublished={data?.originallyPublishedAt || data?.publishedAt || ""}
           />

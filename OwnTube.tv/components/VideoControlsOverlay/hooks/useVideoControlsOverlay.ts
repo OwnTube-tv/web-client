@@ -61,7 +61,6 @@ export const useVideoControlsOverlay = ({
     centralIconName,
     t,
     colors,
-    backend,
     router,
     isSettingsMenuVisible,
     setIsSettingsMenuVisible,

@@ -22,6 +22,7 @@ import { VideoControlsOverlayProps } from "./VideoControlsOverlay";
 import { useVideoControlsOverlay } from "./hooks/useVideoControlsOverlay";
 import { useFocusEffect } from "expo-router";
 import { PlaybackSettingsPopup } from "../PlaybackSettingsPopup";
+import { ChannelLink } from "../ChannelLink";
 
 const AndroidFocusHelperContainer = forwardRef<View, PropsWithChildren<{ isVisible: boolean; onPress?: () => void }>>(
   ({ isVisible, onPress, children }, ref) => {
@@ -43,7 +44,6 @@ const AndroidFocusHelperContainer = forwardRef<View, PropsWithChildren<{ isVisib
 AndroidFocusHelperContainer.displayName = "AndroidFocusHelperContainer";
 
 const INTERFACE_SCALE = Platform.isTVOS ? 3 : 1;
-const BUTTON_BORDER_WIDTH = 2;
 
 const VideoControlsOverlay = ({
   children,
@@ -79,7 +79,6 @@ const VideoControlsOverlay = ({
     centralIconName,
     t,
     colors,
-    backend,
     router,
     isSettingsMenuVisible,
     setIsSettingsMenuVisible,
@@ -92,9 +91,9 @@ const VideoControlsOverlay = ({
     isVisible,
   });
 
-  const [backRef, setBackRef] = useState<View | null>(null);
-  const [detailsRef, setDetailsRef] = useState<View | null>(null);
-  const [shareBtnRef, setShareBtnRef] = useState<View | null>(null);
+  const [backRef, setBackRef] = useState<number | undefined>();
+  const [detailsRef, setDetailsRef] = useState<number | undefined>();
+  const [shareBtnRef, setShareBtnRef] = useState<number | undefined>();
   const containerRef = useRef<View | null>(null);
   const settingsRef = useRef<View | null>(null);
 
@@ -217,32 +216,14 @@ const VideoControlsOverlay = ({
                   icon="Arrow-Left"
                 />
                 <View style={styles.videoInfoContainer}>
-                  <Pressable
+                  <ChannelLink
+                    enableOnTV
+                    color={colors.white80}
+                    text={channel?.displayName || ""}
+                    href={{ pathname: ROUTES.CHANNEL, params: { backend: channel?.host, channel: channel?.name } }}
+                    sourceLink={channel?.url || ""}
                     nextFocusRight={shareBtnRef}
-                    style={({ focused }) => ({
-                      borderRadius: borderRadius.radiusMd,
-                      margin: focused ? -BUTTON_BORDER_WIDTH : 0,
-                      borderWidth: focused ? BUTTON_BORDER_WIDTH : 0,
-                      borderColor: colors.white94,
-                      alignSelf: "flex-start",
-                    })}
-                    onPress={() =>
-                      router.navigate({
-                        pathname: ROUTES.CHANNEL,
-                        params: { backend, channel: channel?.handle },
-                      })
-                    }
-                  >
-                    <Typography
-                      numberOfLines={1}
-                      ellipsizeMode="tail"
-                      color={colors.white80}
-                      fontSize={"sizeSm"}
-                      fontWeight="SemiBold"
-                    >
-                      {channel?.name}
-                    </Typography>
-                  </Pressable>
+                  />
                   <Typography
                     numberOfLines={4}
                     ellipsizeMode="tail"

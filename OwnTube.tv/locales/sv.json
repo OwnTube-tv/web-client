@@ -22,6 +22,7 @@
   "clear": "Rensa",
   "clearSiteHistory": "Rensa historik för videosajten",
   "clearSiteHistoryQuestion": "Vill du rensa all historik för denna videosajt?",
+  "clearAllHistory": "Rensa all historik",
   "yourWatchHistory": "Din visningshistorik",
   "predefinedInstances": "Fördefinierade videosajter:",
   "peertubeInstances": "PeerTube-sajter:",
@@ -126,5 +127,7 @@
   "quality": "Kvalitet",
   "playbackSpeed": "Uppspelningshastighet",
   "normal": "Normal",
-  "auto": "Auto"
+  "auto": "Auto",
+  "channelNotSupported": "Kanalen stöds inte i OwnTube, vill du gå till den externa kanalen {{channelName}}?",
+  "confirm": "Bekräfta"
 }

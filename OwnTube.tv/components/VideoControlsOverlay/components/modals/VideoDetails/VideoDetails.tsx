@@ -1,7 +1,5 @@
 import Animated, { SlideInLeft, SlideOutLeft } from "react-native-reanimated";
 import { useTheme } from "@react-navigation/native";
-import { useLocalSearchParams } from "expo-router";
-import { RootStackParams } from "../../../../../app/_layout";
 import { ROUTES } from "../../../../../types";
 import { useTranslation } from "react-i18next";
 import { useRef, useState } from "react";
@@ -17,19 +15,18 @@ import { Button, Separator } from "../../../../shared";
 import { spacing } from "../../../../../theme";
 import * as Clipboard from "expo-clipboard";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { VideoChannelSummary } from "@peertube/peertube-types";
 
 interface VideoDetailsProps {
   onClose: () => void;
   name: string;
-  channelName: string;
-  channelHandle?: string;
+  channel?: VideoChannelSummary;
   datePublished: string | Date;
   description: string;
 }
 
-const VideoDetails = ({ onClose, name, channelName, channelHandle, datePublished, description }: VideoDetailsProps) => {
+const VideoDetails = ({ onClose, name, channel, datePublished, description }: VideoDetailsProps) => {
   const { colors } = useTheme();
-  const { backend } = useLocalSearchParams<RootStackParams[ROUTES.VIDEO]>();
   const { t } = useTranslation();
   const [copyButtonText, setCopyButtonText] = useState(t("copyVideoDetails"));
 
@@ -45,7 +42,7 @@ const VideoDetails = ({ onClose, name, channelName, channelHandle, datePublished
 
 **Video name:** ${name}
 
-**Channel name:** ${channelName}
+**Channel name:** ${channel?.displayName}
 
 **Published at:** ${datePublished}
 
@@ -71,8 +68,9 @@ ${description}
       >
         <View style={styles.metadataContainer}>
           <ChannelLink
-            text={channelName}
-            href={{ pathname: ROUTES.CHANNEL, params: { backend, channel: channelHandle } }}
+            text={channel?.displayName || ""}
+            href={{ pathname: ROUTES.CHANNEL, params: { backend: channel?.host, channel: channel?.name } }}
+            sourceLink={channel?.url || ""}
           />
           <Typography fontSize="sizeSm" fontWeight="SemiBold" color={colors.themeDesaturated500}>
             {format(datePublished, "dd MMMM yyyy")}

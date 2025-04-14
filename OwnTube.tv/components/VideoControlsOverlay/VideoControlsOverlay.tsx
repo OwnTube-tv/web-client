@@ -2,7 +2,6 @@ import { PropsWithChildren } from "react";
 import { Pressable, StyleSheet, View } from "react-native";
 import { Typography } from "../Typography";
 import { getHumanReadableDuration } from "../../utils";
-import { Link } from "expo-router";
 import { VolumeControl } from "./components/VolumeControl";
 import * as Device from "expo-device";
 import { DeviceType } from "expo-device";
@@ -21,6 +20,8 @@ import AvRoutePickerButton from "../AvRoutePickerButton/AvRoutePickerButton";
 import { PlaybackSettingsPopup } from "../PlaybackSettingsPopup";
 import GoogleCastButton from "../GoogleCastButton";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { ChannelLink } from "../ChannelLink";
+import { VideoChannelSummary } from "@peertube/peertube-types";
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
 export interface VideoControlsOverlayProps {
@@ -39,7 +40,7 @@ export interface VideoControlsOverlayProps {
   handleReplay: () => void;
   handleJumpTo: (position: number) => void;
   title?: string;
-  channel?: Partial<{ name: string; handle: string }>;
+  channel?: VideoChannelSummary;
   handleVolumeControl: (volume: number) => void;
   volume: number;
   toggleFullscreen: () => void;
@@ -104,7 +105,6 @@ const VideoControlsOverlay = ({
     centralIconName,
     t,
     colors,
-    backend,
     isSettingsMenuVisible,
     setIsSettingsMenuVisible,
   } = useVideoControlsOverlay({
@@ -142,17 +142,12 @@ const VideoControlsOverlay = ({
               <View style={styles.topLeftControls} pointerEvents="box-none">
                 <PlayerButton onPress={handlePressBack} icon="Arrow-Left" />
                 <View style={styles.videoInfoContainer}>
-                  <Link href={{ pathname: ROUTES.CHANNEL, params: { backend, channel: channel?.handle } }}>
-                    <Typography
-                      numberOfLines={1}
-                      ellipsizeMode="tail"
-                      color={colors.white80}
-                      fontSize={isMobile ? "sizeXS" : "sizeSm"}
-                      fontWeight="SemiBold"
-                    >
-                      {channel?.name}
-                    </Typography>
-                  </Link>
+                  <ChannelLink
+                    color={colors.white80}
+                    text={channel?.displayName || ""}
+                    href={{ pathname: ROUTES.CHANNEL, params: { backend: channel?.host, channel: channel?.name } }}
+                    sourceLink={channel?.url || ""}
+                  />
                   <Typography
                     numberOfLines={4}
                     ellipsizeMode="tail"

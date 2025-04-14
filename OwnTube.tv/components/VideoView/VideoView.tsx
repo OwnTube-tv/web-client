@@ -74,7 +74,9 @@ const VideoView = ({
   const { backend } = useLocalSearchParams<RootStackParams[ROUTES.VIDEO]>();
   const { colors } = useTheme();
 
-  const googleCastClient = useRemoteMediaClient({ ignoreSessionUpdatesInBackground: Platform.OS === "ios" });
+  const googleCastClient = Platform.isTV
+    ? null
+    : useRemoteMediaClient({ ignoreSessionUpdatesInBackground: Platform.OS === "ios" });
   const { mutate: postVideoView } = usePostVideoViewMutation();
 
   const handlePlayPause = () => {
@@ -267,7 +269,7 @@ const VideoView = ({
         handleReplay={handleReplay}
         handleJumpTo={handleJumpTo}
         title={title}
-        channel={{ name: channel?.displayName, handle: channel?.name }}
+        channel={channel}
         handleVolumeControl={handleVolumeControl}
         volume={volume}
         toggleFullscreen={toggleFullscreen}

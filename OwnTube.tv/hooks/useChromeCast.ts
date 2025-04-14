@@ -24,7 +24,7 @@ export const useChromeCast = ({
 
   const handleLoadGoogleCastMedia = () => {
     const castSession = window.cast.framework.CastContext.getInstance().getCurrentSession();
-    if (!castSession || isChromecastConnectedRef.current) return;
+    if (!castSession || isChromecastConnectedRef.current || !window.chrome.cast) return;
 
     const mediaType = Number(videoData?.streamingPlaylists?.length) > 0 ? "application/x-mpegurl" : "video/mp4";
     const mediaInfo = new window.chrome.cast.media.MediaInfo(uri, mediaType);
@@ -54,7 +54,7 @@ export const useChromeCast = ({
   const handlePlayPause = () => {
     if (isChromecastConnectedRef.current) {
       const castSession = window.cast?.framework?.CastContext.getInstance().getCurrentSession();
-      if (castSession) {
+      if (castSession && chrome.cast) {
         const player = castSession.getMediaSession();
         if (player?.playerState === "PAUSED") {
           player.play(new chrome.cast.media.PlayRequest(), () => {}, console.error);
@@ -70,7 +70,7 @@ export const useChromeCast = ({
   const handleSeek = (position: number) => {
     if (isChromecastConnectedRef.current) {
       const castSession = window.cast.framework.CastContext.getInstance().getCurrentSession();
-      if (castSession) {
+      if (castSession && chrome.cast) {
         const player = castSession.getMediaSession();
         const seekRequest = new chrome.cast.media.SeekRequest();
         seekRequest.currentTime = position;
@@ -157,8 +157,8 @@ export const useChromeCast = ({
     setIsChromeCastAvailable(true);
 
     castContext.setOptions({
-      receiverApplicationId: window.chrome.cast.media.DEFAULT_MEDIA_RECEIVER_APP_ID,
-      autoJoinPolicy: window.chrome.cast.AutoJoinPolicy.ORIGIN_SCOPED,
+      receiverApplicationId: window.chrome.cast?.media.DEFAULT_MEDIA_RECEIVER_APP_ID,
+      autoJoinPolicy: window.chrome.cast?.AutoJoinPolicy.ORIGIN_SCOPED,
     });
 
     castContext.addEventListener(window.cast.framework.CastContextEventType.SESSION_STATE_CHANGED, (event) => {

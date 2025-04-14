@@ -43,17 +43,13 @@ export const ViewHistory = () => {
         style={{ alignItems: "center", flex: 1, justifyContent: "center" }}
         pointerEvents="box-none"
       >
-        <ModalContainer
-          containerStyle={{ maxWidth: 328 }}
-          onClose={() => toggleModal(false)}
-          title={t("clearSiteHistoryQuestion")}
-        >
-          <View style={{ flexDirection: "row", justifyContent: "flex-end", gap: spacing.lg }}>
+        <ModalContainer onClose={() => toggleModal(false)} title={t("clearSiteHistoryQuestion")}>
+          <View style={styles.modalContentContainer}>
             <Button onPress={() => toggleModal(false)} text={t("cancel")} />
             <Button
               icon="Trash"
               contrast="high"
-              text="Clear all history"
+              text={t("clearAllHistory")}
               onPress={() => {
                 toggleModal(false);
                 clearInstanceHistory(backend);
@@ -132,6 +128,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     width: "100%",
   },
+  modalContentContainer: { flexDirection: "row", gap: spacing.lg, justifyContent: "flex-end" },
   screenContainer: { maxWidth: 900, paddingVertical: spacing.xl },
   sectionHeader: { paddingBottom: spacing.xl },
   sectionListContainer: { overflow: "visible", width: "100%" },

@@ -109,7 +109,11 @@ export const VideoListItem = forwardRef<View, VideoListItemProps>(
               </Pressable>
             </Link>
             <ChannelLink
-              href={{ pathname: ROUTES.CHANNEL, params: { backend: backend, channel: video.channel?.name } }}
+              href={{
+                pathname: ROUTES.CHANNEL,
+                params: { backend: video.channel?.host, channel: video.channel?.name },
+              }}
+              sourceLink={video.channel?.url}
               text={video.channel?.displayName}
             />
             <Typography fontSize="sizeXS" fontWeight="Medium" color={colors.themeDesaturated500}>

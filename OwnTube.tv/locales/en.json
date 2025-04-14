@@ -22,6 +22,7 @@
   "clear": "Clear",
   "clearSiteHistory": "Clear site history",
   "clearSiteHistoryQuestion": "Clear site history?",
+  "clearAllHistory": "Clear all history",
   "yourWatchHistory": "Your watch history",
   "predefinedInstances": "Predefined instances:",
   "peertubeInstances": "PeerTube instances:",
@@ -57,6 +58,7 @@
   "sharePlaylist": "Share video playlist",
   "shareChannelPlaylist": "Share channel playlist",
   "qrCode": "QR code",
+  "qrCodeForURL": "QR code for URL",
   "copy": "Copy",
   "linkCopied": "Link copied!",
   "startAt": "Start at",
@@ -129,5 +131,7 @@
   "quality": "Quality",
   "playbackSpeed": "Playback speed",
   "normal": "Normal",
-  "auto": "Auto"
+  "auto": "Auto",
+  "channelNotSupported": "Channel not supported in OwnTube, do you want to go to external channel {{channelName}}?",
+  "confirm": "Confirm"
 }

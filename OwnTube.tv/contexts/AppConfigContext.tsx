@@ -18,7 +18,7 @@ import { useGlobalSearchParams } from "expo-router";
 import { writeToAsyncStorage } from "../utils";
 import { STORAGE } from "../types";
 import { Platform } from "react-native";
-import { v4 as uuidv4 } from "uuid";
+import uuid from "react-native-uuid";
 
 interface IAppConfigContext {
   isDebugMode: boolean;
@@ -74,13 +74,13 @@ export const AppConfigContextProvider = ({ children }: PropsWithChildren) => {
       let storedSessionId = window.sessionStorage.getItem("owntube_session_id");
 
       if (!storedSessionId) {
-        storedSessionId = uuidv4();
+        storedSessionId = uuid.v4();
         window.sessionStorage.setItem("owntube_session_id", storedSessionId);
       }
 
       setSessionId(storedSessionId);
     } else {
-      setSessionId(uuidv4());
+      setSessionId(uuid.v4());
     }
   }, []);
 

@@ -5,9 +5,7 @@
     hostname: "tube.rebellion.global",
     logoUrl: "https://owntube-tv.github.io/web-client/logos/tube.rebellion.global.png",
     customizations: {
-      // Override default page title
       pageTitle: "XR Tube @ OwnTube.tv",
-      // Home page customizations
       homeLatestPublishedVideoCount: 12,
       homeRecentlyWatchedVideoCount: 4,
       homeHideChannelsOverview: false,
@@ -44,6 +42,18 @@
     description: "Video platform for the Underground Artists sharing their music under free license.",
     hostname: "v.basspistol.org",
     logoUrl: "https://owntube-tv.github.io/web-client/logos/v.basspistol.org.png",
+    customizations: {
+      menuExternalLinks: [
+        {
+          label: "Shop",
+          url: "https://shop.basspistol.com/",
+        },
+        {
+          label: "Radio",
+          url: "https://radio.basspistol.com/public/basspistol",
+        },
+      ],
+    },
   },
   {
     name: "PeerTube Nightly",
@@ -55,6 +65,7 @@
     name: "Fedi.Video",
     description: "This site is intended as a safe, easy-to-use way to search and browse the PeerTube network. Accounts are only listed here if they are run responsibly and create good videos. Anything involving bigotry, conspiracy theories, NSFW or junk content is not allowed.",
     hostname: "fedi.video",
+    logoUrl: "https://fedi.video/lazy-static/avatars/02f93071-79de-43d5-8a8f-e4ed5a39345c.png",
     customizations: {
       hideVideoSiteLinks: true,
     },
@@ -74,20 +85,15 @@
     name: "Swebbtv",
     description: "Svensk Webbtelevision är ett medborgarfinansierat initiativ för att skapa en regelbunden och allsidig nyhets- och informationsförmedling.",
     hostname: "swebbtv.se",
-    // Logo to display when listing things by logo
     logoUrl: "https://owntube-tv.github.io/web-client/logos/swebbtv.se.png",
     customizations: {
-      // Override default page title
       pageTitle: "Swebbtv @ OwnTube.tv",
-      // Override default theme
       pageDefaultTheme: "dark",
-      // Toggle menu items
       menuHideHistoryButton: false,
       menuHideChannelsButton: true,
       menuHidePlaylistsButton: false,
       menuHideCategoriesButton: true,
       menuHideLeaveButton: true,
-      // Playlists to hide in on the Playlists page
       playlistsHidden: [
         "6781",
         "15549",
@@ -122,9 +128,7 @@
         "672",
         "646",
       ],
-      // On the Playlists page, show a button to show all playlists (even hidden ones)
       playlistsShowHiddenButton: true,
-      // Home page customizations
       homeLatestPublishedVideoCount: 21,
       homeRecentlyWatchedVideoCount: 4,
       homeHideChannelsOverview: true,

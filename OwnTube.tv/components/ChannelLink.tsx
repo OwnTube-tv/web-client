@@ -119,5 +119,5 @@ export const ChannelLink: FC<ChannelLinkProps> = ({
 const styles = StyleSheet.create({
   animatedContainer: { alignItems: "center", flex: 1, justifyContent: "center" },
   buttonContainer: { flexDirection: "row", gap: spacing.lg, justifyContent: "flex-end" },
-  typography: { width: Platform.isTV ? "100%" : 96, ...(Platform.isTVOS ? { padding: 0 } : {}) },
+  typography: { width: "100%", ...(Platform.isTVOS ? { padding: 0 } : {}) },
 });

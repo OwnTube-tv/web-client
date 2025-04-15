@@ -3,6 +3,8 @@ import { spacing } from "../theme";
 import { Logo } from "./Svg";
 import { useTheme } from "@react-navigation/native";
 import { BuildInfo } from "./BuildInfo";
+import { Typography } from "./Typography";
+import { useTranslation } from "react-i18next";
 
 interface InfoFooterProps {
   showBuildInfo?: boolean;
@@ -10,13 +12,23 @@ interface InfoFooterProps {
 
 export const InfoFooter = ({ showBuildInfo }: InfoFooterProps) => {
   const { colors } = useTheme();
+  const { t } = useTranslation();
 
   return (
     <View style={styles.container}>
       <Logo textColor={colors.theme950} width={73} height={32} />
       {showBuildInfo && (
         <View style={styles.buildInfoContainer}>
-          <BuildInfo alignCenter />
+          {process.env.EXPO_PUBLIC_HIDE_GIT_DETAILS ? (
+            <View style={{ flexDirection: "row", alignItems: "flex-end" }}>
+              <Typography fontSize={"sizeXS"} color={colors.themeDesaturated500}>
+                {t("build")}{" "}
+              </Typography>
+              <BuildInfo />
+            </View>
+          ) : (
+            <BuildInfo alignCenter />
+          )}
         </View>
       )}
     </View>

@@ -15,6 +15,18 @@ export const BuildInfo = ({ alignCenter }: BuildInfoProps) => {
   const { t } = useTranslation();
   const { colors } = useTheme();
 
+  if (process.env.EXPO_PUBLIC_HIDE_GIT_DETAILS) {
+    return (
+      <Typography
+        style={{ textAlign: alignCenter ? "center" : undefined }}
+        fontSize={"sizeXS"}
+        color={colors.themeDesaturated500}
+      >
+        {removeSecondsFromISODate(build_info.BUILD_TIMESTAMP)}
+      </Typography>
+    );
+  }
+
   return (
     <Typography
       style={{ textAlign: alignCenter ? "center" : undefined }}

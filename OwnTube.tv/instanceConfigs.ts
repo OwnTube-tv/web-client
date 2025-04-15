@@ -17,6 +17,7 @@ const customizationsSchema = z
     menuHideCategoriesButton: z.boolean(),
     menuHideLeaveButton: z.boolean(),
     playlistsHidden: z.array(z.string()),
+    menuExternalLinks: z.array(z.object({ label: z.string(), url: z.string() })),
     playlistsShowHiddenButton: z.boolean(),
     showMoreSize: z.number(),
     hideVideoSiteLinks: z.boolean(),

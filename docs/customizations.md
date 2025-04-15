@@ -51,6 +51,8 @@ or background images for Apple TV.
 
 `EXPO_PUBLIC_HIDE_VIDEO_SITE_LINKS`: hide or show the links to original PeerTube site in video player
 
+`EXPO_PUBLIC_HIDE_GIT_DETAILS`: hide or show the build info section on git commit and author
+
 > [!WARNING]
 > You need to supply images of expected sizes for tvOS or the build fails automatically:
 >

@@ -16,6 +16,7 @@ import { useNetInfo } from "@react-native-community/netinfo";
 import { writeToAsyncStorage } from "../utils";
 import useLeaveInstancePermission from "../hooks/useLeaveInstancePermission";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { QrCodeLinkModal } from "./QRCodeLinkModal";
 
 const SIDEBAR_ROUTES = [
   {
@@ -147,6 +148,38 @@ export const Sidebar: FC<SidebarProps> = ({ backend, ...navigationProps }) => {
       <View style={styles.separatorContainer}>
         <Separator />
       </View>
+      {Number(currentInstanceConfig?.customizations?.menuExternalLinks?.length) > 0 && (
+        <>
+          {currentInstanceConfig?.customizations?.menuExternalLinks?.map(({ label, url }) => (
+            <>
+              {Platform.isTV ? (
+                <Button
+                  onPress={() => {
+                    toggleModal(true);
+                    setContent(<QrCodeLinkModal link={url} />);
+                  }}
+                  justifyContent="flex-start"
+                  icon={"External-Link"}
+                  text={label}
+                  style={{ ...styles.button, ...styles.paddingHHelper, width: "100%" }}
+                />
+              ) : (
+                <Link target="_blank" rel="noreferrer noopener" key={url} href={url}>
+                  <Button
+                    justifyContent="flex-start"
+                    icon={"External-Link"}
+                    text={shouldExpand ? label : undefined}
+                    style={{ ...styles.button, ...styles.paddingHHelper, width: "100%" }}
+                  />
+                </Link>
+              )}
+            </>
+          ))}
+          <View style={styles.separatorContainer}>
+            <Separator />
+          </View>
+        </>
+      )}
       <View style={styles.routesContainer}>
         <Button
           justifyContent="flex-start"

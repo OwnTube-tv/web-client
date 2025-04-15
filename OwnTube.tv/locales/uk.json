@@ -131,6 +131,7 @@
   "playbackSpeed": "Швидкість відтворення",
   "normal": "Нормальна",
   "auto": "Авто",
+  "build": "Збірка",
   "channelNotSupported": "Канал не підтримується в OwnTube, хочете перейти до зовнішнього каналу {{channelName}}?",
   "confirm": "Підтвердити"
 }

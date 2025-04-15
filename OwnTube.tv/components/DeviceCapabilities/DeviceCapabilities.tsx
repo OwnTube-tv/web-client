@@ -30,7 +30,11 @@ const DeviceCapabilities = () => {
   const { t } = useTranslation();
 
   const handleCopyToClipboard = async () => {
-    await Clipboard.setStringAsync(JSON.stringify({ buildInfo: build_info, ...deviceCapabilities }));
+    const buildInfo = process.env.EXPO_PUBLIC_HIDE_GIT_DETAILS
+      ? { BUILD_TIMESTAMP: build_info.BUILD_TIMESTAMP }
+      : build_info;
+
+    await Clipboard.setStringAsync(JSON.stringify({ buildInfo, ...deviceCapabilities }));
   };
 
   return (

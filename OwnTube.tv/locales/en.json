@@ -133,5 +133,6 @@
   "normal": "Normal",
   "auto": "Auto",
   "channelNotSupported": "Channel not supported in OwnTube, do you want to go to external channel {{channelName}}?",
-  "confirm": "Confirm"
+  "confirm": "Confirm",
+  "build": "Build"
 }

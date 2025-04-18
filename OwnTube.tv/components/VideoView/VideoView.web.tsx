@@ -15,6 +15,7 @@ import { usePostVideoViewMutation } from "../../api";
 import { IcoMoonIcon } from "../IcoMoonIcon";
 import { useTheme } from "@react-navigation/native";
 import { useChromeCast } from "../../hooks";
+import { useTranslation } from "react-i18next";
 
 export interface PlaybackStatus {
   didJustFinish: boolean;
@@ -25,6 +26,7 @@ export interface PlaybackStatus {
   playableDuration: number;
   volume: number;
   rate: number;
+  isMetadataLoaded?: boolean;
 }
 
 declare const window: {
@@ -47,6 +49,7 @@ const VideoView = ({
   selectedQuality,
   handleSetQuality,
   videoData,
+  captions,
 }: VideoViewProps) => {
   const { videojs } = window;
   const videoRef = useRef<HTMLDivElement>(null);
@@ -64,10 +67,13 @@ const VideoView = ({
     playableDuration: 0,
     volume: 1,
     rate: 1,
+    isMetadataLoaded: false,
   });
+  const { i18n } = useTranslation();
   const isMobile = Device.deviceType !== DeviceType.DESKTOP;
   const [isControlsVisible, setIsControlsVisible] = useState(false);
   const [isAirPlayAvailable, setIsAirPlayAvailable] = useState(false);
+  const [availableCCLangs, setAvailableCCLangs] = useState<string[]>([]);
   const { colors } = useTheme();
 
   const updatePlaybackStatus = (updatedStatus: Partial<typeof playbackStatus>) => {
@@ -140,10 +146,12 @@ const VideoView = ({
 
   const options = {
     autoplay: true,
-    controls: false,
+    controls: true,
     playsinline: true,
     preload: false,
+    crossorigin: "anonymous",
     html5: {
+      nativeTextTracks: true,
       vhs: {
         overrideNative: !videojs.browser.IS_ANY_SAFARI,
       },
@@ -153,7 +161,7 @@ const VideoView = ({
         src: uri,
       },
     ],
-    children: ["MediaLoader"],
+    children: ["MediaLoader", "NativeTextTrackDisplay"],
   };
 
   const handleAirPlayAvailabilityChange = function (event: Event) {
@@ -172,6 +180,7 @@ const VideoView = ({
       updatePlaybackStatus({
         duration: Math.floor(playerRef.current?.duration() ?? 0),
         playableDuration: playerRef.current?.bufferedEnd(),
+        isMetadataLoaded: true,
       });
     });
 
@@ -191,6 +200,7 @@ const VideoView = ({
       updatePlaybackStatus({
         position: Math.floor(playerRef.current?.currentTime() ?? 0),
         didJustFinish: false,
+        playableDuration: playerRef.current?.bufferedEnd(),
       });
     });
 
@@ -304,7 +314,7 @@ const VideoView = ({
       }
 
       playerRef.current?.src(uri);
-      playerRef.current?.currentTime(!isInitialVideoLoadDone.current ? Number(timestamp) : position);
+      playerRef.current?.currentTime(!isInitialVideoLoadDone.current ? Number(timestamp) : Math.floor(position || 0));
       isInitialVideoLoadDone.current = true;
 
       return () => {
@@ -312,6 +322,26 @@ const VideoView = ({
       };
     }, [uri]),
   );
+
+  useEffect(() => {
+    if (captions && captions.length > 0 && playbackStatus.isMetadataLoaded) {
+      captions.forEach((caption) => {
+        if (!caption.m3u8Url) {
+          playerRef.current?.addRemoteTextTrack(
+            {
+              kind: "captions",
+              src: caption.fileUrl,
+              srclang: caption.language.id,
+              label: caption.language.label,
+            },
+            false,
+          );
+        }
+      });
+
+      setAvailableCCLangs((captions || []).map(({ language }) => language.id));
+    }
+  }, [captions?.length, playbackStatus.isMetadataLoaded]);
 
   const handleVolumeControl = (volume: number) => {
     const formattedVolume = (volume < 0 ? 0 : volume) * 0.01;
@@ -336,6 +366,23 @@ const VideoView = ({
 
   const handleSetSpeed = (speed: number) => {
     playerRef.current?.playbackRate(speed);
+  };
+  const [isCCShown, setIsCCShown] = useState(false);
+
+  const handleToggleCC = () => {
+    const textTracks = playerRef.current?.textTracks() || {};
+    const currentLangTrack = textTracks[textTracks.tracks_.findIndex((track) => track.language === i18n.language)];
+
+    if (isCCShown) {
+      currentLangTrack.mode = "disabled";
+      setIsCCShown(false);
+      return;
+    }
+
+    if (currentLangTrack) {
+      currentLangTrack.mode = "showing";
+      setIsCCShown(true);
+    }
   };
 
   return (
@@ -372,6 +419,8 @@ const VideoView = ({
         isWebAirPlayAvailable={isAirPlayAvailable}
         isChromeCastAvailable={isChromeCastAvailable}
         handleLoadGoogleCastMedia={handleCreateSession}
+        handleToggleCC={handleToggleCC}
+        isCCAvailable={availableCCLangs.includes(i18n.language)}
       >
         {isChromecastConnected && (
           <View style={styles.chromecastOverlay}>

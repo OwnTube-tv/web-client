@@ -2,7 +2,7 @@ import VideoView from "../../components/VideoView";
 import { useFocusEffect, useLocalSearchParams, useRouter } from "expo-router";
 import { RootStackParams } from "../../app/_layout";
 import { ROUTES } from "../../types";
-import { useGetVideoQuery } from "../../api";
+import { useGetVideoCaptionsQuery, useGetVideoQuery } from "../../api";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Loader, FocusWrapper, FullScreenModal, ErrorTextWithRetry, Button } from "../../components";
 import { useViewHistory } from "../../hooks";
@@ -21,6 +21,7 @@ export const VideoScreen = () => {
   const router = useRouter();
   const params = useLocalSearchParams<RootStackParams[ROUTES.VIDEO]>();
   const { data, isFetching, isError, refetch } = useGetVideoQuery({ id: params?.id });
+  const { data: captions } = useGetVideoCaptionsQuery(params?.id);
   const { updateHistory } = useViewHistory();
   const { isFullscreen, toggleFullscreen } = useFullScreenVideoPlayback();
   const { top } = useSafeAreaInsets();
@@ -138,6 +139,7 @@ export const VideoScreen = () => {
           viewUrl={data?.url}
           selectedQuality={quality}
           handleSetQuality={setQuality}
+          captions={captions}
         />
         <FullScreenModal onBackdropPress={closeModal} isVisible={visibleModal === "details"}>
           <VideoDetails

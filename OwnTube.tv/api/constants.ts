@@ -28,6 +28,7 @@ export enum QUERY_KEYS {
   playlistVideos = "playlistVideos",
   playlistInfo = "playlistInfo",
   playlistsCollection = "playlistsCollection",
+  videoCaptions = "videoCaptions",
 }
 
 export const WRONG_SERVER_VERSION_STATUS_CODE = 444;

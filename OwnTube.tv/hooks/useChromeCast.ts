@@ -23,7 +23,7 @@ export const useChromeCast = ({
   const isChromecastConnectedRef = useRef(false);
 
   const handleLoadGoogleCastMedia = () => {
-    const castSession = window.cast.framework.CastContext.getInstance().getCurrentSession();
+    const castSession = window.cast?.framework?.CastContext.getInstance().getCurrentSession();
     if (!castSession || isChromecastConnectedRef.current || !window.chrome.cast) return;
 
     const mediaType = Number(videoData?.streamingPlaylists?.length) > 0 ? "application/x-mpegurl" : "video/mp4";
@@ -69,7 +69,7 @@ export const useChromeCast = ({
 
   const handleSeek = (position: number) => {
     if (isChromecastConnectedRef.current) {
-      const castSession = window.cast.framework.CastContext.getInstance().getCurrentSession();
+      const castSession = window.cast?.framework?.CastContext.getInstance().getCurrentSession();
       if (castSession && chrome.cast) {
         const player = castSession.getMediaSession();
         const seekRequest = new chrome.cast.media.SeekRequest();
@@ -81,7 +81,7 @@ export const useChromeCast = ({
 
   const handleVolume = (volume: number) => {
     if (isChromecastConnectedRef.current) {
-      const castSession = window.cast.framework.CastContext.getInstance().getCurrentSession();
+      const castSession = window.cast?.framework?.CastContext.getInstance().getCurrentSession();
       if (castSession) {
         castSession.setVolume(volume);
       }
@@ -90,7 +90,7 @@ export const useChromeCast = ({
 
   const handleMute = (muted: boolean) => {
     if (isChromecastConnectedRef.current) {
-      const castSession = window.cast.framework.CastContext.getInstance().getCurrentSession();
+      const castSession = window.cast?.framework?.CastContext.getInstance().getCurrentSession();
       if (castSession) {
         castSession.setMute(muted);
       }

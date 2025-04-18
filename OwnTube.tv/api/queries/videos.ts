@@ -122,3 +122,17 @@ export const usePostVideoViewMutation = () => {
     },
   });
 };
+
+export const useGetVideoCaptionsQuery = (id?: string) => {
+  const { backend } = useLocalSearchParams<RootStackParams["index"]>();
+
+  return useQuery({
+    queryKey: [QUERY_KEYS.videoCaptions, id],
+    queryFn: async () => {
+      return await ApiServiceImpl.getVideoCaptions(backend!, id!);
+    },
+    refetchOnWindowFocus: false,
+    enabled: !!backend && !!id,
+    retry,
+  });
+};

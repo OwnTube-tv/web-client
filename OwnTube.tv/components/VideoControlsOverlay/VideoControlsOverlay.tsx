@@ -58,6 +58,8 @@ export interface VideoControlsOverlayProps {
   isChromeCastAvailable?: boolean;
   castState?: "airPlay" | "chromecast";
   handleLoadGoogleCastMedia?: () => void;
+  handleToggleCC?: () => void;
+  isCCAvailable: boolean;
 }
 
 const VideoControlsOverlay = ({
@@ -95,6 +97,8 @@ const VideoControlsOverlay = ({
   isChromeCastAvailable,
   castState,
   handleLoadGoogleCastMedia,
+  handleToggleCC,
+  isCCAvailable,
 }: PropsWithChildren<VideoControlsOverlayProps>) => {
   const {
     isSeekBarFocused,
@@ -260,6 +264,7 @@ const VideoControlsOverlay = ({
                     />
                   )}
                   {castState !== "chromecast" && <AvRoutePickerButton isWebAirPlayAvailable={isWebAirPlayAvailable} />}
+                  {isCCAvailable && <PlayerButton icon="Closed-Captions" onPress={handleToggleCC} />}
                   <PlayerButton icon="Settings" onPress={() => setIsSettingsMenuVisible((cur) => !cur)} />
                   <PlayerButton onPress={toggleFullscreen} icon={`Fullscreen${isFullscreen ? "-Exit" : ""}`} />
                 </View>

@@ -69,6 +69,8 @@ const VideoControlsOverlay = ({
   speed,
   selectedQuality,
   handleSetQuality,
+  handleToggleCC,
+  isCCAvailable,
 }: PropsWithChildren<VideoControlsOverlayProps>) => {
   const {
     isSeekBarFocused,
@@ -327,11 +329,14 @@ const VideoControlsOverlay = ({
                     {`${getHumanReadableDuration(position * 1000)} / ${getHumanReadableDuration(duration * 1000)}`}
                   </Typography>
                 </View>
-                <PlayerButton
-                  ref={settingsRef}
-                  icon="Settings"
-                  onPress={() => setIsSettingsMenuVisible((cur) => !cur)}
-                />
+                <TVFocusGuideView style={{ flexDirection: "row" }}>
+                  {isCCAvailable && <PlayerButton icon="Closed-Captions" onPress={handleToggleCC} />}
+                  <PlayerButton
+                    ref={settingsRef}
+                    icon="Settings"
+                    onPress={() => setIsSettingsMenuVisible((cur) => !cur)}
+                  />
+                </TVFocusGuideView>
               </View>
             </LinearGradient>
           </View>

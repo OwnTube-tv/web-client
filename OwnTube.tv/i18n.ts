@@ -15,7 +15,7 @@ i18n.use(initReactI18next).init({
   },
   fallbackLng: FALLBACK_LANG,
   defaultNS: "translation",
-  lng: getLocales()[0]?.languageCode || undefined,
+  lng: process.env.EXPO_PUBLIC_LANGUAGE_OVERRIDE || getLocales()[0]?.languageCode || undefined,
   pluralSeparator: "_",
 });
 

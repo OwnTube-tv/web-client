@@ -5,7 +5,7 @@ import { useMemo, useState } from "react";
 import { Typography } from "./Typography";
 import { IcoMoonIcon } from "./IcoMoonIcon";
 import { Spacer } from "./shared/Spacer";
-import { useGetVideoQuery } from "../api";
+import { useGetVideoCaptionsQuery, useGetVideoQuery } from "../api";
 import { useLocalSearchParams } from "expo-router";
 import { RootStackParams } from "../app/_layout";
 import { ROUTES } from "../types";
@@ -19,6 +19,8 @@ interface PlaybackSettingsPopupProps {
   selectedQuality: string;
   handleSetQuality: (quality: string) => void;
   onSelectOption?: () => void;
+  handleSetCCLang?: (lang: string) => void;
+  selectedCCLang?: string;
 }
 
 const Setting = ({ name, state, onPress }: { name: string; state?: string; onPress: () => void }) => {
@@ -128,12 +130,15 @@ export const PlaybackSettingsPopup = ({
   handleSetSpeed,
   handleSetQuality,
   onSelectOption,
+  handleSetCCLang,
+  selectedCCLang,
 }: PlaybackSettingsPopupProps) => {
   const { colors } = useTheme();
   const { t } = useTranslation();
   const [selectedScreen, setSelectedScreen] = useState<keyof typeof screens>("settings");
   const { id } = useLocalSearchParams<RootStackParams[ROUTES.VIDEO]>();
   const { data: videoData } = useGetVideoQuery({ id, enabled: false });
+  const { data: videoCaptions } = useGetVideoCaptionsQuery(id, false);
 
   const screens = useMemo(() => {
     const qualityOptions = (
@@ -141,6 +146,9 @@ export const PlaybackSettingsPopup = ({
     )
       ?.map(({ resolution }) => ({ ...resolution, id: String(resolution.id) }))
       .concat([{ id: "auto", label: t("auto") }]);
+    const ccOptions = [{ id: "", label: t("off") }].concat(
+      videoCaptions?.map(({ language }) => ({ id: language.id, label: language.label })) || [],
+    );
 
     return {
       settings: (
@@ -150,10 +158,19 @@ export const PlaybackSettingsPopup = ({
             id: "playbackSpeed",
             state: selectedSpeed === 1 ? t("normal") : String(selectedSpeed),
           },
+          ...(Number(ccOptions?.length) > 1 && Boolean(handleSetCCLang)
+            ? [
+                {
+                  name: t("subtitlesCC"),
+                  id: "captions",
+                  state: ccOptions?.find(({ id }) => selectedCCLang === id)?.label,
+                },
+              ]
+            : []),
           { name: t("quality"), id: "quality", state: qualityOptions?.find(({ id }) => selectedQuality === id)?.label },
         ] as const
       ).map(({ name, id, state }) => (
-        <Setting key={id} name={name} state={state} onPress={() => setSelectedScreen(id)} />
+        <Setting key={id} name={name} state={state} onPress={() => setSelectedScreen(id as keyof typeof screens)} />
       )),
       playbackSpeed: (
         <>
@@ -189,8 +206,25 @@ export const PlaybackSettingsPopup = ({
           ))}
         </>
       ),
+      captions: (
+        <>
+          <OptionsHeader text={t("subtitlesCC")} onBackPress={() => setSelectedScreen("settings")} />
+          {ccOptions?.map(({ id, label }) => (
+            <Option
+              onPress={(lang: string) => {
+                handleSetCCLang?.(lang);
+                onSelectOption?.();
+              }}
+              key={id}
+              id={id}
+              isSelected={id === selectedCCLang}
+              text={label}
+            />
+          ))}
+        </>
+      ),
     };
-  }, [colors, selectedSpeed, selectedQuality, videoData, t]);
+  }, [colors, selectedSpeed, selectedQuality, videoData, t, selectedCCLang, handleSetCCLang]);
 
   return (
     <TVFocusGuideHelper style={[styles.container, { backgroundColor: colors.black80 }]}>

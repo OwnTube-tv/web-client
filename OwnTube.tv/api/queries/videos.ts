@@ -123,7 +123,7 @@ export const usePostVideoViewMutation = () => {
   });
 };
 
-export const useGetVideoCaptionsQuery = (id?: string) => {
+export const useGetVideoCaptionsQuery = (id?: string, enabled = true) => {
   const { backend } = useLocalSearchParams<RootStackParams["index"]>();
 
   return useQuery({
@@ -132,7 +132,7 @@ export const useGetVideoCaptionsQuery = (id?: string) => {
       return await ApiServiceImpl.getVideoCaptions(backend!, id!);
     },
     refetchOnWindowFocus: false,
-    enabled: !!backend && !!id,
+    enabled: !!backend && !!id && enabled,
     retry,
   });
 };

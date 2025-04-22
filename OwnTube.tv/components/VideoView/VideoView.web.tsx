@@ -74,6 +74,9 @@ const VideoView = ({
   const [isControlsVisible, setIsControlsVisible] = useState(false);
   const [isAirPlayAvailable, setIsAirPlayAvailable] = useState(false);
   const [availableCCLangs, setAvailableCCLangs] = useState<string[]>([]);
+  const [selectedCCLang, setSelectedCCLang] = useState("");
+  const [memorizedCCLang, setMemorizedCCLang] = useState<string | null>(null);
+
   const { colors } = useTheme();
 
   const updatePlaybackStatus = (updatedStatus: Partial<typeof playbackStatus>) => {
@@ -341,7 +344,7 @@ const VideoView = ({
 
       setAvailableCCLangs((captions || []).map(({ language }) => language.id));
     }
-  }, [captions?.length, playbackStatus.isMetadataLoaded]);
+  }, [captions, playbackStatus.isMetadataLoaded]);
 
   const handleVolumeControl = (volume: number) => {
     const formattedVolume = (volume < 0 ? 0 : volume) * 0.01;
@@ -369,19 +372,37 @@ const VideoView = ({
   };
   const [isCCShown, setIsCCShown] = useState(false);
 
-  const handleToggleCC = () => {
+  const handleSetCCLang = (lang: string) => {
     const textTracks = playerRef.current?.textTracks() || {};
-    const currentLangTrack = textTracks[textTracks.tracks_.findIndex((track) => track.language === i18n.language)];
+    const currentLangTrack = textTracks[textTracks.tracks_.findIndex((track) => track.language === selectedCCLang)];
 
-    if (isCCShown) {
+    if (!lang) {
       currentLangTrack.mode = "disabled";
+      setSelectedCCLang("");
       setIsCCShown(false);
       return;
     }
+    setMemorizedCCLang(lang);
+
+    const trackToShow = textTracks[textTracks.tracks_.findIndex((track) => track.language === lang)];
 
     if (currentLangTrack) {
-      currentLangTrack.mode = "showing";
-      setIsCCShown(true);
+      currentLangTrack.mode = "disabled";
+    }
+
+    trackToShow.mode = "showing";
+    setSelectedCCLang(lang);
+    setIsCCShown(true);
+  };
+
+  const handleToggleCC = () => {
+    const autoSelectedLang =
+      memorizedCCLang || (availableCCLangs.includes(i18n.language) ? i18n.language : availableCCLangs[0]);
+
+    if (isCCShown) {
+      handleSetCCLang("");
+    } else {
+      handleSetCCLang(autoSelectedLang);
     }
   };
 
@@ -420,7 +441,9 @@ const VideoView = ({
         isChromeCastAvailable={isChromeCastAvailable}
         handleLoadGoogleCastMedia={handleCreateSession}
         handleToggleCC={handleToggleCC}
-        isCCAvailable={availableCCLangs.includes(i18n.language)}
+        isCCAvailable={Number(captions?.length) > 0}
+        selectedCCLang={selectedCCLang}
+        setSelectedCCLang={handleSetCCLang}
       >
         {isChromecastConnected && (
           <View style={styles.chromecastOverlay}>

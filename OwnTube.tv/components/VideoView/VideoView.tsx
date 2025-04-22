@@ -268,11 +268,9 @@ const VideoView = ({
 
   const { i18n } = useTranslation();
   const [availableCCLangs, setAvailableCCLangs] = useState<string[]>([]);
-  const [isCCVisible, setIsCCVisible] = useState(false);
-
-  const handleToggleCC = () => {
-    setIsCCVisible((cur) => !cur);
-  };
+  const [selectedCCLang, setSelectedCCLang] = useState("");
+  const [memorizedCCLang, setMemorizedCCLang] = useState<string | null>(null);
+  const [isCCShown, setIsCCShown] = useState(false);
 
   const handleTextTracks = (e: OnTextTracksData) => {
     setAvailableCCLangs(
@@ -286,11 +284,32 @@ const VideoView = ({
     );
   };
 
+  const isIosWithoutSideloadedSubs = Platform.OS === "ios" && !captions?.some(({ m3u8Url }) => m3u8Url);
   const isCCAvailable = useMemo(() => {
-    const isIosWithoutEmbeddedSubs = Platform.OS === "ios" && !captions?.some(({ m3u8Url }) => m3u8Url);
-
-    return availableCCLangs.includes(i18n.language) && !isIosWithoutEmbeddedSubs;
+    return Number(captions?.length) > 0 && !isIosWithoutSideloadedSubs;
   }, [captions, availableCCLangs, i18n.language]);
+
+  const handleSetCCLang = (lang: string) => {
+    if (!lang) {
+      setSelectedCCLang("");
+      setIsCCShown(false);
+      return;
+    }
+    setMemorizedCCLang(lang);
+    setSelectedCCLang(lang);
+    setIsCCShown(true);
+  };
+
+  const handleToggleCC = () => {
+    const autoSelectedLang =
+      memorizedCCLang || (availableCCLangs.includes(i18n.language) ? i18n.language : availableCCLangs[0]);
+
+    if (isCCShown) {
+      handleSetCCLang("");
+    } else {
+      handleSetCCLang(autoSelectedLang);
+    }
+  };
 
   return (
     <View collapsable={false} style={styles.container}>
@@ -328,6 +347,8 @@ const VideoView = ({
         isChromeCastAvailable
         handleToggleCC={handleToggleCC}
         isCCAvailable={isCCAvailable}
+        setSelectedCCLang={!isIosWithoutSideloadedSubs ? handleSetCCLang : undefined}
+        selectedCCLang={selectedCCLang}
       >
         {googleCastClient ? (
           <IcoMoonIcon name="Chromecast" size={72} color={colors.white80} />
@@ -361,10 +382,10 @@ const VideoView = ({
             }}
             onTextTracks={handleTextTracks}
             selectedTextTrack={
-              isCCVisible
+              selectedCCLang
                 ? {
                     type: SelectedTrackType.LANGUAGE,
-                    value: i18n.language,
+                    value: selectedCCLang,
                   }
                 : undefined
             }

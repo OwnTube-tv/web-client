@@ -60,6 +60,8 @@ export interface VideoControlsOverlayProps {
   handleLoadGoogleCastMedia?: () => void;
   handleToggleCC?: () => void;
   isCCAvailable: boolean;
+  selectedCCLang?: string;
+  setSelectedCCLang?: (lang: string) => void;
 }
 
 const VideoControlsOverlay = ({
@@ -99,6 +101,8 @@ const VideoControlsOverlay = ({
   handleLoadGoogleCastMedia,
   handleToggleCC,
   isCCAvailable,
+  selectedCCLang,
+  setSelectedCCLang,
 }: PropsWithChildren<VideoControlsOverlayProps>) => {
   const {
     isSeekBarFocused,
@@ -210,6 +214,8 @@ const VideoControlsOverlay = ({
                       selectedQuality={selectedQuality}
                       handleSetSpeed={handleSetSpeed}
                       selectedSpeed={speed}
+                      handleSetCCLang={setSelectedCCLang}
+                      selectedCCLang={selectedCCLang}
                     />
                   </View>
                 )}

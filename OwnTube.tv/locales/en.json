@@ -134,5 +134,7 @@
   "auto": "Auto",
   "channelNotSupported": "Channel not supported in {{appName}}, do you want to go to external channel {{channelName}}?",
   "confirm": "Confirm",
-  "build": "Build"
+  "build": "Build",
+  "subtitlesCC": "Subtitles/CC",
+  "off": "Off"
 }

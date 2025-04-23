@@ -9,9 +9,10 @@ export interface PlayerButtonProps extends PressableProps {
   onHoverIn?: () => void;
   onHoverOut?: () => void;
   scale?: number;
+  color?: string;
 }
 
-const PlayerButton = forwardRef<View, PlayerButtonProps>(({ onPress, icon, onHoverIn, onHoverOut }, ref) => {
+const PlayerButton = forwardRef<View, PlayerButtonProps>(({ onPress, icon, onHoverIn, onHoverOut, color }, ref) => {
   const { colors } = useTheme();
   const [isHovered, setIsHovered] = useState(false);
 
@@ -40,7 +41,7 @@ const PlayerButton = forwardRef<View, PlayerButtonProps>(({ onPress, icon, onHov
         },
       ]}
     >
-      <IcoMoonIcon name={icon} size={spacing.xl} color={isHovered ? colors.white94 : colors.white80} />
+      <IcoMoonIcon name={icon} size={spacing.xl} color={isHovered ? colors.white94 : color || colors.white80} />
     </Pressable>
   );
 });

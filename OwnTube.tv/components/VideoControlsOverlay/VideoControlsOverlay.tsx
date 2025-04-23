@@ -60,6 +60,7 @@ export interface VideoControlsOverlayProps {
   handleLoadGoogleCastMedia?: () => void;
   handleToggleCC?: () => void;
   isCCAvailable: boolean;
+  isCCVisible?: boolean;
   selectedCCLang?: string;
   setSelectedCCLang?: (lang: string) => void;
 }
@@ -101,6 +102,7 @@ const VideoControlsOverlay = ({
   handleLoadGoogleCastMedia,
   handleToggleCC,
   isCCAvailable,
+  isCCVisible,
   selectedCCLang,
   setSelectedCCLang,
 }: PropsWithChildren<VideoControlsOverlayProps>) => {
@@ -270,7 +272,13 @@ const VideoControlsOverlay = ({
                     />
                   )}
                   {castState !== "chromecast" && <AvRoutePickerButton isWebAirPlayAvailable={isWebAirPlayAvailable} />}
-                  {isCCAvailable && <PlayerButton icon="Closed-Captions" onPress={handleToggleCC} />}
+                  {isCCAvailable && (
+                    <PlayerButton
+                      color={isCCVisible ? undefined : colors.white25}
+                      icon="Closed-Captions"
+                      onPress={handleToggleCC}
+                    />
+                  )}
                   <PlayerButton icon="Settings" onPress={() => setIsSettingsMenuVisible((cur) => !cur)} />
                   <PlayerButton onPress={toggleFullscreen} icon={`Fullscreen${isFullscreen ? "-Exit" : ""}`} />
                 </View>

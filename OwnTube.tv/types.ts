@@ -10,6 +10,7 @@ export enum STORAGE {
   RECENT_INSTANCES = "recent_instances",
   LOCALE = "locale",
   INSTANCE_ENTRYPOINTS = "instance_entrypoints",
+  CC_LOCALE = "cc_locale",
 }
 
 export enum ROUTES {

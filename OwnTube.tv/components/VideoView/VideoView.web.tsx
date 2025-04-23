@@ -10,12 +10,13 @@ import { DeviceType } from "expo-device";
 import VideoControlsOverlay from "../VideoControlsOverlay";
 import { useFocusEffect, useLocalSearchParams } from "expo-router";
 import { RootStackParams } from "../../app/_layout";
-import { ROUTES } from "../../types";
+import { ROUTES, STORAGE } from "../../types";
 import { usePostVideoViewMutation } from "../../api";
 import { IcoMoonIcon } from "../IcoMoonIcon";
 import { useTheme } from "@react-navigation/native";
 import { useChromeCast } from "../../hooks";
 import { useTranslation } from "react-i18next";
+import { useAppConfigContext } from "../../contexts";
 
 export interface PlaybackStatus {
   didJustFinish: boolean;
@@ -371,6 +372,8 @@ const VideoView = ({
     playerRef.current?.playbackRate(speed);
   };
   const [isCCShown, setIsCCShown] = useState(false);
+  const isCCAvailable = Number(captions?.length) > 0;
+  const { updateSessionCCLocale } = useAppConfigContext();
 
   const handleSetCCLang = (lang: string) => {
     const textTracks = playerRef.current?.textTracks() || {};
@@ -379,6 +382,7 @@ const VideoView = ({
     if (!lang) {
       currentLangTrack.mode = "disabled";
       setSelectedCCLang("");
+      updateSessionCCLocale(lang);
       setIsCCShown(false);
       return;
     }
@@ -392,6 +396,7 @@ const VideoView = ({
 
     trackToShow.mode = "showing";
     setSelectedCCLang(lang);
+    updateSessionCCLocale(lang);
     setIsCCShown(true);
   };
 
@@ -405,6 +410,18 @@ const VideoView = ({
       handleSetCCLang(autoSelectedLang);
     }
   };
+
+  useFocusEffect(
+    useCallback(() => {
+      const locale = sessionStorage.getItem(STORAGE.CC_LOCALE);
+
+      if (isCCAvailable && locale && availableCCLangs.includes(locale)) {
+        setTimeout(() => {
+          handleSetCCLang(locale);
+        }, 500);
+      }
+    }, [isCCAvailable, availableCCLangs]),
+  );
 
   return (
     <View style={styles.container}>
@@ -441,9 +458,10 @@ const VideoView = ({
         isChromeCastAvailable={isChromeCastAvailable}
         handleLoadGoogleCastMedia={handleCreateSession}
         handleToggleCC={handleToggleCC}
-        isCCAvailable={Number(captions?.length) > 0}
+        isCCAvailable={isCCAvailable}
         selectedCCLang={selectedCCLang}
         setSelectedCCLang={handleSetCCLang}
+        isCCVisible={isCCShown}
       >
         {isChromecastConnected && (
           <View style={styles.chromecastOverlay}>

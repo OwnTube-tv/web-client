@@ -8,7 +8,13 @@ import {
   useEffect,
   useRef,
 } from "react";
-import { DeviceCapabilities, useDeviceCapabilities, useFeaturedInstancesData, useRecentInstances } from "../hooks";
+import {
+  DeviceCapabilities,
+  useDeviceCapabilities,
+  useFeaturedInstancesData,
+  useRecentInstances,
+  useSubtitlesSessionLocale,
+} from "../hooks";
 import { useNetInfo } from "@react-native-community/netinfo";
 
 import { InstanceConfig } from "../instanceConfigs";
@@ -27,6 +33,8 @@ interface IAppConfigContext {
   featuredInstances?: InstanceConfig[];
   primaryBackend?: string;
   sessionId: string;
+  sessionCCLocale: string;
+  updateSessionCCLocale: (locale: string) => void;
 }
 
 const AppConfigContext = createContext<IAppConfigContext>({
@@ -34,6 +42,8 @@ const AppConfigContext = createContext<IAppConfigContext>({
   setIsDebugMode: () => {},
   deviceCapabilities: {} as DeviceCapabilities,
   sessionId: "",
+  sessionCCLocale: "",
+  updateSessionCCLocale: () => {},
 });
 
 export const AppConfigContextProvider = ({ children }: PropsWithChildren) => {
@@ -45,6 +55,7 @@ export const AppConfigContextProvider = ({ children }: PropsWithChildren) => {
   const lastRecordedConnectionState = useRef<boolean | undefined | null>();
   const { recentInstances, addRecentInstance } = useRecentInstances();
   const { backend } = useGlobalSearchParams<{ backend: string }>();
+  const { sessionCCLocale, updateSessionCCLocale } = useSubtitlesSessionLocale();
 
   useEffect(() => {
     if (lastRecordedConnectionState.current === true && !isConnected) {
@@ -93,6 +104,8 @@ export const AppConfigContextProvider = ({ children }: PropsWithChildren) => {
         featuredInstances,
         primaryBackend,
         sessionId,
+        sessionCCLocale,
+        updateSessionCCLocale,
       }}
     >
       {!featuredInstances?.length ? null : children}

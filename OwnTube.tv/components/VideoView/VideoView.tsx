@@ -24,6 +24,7 @@ import { styles } from "./styles";
 import { usePostVideoViewMutation } from "../../api";
 import { ISO639_1 } from "react-native-video/src/types/language";
 import { useTranslation } from "react-i18next";
+import { useAppConfigContext } from "../../contexts";
 
 export interface VideoViewProps {
   uri: string;
@@ -288,6 +289,7 @@ const VideoView = ({
   const isCCAvailable = useMemo(() => {
     return Number(captions?.length) > 0 && !isIosWithoutSideloadedSubs;
   }, [captions, availableCCLangs, i18n.language]);
+  const { sessionCCLocale, updateSessionCCLocale } = useAppConfigContext();
 
   const handleSetCCLang = (lang: string) => {
     if (!lang) {
@@ -297,6 +299,7 @@ const VideoView = ({
     }
     setMemorizedCCLang(lang);
     setSelectedCCLang(lang);
+    updateSessionCCLocale(lang);
     setIsCCShown(true);
   };
 
@@ -310,6 +313,14 @@ const VideoView = ({
       handleSetCCLang(autoSelectedLang);
     }
   };
+
+  useFocusEffect(
+    useCallback(() => {
+      if (isCCAvailable && sessionCCLocale && availableCCLangs.includes(sessionCCLocale)) {
+        handleSetCCLang(sessionCCLocale);
+      }
+    }, [isCCAvailable, availableCCLangs, sessionCCLocale]),
+  );
 
   return (
     <View collapsable={false} style={styles.container}>
@@ -349,6 +360,7 @@ const VideoView = ({
         isCCAvailable={isCCAvailable}
         setSelectedCCLang={!isIosWithoutSideloadedSubs ? handleSetCCLang : undefined}
         selectedCCLang={selectedCCLang}
+        isCCVisible={isCCShown}
       >
         {googleCastClient ? (
           <IcoMoonIcon name="Chromecast" size={72} color={colors.white80} />

@@ -13,7 +13,6 @@ In the `owntube` environment that you created, specify two environment variables
 
 - `CLIENT_CUSTOMIZATIONS_REPO` - the git repository clone URL that contains your customizations file (HTTPS)
 - `CLIENT_CUSTOMIZATIONS_FILE` - the path to the customizations file in the repository
-
 In the end, the environment variables should look something like this:
 
 | Name                         | Value                                                     |
@@ -26,8 +25,7 @@ In the end, the environment variables should look something like this:
 The customizations file is essentially an .env file that is loaded by Expo at build time, the values from which are then
 used to populate the Expo config file (app.config.ts).
 
-Each value must be prefixed by `EXPO_PUBLIC_`. See list of available customizations below:
-
+Each value must be prefixed by `EXPO_PUBLIC_`. See the list of available customizations below:
 `EXPO_PUBLIC_PRIMARY_BACKEND`: the primary backend hostname for the app, for cases when you are building a client for a single PeerTube instance
 
 `EXPO_PUBLIC_APP_NAME`: the app name that will be used both by Expo and in the text strings in the app
@@ -49,12 +47,14 @@ Each value must be prefixed by `EXPO_PUBLIC_`. See list of available customizati
 `EXPO_PUBLIC_${ANDROID_TV | APPLE_TV}_*`: various images for Android TV and tvOS apps such as the banner for android TV
 or background images for Apple TV.
 
+`EXPO_PUBLIC_LANGUAGE_OVERRIDE`: override the default language of the app with a custom language code, e.g. "sv"
+
 `EXPO_PUBLIC_HIDE_VIDEO_SITE_LINKS`: hide or show the links to original PeerTube site in video player
 
 `EXPO_PUBLIC_HIDE_GIT_DETAILS`: hide or show the build info section on git commit and author
 
 > [!WARNING]
-> You need to supply images of expected sizes for tvOS or the build fails automatically:
+> You need to supply images of expected sizes for tvOS, or the build fails automatically:
 >
 > EXPO_PUBLIC_APPLE_TV_ICON: 1280x768
 >

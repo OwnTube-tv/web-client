@@ -132,7 +132,7 @@
   "playbackSpeed": "Playback speed",
   "normal": "Normal",
   "auto": "Auto",
-  "channelNotSupported": "Channel not supported in OwnTube, do you want to go to external channel {{channelName}}?",
+  "channelNotSupported": "Channel not supported in {{appName}}, do you want to go to external channel {{channelName}}?",
   "confirm": "Confirm",
   "build": "Build"
 }

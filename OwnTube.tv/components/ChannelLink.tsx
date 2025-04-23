@@ -13,6 +13,7 @@ import { spacing } from "../theme";
 import { useTranslation } from "react-i18next";
 import { Button } from "./shared";
 import { QrCodeLinkModal } from "./QRCodeLinkModal";
+import Constants from 'expo-constants';
 
 interface ChannelLinkProps extends PressableProps {
   href: LinkProps["href"];
@@ -49,7 +50,7 @@ export const ChannelLink: FC<ChannelLinkProps> = ({
         <ModalContainer
           containerStyle={{ maxWidth: 350 }}
           onClose={() => toggleModal(false)}
-          title={t("channelNotSupported", { channelName: text })}
+          title={t("channelNotSupported", { channelName: text, appName: Constants.expoConfig?.name })}
         >
           <View style={styles.buttonContainer}>
             <Button onPress={() => toggleModal(false)} text={t("cancel")} />

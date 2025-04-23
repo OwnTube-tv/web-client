@@ -132,6 +132,6 @@
   "normal": "Нормальна",
   "auto": "Авто",
   "build": "Збірка",
-  "channelNotSupported": "Канал не підтримується в OwnTube, хочете перейти до зовнішнього каналу {{channelName}}?",
+  "channelNotSupported": "Канал не підтримується в {{appName}}, хочете перейти до зовнішнього каналу {{channelName}}?",
   "confirm": "Підтвердити"
 }

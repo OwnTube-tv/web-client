@@ -132,7 +132,7 @@
   "playbackSpeed": "Uppspelningshastighet",
   "normal": "Normal",
   "auto": "Auto",
-  "channelNotSupported": "Kanalen stöds inte i OwnTube, vill du gå till den externa kanalen {{channelName}}?",
+  "channelNotSupported": "Kanalen stöds inte i {{appName}}, vill du gå till den externa kanalen {{channelName}}?",
   "confirm": "Bekräfta",
   "build": "Bygge"
 }

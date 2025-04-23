@@ -13,7 +13,7 @@ import { spacing } from "../theme";
 import { useTranslation } from "react-i18next";
 import { Button } from "./shared";
 import { QrCodeLinkModal } from "./QRCodeLinkModal";
-import Constants from 'expo-constants';
+import Constants from "expo-constants";
 
 interface ChannelLinkProps extends PressableProps {
   href: LinkProps["href"];

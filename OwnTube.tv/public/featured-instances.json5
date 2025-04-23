@@ -11,6 +11,24 @@
       homeHideChannelsOverview: false,
       homeHideCategoriesOverview: false,
       homeHidePlaylistsOverview: true,
+      menuExternalLinks: [
+        {
+          label: "What is XR?",
+          url: "https://rebellion.global/about-us/",
+        },
+        {
+          label: "Get Involved",
+          url: "https://rebellion.global/get-involved/",
+        },
+        {
+          label: "Global Newsletter",
+          url: "https://actionnetwork.org/forms/newsletter-sign-up-17/",
+        },
+        {
+          label: "Donate",
+          url: "https://rebellion.global/donate/",
+        },
+      ],
     },
   },
   {
@@ -18,6 +36,27 @@
     description: "Videos presenting the evolutions of the 3D creation software, tutorials and animated films supported by the Blender Foundation.",
     hostname: "video.blender.org",
     logoUrl: "https://owntube-tv.github.io/web-client/logos/video.blender.org.jpg",
+    customizations: {
+      pageTitle: "Blender @ OwnTube.tv",
+      menuExternalLinks: [
+        {
+          label: "Website",
+          url: "https://www.blender.org",
+        },
+        {
+          label: "Blender Foundation",
+          url: "https://www.blender.org/about/foundation/",
+        },
+        {
+          label: "Merch Store",
+          url: "https://store.blender.org",
+        },
+        {
+          label: "Donate",
+          url: "https://fund.blender.org",
+        },
+      ],
+    },
   },
   {
     name: "TILvids",
@@ -32,10 +71,26 @@
     logoUrl: "https://owntube-tv.github.io/web-client/logos/peertube.beeldengeluid.nl.jpg",
   },
   {
-    name: "Privacy International Media Server",
+    name: "Privacy International",
     description: "Videos presenting excessive state and corporate surveillance issues and advices on how to increase security and freedom through better privacy.",
     hostname: "media.privacyinternational.org",
     logoUrl: "https://owntube-tv.github.io/web-client/logos/media.privacyinternational.org.jpg",
+    customizations: {
+      menuExternalLinks: [
+        {
+          label: "Website",
+          url: "https://privacyinternational.org/",
+        },
+        {
+          label: "Newsletter",
+          url: "https://action.privacyinternational.org/user/register",
+        },
+        {
+          label: "Donate",
+          url: "https://action.privacyinternational.org/civicrm/contribute/transact?reset=1&id=1",
+        },
+      ],
+    },
   },
   {
     name: "Basspistol",
@@ -44,6 +99,10 @@
     logoUrl: "https://owntube-tv.github.io/web-client/logos/v.basspistol.org.png",
     customizations: {
       menuExternalLinks: [
+        {
+          label: "Website",
+          url: "https://www.basspistol.com/",
+        },
         {
           label: "Shop",
           url: "https://shop.basspistol.com/",
@@ -60,6 +119,22 @@
     description: "PeerTube instance with the bleeding edge changes",
     hostname: "peertube2.cpy.re",
     logoUrl: "https://owntube-tv.github.io/web-client/logos/peertube2.cpy.re.png",
+    customizations: {
+      menuExternalLinks: [
+        {
+          label: "PeerTube Website",
+          url: "https://joinpeertube.org",
+        },
+        {
+          label: "Open Source @ GitHub",
+          url: "https://github.com/Chocobozzz/PeerTube",
+        },
+        {
+          label: "Support PeerTube",
+          url: "https://support.joinpeertube.org/en/",
+        },
+      ],
+    },
   },
   {
     name: "Fedi.Video",
@@ -94,6 +169,24 @@
       menuHidePlaylistsButton: false,
       menuHideCategoriesButton: true,
       menuHideLeaveButton: true,
+      menuExternalLinks: [
+        {
+          label: "Om Swebbtv",
+          url: "https://nyheter.swebbtv.se/om-oss/",
+        },
+        {
+          label: "Bli medlem",
+          url: "https://swebbtv.se/p/premium",
+        },
+        {
+          label: "Nyhetssajt",
+          url: "https://nyheter.swebbtv.se/",
+        },
+        {
+          label: "Butik",
+          url: "https://butik.swebbtv.se/",
+        },
+      ],
       playlistsHidden: [
         "6781",
         "15549",
@@ -109,6 +202,7 @@
         "6794",
         "10857",
         "10562",
+        "10796",
         "6793",
         "6567",
         "5419",

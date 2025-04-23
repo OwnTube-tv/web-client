@@ -12,8 +12,7 @@ specify a different name there.
 In the `owntube` environment that you created, specify two environment variables:
 
 - `CLIENT_CUSTOMIZATIONS_REPO` - the git repository clone URL that contains your customizations file (HTTPS)
-- `CLIENT_CUSTOMIZATIONS_FILE` - the path to the customizations' file in the repository
-
+- `CLIENT_CUSTOMIZATIONS_FILE` - the path to the customizations file in the repository
 In the end, the environment variables should look something like this:
 
 | Name                         | Value                                                     |
@@ -23,11 +22,10 @@ In the end, the environment variables should look something like this:
 
 ## `CLIENT_CUSTOMIZATIONS_FILE` file contents
 
-The customizations' file is essentially an .env file that is loaded by Expo at build time, the values from which are then
+The customizations file is essentially an .env file that is loaded by Expo at build time, the values from which are then
 used to populate the Expo config file (app.config.ts).
 
-Each value must be prefixed by `EXPO_PUBLIC_`. See the list of the available customizations below:
-
+Each value must be prefixed by `EXPO_PUBLIC_`. See the list of available customizations below:
 `EXPO_PUBLIC_PRIMARY_BACKEND`: the primary backend hostname for the app, for cases when you are building a client for a single PeerTube instance
 
 `EXPO_PUBLIC_APP_NAME`: the app name that will be used both by Expo and in the text strings in the app

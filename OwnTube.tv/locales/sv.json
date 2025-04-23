@@ -58,6 +58,7 @@
   "sharePlaylist": "Dela spellista",
   "shareChannelPlaylist": "Dela spellista i videokanalen",
   "qrCode": "QR-kod",
+  "qrCodeForURL": "QR-kod för URL",
   "copy": "Kopiera",
   "linkCopied": "Länk kopierad!",
   "startAt": "Starta vid",
@@ -124,10 +125,14 @@
   "allPlaylists": "Alla spellistor",
   "allChannels": "Alla kanaler",
   "allCategories": "Alla kategorier",
+  "viewOnSite": "Visa på {{site}}",
+  "copyVideoDetails": "Kopiera videodetaljer:",
+  "detailsCopied": "Videodetaljer kopierade!",
   "quality": "Kvalitet",
   "playbackSpeed": "Uppspelningshastighet",
   "normal": "Normal",
   "auto": "Auto",
   "channelNotSupported": "Kanalen stöds inte i OwnTube, vill du gå till den externa kanalen {{channelName}}?",
-  "confirm": "Bekräfta"
+  "confirm": "Bekräfta",
+  "build": "Bygge"
 }

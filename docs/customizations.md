@@ -13,6 +13,7 @@ In the `owntube` environment that you created, specify two environment variables
 
 - `CLIENT_CUSTOMIZATIONS_REPO` - the git repository clone URL that contains your customizations file (HTTPS)
 - `CLIENT_CUSTOMIZATIONS_FILE` - the path to the customizations file in the repository
+
 In the end, the environment variables should look something like this:
 
 | Name                         | Value                                                     |

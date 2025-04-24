@@ -37,3 +37,11 @@ When a improvement is ready to be contributed in a pull request, please review t
 ## Documentation
 
 Please refer to the [architecture documentation](docs/README.md) for information on technologies used, project structure, customizations, and the project build pipeline.
+
+## Examples
+
+There are a number of branded native apps based on this code project in testing. Most app brands are published with links on https://owntube.tv, and you can create your own branding using the [OwnTube-tv/cust-app-template](https://github.com/OwnTube-tv/cust-app-template) repo. We also maintain a alpha/development version of the native apps called "Misha Tube", you can download it from Google Play or Apple TestFlight using the links below:
+
+- _Misha Tube_ for Android: https://play.google.com/store/apps/details?id=com.mishadanilenko.mishatube
+- _Misha Tube_ for iPhone: https://testflight.apple.com/join/PaM9r7AF
+- _Misha Tube_ for web browser or PWA installation: https://cust-app-mishatube.owntube.tv/

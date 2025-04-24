@@ -3,16 +3,16 @@ import { Platform, View } from "react-native";
 import * as Device from "expo-device";
 import { DeviceType } from "expo-device";
 import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
-import { Video as PeertubeVideoModel, VideoChannelSummary } from "@peertube/peertube-types";
+import { Video as PeertubeVideoModel, VideoCaption, VideoChannelSummary } from "@peertube/peertube-types";
 import VideoControlsOverlay from "../VideoControlsOverlay";
 import Toast from "react-native-toast-message";
 import { useFocusEffect, useLocalSearchParams } from "expo-router";
 import { ROUTES } from "../../types";
 import { RootStackParams } from "../../app/_layout";
-import { Video, VideoRef } from "react-native-video";
+import { TextTracks, TextTrackType, Video, VideoRef } from "react-native-video";
 import { SelectedTrackType } from "react-native-video/src/types/video";
 import type { OnProgressData, OnVideoErrorData } from "react-native-video/src/specs/VideoNativeComponent";
-import { OnLoadData } from "react-native-video/src/types/events";
+import { OnLoadData, OnTextTracksData } from "react-native-video/src/types/events";
 import GoogleCast, {
   MediaHlsSegmentFormat,
   MediaHlsVideoSegmentFormat,
@@ -22,6 +22,9 @@ import { IcoMoonIcon } from "../IcoMoonIcon";
 import { useTheme } from "@react-navigation/native";
 import { styles } from "./styles";
 import { usePostVideoViewMutation } from "../../api";
+import { ISO639_1 } from "react-native-video/src/types/language";
+import { useTranslation } from "react-i18next";
+import { useAppConfigContext } from "../../contexts";
 
 export interface VideoViewProps {
   uri: string;
@@ -40,6 +43,7 @@ export interface VideoViewProps {
   videoData?: PeertubeVideoModel;
   selectedQuality: string;
   handleSetQuality: (quality: string) => void;
+  captions?: VideoCaption[];
 }
 
 const VideoView = ({
@@ -59,6 +63,7 @@ const VideoView = ({
   videoData,
   selectedQuality,
   handleSetQuality,
+  captions,
 }: VideoViewProps) => {
   const videoRef = useRef<VideoRef>(null);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -173,8 +178,20 @@ const VideoView = ({
 
   const [playbackSpeed, setPlaybackSpeed] = useState(1);
 
+  const formattedCaptions = useMemo<TextTracks>(() => {
+    return (captions || [])
+      ?.filter(({ m3u8Url }) => !m3u8Url)
+      .map(({ fileUrl, language }) => ({
+        uri: fileUrl,
+        title: language.label,
+        language: language.id as ISO639_1,
+        type: TextTrackType.VTT,
+      }));
+  }, [captions]);
+
   const videoSource = useMemo(() => {
     return {
+      textTracks: formattedCaptions,
       startPosition: Number(timestamp || 0) * 1000,
       metadata: {
         title: videoData?.name,
@@ -184,7 +201,7 @@ const VideoView = ({
         imageUri: `https://${videoData?.channel?.host}${videoData?.thumbnailPath}`,
       },
     };
-  }, [timestamp, videoData]);
+  }, [timestamp, videoData, formattedCaptions]);
 
   const isInitialVideoLoadDone = useRef(false);
 
@@ -250,6 +267,61 @@ const VideoView = ({
     }, []),
   );
 
+  const { i18n } = useTranslation();
+  const [availableCCLangs, setAvailableCCLangs] = useState<string[]>([]);
+  const [selectedCCLang, setSelectedCCLang] = useState("");
+  const [memorizedCCLang, setMemorizedCCLang] = useState<string | null>(null);
+  const [isCCShown, setIsCCShown] = useState(false);
+
+  const handleTextTracks = (e: OnTextTracksData) => {
+    setAvailableCCLangs(
+      e.textTracks.reduce((acc, cur) => {
+        if (cur.language) {
+          acc.push(cur.language);
+        }
+
+        return acc;
+      }, [] as string[]),
+    );
+  };
+
+  const isIosWithoutSideloadedSubs = Platform.OS === "ios" && !captions?.some(({ m3u8Url }) => m3u8Url);
+  const isCCAvailable = useMemo(() => {
+    return Number(captions?.length) > 0 && !isIosWithoutSideloadedSubs;
+  }, [captions, availableCCLangs, i18n.language]);
+  const { sessionCCLocale, updateSessionCCLocale } = useAppConfigContext();
+
+  const handleSetCCLang = (lang: string) => {
+    if (!lang) {
+      setSelectedCCLang("");
+      setIsCCShown(false);
+      return;
+    }
+    setMemorizedCCLang(lang);
+    setSelectedCCLang(lang);
+    updateSessionCCLocale(lang);
+    setIsCCShown(true);
+  };
+
+  const handleToggleCC = () => {
+    const autoSelectedLang =
+      memorizedCCLang || (availableCCLangs.includes(i18n.language) ? i18n.language : availableCCLangs[0]);
+
+    if (isCCShown) {
+      handleSetCCLang("");
+    } else {
+      handleSetCCLang(autoSelectedLang);
+    }
+  };
+
+  useFocusEffect(
+    useCallback(() => {
+      if (isCCAvailable && sessionCCLocale && availableCCLangs.includes(sessionCCLocale)) {
+        handleSetCCLang(sessionCCLocale);
+      }
+    }, [isCCAvailable, availableCCLangs, sessionCCLocale]),
+  );
+
   return (
     <View collapsable={false} style={styles.container}>
       <VideoControlsOverlay
@@ -284,6 +356,11 @@ const VideoView = ({
         handleSetQuality={handleSetQuality}
         castState={castState}
         isChromeCastAvailable
+        handleToggleCC={handleToggleCC}
+        isCCAvailable={isCCAvailable}
+        setSelectedCCLang={!isIosWithoutSideloadedSubs ? handleSetCCLang : undefined}
+        selectedCCLang={selectedCCLang}
+        isCCVisible={isCCShown}
       >
         {googleCastClient ? (
           <IcoMoonIcon name="Chromecast" size={72} color={colors.white80} />
@@ -315,6 +392,15 @@ const VideoView = ({
             onExternalPlaybackChange={(e) => {
               setCastState(e.isExternalPlaybackActive ? "airPlay" : undefined);
             }}
+            onTextTracks={handleTextTracks}
+            selectedTextTrack={
+              selectedCCLang
+                ? {
+                    type: SelectedTrackType.LANGUAGE,
+                    value: selectedCCLang,
+                  }
+                : undefined
+            }
           />
         )}
         {isMobile && !Platform.isTVOS && isControlsVisible && (

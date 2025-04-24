@@ -10,11 +10,13 @@ import { DeviceType } from "expo-device";
 import VideoControlsOverlay from "../VideoControlsOverlay";
 import { useFocusEffect, useLocalSearchParams } from "expo-router";
 import { RootStackParams } from "../../app/_layout";
-import { ROUTES } from "../../types";
+import { ROUTES, STORAGE } from "../../types";
 import { usePostVideoViewMutation } from "../../api";
 import { IcoMoonIcon } from "../IcoMoonIcon";
 import { useTheme } from "@react-navigation/native";
 import { useChromeCast } from "../../hooks";
+import { useTranslation } from "react-i18next";
+import { useAppConfigContext } from "../../contexts";
 
 export interface PlaybackStatus {
   didJustFinish: boolean;
@@ -25,6 +27,7 @@ export interface PlaybackStatus {
   playableDuration: number;
   volume: number;
   rate: number;
+  isMetadataLoaded?: boolean;
 }
 
 declare const window: {
@@ -47,6 +50,7 @@ const VideoView = ({
   selectedQuality,
   handleSetQuality,
   videoData,
+  captions,
 }: VideoViewProps) => {
   const { videojs } = window;
   const videoRef = useRef<HTMLDivElement>(null);
@@ -64,10 +68,16 @@ const VideoView = ({
     playableDuration: 0,
     volume: 1,
     rate: 1,
+    isMetadataLoaded: false,
   });
+  const { i18n } = useTranslation();
   const isMobile = Device.deviceType !== DeviceType.DESKTOP;
   const [isControlsVisible, setIsControlsVisible] = useState(false);
   const [isAirPlayAvailable, setIsAirPlayAvailable] = useState(false);
+  const [availableCCLangs, setAvailableCCLangs] = useState<string[]>([]);
+  const [selectedCCLang, setSelectedCCLang] = useState("");
+  const [memorizedCCLang, setMemorizedCCLang] = useState<string | null>(null);
+
   const { colors } = useTheme();
 
   const updatePlaybackStatus = (updatedStatus: Partial<typeof playbackStatus>) => {
@@ -140,10 +150,12 @@ const VideoView = ({
 
   const options = {
     autoplay: true,
-    controls: false,
+    controls: true,
     playsinline: true,
     preload: false,
+    crossorigin: "anonymous",
     html5: {
+      nativeTextTracks: true,
       vhs: {
         overrideNative: !videojs.browser.IS_ANY_SAFARI,
       },
@@ -153,7 +165,7 @@ const VideoView = ({
         src: uri,
       },
     ],
-    children: ["MediaLoader"],
+    children: ["MediaLoader", "NativeTextTrackDisplay"],
   };
 
   const handleAirPlayAvailabilityChange = function (event: Event) {
@@ -172,6 +184,7 @@ const VideoView = ({
       updatePlaybackStatus({
         duration: Math.floor(playerRef.current?.duration() ?? 0),
         playableDuration: playerRef.current?.bufferedEnd(),
+        isMetadataLoaded: true,
       });
     });
 
@@ -191,6 +204,7 @@ const VideoView = ({
       updatePlaybackStatus({
         position: Math.floor(playerRef.current?.currentTime() ?? 0),
         didJustFinish: false,
+        playableDuration: playerRef.current?.bufferedEnd(),
       });
     });
 
@@ -304,7 +318,7 @@ const VideoView = ({
       }
 
       playerRef.current?.src(uri);
-      playerRef.current?.currentTime(!isInitialVideoLoadDone.current ? Number(timestamp) : position);
+      playerRef.current?.currentTime(!isInitialVideoLoadDone.current ? Number(timestamp) : Math.floor(position || 0));
       isInitialVideoLoadDone.current = true;
 
       return () => {
@@ -312,6 +326,26 @@ const VideoView = ({
       };
     }, [uri]),
   );
+
+  useEffect(() => {
+    if (captions && captions.length > 0 && playbackStatus.isMetadataLoaded) {
+      captions.forEach((caption) => {
+        if (!caption.m3u8Url) {
+          playerRef.current?.addRemoteTextTrack(
+            {
+              kind: "captions",
+              src: caption.fileUrl,
+              srclang: caption.language.id,
+              label: caption.language.label,
+            },
+            false,
+          );
+        }
+      });
+
+      setAvailableCCLangs((captions || []).map(({ language }) => language.id));
+    }
+  }, [captions, playbackStatus.isMetadataLoaded]);
 
   const handleVolumeControl = (volume: number) => {
     const formattedVolume = (volume < 0 ? 0 : volume) * 0.01;
@@ -337,6 +371,57 @@ const VideoView = ({
   const handleSetSpeed = (speed: number) => {
     playerRef.current?.playbackRate(speed);
   };
+  const [isCCShown, setIsCCShown] = useState(false);
+  const isCCAvailable = Number(captions?.length) > 0;
+  const { updateSessionCCLocale } = useAppConfigContext();
+
+  const handleSetCCLang = (lang: string) => {
+    const textTracks = playerRef.current?.textTracks() || {};
+    const currentLangTrack = textTracks[textTracks.tracks_.findIndex((track) => track.language === selectedCCLang)];
+
+    if (!lang) {
+      currentLangTrack.mode = "disabled";
+      setSelectedCCLang("");
+      updateSessionCCLocale(lang);
+      setIsCCShown(false);
+      return;
+    }
+    setMemorizedCCLang(lang);
+
+    const trackToShow = textTracks[textTracks.tracks_.findIndex((track) => track.language === lang)];
+
+    if (currentLangTrack) {
+      currentLangTrack.mode = "disabled";
+    }
+
+    trackToShow.mode = "showing";
+    setSelectedCCLang(lang);
+    updateSessionCCLocale(lang);
+    setIsCCShown(true);
+  };
+
+  const handleToggleCC = () => {
+    const autoSelectedLang =
+      memorizedCCLang || (availableCCLangs.includes(i18n.language) ? i18n.language : availableCCLangs[0]);
+
+    if (isCCShown) {
+      handleSetCCLang("");
+    } else {
+      handleSetCCLang(autoSelectedLang);
+    }
+  };
+
+  useFocusEffect(
+    useCallback(() => {
+      const locale = sessionStorage.getItem(STORAGE.CC_LOCALE);
+
+      if (isCCAvailable && locale && availableCCLangs.includes(locale)) {
+        setTimeout(() => {
+          handleSetCCLang(locale);
+        }, 500);
+      }
+    }, [isCCAvailable, availableCCLangs]),
+  );
 
   return (
     <View style={styles.container}>
@@ -372,6 +457,11 @@ const VideoView = ({
         isWebAirPlayAvailable={isAirPlayAvailable}
         isChromeCastAvailable={isChromeCastAvailable}
         handleLoadGoogleCastMedia={handleCreateSession}
+        handleToggleCC={handleToggleCC}
+        isCCAvailable={isCCAvailable}
+        selectedCCLang={selectedCCLang}
+        setSelectedCCLang={handleSetCCLang}
+        isCCVisible={isCCShown}
       >
         {isChromecastConnected && (
           <View style={styles.chromecastOverlay}>

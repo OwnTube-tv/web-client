@@ -20,6 +20,7 @@ jest.mock("../../api/queries", () => ({
       ],
     },
   })),
+  useGetVideoCaptionsQuery: jest.fn(() => ({ data: {} })),
 }));
 const mockUpdHistory = jest.fn();
 jest.mock("../../hooks", () => ({

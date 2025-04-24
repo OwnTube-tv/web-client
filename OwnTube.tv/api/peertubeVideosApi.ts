@@ -1,4 +1,4 @@
-import { VideosCommonQuery, Video } from "@peertube/peertube-types";
+import { VideosCommonQuery, Video, VideoCaption } from "@peertube/peertube-types";
 import { GetVideosVideo } from "./models";
 import { commonQueryParams } from "./constants";
 import { AxiosInstanceBasedApi } from "./axiosInstance";
@@ -172,6 +172,25 @@ export class PeertubeVideosApi extends AxiosInstanceBasedApi {
       });
     } catch (error: unknown) {
       handleAxiosErrorWithRetry(error, "post video view");
+    }
+  }
+
+  /**
+   * Get captions for a specified video
+   *
+   * @param [baseURL] - Selected instance url
+   * @param [id] - Video uuid
+   * @returns Video captions
+   */
+  async getVideoCaptions(baseURL: string, id: string) {
+    try {
+      const response = await this.instance.get<{ data: VideoCaption[] }>(`videos/${id}/captions`, {
+        baseURL: `https://${baseURL}/api/v1`,
+      });
+
+      return response.data.data;
+    } catch (error: unknown) {
+      return handleAxiosErrorWithRetry(error, "video captions");
     }
   }
 }

@@ -133,5 +133,7 @@
   "auto": "Авто",
   "build": "Сборка",
   "channelNotSupported": "Канал не поддерживается в {{appName}}, хотите перейти к внешнему каналу {{channelName}}?",
-  "confirm": "Подтвердить"
+  "confirm": "Подтвердить",
+  "subtitlesCC": "Субтитры",
+  "off": "Выкл."
 }

@@ -313,12 +313,14 @@ const VideoView = ({
   useFocusEffect(
     useCallback(() => {
       const position = playerRef.current?.currentTime();
-      if (playerRef.current?.paused() && isInitialVideoLoadDone) {
+      if (playerRef.current?.paused() && isInitialVideoLoadDone.current) {
         playerRef.current?.autoplay(false);
       }
 
       playerRef.current?.src(uri);
-      playerRef.current?.currentTime(!isInitialVideoLoadDone.current ? Number(timestamp) : Math.floor(position || 0));
+      playerRef.current?.currentTime(
+        !isInitialVideoLoadDone.current ? Number(timestamp || 0) : Math.floor(position || 0),
+      );
       isInitialVideoLoadDone.current = true;
 
       return () => {

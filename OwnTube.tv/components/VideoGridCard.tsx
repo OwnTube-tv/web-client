@@ -73,7 +73,7 @@ export const VideoGridCard = forwardRef<View, VideoGridCardProps>(({ video, back
         </Link>
         <TVFocusGuideHelper focusable={false} style={styles.textContainer}>
           {/* @ts-expect-error tabIndex is passed to anchor tag but is not officially supported by Expo Router */}
-          <Link tabIndex={-1} href={{ pathname: ROUTES.VIDEO, params: { id: video.uuid, backend } }}>
+          <Link tabIndex={-1} href={linkHref}>
             <Typography
               fontWeight="Medium"
               color={colors.theme900}

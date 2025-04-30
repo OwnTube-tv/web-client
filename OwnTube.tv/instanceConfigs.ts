@@ -22,6 +22,7 @@ const customizationsSchema = z
     showMoreSize: z.number(),
     hideVideoSiteLinks: z.boolean(),
     hideChannelPlaylistLinks: z.boolean(),
+    featuredLives: z.array(z.string()),
   })
   .partial();
 

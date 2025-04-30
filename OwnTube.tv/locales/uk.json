@@ -135,5 +135,14 @@
   "channelNotSupported": "Канал не підтримується в {{appName}}, хочете перейти до зовнішнього каналу {{channelName}}?",
   "confirm": "Підтвердити",
   "subtitlesCC": "Субтитри",
-  "off": "Вимк."
+  "off": "Вимк.",
+  "liveStreams": "Стріми",
+  "live": "В етері",
+  "viewers": "{{count}} глядачів",
+  "viewers_zero": "{{count}} глядачів",
+  "viewers_one": "{{count}} глядач",
+  "viewers_other": "{{count}} глядачів",
+  "liveStreamOffline": "Трансляція зараз не в етері",
+  "streamingNow": "Зараз в етері",
+  "offline": "Не в етері"
 }

@@ -21,6 +21,7 @@ interface PlaybackSettingsPopupProps {
   onSelectOption?: () => void;
   handleSetCCLang?: (lang: string) => void;
   selectedCCLang?: string;
+  isLiveVideo?: boolean;
 }
 
 const Setting = ({ name, state, onPress }: { name: string; state?: string; onPress: () => void }) => {
@@ -132,6 +133,7 @@ export const PlaybackSettingsPopup = ({
   onSelectOption,
   handleSetCCLang,
   selectedCCLang,
+  isLiveVideo,
 }: PlaybackSettingsPopupProps) => {
   const { colors } = useTheme();
   const { t } = useTranslation();
@@ -153,11 +155,15 @@ export const PlaybackSettingsPopup = ({
     return {
       settings: (
         [
-          {
-            name: t("playbackSpeed"),
-            id: "playbackSpeed",
-            state: selectedSpeed === 1 ? t("normal") : String(selectedSpeed),
-          },
+          ...(isLiveVideo
+            ? []
+            : [
+                {
+                  name: t("playbackSpeed"),
+                  id: "playbackSpeed",
+                  state: selectedSpeed === 1 ? t("normal") : String(selectedSpeed),
+                },
+              ]),
           ...(Number(ccOptions?.length) > 1 && Boolean(handleSetCCLang)
             ? [
                 {

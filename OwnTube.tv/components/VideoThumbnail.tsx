@@ -6,6 +6,7 @@ import { GetVideosVideo } from "../api/models";
 import { borderRadius, spacing } from "../theme";
 import { Typography } from "./Typography";
 import { getHumanReadableDuration } from "../utils";
+import { useTranslation } from "react-i18next";
 
 interface VideoThumbnailProps {
   video: GetVideosVideo & Partial<ViewHistoryEntry>;
@@ -20,6 +21,8 @@ const fallback = require("../assets/thumbnailFallback.png");
 export const VideoThumbnail: FC<VideoThumbnailProps> = ({ video, backend, timestamp, imageDimensions }) => {
   const { colors } = useTheme();
   const [isError, setIsError] = useState(false);
+  const { t } = useTranslation();
+  const isVideoCurrentlyLive = video.state?.id === 1 && video.isLive;
 
   const percentageWatched = timestamp ? (timestamp / video.duration) * 100 : 0;
 
@@ -38,16 +41,43 @@ export const VideoThumbnail: FC<VideoThumbnailProps> = ({ video, backend, timest
         style={styles.videoImage}
         onError={() => setIsError(true)}
       />
-      {!!percentageWatched && percentageWatched > 0 && (
+      {!!percentageWatched && percentageWatched > 0 && !video.isLive && (
         <View style={[styles.progressContainer, { backgroundColor: colors.white25 }]}>
           <View style={{ backgroundColor: colors.theme500, width: `${percentageWatched}%`, height: spacing.xs }} />
         </View>
       )}
-      <View style={[styles.durationContainer, { backgroundColor: colors.black100 }]}>
-        <Typography color={colors.white94} fontSize="sizeXS" fontWeight="SemiBold">
-          {getHumanReadableDuration(video.duration * 1000)}
-        </Typography>
-      </View>
+      {video.isLive ? (
+        <View
+          style={[
+            styles.durationContainer,
+            {
+              backgroundColor: isVideoCurrentlyLive ? colors.error500 : colors.black100,
+              flexDirection: "row",
+              alignItems: "center",
+              gap: spacing.sm,
+              paddingLeft: spacing.sm,
+            },
+          ]}
+        >
+          <View
+            style={{ width: spacing.sm, height: spacing.sm, backgroundColor: colors.white94, borderRadius: spacing.xs }}
+          />
+          <Typography
+            color={colors.white94}
+            fontSize="sizeXS"
+            fontWeight="SemiBold"
+            style={{ textTransform: "uppercase" }}
+          >
+            {isVideoCurrentlyLive ? t("live") : t("offline")}
+          </Typography>
+        </View>
+      ) : (
+        <View style={[styles.durationContainer, { backgroundColor: colors.black100 }]}>
+          <Typography color={colors.white94} fontSize="sizeXS" fontWeight="SemiBold">
+            {getHumanReadableDuration(video.duration * 1000)}
+          </Typography>
+        </View>
+      )}
     </View>
   );
 };

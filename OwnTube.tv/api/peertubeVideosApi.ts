@@ -125,6 +125,9 @@ export class PeertubeVideosApi extends AxiosInstanceBasedApi {
           publishedAt: video.publishedAt,
           originallyPublishedAt: video.originallyPublishedAt,
           views: video.views,
+          isLive: video.isLive,
+          viewers: video.viewers,
+          state: video.state,
         };
       }),
       total,

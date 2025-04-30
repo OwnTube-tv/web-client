@@ -40,3 +40,4 @@ export * from "./AvRoutePickerButton";
 export * from "./PlaybackSettingsPopup";
 export * from "./QRCodeSection";
 export * from "./QRCodeLinkModal";
+export * from "./VideoItemFooter";

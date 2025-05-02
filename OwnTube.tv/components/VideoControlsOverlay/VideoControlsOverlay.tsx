@@ -63,6 +63,7 @@ export interface VideoControlsOverlayProps {
   isCCVisible?: boolean;
   selectedCCLang?: string;
   setSelectedCCLang?: (lang: string) => void;
+  isLiveVideo?: boolean;
 }
 
 const VideoControlsOverlay = ({
@@ -105,6 +106,7 @@ const VideoControlsOverlay = ({
   isCCVisible,
   selectedCCLang,
   setSelectedCCLang,
+  isLiveVideo,
 }: PropsWithChildren<VideoControlsOverlayProps>) => {
   const {
     isSeekBarFocused,
@@ -192,9 +194,9 @@ const VideoControlsOverlay = ({
                 }
               }}
             >
-              <PlayerButton onPress={() => handleRW(15)} icon="Rewind-15" />
+              {!isLiveVideo && <PlayerButton onPress={() => handleRW(15)} icon="Rewind-15" />}
               <PlayerButton onPress={shouldReplay ? handleReplay : handlePlayPause} icon={centralIconName} />
-              <PlayerButton onPress={() => handleFF(30)} icon="Fast-forward-30" />
+              {!isLiveVideo && <PlayerButton onPress={() => handleFF(30)} icon="Fast-forward-30" />}
             </AnimatedPressable>
           )}
           <Animated.View
@@ -212,6 +214,7 @@ const VideoControlsOverlay = ({
                 {isSettingsMenuVisible && (
                   <View style={styles.playbackSettingsContainer}>
                     <PlaybackSettingsPopup
+                      isLiveVideo={isLiveVideo}
                       handleSetQuality={handleSetQuality}
                       selectedQuality={selectedQuality}
                       handleSetSpeed={handleSetSpeed}
@@ -225,28 +228,34 @@ const VideoControlsOverlay = ({
                   <ViewOnSiteLink site={videoLinkProps?.backend} url={videoLinkProps?.url} />
                 )}
               </View>
-              <Pressable
-                accessible={false}
-                onHoverIn={() => setIsSeekBarFocused(true)}
-                onHoverOut={() => setIsSeekBarFocused(false)}
-                style={styles.scrubBarContainer}
-              >
-                <ScrubBar
-                  isExpanded={isSeekBarFocused}
-                  variant="seek"
-                  length={duration}
-                  onDrag={handleJumpTo}
-                  percentageAvailable={percentageAvailable}
-                  percentagePosition={percentagePosition}
-                />
-              </Pressable>
+              {!isLiveVideo && (
+                <Pressable
+                  accessible={false}
+                  onHoverIn={() => setIsSeekBarFocused(true)}
+                  onHoverOut={() => setIsSeekBarFocused(false)}
+                  style={styles.scrubBarContainer}
+                >
+                  <ScrubBar
+                    isExpanded={isSeekBarFocused}
+                    variant="seek"
+                    length={duration}
+                    onDrag={handleJumpTo}
+                    percentageAvailable={percentageAvailable}
+                    percentagePosition={percentagePosition}
+                  />
+                </Pressable>
+              )}
               <View style={styles.bottomRowContainer}>
                 <View style={styles.bottomRowControlsContainer}>
                   {!isMobile && (
                     <>
                       <PlayerButton onPress={shouldReplay ? handleReplay : handlePlayPause} icon={centralIconName} />
-                      <PlayerButton onPress={() => handleRW(15)} icon="Rewind-15" />
-                      <PlayerButton onPress={() => handleFF(30)} icon="Fast-forward-30" />
+                      {!isLiveVideo && (
+                        <>
+                          <PlayerButton onPress={() => handleRW(15)} icon="Rewind-15" />
+                          <PlayerButton onPress={() => handleFF(30)} icon="Fast-forward-30" />
+                        </>
+                      )}
                       <VolumeControl
                         setVolume={handleVolumeControl}
                         volume={volume}
@@ -255,14 +264,16 @@ const VideoControlsOverlay = ({
                       />
                     </>
                   )}
-                  <Typography
-                    fontSize="sizeXS"
-                    fontWeight="Medium"
-                    style={[styles.timingContainer, { paddingLeft: isMobile ? spacing.sm : null }]}
-                    color={colors.white94}
-                  >
-                    {`${getHumanReadableDuration(position * 1000)} / ${getHumanReadableDuration(duration * 1000)}`}
-                  </Typography>
+                  {!isLiveVideo && (
+                    <Typography
+                      fontSize="sizeXS"
+                      fontWeight="Medium"
+                      style={[styles.timingContainer, { paddingLeft: isMobile ? spacing.sm : null }]}
+                      color={colors.white94}
+                    >
+                      {`${getHumanReadableDuration(position * 1000)} / ${getHumanReadableDuration(duration * 1000)}`}
+                    </Typography>
+                  )}
                 </View>
                 <View style={styles.functionButtonsContainer}>
                   {castState !== "airPlay" && (

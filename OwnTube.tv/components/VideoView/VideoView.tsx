@@ -325,6 +325,7 @@ const VideoView = ({
   return (
     <View collapsable={false} style={styles.container}>
       <VideoControlsOverlay
+        isLiveVideo={videoData?.isLive}
         videoLinkProps={{ backend, url: viewUrl }}
         handlePlayPause={handlePlayPause}
         isPlaying={isPlaying}

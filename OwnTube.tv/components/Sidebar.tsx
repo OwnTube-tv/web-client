@@ -1,3 +1,4 @@
+import React from "react";
 import { FC } from "react";
 import { DrawerContentComponentProps, DrawerContentScrollView } from "@react-navigation/drawer";
 import { Link } from "expo-router";
@@ -151,7 +152,7 @@ export const Sidebar: FC<SidebarProps> = ({ backend, ...navigationProps }) => {
       {Number(currentInstanceConfig?.customizations?.menuExternalLinks?.length) > 0 && (
         <>
           {currentInstanceConfig?.customizations?.menuExternalLinks?.map(({ label, url }) => (
-            <>
+            <React.Fragment key={url}>
               {Platform.isTV ? (
                 <Button
                   onPress={() => {
@@ -164,7 +165,7 @@ export const Sidebar: FC<SidebarProps> = ({ backend, ...navigationProps }) => {
                   style={{ ...styles.button, ...styles.paddingHHelper, width: "100%" }}
                 />
               ) : (
-                <Link target="_blank" rel="noreferrer noopener" key={url} href={url}>
+                <Link target="_blank" rel="noreferrer noopener" href={url}>
                   <Button
                     justifyContent="flex-start"
                     icon={"External-Link"}
@@ -173,7 +174,7 @@ export const Sidebar: FC<SidebarProps> = ({ backend, ...navigationProps }) => {
                   />
                 </Link>
               )}
-            </>
+            </React.Fragment>
           ))}
           <View style={styles.separatorContainer}>
             <Separator />

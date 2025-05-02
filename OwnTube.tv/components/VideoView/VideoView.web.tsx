@@ -428,6 +428,7 @@ const VideoView = ({
   return (
     <View style={styles.container}>
       <VideoControlsOverlay
+        isLiveVideo={videoData?.isLive}
         videoLinkProps={{ backend, url: viewUrl }}
         handlePlayPause={handlePlayPause}
         isPlaying={playbackStatus?.isPlaying}

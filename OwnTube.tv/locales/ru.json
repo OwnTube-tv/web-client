@@ -135,5 +135,14 @@
   "channelNotSupported": "Канал не поддерживается в {{appName}}, хотите перейти к внешнему каналу {{channelName}}?",
   "confirm": "Подтвердить",
   "subtitlesCC": "Субтитры",
-  "off": "Выкл."
+  "off": "Выкл.",
+  "liveStreams": "Стримы",
+  "live": "В эфире",
+  "viewers": "{{count}} зрителей",
+  "viewers_zero": "{{count}} зрителей",
+  "viewers_one": "{{count}} зритель",
+  "viewers_other": "{{count}} зрителей",
+  "liveStreamOffline": "Трансляция сейчас не в эфире",
+  "streamingNow": "Сейчас в эфире",
+  "offline": "Не в эфире"
 }

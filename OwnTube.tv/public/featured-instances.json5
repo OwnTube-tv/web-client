@@ -228,6 +228,7 @@
       homeHideChannelsOverview: true,
       homeHideCategoriesOverview: true,
       homeHidePlaylistsOverview: false,
+      homeFeaturedLives: ["c25424b3-a077-42a1-9b1e-eb47729f1450"],
       showMoreSize: 28,
     },
   },

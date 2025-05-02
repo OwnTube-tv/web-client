@@ -17,6 +17,7 @@ export interface ColorScheme {
   black50: string;
   black80: string;
   black100: string;
+  error500: string;
 }
 
 const blackAndWhite = {
@@ -39,6 +40,7 @@ const light: ColorScheme = {
   theme900: "#1E2F3F",
   theme950: "#0D151D",
   themeDesaturated500: "#607385",
+  error500: "#FF3C00",
   ...blackAndWhite,
 };
 
@@ -52,6 +54,7 @@ const dark: ColorScheme = {
   theme900: "#DEEAF6",
   theme950: "#F5F9FD",
   themeDesaturated500: "#7A8D9F",
+  error500: "#FF3C00",
   ...blackAndWhite,
 };
 

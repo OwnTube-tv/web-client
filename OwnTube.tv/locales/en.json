@@ -136,5 +136,14 @@
   "confirm": "Confirm",
   "build": "Build",
   "subtitlesCC": "Subtitles/CC",
-  "off": "Off"
+  "off": "Off",
+  "liveStreams": "Live streams",
+  "live": "Live",
+  "viewers": "{{count}} viewers",
+  "viewers_zero": "{{count}} viewers",
+  "viewers_one": "{{count}} viewer",
+  "viewers_other": "{{count}} viewers",
+  "liveStreamOffline": "Live stream is currently offline",
+  "streamingNow": "Streaming now",
+  "offline": "Offline"
 }

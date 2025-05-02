@@ -22,7 +22,16 @@ export interface Channel {
 
 export type GetVideosVideo = Pick<
   Video,
-  "uuid" | "name" | "description" | "duration" | "publishedAt" | "originallyPublishedAt" | "views"
+  | "uuid"
+  | "name"
+  | "description"
+  | "duration"
+  | "publishedAt"
+  | "originallyPublishedAt"
+  | "views"
+  | "isLive"
+  | "viewers"
+  | "state"
 > & {
   previewPath: string;
   category: { id: number | null; label: string };

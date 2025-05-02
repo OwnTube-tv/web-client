@@ -1,6 +1,13 @@
 import { CategoryView, InfoFooter, VideoGrid } from "../../components";
 import { useTheme } from "@react-navigation/native";
-import { useGetCategoriesQuery, useGetChannelsQuery, useGetPlaylistsQuery } from "../../api";
+import {
+  QUERY_KEYS,
+  useGetCategoriesQuery,
+  useGetChannelsQuery,
+  useGetLiveStreamsCollectionQuery,
+  useGetPlaylistsQuery,
+  useGetVideosQuery,
+} from "../../api";
 import { useMemo } from "react";
 import { useBreakpoints, useInstanceConfig, useViewHistory } from "../../hooks";
 import { spacing } from "../../theme";
@@ -33,6 +40,22 @@ export const HomeScreen = () => {
     enabled: !currentInstanceConfig?.customizations?.homeHidePlaylistsOverview,
     hiddenPlaylists: currentInstanceConfig?.customizations?.playlistsHidden,
   });
+  const { data: currentLiveVideos } = useGetVideosQuery({
+    uniqueQueryKey: QUERY_KEYS.liveVideos,
+    params: { isLive: true, count: 4 },
+  });
+
+  const liveVideoIds = useMemo(() => {
+    return Array.from(
+      new Set(
+        currentLiveVideos?.data
+          .map(({ uuid }) => uuid)
+          .concat(currentInstanceConfig?.customizations?.homeFeaturedLives || []),
+      ),
+    );
+  }, [currentLiveVideos, currentInstanceConfig]);
+
+  const liveVideosData = useGetLiveStreamsCollectionQuery(liveVideoIds);
 
   const historyData = useMemo(() => {
     return viewHistory?.slice(0, currentInstanceConfig?.customizations?.homeRecentlyWatchedVideoCount ?? 4) || [];
@@ -40,6 +63,12 @@ export const HomeScreen = () => {
 
   const sections = useMemo(() => {
     return [
+      {
+        title: t("liveStreams"),
+        renderItem: () => <VideoGrid isTVActionCardHidden={true} isHeaderHidden data={liveVideosData} />,
+        data: ["dataItemPlaceholder"],
+        isVisible: Number(liveVideosData?.length) > 0,
+      },
       {
         title: t("latestVideos"),
         renderItem: () => <LatestVideosView />,
@@ -90,7 +119,7 @@ export const HomeScreen = () => {
         isVisible: !currentInstanceConfig?.customizations?.homeHideCategoriesOverview && !!categories?.length,
       },
     ].filter(({ isVisible }) => isVisible);
-  }, [t, historyData, backend, playlistsData, channels, categories, currentInstanceConfig]);
+  }, [t, historyData, backend, playlistsData, channels, categories, currentInstanceConfig, liveVideosData]);
 
   return (
     <View

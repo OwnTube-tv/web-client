@@ -8,12 +8,10 @@ import { spacing } from "../theme";
 import { useBreakpoints, useHoverState, useViewHistory } from "../hooks";
 import { useTheme } from "@react-navigation/native";
 import { ChannelLink } from "./ChannelLink";
-import { formatDistanceToNow } from "date-fns";
-import { useTranslation } from "react-i18next";
-import { LANGUAGE_OPTIONS } from "../i18n";
 import { forwardRef, useMemo, useState } from "react";
 import TVFocusGuideHelper from "./helpers/TVFocusGuideHelper";
 import { FocusGuide } from "./helpers";
+import { VideoItemFooter } from "./VideoItemFooter";
 
 interface VideoGridCardProps {
   video: GetVideosVideo;
@@ -24,7 +22,6 @@ export const VideoGridCard = forwardRef<View, VideoGridCardProps>(({ video, back
   const { isDesktop } = useBreakpoints();
   const { colors } = useTheme();
   const { isHovered, toggleHovered } = useHoverState();
-  const { t, i18n } = useTranslation();
   const { getViewHistoryEntryByUuid } = useViewHistory({ enabled: false });
   const { timestamp } = getViewHistoryEntryByUuid(video.uuid) || {};
   const [containerWidth, setContainerWidth] = useState(0);
@@ -95,9 +92,7 @@ export const VideoGridCard = forwardRef<View, VideoGridCardProps>(({ video, back
           text={video.channel?.displayName}
           sourceLink={video.channel?.url}
         />
-        <Typography fontSize="sizeXS" fontWeight="Medium" color={colors.themeDesaturated500}>
-          {`${video.publishedAt ? formatDistanceToNow(video.publishedAt, { addSuffix: true, locale: LANGUAGE_OPTIONS.find(({ value }) => value === i18n.language)?.dateLocale }) : ""} • ${t("views", { count: video.views })}`}
-        </Typography>
+        <VideoItemFooter video={video} />
       </TVFocusGuideHelper>
     </View>
   );

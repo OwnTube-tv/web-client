@@ -71,6 +71,7 @@ const VideoControlsOverlay = ({
   handleSetQuality,
   handleToggleCC,
   isCCAvailable,
+  isLiveVideo,
 }: PropsWithChildren<VideoControlsOverlayProps>) => {
   const {
     isSeekBarFocused,
@@ -261,29 +262,35 @@ const VideoControlsOverlay = ({
           </View>
           <View style={styles.playbackControlsContainer}>
             <TVFocusGuideView autoFocus trapFocusRight trapFocusLeft style={styles.centerControlsContainer}>
-              <PlayerButton
-                scale={INTERFACE_SCALE}
-                nextFocusUp={backRef}
-                onPress={() => handleRW(15)}
-                icon="Rewind-15"
-              />
+              {!isLiveVideo && (
+                <PlayerButton
+                  scale={INTERFACE_SCALE}
+                  nextFocusUp={backRef}
+                  onPress={() => handleRW(15)}
+                  icon="Rewind-15"
+                />
+              )}
               <PlayerButton
                 scale={INTERFACE_SCALE}
                 nextFocusUp={backRef}
                 hasTVPreferredFocus
                 onPress={shouldReplay ? handleReplay : handlePlayPause}
                 icon={centralIconName}
+                nextFocusDown={isLiveVideo ? settingsRef.current : undefined}
               />
-              <PlayerButton
-                scale={INTERFACE_SCALE}
-                nextFocusUp={backRef}
-                onPress={() => handleFF(30)}
-                icon="Fast-forward-30"
-              />
+              {!isLiveVideo && (
+                <PlayerButton
+                  scale={INTERFACE_SCALE}
+                  nextFocusUp={backRef}
+                  onPress={() => handleFF(30)}
+                  icon="Fast-forward-30"
+                />
+              )}
             </TVFocusGuideView>
             {isSettingsMenuVisible && (
               <View style={styles.playbackSettingsContainer}>
                 <PlaybackSettingsPopup
+                  isLiveVideo={isLiveVideo}
                   handleSetQuality={handleSetQuality}
                   selectedQuality={selectedQuality}
                   handleSetSpeed={handleSetSpeed}
@@ -302,32 +309,36 @@ const VideoControlsOverlay = ({
               colors={["#00000000", "#0000004D", "#000000AB"]}
               style={styles.bottomControlsContainer}
             >
-              <Pressable
-                tvParallaxProperties={{ enabled: false }}
-                onFocus={() => setIsSeekBarFocused(true)}
-                onBlur={() => setIsSeekBarFocused(false)}
-                style={({ focused }) => [styles.scrubBarContainer, { borderWidth: focused ? 1 : 0 }]}
-              >
-                <ScrubBar
-                  isExpanded={isSeekBarFocused}
-                  variant="seek"
-                  length={duration}
-                  onDrag={handleJumpTo}
-                  percentageAvailable={percentageAvailable}
-                  percentagePosition={percentagePosition}
-                  onUpdate={onOverlayPress}
-                />
-              </Pressable>
+              {!isLiveVideo && (
+                <Pressable
+                  tvParallaxProperties={{ enabled: false }}
+                  onFocus={() => setIsSeekBarFocused(true)}
+                  onBlur={() => setIsSeekBarFocused(false)}
+                  style={({ focused }) => [styles.scrubBarContainer, { borderWidth: focused ? 1 : 0 }]}
+                >
+                  <ScrubBar
+                    isExpanded={isSeekBarFocused}
+                    variant="seek"
+                    length={duration}
+                    onDrag={handleJumpTo}
+                    percentageAvailable={percentageAvailable}
+                    percentagePosition={percentagePosition}
+                    onUpdate={onOverlayPress}
+                  />
+                </Pressable>
+              )}
               <View style={styles.bottomRowContainer}>
                 <View style={styles.bottomRowControlsContainer}>
-                  <Typography
-                    fontSize="sizeXS"
-                    fontWeight="Medium"
-                    style={styles.timingContainer}
-                    color={colors.white94}
-                  >
-                    {`${getHumanReadableDuration(position * 1000)} / ${getHumanReadableDuration(duration * 1000)}`}
-                  </Typography>
+                  {!isLiveVideo && (
+                    <Typography
+                      fontSize="sizeXS"
+                      fontWeight="Medium"
+                      style={styles.timingContainer}
+                      color={colors.white94}
+                    >
+                      {`${getHumanReadableDuration(position * 1000)} / ${getHumanReadableDuration(duration * 1000)}`}
+                    </Typography>
+                  )}
                 </View>
                 <TVFocusGuideView style={{ flexDirection: "row" }}>
                   {isCCAvailable && <PlayerButton icon="Closed-Captions" onPress={handleToggleCC} />}

@@ -1,7 +1,7 @@
 import { VideoThumbnail } from "./VideoThumbnail";
 import { Pressable, StyleSheet, View } from "react-native";
 import { Typography } from "./Typography";
-import { format, formatDistanceToNow } from "date-fns";
+import { format } from "date-fns";
 import { useBreakpoints, useHoverState, ViewHistoryEntry } from "../hooks";
 import { useTranslation } from "react-i18next";
 import { Link, useRouter } from "expo-router";
@@ -10,11 +10,11 @@ import { spacing } from "../theme";
 import { useTheme } from "@react-navigation/native";
 import { forwardRef, useMemo, useState } from "react";
 import { ChannelLink } from "./ChannelLink";
-import { LANGUAGE_OPTIONS } from "../i18n";
 import { GetVideosVideo } from "../api/models";
 import { Button } from "./shared";
 import TVFocusGuideHelper from "./helpers/TVFocusGuideHelper";
 import { FocusGuide } from "./helpers";
+import { VideoItemFooter } from "./VideoItemFooter";
 
 interface VideoListItemProps extends Partial<Pick<ViewHistoryEntry, "lastViewedAt" | "timestamp">> {
   video: GetVideosVideo;
@@ -25,7 +25,7 @@ interface VideoListItemProps extends Partial<Pick<ViewHistoryEntry, "lastViewedA
 export const VideoListItem = forwardRef<View, VideoListItemProps>(
   ({ video, handleDeleteFromHistory, backend, timestamp, lastViewedAt }, ref) => {
     const router = useRouter();
-    const { t, i18n } = useTranslation();
+    const { t } = useTranslation();
     const { colors } = useTheme();
     const { isHovered, toggleHovered } = useHoverState();
     const { isDesktop } = useBreakpoints();
@@ -116,9 +116,7 @@ export const VideoListItem = forwardRef<View, VideoListItemProps>(
               sourceLink={video.channel?.url}
               text={video.channel?.displayName}
             />
-            <Typography fontSize="sizeXS" fontWeight="Medium" color={colors.themeDesaturated500}>
-              {`${video.publishedAt ? formatDistanceToNow(video.publishedAt, { addSuffix: true, locale: LANGUAGE_OPTIONS.find(({ value }) => value === i18n.language)?.dateLocale }) : ""} • ${t("views", { count: video.views })}`}
-            </Typography>
+            <VideoItemFooter video={video} />
           </TVFocusGuideHelper>
           {isDesktop && deleteBtn}
         </View>

@@ -50,7 +50,7 @@ export const HomeScreen = () => {
       new Set(
         currentLiveVideos?.data
           .map(({ uuid }) => uuid)
-          .concat(currentInstanceConfig?.customizations?.featuredLives || []),
+          .concat(currentInstanceConfig?.customizations?.homeFeaturedLives || []),
       ),
     );
   }, [currentLiveVideos, currentInstanceConfig]);

@@ -162,7 +162,6 @@
     hostname: "swebbtv.se",
     logoUrl: "https://owntube-tv.github.io/web-client/logos/swebbtv.se.png",
     customizations: {
-      featuredLives: ["c25424b3-a077-42a1-9b1e-eb47729f1450"],
       pageTitle: "Swebbtv @ OwnTube.tv",
       pageDefaultTheme: "dark",
       menuHideHistoryButton: false,
@@ -229,6 +228,7 @@
       homeHideChannelsOverview: true,
       homeHideCategoriesOverview: true,
       homeHidePlaylistsOverview: false,
+      homeFeaturedLives: ["c25424b3-a077-42a1-9b1e-eb47729f1450"],
       showMoreSize: 28,
     },
   },

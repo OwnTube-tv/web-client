@@ -5,6 +5,7 @@ import { useTheme } from "@react-navigation/native";
 import { BuildInfo } from "./BuildInfo";
 import { Typography } from "./Typography";
 import { useTranslation } from "react-i18next";
+import { Image } from "react-native";
 
 interface InfoFooterProps {
   showBuildInfo?: boolean;
@@ -16,7 +17,11 @@ export const InfoFooter = ({ showBuildInfo }: InfoFooterProps) => {
 
   return (
     <View style={styles.container}>
-      <Logo textColor={colors.theme950} width={73} height={32} />
+      {process.env.EXPO_PUBLIC_FOOTER_LOGO ? (
+        <Image source={{ uri: process.env.EXPO_PUBLIC_FOOTER_LOGO }} style={{ width: 73, height: 73 }} />
+      ) : (
+        <Logo textColor={colors.theme950} width={73} height={32} />
+      )}
       {showBuildInfo && (
         <View style={styles.buildInfoContainer}>
           {process.env.EXPO_PUBLIC_HIDE_GIT_DETAILS ? (

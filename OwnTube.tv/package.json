@@ -33,7 +33,7 @@
     "expo-asset": "~11.0.1",
     "expo-clipboard": "~7.0.1",
     "expo-constants": "~17.0.3",
-    "expo-device": "~7.1.4",
+    "expo-device": "7.0.3",
     "expo-file-system": "~18.0.6",
     "expo-font": "~13.0.2",
     "expo-linear-gradient": "~14.0.2",

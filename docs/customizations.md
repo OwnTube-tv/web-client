@@ -54,6 +54,8 @@ or background images for Apple TV.
 
 `EXPO_PUBLIC_HIDE_GIT_DETAILS`: hide or show the build info section on git commit and author
 
+`EXPO_PUBLIC_FOOTER_LOGO`: custom footer logo instead of OwnTube.tv logo
+
 > [!WARNING]
 > You need to supply images of expected sizes for tvOS, or the build fails automatically:
 >

@@ -147,7 +147,7 @@ jobs:
             -workspace "$WORKSPACE_FILE" \
             -scheme "$SCHEME" \
             -configuration Release \
-            -sdk ${{ inputs.target }} \
+            -sdk ${{ inputs.target }}18.4 \
             -quiet \
             -archivePath ./build/OwnTube.xcarchive \
             archive \

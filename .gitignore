@@ -132,6 +132,9 @@ dist
 # IDEA
 .idea
 
+# Local hints to agentic AI
+**/CLAUDE.local.md
+
 # macOS
 .DS_Store
 *.pem

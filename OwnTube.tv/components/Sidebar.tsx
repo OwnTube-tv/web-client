@@ -165,7 +165,7 @@ export const Sidebar: FC<SidebarProps> = ({ backend, ...navigationProps }) => {
                   style={{ ...styles.button, ...styles.paddingHHelper, width: "100%" }}
                 />
               ) : (
-                <Link target="_blank" rel="noreferrer noopener" href={url}>
+                <Link target="_blank" rel="noreferrer noopener" href={url} asChild={Platform.OS !== "web"}>
                   <Button
                     justifyContent="flex-start"
                     icon={"External-Link"}

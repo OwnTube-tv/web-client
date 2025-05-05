@@ -21,7 +21,7 @@ export const InfoFooter = ({ showBuildInfo }: InfoFooterProps) => {
         <Image
           resizeMode="contain"
           source={{ uri: process.env.EXPO_PUBLIC_FOOTER_LOGO }}
-          style={{ width: 73, height: 73 }}
+          style={{ width: 292, height: 73 }}
         />
       ) : (
         <Logo textColor={colors.theme950} width={73} height={32} />

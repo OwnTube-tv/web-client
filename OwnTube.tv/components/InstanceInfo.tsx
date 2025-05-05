@@ -44,7 +44,7 @@ export const InstanceInfo = ({ backend, showText = true }: InstanceInfoProps) =>
               color={colors.theme950}
               numberOfLines={1}
             >
-              {data?.name}
+              {currentInstanceConfig?.customizations?.pageTitle || data?.name}
             </Typography>
           )}
         </>

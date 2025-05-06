@@ -50,9 +50,11 @@ or background images for Apple TV.
 
 `EXPO_PUBLIC_LANGUAGE_OVERRIDE`: override the default language of the app with a custom language code, e.g. "sv"
 
-`EXPO_PUBLIC_HIDE_VIDEO_SITE_LINKS`: hide or show the links to original PeerTube site in video player
+`EXPO_PUBLIC_HIDE_VIDEO_SITE_LINKS`: hide the links to original PeerTube site in video player and on playlist/category
+views by setting it to "1" or "true" (omit for default behavior)
 
-`EXPO_PUBLIC_HIDE_GIT_DETAILS`: hide or show the build info section on git commit and author
+`EXPO_PUBLIC_HIDE_GIT_DETAILS`: hide the build info section about git commit and author by setting it to "1" or "true"
+(omit for default behavior)
 
 `EXPO_PUBLIC_FOOTER_LOGO`: custom footer logo instead of OwnTube.tv logo
 

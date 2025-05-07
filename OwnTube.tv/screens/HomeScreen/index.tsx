@@ -9,7 +9,7 @@ import {
   useGetVideosQuery,
 } from "../../api";
 import { useMemo } from "react";
-import { useBreakpoints, useInstanceConfig, useViewHistory } from "../../hooks";
+import { useInstanceConfig, usePageContentTopPadding, useViewHistory } from "../../hooks";
 import { spacing } from "../../theme";
 import { ROUTES } from "../../types";
 import { Platform, SectionList, StyleSheet, View } from "react-native";
@@ -19,7 +19,6 @@ import { useLocalSearchParams } from "expo-router";
 import { RootStackParams } from "../../app/_layout";
 import { ChannelView } from "../../components";
 import { PlaylistVideosView } from "../Playlists/components";
-import { Spacer } from "../../components/shared/Spacer";
 import { VideoChannel, VideoPlaylist } from "@peertube/peertube-types";
 
 export const HomeScreen = () => {
@@ -27,8 +26,8 @@ export const HomeScreen = () => {
   const { t } = useTranslation();
   const { backend } = useLocalSearchParams<RootStackParams[ROUTES.INDEX]>();
   const { viewHistory } = useViewHistory({ backendToFilter: backend });
-  const { isMobile } = useBreakpoints();
   const { currentInstanceConfig } = useInstanceConfig();
+  const { top } = usePageContentTopPadding();
 
   const { data: channels } = useGetChannelsQuery({
     enabled: !currentInstanceConfig?.customizations?.homeHideChannelsOverview,
@@ -126,9 +125,10 @@ export const HomeScreen = () => {
       style={{
         ...styles.container,
         backgroundColor: colors.background,
+        paddingTop: top,
       }}
     >
-      <View style={{ paddingLeft: isMobile ? 0 : 24, marginRight: isMobile ? 0 : 50, ...styles.paddingContainer }}>
+      <View style={{ ...styles.paddingContainer }}>
         <SectionList
           // @ts-expect-error the sections do not change in runtime so we can be sure the typings match
           sections={sections}
@@ -136,9 +136,7 @@ export const HomeScreen = () => {
           stickySectionHeadersEnabled
           showsVerticalScrollIndicator={false}
           ListFooterComponent={<InfoFooter />}
-          ListHeaderComponent={!isMobile ? <Spacer height={spacing.xl} /> : <></>}
           style={{
-            paddingRight: isMobile ? 0 : spacing.xl,
             ...styles.paddingContainer,
             flex: Platform.isTV ? 0 : 1,
           }}
@@ -154,7 +152,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     flex: 1,
     gap: spacing.xl,
-    justifyContent: "center",
     padding: 0,
   },
   paddingContainer: {

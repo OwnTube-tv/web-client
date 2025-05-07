@@ -15,6 +15,7 @@ export const AppHeader = ({ backend, ...props }: AppHeaderProps) => {
   const { colors } = useTheme();
   const { top } = useSafeAreaInsets();
   const { isRouteShareable, handleToggleShareModal } = useShareButton();
+
   return (
     <View
       style={[
@@ -30,7 +31,7 @@ export const AppHeader = ({ backend, ...props }: AppHeaderProps) => {
         <InstanceInfo backend={backend} />
       </View>
       {isRouteShareable && (
-        <Button style={styles.menuBtn} onPress={handleToggleShareModal} icon="Share" contrast="low" />
+        <Button style={styles.menuBtn} onPress={() => handleToggleShareModal({})} icon="Share" contrast="low" />
       )}
     </View>
   );

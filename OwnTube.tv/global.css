@@ -25,3 +25,11 @@ select {
   outline-offset: 4px;
   border-radius: 8px;
 }
+
+* {
+  scrollbar-width: none;
+}
+
+*::-webkit-scrollbar {
+  display: none; /* Safari and Chrome */
+}

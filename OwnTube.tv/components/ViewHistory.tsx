@@ -19,6 +19,7 @@ import { ROUTES } from "../types";
 import { useFullScreenModalContext } from "../contexts";
 import { EmptyPage } from "./EmptyPage";
 import { InfoFooter } from "./InfoFooter";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export const ViewHistory = () => {
   const { t } = useTranslation();
@@ -31,6 +32,7 @@ export const ViewHistory = () => {
   } = useViewHistory({ backendToFilter: backend });
   const { isMobile } = useBreakpoints();
   const { colors } = useTheme();
+  const { top } = useSafeAreaInsets();
 
   const { toggleModal, setContent } = useFullScreenModalContext();
 
@@ -87,35 +89,39 @@ export const ViewHistory = () => {
   }
 
   return (
-    <>
-      <Screen style={{ paddingHorizontal: isMobile ? spacing.sm : spacing.xl, ...styles.screenContainer }}>
-        <View style={styles.headerContainer}>
-          <Typography
-            fontSize={isMobile ? "sizeXL" : "sizeXXL"}
-            fontWeight="ExtraBold"
-            color={colors.theme900}
-            style={styles.header}
-          >
-            {t("yourWatchHistory")}
+    <Screen
+      style={{
+        paddingHorizontal: isMobile ? spacing.sm : spacing.xl,
+        ...styles.screenContainer,
+        paddingTop: spacing.xl + top,
+      }}
+    >
+      <View style={styles.headerContainer}>
+        <Typography
+          fontSize={isMobile ? "sizeXL" : "sizeXXL"}
+          fontWeight="ExtraBold"
+          color={colors.theme900}
+          style={styles.header}
+        >
+          {t("yourWatchHistory")}
+        </Typography>
+        <Button icon="Trash" onPress={handleClearConfirmation} text={t("clearSiteHistory")} />
+      </View>
+      <Spacer height={spacing.xl} />
+      <SectionList
+        style={styles.sectionListContainer}
+        renderItem={renderItem}
+        sections={sections}
+        renderSectionHeader={({ section: { titleKey } }) => (
+          <Typography style={styles.sectionHeader} color={colors.theme900} fontWeight="Bold" fontSize="sizeLg">
+            {t(titleKey)}
           </Typography>
-          <Button icon="Trash" onPress={handleClearConfirmation} text={t("clearSiteHistory")} />
-        </View>
-        <Spacer height={spacing.xl} />
-        <SectionList
-          style={styles.sectionListContainer}
-          renderItem={renderItem}
-          sections={sections}
-          renderSectionHeader={({ section: { titleKey } }) => (
-            <Typography style={styles.sectionHeader} color={colors.theme900} fontWeight="Bold" fontSize="sizeLg">
-              {t(titleKey)}
-            </Typography>
-          )}
-          ItemSeparatorComponent={() => <Spacer height={spacing.xl} />}
-          renderSectionFooter={() => <Spacer height={spacing.xxl} />}
-        />
-        <InfoFooter />
-      </Screen>
-    </>
+        )}
+        ItemSeparatorComponent={() => <Spacer height={spacing.xl} />}
+        renderSectionFooter={() => <Spacer height={spacing.xxl} />}
+      />
+      <InfoFooter />
+    </Screen>
   );
 };
 

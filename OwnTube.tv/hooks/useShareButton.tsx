@@ -6,9 +6,21 @@ import { SHAREABLE_ROUTE_MODAL_TITLES } from "../navigation/constants";
 export const useShareButton = () => {
   const pathname = usePathname();
   const { toggleModal, setContent } = useFullScreenModalContext();
-  const handleToggleShareModal = () => {
+  const handleToggleShareModal = ({
+    staticHeaderKey,
+    staticLink,
+  }: {
+    staticHeaderKey?: string;
+    staticLink?: string;
+  }) => {
     toggleModal(true);
-    setContent(<Share titleKey={SHAREABLE_ROUTE_MODAL_TITLES[pathname]} onClose={() => toggleModal(false)} />);
+    setContent(
+      <Share
+        staticLink={staticLink}
+        titleKey={staticHeaderKey || SHAREABLE_ROUTE_MODAL_TITLES[pathname]}
+        onClose={() => toggleModal(false)}
+      />,
+    );
   };
   const isRouteShareable = Object.keys(SHAREABLE_ROUTE_MODAL_TITLES).includes(pathname);
 

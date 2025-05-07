@@ -5,7 +5,7 @@ import { ROUTES } from "../../types";
 import { BackToChannel, InfoFooter, ListInfoHeader, Loader, VideoGrid } from "../../components";
 import { useMemo } from "react";
 import { Screen } from "../../layouts";
-import { useInstanceConfig } from "../../hooks";
+import { useInstanceConfig, usePageContentTopPadding } from "../../hooks";
 import { useTranslation } from "react-i18next";
 
 export const Playlist = () => {
@@ -23,13 +23,14 @@ export const Playlist = () => {
     return data?.pages?.flatMap(({ data }) => data.flat());
   }, [data]);
   const { t } = useTranslation();
+  const { top } = usePageContentTopPadding();
 
   if (isFetchingPlaylistInfo || isLoading) {
     return <Loader />;
   }
 
   return (
-    <Screen style={{ padding: 0 }}>
+    <Screen style={{ padding: 0, paddingTop: top }}>
       {channelInfo && <BackToChannel channelInfo={channelInfo} />}
       <ListInfoHeader
         variant="playlist"

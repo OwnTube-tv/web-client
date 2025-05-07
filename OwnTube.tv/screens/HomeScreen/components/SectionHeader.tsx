@@ -23,9 +23,12 @@ export const SectionHeader = ({ title, link }: SectionHeaderProps) => {
         {
           paddingTop: isMobile ? spacing.sm : spacing.xl,
           backgroundColor: colors.background,
-          marginLeft: (!isMobile ? spacing.xl : 0) - Number(Platform.isTV) * 24,
-          paddingLeft: (isMobile ? 10 : 0) + Number(Platform.isTV) * 24,
-          paddingRight: (isMobile ? spacing.sm : 50) - Number(Platform.isTV) * 24,
+          marginLeft: (!isMobile ? spacing.xl : 0) - Number(Boolean(Platform.isTV)) * 24,
+          paddingLeft: (isMobile ? 10 : 0) + Number(Boolean(Platform.isTV)) * 24,
+          paddingRight: Platform.select({
+            default: (isMobile ? spacing.sm : 48) - Number(Boolean(Platform.isTV)) * 24,
+            web: 48,
+          }),
         },
         styles.container,
       ]}

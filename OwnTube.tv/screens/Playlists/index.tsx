@@ -8,7 +8,7 @@ import { useLocalSearchParams } from "expo-router";
 import { useState } from "react";
 import { StyleSheet, View } from "react-native";
 import { spacing } from "../../theme";
-import { useInstanceConfig } from "../../hooks";
+import { useInstanceConfig, usePageContentTopPadding } from "../../hooks";
 import { ErrorForbiddenLogo } from "../../components/Svg";
 import { useQueryClient } from "@tanstack/react-query";
 
@@ -41,6 +41,7 @@ export const Playlists = () => {
     await queryClient.refetchQueries({ queryKey: [QUERY_KEYS.playlists] });
     await queryClient.refetchQueries({ queryKey: [QUERY_KEYS.playlistsCollection] });
   };
+  const { top } = usePageContentTopPadding();
 
   if (isFetching) {
     return <Loader />;
@@ -64,7 +65,7 @@ export const Playlists = () => {
   }
 
   return (
-    <Screen style={{ padding: 0 }}>
+    <Screen style={{ padding: 0, paddingTop: top }}>
       {playlistSections.map(({ data, isFetching, refetch }) => (
         <VideoGrid
           isLoading={isFetching}

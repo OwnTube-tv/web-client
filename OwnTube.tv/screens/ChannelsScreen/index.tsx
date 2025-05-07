@@ -10,6 +10,7 @@ import { useTranslation } from "react-i18next";
 import { useLocalSearchParams } from "expo-router";
 import { useQueryClient } from "@tanstack/react-query";
 import { ErrorForbiddenLogo } from "../../components/Svg";
+import { usePageContentTopPadding } from "../../hooks";
 
 export const ChannelsScreen = () => {
   const { backend } = useLocalSearchParams();
@@ -21,6 +22,7 @@ export const ChannelsScreen = () => {
     error: channelsError,
   } = useGetChannelsQuery({ enabled: true });
   const { t } = useTranslation();
+  const { top } = usePageContentTopPadding();
   const {
     data: channelSections,
     isFetching: isFetchingChannelsCollection,
@@ -55,21 +57,19 @@ export const ChannelsScreen = () => {
       const channelInfoSection = channels?.find(({ name }) => name === data?.id);
 
       return (
-        <>
-          <VideoGrid
-            isLoading={isFetching}
-            refetch={refetch}
-            link={{
-              text: t("visitChannel") + getAvailableVidsString(data?.total),
-              href: { pathname: `/${ROUTES.CHANNEL}`, params: { backend, channel: channelInfoSection?.name } },
-            }}
-            variant="channel"
-            key={data?.id}
-            title={channelInfoSection?.displayName}
-            data={data?.data}
-            channelLogoUri={channelInfoSection?.avatars?.[0]?.path}
-          />
-        </>
+        <VideoGrid
+          isLoading={isFetching}
+          refetch={refetch}
+          link={{
+            text: t("visitChannel") + getAvailableVidsString(data?.total),
+            href: { pathname: `/${ROUTES.CHANNEL}`, params: { backend, channel: channelInfoSection?.name } },
+          }}
+          variant="channel"
+          key={data?.id}
+          title={channelInfoSection?.displayName}
+          data={data?.data}
+          channelLogoUri={channelInfoSection?.avatars?.[0]?.path}
+        />
       );
     });
   }, [isFetching, isFetchingChannels, channelSections, channels, backend]);
@@ -79,7 +79,7 @@ export const ChannelsScreen = () => {
   }
 
   return (
-    <Screen style={styles.screenContainer}>
+    <Screen style={{ ...styles.screenContainer, paddingTop: top }}>
       {renderScreenContent}
       <InfoFooter />
     </Screen>

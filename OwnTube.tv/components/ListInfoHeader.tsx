@@ -33,7 +33,11 @@ export const ListInfoHeader = ({
 
   const { currentInstanceConfig } = useInstanceConfig();
 
-  const isLinkShown = linkHref && !currentInstanceConfig?.customizations?.hideChannelPlaylistLinks && !Platform.isTV;
+  const isLinkShown =
+    linkHref &&
+    !process.env.EXPO_PUBLIC_HIDE_VIDEO_SITE_LINKS &&
+    !currentInstanceConfig?.customizations?.hideChannelPlaylistLinks &&
+    !Platform.isTV;
 
   return (
     <View
@@ -64,7 +68,6 @@ export const ListInfoHeader = ({
           fontSize="sizeMd"
           fontWeight="Medium"
           color={colors.themeDesaturated500}
-          numberOfLines={4}
         >
           {description}
         </Typography>
@@ -76,6 +79,12 @@ export const ListInfoHeader = ({
 const styles = StyleSheet.create({
   container: { alignSelf: "flex-start", flexDirection: "row", paddingVertical: spacing.xl, width: "100%" },
   descriptionContainer: { flexShrink: 1, flexWrap: "wrap" },
-  headerContainer: { alignItems: "center", flexDirection: "row", flexWrap: "wrap", gap: spacing.md },
+  headerContainer: {
+    alignItems: "center",
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: spacing.md,
+    paddingRight: spacing.xxxl,
+  },
   textContainer: { flex: 1, gap: spacing.md },
 });

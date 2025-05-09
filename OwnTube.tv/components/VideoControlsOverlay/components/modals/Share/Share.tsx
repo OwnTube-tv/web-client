@@ -15,13 +15,15 @@ import { getHumanReadableDuration } from "../../../../../utils";
 import { useVideoLink, useViewHistory } from "../../../../../hooks";
 import { ROUTES } from "../../../../../types";
 import { QRCodeSection } from "../../../../../components";
+import Constants from "expo-constants";
 
 interface ShareProps {
   onClose: () => void;
   titleKey: string;
+  staticLink?: string;
 }
 
-const Share = ({ onClose, titleKey }: ShareProps) => {
+const Share = ({ onClose, titleKey, staticLink }: ShareProps) => {
   const { t } = useTranslation();
   const { colors } = useTheme();
   const params = useGlobalSearchParams();
@@ -50,9 +52,13 @@ const Share = ({ onClose, titleKey }: ShareProps) => {
 
   return (
     <Animated.View entering={SlideInUp} exiting={SlideOutUp} style={styles.animatedContainer} pointerEvents="box-none">
-      <ModalContainer onClose={onClose} title={t(titleKey)} containerStyle={styles.modalContainer}>
+      <ModalContainer
+        onClose={onClose}
+        title={t(titleKey, { appName: Constants.expoConfig?.name })}
+        containerStyle={styles.modalContainer}
+      >
         <ScrollView>
-          <Input buttonText={copyButtonText} readOnly value={link} handleButtonPress={handleCopy} />
+          <Input buttonText={copyButtonText} readOnly value={staticLink || link} handleButtonPress={handleCopy} />
           <Spacer height={spacing.xl} />
           {isTimestampShown && (
             <>

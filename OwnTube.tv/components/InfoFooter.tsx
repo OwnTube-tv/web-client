@@ -6,6 +6,8 @@ import { BuildInfo } from "./BuildInfo";
 import { Typography } from "./Typography";
 import { useTranslation } from "react-i18next";
 import { Image } from "react-native";
+import { Link } from "expo-router";
+import { ROUTES } from "../types";
 
 interface InfoFooterProps {
   showBuildInfo?: boolean;
@@ -40,6 +42,11 @@ export const InfoFooter = ({ showBuildInfo }: InfoFooterProps) => {
           )}
         </View>
       )}
+      <Link href={ROUTES.PRIVACY}>
+        <Typography style={{ textDecorationLine: "underline" }} fontSize={"sizeXS"} color={colors.themeDesaturated500}>
+          {t("privacyPolicy")}
+        </Typography>
+      </Link>
     </View>
   );
 };

@@ -1,5 +1,5 @@
 import { CategoryView, InfoFooter, VideoGrid } from "../../components";
-import { useTheme } from "@react-navigation/native";
+import { useIsFocused, useTheme } from "@react-navigation/native";
 import {
   QUERY_KEYS,
   useGetCategoriesQuery,
@@ -21,6 +21,8 @@ import { ChannelView } from "../../components";
 import { PlaylistVideosView } from "../Playlists/components";
 import { VideoChannel, VideoPlaylist } from "@peertube/peertube-types";
 
+const LIVE_STREAM_LIST_REFETCH_INTERVAL = 10_000;
+
 export const HomeScreen = () => {
   const { colors } = useTheme();
   const { t } = useTranslation();
@@ -28,6 +30,7 @@ export const HomeScreen = () => {
   const { viewHistory } = useViewHistory({ backendToFilter: backend });
   const { currentInstanceConfig } = useInstanceConfig();
   const { top } = usePageContentTopPadding();
+  const isFocused = useIsFocused();
 
   const { data: channels } = useGetChannelsQuery({
     enabled: !currentInstanceConfig?.customizations?.homeHideChannelsOverview,
@@ -42,6 +45,7 @@ export const HomeScreen = () => {
   const { data: currentLiveVideos } = useGetVideosQuery({
     uniqueQueryKey: QUERY_KEYS.liveVideos,
     params: { isLive: true, count: 4 },
+    refetchInterval: isFocused ? LIVE_STREAM_LIST_REFETCH_INTERVAL : 0,
   });
 
   const liveVideoIds = useMemo(() => {
@@ -57,7 +61,11 @@ export const HomeScreen = () => {
   const liveVideosData = useGetLiveStreamsCollectionQuery(liveVideoIds);
 
   const historyData = useMemo(() => {
-    return viewHistory?.slice(0, currentInstanceConfig?.customizations?.homeRecentlyWatchedVideoCount ?? 4) || [];
+    return (
+      viewHistory
+        ?.slice(0, currentInstanceConfig?.customizations?.homeRecentlyWatchedVideoCount ?? 4)
+        .filter(({ isLive }) => !isLive) || []
+    );
   }, [viewHistory, currentInstanceConfig]);
 
   const sections = useMemo(() => {

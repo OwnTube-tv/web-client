@@ -145,5 +145,6 @@
   "viewers_other": "{{count}} зрителей",
   "liveStreamOffline": "Трансляция сейчас не в эфире",
   "streamingNow": "Сейчас в эфире",
-  "offline": "Не в эфире"
+  "offline": "Не в эфире",
+  "privacyPolicy": "Политика конфиденциальности"
 }

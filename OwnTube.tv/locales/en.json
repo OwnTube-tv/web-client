@@ -146,5 +146,6 @@
   "viewers_other": "{{count}} viewers",
   "liveStreamOffline": "Live stream is currently offline",
   "streamingNow": "Streaming now",
-  "offline": "Offline"
+  "offline": "Offline",
+  "privacyPolicy": "Privacy policy"
 }

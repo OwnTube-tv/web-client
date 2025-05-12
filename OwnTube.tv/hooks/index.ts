@@ -13,3 +13,4 @@ export * from "./useShareButton";
 export * from "./useVideoLink";
 export * from "./useChromeCast";
 export * from "./useSubtitlesSessionLocale";
+export * from "./usePageContentTopPadding";

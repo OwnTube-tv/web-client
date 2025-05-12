@@ -58,7 +58,11 @@ const RootStack = () => {
         return <AppHeader {...props} backend={backend} />;
       }
 
-      if (Object.keys(SHAREABLE_ROUTE_MODAL_TITLES).includes(pathname)) {
+      if (
+        Object.keys(SHAREABLE_ROUTE_MODAL_TITLES)
+          .filter((route) => route !== `/${ROUTES.HOME}`)
+          .includes(pathname)
+      ) {
         return <AppDesktopHeader />;
       }
 

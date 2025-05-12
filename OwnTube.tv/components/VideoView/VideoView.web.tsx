@@ -261,7 +261,7 @@ const VideoView = ({
 
     if (currentTimeInt % 5 === 0 && currentTimeInt !== lastReportedTime.current) {
       lastReportedTime.current = currentTimeInt;
-      postVideoView({ videoId: videoData?.uuid, currentTime: position });
+      postVideoView({ videoId: videoData?.uuid, currentTime: currentTimeInt });
     }
   }, [playbackStatus.position]);
 

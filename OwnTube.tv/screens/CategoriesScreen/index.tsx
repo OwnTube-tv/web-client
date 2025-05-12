@@ -7,6 +7,7 @@ import { useTranslation } from "react-i18next";
 import { useLocalSearchParams } from "expo-router";
 import { useQueryClient } from "@tanstack/react-query";
 import { ErrorForbiddenLogo } from "../../components/Svg";
+import { usePageContentTopPadding } from "../../hooks";
 
 export const CategoriesScreen = () => {
   const queryClient = useQueryClient();
@@ -23,6 +24,7 @@ export const CategoriesScreen = () => {
   } = useGetCategoriesCollectionQuery(categories);
   const { backend } = useLocalSearchParams();
   const { t } = useTranslation();
+  const { top } = usePageContentTopPadding();
   const isError = isCategoriesError || isCollectionError;
   const isFetching = isFetchingCategoriesCollection || isFetchingCategories;
 
@@ -53,7 +55,7 @@ export const CategoriesScreen = () => {
   }
 
   return (
-    <Screen style={{ padding: 0 }}>
+    <Screen style={{ padding: 0, paddingTop: top }}>
       {data?.map(({ data, isFetching, refetch }) => (
         <VideoGrid
           isLoading={isFetching}

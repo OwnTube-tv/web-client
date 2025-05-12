@@ -10,7 +10,7 @@ import { Platform, StyleSheet, View } from "react-native";
 import { Button, Separator } from "./shared";
 import { spacing } from "../theme";
 import { Spacer } from "./shared/Spacer";
-import { useBreakpoints, useInstanceConfig } from "../hooks";
+import { useBreakpoints, useInstanceConfig, useShareButton } from "../hooks";
 import { InstanceInfo } from "./InstanceInfo";
 import { Settings } from "./VideoControlsOverlay/components/modals";
 import { useNetInfo } from "@react-native-community/netinfo";
@@ -18,6 +18,7 @@ import { writeToAsyncStorage } from "../utils";
 import useLeaveInstancePermission from "../hooks/useLeaveInstancePermission";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { QrCodeLinkModal } from "./QRCodeLinkModal";
+import build_info from "../build-info.json";
 
 const SIDEBAR_ROUTES = [
   {
@@ -70,6 +71,7 @@ export const Sidebar: FC<SidebarProps> = ({ backend, ...navigationProps }) => {
   const { isLeaveInstanceAllowed } = useLeaveInstancePermission(navigationProps);
   const { primaryBackend } = useAppConfigContext();
   const safeArea = useSafeAreaInsets();
+  const { handleToggleShareModal } = useShareButton();
 
   const isLeaveInstanceShown =
     !primaryBackend && isLeaveInstanceAllowed && !currentInstanceConfig?.customizations?.menuHideLeaveButton;
@@ -85,12 +87,17 @@ export const Sidebar: FC<SidebarProps> = ({ backend, ...navigationProps }) => {
     });
   };
 
+  const paddingHelperStyle = { ...styles.paddingHHelper, width: shouldExpand ? undefined : 48 };
+
+  const homeShareLink = `${build_info.WEB_URL?.toLowerCase()}/${ROUTES.HOME}?backend=${backend}`;
+
   return (
     <DrawerContentScrollView
       {...navigationProps}
       contentContainerStyle={{
         padding: 0,
         paddingTop: safeArea.top,
+        alignItems: shouldExpand ? undefined : "center",
       }}
       style={[
         styles.container,
@@ -98,7 +105,7 @@ export const Sidebar: FC<SidebarProps> = ({ backend, ...navigationProps }) => {
           backgroundColor: colors.theme50,
           paddingHorizontal: shouldExpand ? spacing.md : ["ios", "android"].includes(Platform.OS) ? 0 : spacing.sm,
           width: "100%",
-          paddingTop: breakpoints.isDesktop ? 18 : undefined,
+          paddingTop: shouldExpand ? spacing.lg : spacing.xl,
         },
       ]}
     >
@@ -139,7 +146,7 @@ export const Sidebar: FC<SidebarProps> = ({ backend, ...navigationProps }) => {
                 justifyContent="flex-start"
                 icon={icon}
                 text={shouldExpand ? t(nameKey) : undefined}
-                style={{ ...styles.button, ...styles.paddingHHelper }}
+                style={{ ...styles.button, ...paddingHelperStyle }}
               />
             </Link>
           );
@@ -149,7 +156,7 @@ export const Sidebar: FC<SidebarProps> = ({ backend, ...navigationProps }) => {
       <View style={styles.separatorContainer}>
         <Separator />
       </View>
-      {Number(currentInstanceConfig?.customizations?.menuExternalLinks?.length) > 0 && (
+      {Number(currentInstanceConfig?.customizations?.menuExternalLinks?.length) > 0 && shouldExpand && (
         <>
           {currentInstanceConfig?.customizations?.menuExternalLinks?.map(({ label, url }) => (
             <React.Fragment key={url}>
@@ -162,7 +169,7 @@ export const Sidebar: FC<SidebarProps> = ({ backend, ...navigationProps }) => {
                   justifyContent="flex-start"
                   icon={"External-Link"}
                   text={label}
-                  style={{ ...styles.button, ...styles.paddingHHelper, width: "100%" }}
+                  style={{ ...styles.button, ...paddingHelperStyle, width: "100%" }}
                 />
               ) : (
                 <Link target="_blank" rel="noreferrer noopener" href={url} asChild={Platform.OS !== "web"}>
@@ -170,7 +177,7 @@ export const Sidebar: FC<SidebarProps> = ({ backend, ...navigationProps }) => {
                     justifyContent="flex-start"
                     icon={"External-Link"}
                     text={shouldExpand ? label : undefined}
-                    style={{ ...styles.button, ...styles.paddingHHelper, width: "100%" }}
+                    style={{ ...styles.button, ...paddingHelperStyle, width: "100%" }}
                   />
                 </Link>
               )}
@@ -184,17 +191,24 @@ export const Sidebar: FC<SidebarProps> = ({ backend, ...navigationProps }) => {
       <View style={styles.routesContainer}>
         <Button
           justifyContent="flex-start"
+          onPress={() => handleToggleShareModal({ staticHeaderKey: "shareVideoSite", staticLink: homeShareLink })}
+          icon={"Share"}
+          text={shouldExpand ? t("shareAppURL") : undefined}
+          style={paddingHelperStyle}
+        />
+        <Button
+          justifyContent="flex-start"
           onPress={toggleScheme}
           icon={isDarkMode ? "Light-mode" : "Dark-mode"}
           text={shouldExpand ? t(isDarkMode ? "lightMode" : "darkMode") : undefined}
-          style={styles.paddingHHelper}
+          style={paddingHelperStyle}
         />
         <Button
           justifyContent="flex-start"
           onPress={handleOpenSettings}
           icon="Settings"
           text={shouldExpand ? t("settingsPageTitle") : undefined}
-          style={styles.paddingHHelper}
+          style={paddingHelperStyle}
         />
         {isLeaveInstanceShown && (
           <Button
@@ -203,7 +217,7 @@ export const Sidebar: FC<SidebarProps> = ({ backend, ...navigationProps }) => {
             contrast="none"
             icon="Exit"
             text={shouldExpand ? t("leaveSite") : undefined}
-            style={styles.paddingHHelper}
+            style={paddingHelperStyle}
           />
         )}
       </View>
@@ -217,6 +231,7 @@ const styles = StyleSheet.create({
     paddingVertical: 6,
   },
   container: {
+    paddingBottom: 8,
     paddingTop: 8,
   },
   expandedInstanceInfo: {
@@ -229,8 +244,8 @@ const styles = StyleSheet.create({
   },
   paddingHHelper: {
     height: 48,
-    paddingHorizontal: ["ios", "android"].includes(Platform.OS) ? 8 : undefined,
+    paddingHorizontal: ["ios", "android"].includes(Platform.OS) ? spacing.md : undefined,
   },
   routesContainer: { gap: 4 },
-  separatorContainer: { paddingVertical: spacing.sm },
+  separatorContainer: { paddingVertical: spacing.sm, width: "100%" },
 });

@@ -5,7 +5,6 @@
     hostname: "tube.rebellion.global",
     logoUrl: "https://owntube-tv.github.io/web-client/logos/tube.rebellion.global.png",
     customizations: {
-      pageTitle: "XR Tube @ OwnTube.tv",
       homeLatestPublishedVideoCount: 12,
       homeRecentlyWatchedVideoCount: 4,
       homeHideChannelsOverview: false,
@@ -37,7 +36,7 @@
     hostname: "video.blender.org",
     logoUrl: "https://owntube-tv.github.io/web-client/logos/video.blender.org.jpg",
     customizations: {
-      pageTitle: "Blender @ OwnTube.tv",
+      pageTitle: "Blender Tube",
       menuExternalLinks: [
         {
           label: "Website",
@@ -76,6 +75,7 @@
     hostname: "media.privacyinternational.org",
     logoUrl: "https://owntube-tv.github.io/web-client/logos/media.privacyinternational.org.jpg",
     customizations: {
+      pageTitle: "Privacy International",
       menuExternalLinks: [
         {
           label: "Website",

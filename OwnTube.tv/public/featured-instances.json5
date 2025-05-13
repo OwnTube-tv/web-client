@@ -98,6 +98,7 @@
     hostname: "v.basspistol.org",
     logoUrl: "https://owntube-tv.github.io/web-client/logos/v.basspistol.org.png",
     customizations: {
+      pageDefaultTheme: "dark",
       menuExternalLinks: [
         {
           label: "Website",

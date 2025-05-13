@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { Platform, View } from "react-native";
+import { Image, Platform, View } from "react-native";
 import * as Device from "expo-device";
 import { DeviceType } from "expo-device";
 import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
@@ -25,9 +25,11 @@ import { usePostVideoViewMutation } from "../../api";
 import { ISO639_1 } from "react-native-video/src/types/language";
 import { useTranslation } from "react-i18next";
 import { useAppConfigContext } from "../../contexts";
+import { Typography } from "../Typography";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export interface VideoViewProps {
-  uri: string;
+  uri?: string;
   testID: string;
   handleSetTimeStamp: (timestamp: number) => void;
   timestamp?: string;
@@ -44,6 +46,7 @@ export interface VideoViewProps {
   selectedQuality: string;
   handleSetQuality: (quality: string) => void;
   captions?: VideoCaption[];
+  isWaitingForLive: boolean;
 }
 
 const VideoView = ({
@@ -64,6 +67,7 @@ const VideoView = ({
   selectedQuality,
   handleSetQuality,
   captions,
+  isWaitingForLive,
 }: VideoViewProps) => {
   const videoRef = useRef<VideoRef>(null);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -78,6 +82,8 @@ const VideoView = ({
   const isMobile = Device.deviceType !== DeviceType.DESKTOP;
   const { backend } = useLocalSearchParams<RootStackParams[ROUTES.VIDEO]>();
   const { colors } = useTheme();
+  const { t } = useTranslation();
+  const { top } = useSafeAreaInsets();
 
   const googleCastClient = Platform.isTV
     ? null
@@ -219,7 +225,7 @@ const VideoView = ({
   const isCastActivated = useRef(false);
 
   useEffect(() => {
-    if (googleCastClient) {
+    if (googleCastClient && uri) {
       isCastActivated.current = true;
       setCastState("chromecast");
       googleCastClient.loadMedia({
@@ -362,9 +368,36 @@ const VideoView = ({
         setSelectedCCLang={!isIosWithoutSideloadedSubs ? handleSetCCLang : undefined}
         selectedCCLang={selectedCCLang}
         isCCVisible={isCCShown}
+        isWaitingForLive={isWaitingForLive}
       >
         {googleCastClient ? (
           <IcoMoonIcon name="Chromecast" size={72} color={colors.white80} />
+        ) : isWaitingForLive ? (
+          <View style={{ flex: 1, paddingTop: top, width: "100%" }}>
+            <Image
+              source={{ uri: `https://${backend}${videoData?.previewPath}` }}
+              resizeMode="contain"
+              style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0, flex: 1 }}
+            />
+            <View
+              style={{
+                flex: 1,
+                zIndex: 1,
+                backgroundColor: colors.black50,
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <Typography
+                color={colors.theme50}
+                fontWeight="SemiBold"
+                fontSize="sizeXL"
+                style={{ textAlign: "center" }}
+              >
+                {t("liveStreamOffline")}
+              </Typography>
+            </View>
+          </View>
         ) : (
           <Video
             onEnd={() => setShouldReplay(true)}

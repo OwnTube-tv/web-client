@@ -1,6 +1,6 @@
 import { useLocalSearchParams } from "expo-router";
 import { RootStackParams } from "../../app/_layout";
-import { useInfiniteQuery, useMutation, useQuery } from "@tanstack/react-query";
+import { Query, useInfiniteQuery, useMutation, useQuery } from "@tanstack/react-query";
 import { GetVideosVideo } from "../models";
 import { ApiServiceImpl } from "../peertubeVideosApi";
 import { VideosCommonQuery, Video } from "@peertube/peertube-types";
@@ -15,11 +15,13 @@ export const useGetVideosQuery = <TResult = GetVideosVideo[]>({
   select,
   params,
   uniqueQueryKey,
+  refetchInterval,
 }: {
   enabled?: boolean;
   select?: (queryReturn: { data: GetVideosVideo[]; total: number }) => { data: TResult; total: number };
   params?: VideosCommonQuery;
   uniqueQueryKey?: string;
+  refetchInterval?: number;
 }) => {
   const { backend } = useLocalSearchParams<RootStackParams["index"]>();
 
@@ -35,6 +37,7 @@ export const useGetVideosQuery = <TResult = GetVideosVideo[]>({
     enabled: enabled && !!backend,
     refetchOnWindowFocus: false,
     select,
+    refetchInterval,
     retry,
   });
 };
@@ -73,6 +76,8 @@ export const useInfiniteVideosQuery = (
   });
 };
 
+const LIVE_REFETCH_INTERVAL = 10_000;
+
 export const useGetVideoQuery = <TResult = Video>({
   id,
   select,
@@ -95,6 +100,9 @@ export const useGetVideoQuery = <TResult = Video>({
     },
     refetchOnWindowFocus: false,
     enabled: !!backend && !!id && enabled,
+    refetchInterval: (query: Query<Video>) => {
+      return query.state.data?.isLive ? LIVE_REFETCH_INTERVAL : 0;
+    },
     select,
     retry,
   });

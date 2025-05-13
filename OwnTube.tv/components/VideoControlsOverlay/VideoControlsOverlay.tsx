@@ -64,6 +64,7 @@ export interface VideoControlsOverlayProps {
   selectedCCLang?: string;
   setSelectedCCLang?: (lang: string) => void;
   isLiveVideo?: boolean;
+  isWaitingForLive: boolean;
 }
 
 const VideoControlsOverlay = ({
@@ -107,6 +108,7 @@ const VideoControlsOverlay = ({
   selectedCCLang,
   setSelectedCCLang,
   isLiveVideo,
+  isWaitingForLive,
 }: PropsWithChildren<VideoControlsOverlayProps>) => {
   const {
     isSeekBarFocused,
@@ -228,72 +230,81 @@ const VideoControlsOverlay = ({
                   <ViewOnSiteLink site={videoLinkProps?.backend} url={videoLinkProps?.url} />
                 )}
               </View>
-              {!isLiveVideo && (
-                <Pressable
-                  accessible={false}
-                  onHoverIn={() => setIsSeekBarFocused(true)}
-                  onHoverOut={() => setIsSeekBarFocused(false)}
-                  style={styles.scrubBarContainer}
-                >
-                  <ScrubBar
-                    isExpanded={isSeekBarFocused}
-                    variant="seek"
-                    length={duration}
-                    onDrag={handleJumpTo}
-                    percentageAvailable={percentageAvailable}
-                    percentagePosition={percentagePosition}
-                  />
-                </Pressable>
-              )}
-              <View style={styles.bottomRowContainer}>
-                <View style={styles.bottomRowControlsContainer}>
-                  {!isMobile && (
-                    <>
-                      <PlayerButton onPress={shouldReplay ? handleReplay : handlePlayPause} icon={centralIconName} />
-                      {!isLiveVideo && (
+              {isWaitingForLive ? null : (
+                <>
+                  {!isLiveVideo && (
+                    <Pressable
+                      accessible={false}
+                      onHoverIn={() => setIsSeekBarFocused(true)}
+                      onHoverOut={() => setIsSeekBarFocused(false)}
+                      style={styles.scrubBarContainer}
+                    >
+                      <ScrubBar
+                        isExpanded={isSeekBarFocused}
+                        variant="seek"
+                        length={duration}
+                        onDrag={handleJumpTo}
+                        percentageAvailable={percentageAvailable}
+                        percentagePosition={percentagePosition}
+                      />
+                    </Pressable>
+                  )}
+                  <View style={styles.bottomRowContainer}>
+                    <View style={styles.bottomRowControlsContainer}>
+                      {!isMobile && (
                         <>
-                          <PlayerButton onPress={() => handleRW(15)} icon="Rewind-15" />
-                          <PlayerButton onPress={() => handleFF(30)} icon="Fast-forward-30" />
+                          <PlayerButton
+                            onPress={shouldReplay ? handleReplay : handlePlayPause}
+                            icon={centralIconName}
+                          />
+                          {!isLiveVideo && (
+                            <>
+                              <PlayerButton onPress={() => handleRW(15)} icon="Rewind-15" />
+                              <PlayerButton onPress={() => handleFF(30)} icon="Fast-forward-30" />
+                            </>
+                          )}
+                          <VolumeControl
+                            setVolume={handleVolumeControl}
+                            volume={volume}
+                            isMute={isMute}
+                            toggleMute={toggleMute}
+                          />
                         </>
                       )}
-                      <VolumeControl
-                        setVolume={handleVolumeControl}
-                        volume={volume}
-                        isMute={isMute}
-                        toggleMute={toggleMute}
-                      />
-                    </>
-                  )}
-                  {!isLiveVideo && (
-                    <Typography
-                      fontSize="sizeXS"
-                      fontWeight="Medium"
-                      style={[styles.timingContainer, { paddingLeft: isMobile ? spacing.sm : null }]}
-                      color={colors.white94}
-                    >
-                      {`${getHumanReadableDuration(position * 1000)} / ${getHumanReadableDuration(duration * 1000)}`}
-                    </Typography>
-                  )}
-                </View>
-                <View style={styles.functionButtonsContainer}>
-                  {castState !== "airPlay" && (
-                    <GoogleCastButton
-                      isChromeCastAvailable={isChromeCastAvailable}
-                      handleLoadGoogleCastMedia={handleLoadGoogleCastMedia}
-                    />
-                  )}
-                  {castState !== "chromecast" && <AvRoutePickerButton isWebAirPlayAvailable={isWebAirPlayAvailable} />}
-                  {isCCAvailable && (
-                    <PlayerButton
-                      color={isCCVisible ? undefined : colors.white25}
-                      icon="Closed-Captions"
-                      onPress={handleToggleCC}
-                    />
-                  )}
-                  <PlayerButton icon="Settings" onPress={() => setIsSettingsMenuVisible((cur) => !cur)} />
-                  <PlayerButton onPress={toggleFullscreen} icon={`Fullscreen${isFullscreen ? "-Exit" : ""}`} />
-                </View>
-              </View>
+                      {!isLiveVideo && (
+                        <Typography
+                          fontSize="sizeXS"
+                          fontWeight="Medium"
+                          style={[styles.timingContainer, { paddingLeft: isMobile ? spacing.sm : null }]}
+                          color={colors.white94}
+                        >
+                          {`${getHumanReadableDuration(position * 1000)} / ${getHumanReadableDuration(duration * 1000)}`}
+                        </Typography>
+                      )}
+                    </View>
+                    <View style={styles.functionButtonsContainer}>
+                      {castState !== "airPlay" && (
+                        <GoogleCastButton
+                          isChromeCastAvailable={isChromeCastAvailable}
+                          handleLoadGoogleCastMedia={handleLoadGoogleCastMedia}
+                        />
+                      )}
+                      {castState !== "chromecast" && (
+                        <AvRoutePickerButton isWebAirPlayAvailable={isWebAirPlayAvailable} />
+                      )}
+                      {isCCAvailable && (
+                        <PlayerButton
+                          color={isCCVisible ? undefined : colors.white25}
+                          icon="Closed-Captions"
+                          onPress={handleToggleCC}
+                        />
+                      )}
+                      <PlayerButton icon="Settings" onPress={() => setIsSettingsMenuVisible((cur) => !cur)} />
+                      <PlayerButton onPress={toggleFullscreen} icon={`Fullscreen${isFullscreen ? "-Exit" : ""}`} />
+                    </View>
+                  </View>
+                </>
+              )}
             </LinearGradient>
           </Animated.View>
         </View>

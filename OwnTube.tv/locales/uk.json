@@ -145,5 +145,6 @@
   "viewers_other": "{{count}} глядачів",
   "liveStreamOffline": "Трансляція зараз не в етері",
   "streamingNow": "Зараз в етері",
-  "offline": "Не в етері"
+  "offline": "Не в етері",
+  "privacyPolicy": "Політика конфіденційності"
 }

@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { View } from "react-native";
+import { View, Image } from "react-native";
 import Player from "video.js/dist/types/player";
 import { VideoViewProps } from "./VideoView";
 import { styles } from "./styles";
@@ -17,6 +17,8 @@ import { useTheme } from "@react-navigation/native";
 import { useChromeCast } from "../../hooks";
 import { useTranslation } from "react-i18next";
 import { useAppConfigContext } from "../../contexts";
+import { Typography } from "..";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export interface PlaybackStatus {
   didJustFinish: boolean;
@@ -51,6 +53,7 @@ const VideoView = ({
   handleSetQuality,
   videoData,
   captions,
+  isWaitingForLive,
 }: VideoViewProps) => {
   const { videojs } = window;
   const videoRef = useRef<HTMLDivElement>(null);
@@ -70,13 +73,14 @@ const VideoView = ({
     rate: 1,
     isMetadataLoaded: false,
   });
-  const { i18n } = useTranslation();
+  const { i18n, t } = useTranslation();
   const isMobile = Device.deviceType !== DeviceType.DESKTOP;
   const [isControlsVisible, setIsControlsVisible] = useState(false);
   const [isAirPlayAvailable, setIsAirPlayAvailable] = useState(false);
   const [availableCCLangs, setAvailableCCLangs] = useState<string[]>([]);
   const [selectedCCLang, setSelectedCCLang] = useState("");
   const [memorizedCCLang, setMemorizedCCLang] = useState<string | null>(null);
+  const { top } = useSafeAreaInsets();
 
   const { colors } = useTheme();
 
@@ -428,6 +432,7 @@ const VideoView = ({
   return (
     <View style={styles.container}>
       <VideoControlsOverlay
+        isWaitingForLive={isWaitingForLive}
         isLiveVideo={videoData?.isLive}
         videoLinkProps={{ backend, url: viewUrl }}
         handlePlayPause={handlePlayPause}
@@ -471,7 +476,39 @@ const VideoView = ({
             <IcoMoonIcon color={colors.white80} name="Chromecast" size={72} />
           </View>
         )}
-        <div style={{ position: "fixed", cursor: "pointer" }} ref={videoRef} data-testid={`${testID}-video-playback`} />
+        {isWaitingForLive ? (
+          <View style={{ flex: 1, paddingTop: top, width: "100%" }}>
+            <Image
+              source={{ uri: `https://${backend}${videoData?.previewPath}` }}
+              resizeMode="contain"
+              style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0, flex: 1 }}
+            />
+            <View
+              style={{
+                flex: 1,
+                zIndex: 1,
+                backgroundColor: colors.black50,
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <Typography
+                color={colors.theme50}
+                fontWeight="SemiBold"
+                fontSize="sizeXL"
+                style={{ textAlign: "center" }}
+              >
+                {t("liveStreamOffline")}
+              </Typography>
+            </View>
+          </View>
+        ) : (
+          <div
+            style={{ position: "fixed", cursor: "pointer" }}
+            ref={videoRef}
+            data-testid={`${testID}-video-playback`}
+          />
+        )}
         {isMobile && isControlsVisible && <View style={styles.opacityOverlay} />}
       </VideoControlsOverlay>
     </View>

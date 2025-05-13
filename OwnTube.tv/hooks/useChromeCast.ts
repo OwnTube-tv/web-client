@@ -4,7 +4,7 @@ import Player from "video.js/dist/types/player";
 import { PlaybackStatus } from "../components/VideoView/VideoView.web";
 
 interface UseChromeCastProps {
-  uri: string;
+  uri?: string;
   videoData?: Video;
   playerRef: React.RefObject<Player>;
   updatePlaybackStatus: (status: Partial<PlaybackStatus>) => void;
@@ -24,7 +24,7 @@ export const useChromeCast = ({
 
   const handleLoadGoogleCastMedia = () => {
     const castSession = window.cast?.framework?.CastContext.getInstance().getCurrentSession();
-    if (!castSession || isChromecastConnectedRef.current || !window.chrome.cast) return;
+    if (!castSession || isChromecastConnectedRef.current || !window.chrome.cast || !uri) return;
 
     const mediaType = Number(videoData?.streamingPlaylists?.length) > 0 ? "application/x-mpegurl" : "video/mp4";
     const mediaInfo = new window.chrome.cast.media.MediaInfo(uri, mediaType);

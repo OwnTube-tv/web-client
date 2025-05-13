@@ -4,30 +4,30 @@ import { RootStackParams } from "../../app/_layout";
 import { ROUTES } from "../../types";
 import { useGetVideoCaptionsQuery, useGetVideoQuery } from "../../api";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { Loader, FocusWrapper, FullScreenModal, ErrorTextWithRetry, Button, Typography } from "../../components";
+import { Loader, FocusWrapper, FullScreenModal, ErrorTextWithRetry, Button } from "../../components";
 import { useViewHistory } from "../../hooks";
 import { StatusBar } from "expo-status-bar";
 import { Settings } from "../../components/VideoControlsOverlay/components/modals";
-import { Platform, StyleSheet, View, Image } from "react-native";
+import { Platform, StyleSheet, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useTranslation } from "react-i18next";
 import useFullScreenVideoPlayback from "../../hooks/useFullScreenVideoPlayback";
 import Share from "../../components/VideoControlsOverlay/components/modals/Share";
 import VideoDetails from "../../components/VideoControlsOverlay/components/modals/VideoDetails";
 import { colorSchemes, spacing } from "../../theme";
-import { useTheme } from "@react-navigation/native";
 
 export const VideoScreen = () => {
   const { t } = useTranslation();
   const router = useRouter();
   const params = useLocalSearchParams<RootStackParams[ROUTES.VIDEO]>();
-  const { data, isFetching, isError, refetch } = useGetVideoQuery({ id: params?.id });
+  const { data, isLoading, isError, refetch } = useGetVideoQuery({ id: params?.id });
   const { data: captions } = useGetVideoCaptionsQuery(params?.id);
   const { updateHistory } = useViewHistory();
   const { isFullscreen, toggleFullscreen } = useFullScreenVideoPlayback();
   const { top } = useSafeAreaInsets();
   const [quality, setQuality] = useState("auto");
-  const { colors } = useTheme();
+
+  const isWaitingForLive = data?.state?.id === 4;
 
   useEffect(() => {
     if (data && params?.backend) {
@@ -95,7 +95,7 @@ export const VideoScreen = () => {
     }
   };
 
-  if (isFetching) {
+  if (isLoading) {
     return (
       <View style={[{ paddingTop: top }, styles.flex1]}>
         {Platform.OS !== "web" && (
@@ -116,42 +116,7 @@ export const VideoScreen = () => {
     );
   }
 
-  if (!uri) {
-    if (data?.state?.id === 4) {
-      return (
-        <View style={[{ paddingTop: top, backgroundColor: colors.black100 }, styles.flex1]}>
-          <Button
-            onPress={handleBackButtonPress}
-            contrast="low"
-            icon="Arrow-Left"
-            style={styles.backButtonFromLiveStreamOffline}
-          />
-          <Image
-            source={{ uri: `https://${params.backend}${data?.previewPath}` }}
-            resizeMode="contain"
-            style={[styles.flex1, { position: "absolute", top: 0, left: 0, right: 0, bottom: 0, zIndex: -1 }]}
-          />
-          <View
-            style={{
-              position: "absolute",
-              top: 0,
-              left: 0,
-              right: 0,
-              bottom: 0,
-              zIndex: 1,
-              backgroundColor: colors.black50,
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <Typography color={colors.theme50} fontWeight="SemiBold" fontSize="sizeXL" style={{ textAlign: "center" }}>
-              {t("liveStreamOffline")}
-            </Typography>
-          </View>
-        </View>
-      );
-    }
-
+  if (!uri && !isWaitingForLive) {
     return null;
   }
 
@@ -185,6 +150,7 @@ export const VideoScreen = () => {
           selectedQuality={quality}
           handleSetQuality={setQuality}
           captions={captions}
+          isWaitingForLive={isWaitingForLive}
         />
         <FullScreenModal onBackdropPress={closeModal} isVisible={visibleModal === "details"}>
           <VideoDetails
@@ -208,7 +174,6 @@ export const VideoScreen = () => {
 
 const styles = StyleSheet.create({
   backButton: { alignSelf: "flex-start", height: 48, margin: spacing.sm, width: 48 },
-  backButtonFromLiveStreamOffline: { alignSelf: "flex-start", height: 48, margin: spacing.sm, width: 48, zIndex: 2 },
   errorContainer: { alignItems: "center", flex: 1, height: "100%", justifyContent: "center", width: "100%" },
   flex1: { flex: 1 },
   statusBarUnderlay: { backgroundColor: colorSchemes.dark.colors.black100, width: "100%" },

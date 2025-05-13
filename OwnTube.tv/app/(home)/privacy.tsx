@@ -109,7 +109,6 @@ export default function privacy() {
           .
         </Typography>
         <Spacer height={spacing.lg} />
-// Removed commented-out code related to the privacy policy generator.
       </ScrollView>
     </>
   );

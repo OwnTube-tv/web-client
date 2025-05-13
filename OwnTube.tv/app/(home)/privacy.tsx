@@ -1,6 +1,6 @@
 import Head from "expo-router/head";
 import { Platform, ScrollView, StyleSheet } from "react-native";
-import { Button, Separator, Typography } from "../../components";
+import { Button, Typography } from "../../components";
 import { Link, useRouter } from "expo-router";
 import { spacing } from "../../theme";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -109,20 +109,20 @@ export default function privacy() {
           .
         </Typography>
         <Spacer height={spacing.lg} />
-        <Separator />
-        <Spacer height={spacing.lg} />
-        <Typography>
-          This privacy policy was inspired by the{" "}
-          <Link
-            href="https://github.com/nisrulz/app-privacy-policy-generator"
-            target="_blank"
-            rel="noopener noreferrer"
-            style={styles.link}
-          >
-            nisrulz/app-privacy-policy-generator
-          </Link>{" "}
-          GitHub project.
-        </Typography>
+        {/*<Separator />*/}
+        {/*<Spacer height={spacing.lg} />*/}
+        {/*<Typography>*/}
+        {/*  This privacy policy was inspired by the{" "}*/}
+        {/*  <Link*/}
+        {/*    href="https://github.com/nisrulz/app-privacy-policy-generator"*/}
+        {/*    target="_blank"*/}
+        {/*    rel="noopener noreferrer"*/}
+        {/*    style={styles.link}*/}
+        {/*  >*/}
+        {/*    nisrulz/app-privacy-policy-generator*/}
+        {/*  </Link>{" "}*/}
+        {/*  GitHub project.*/}
+        {/*</Typography>*/}
       </ScrollView>
     </>
   );

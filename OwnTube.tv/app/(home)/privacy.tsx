@@ -46,8 +46,8 @@ export default function privacy() {
         <Typography fontWeight="Bold">Privacy Policy</Typography>
         <Typography>
           This privacy policy applies to this app (hereafter referred to as &#34;Application&#34;) for mobile/TV devices
-          that is created by {process.env.EXPO_PUBLIC_PROVIDER_LEGAL_ENTITY} (hereafter referred to as &#34;Service
-          Provider&#34;) as a free service. This service is provided &#34;AS IS&#34;.
+          that is created by {process.env.EXPO_PUBLIC_PROVIDER_LEGAL_ENTITY || "OwnTube Nordic AB"} (hereafter referred
+          to as &#34;Service Provider&#34;) as a free service. This service is provided &#34;AS IS&#34;.
         </Typography>
         <Typography>{"\n"}</Typography>
         <Typography fontWeight="Bold">What information does the Application obtain and how is it used?</Typography>
@@ -72,8 +72,11 @@ export default function privacy() {
         <Typography>
           The Application is intended for users aged 13 and older. We do not knowingly collect any personal data from
           children under 13. If you believe a child has provided personal data, please contact us at{" "}
-          <Link style={styles.link} href={`mailto:${process.env.EXPO_PUBLIC_PROVIDER_LEGAL_EMAIL}`}>
-            {process.env.EXPO_PUBLIC_PROVIDER_LEGAL_EMAIL}
+          <Link
+            style={styles.link}
+            href={`mailto:${process.env.EXPO_PUBLIC_PROVIDER_LEGAL_EMAIL || "legal@owntube.tv"}`}
+          >
+            {process.env.EXPO_PUBLIC_PROVIDER_LEGAL_EMAIL || "legal@owntube.tv"}
           </Link>{" "}
           so that we can take appropriate action.
         </Typography>
@@ -97,8 +100,11 @@ export default function privacy() {
         <Typography>
           If you have any questions regarding privacy while using the Application, please contact the Service Provider
           via email at{" "}
-          <Link style={styles.link} href={`mailto:${process.env.EXPO_PUBLIC_PROVIDER_CONTACT_EMAIL}`}>
-            {process.env.EXPO_PUBLIC_PROVIDER_CONTACT_EMAIL}
+          <Link
+            style={styles.link}
+            href={`mailto:${process.env.EXPO_PUBLIC_PROVIDER_CONTACT_EMAIL || "hello@owntube.tv"}`}
+          >
+            {process.env.EXPO_PUBLIC_PROVIDER_CONTACT_EMAIL || "hello@owntube.tv"}
           </Link>
           .
         </Typography>

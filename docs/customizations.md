@@ -58,6 +58,12 @@ views by setting it to "1" or "true" (omit for default behavior)
 
 `EXPO_PUBLIC_FOOTER_LOGO`: custom footer logo instead of OwnTube.tv logo
 
+`EXPO_PUBLIC_PROVIDER_LEGAL_ENTITY`: the legal company name used in the privacy policy section
+
+`EXPO_PUBLIC_PROVIDER_LEGAL_EMAIL`: the official legal issues email used in the privacy policy section
+
+`EXPO_PUBLIC_PROVIDER_CONTACT_EMAIL`: the contact email used in the privacy policy section
+
 > [!WARNING]
 > You need to supply images of expected sizes for tvOS, or the build fails automatically:
 >

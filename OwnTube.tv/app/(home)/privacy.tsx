@@ -109,20 +109,7 @@ export default function privacy() {
           .
         </Typography>
         <Spacer height={spacing.lg} />
-        {/*<Separator />*/}
-        {/*<Spacer height={spacing.lg} />*/}
-        {/*<Typography>*/}
-        {/*  This privacy policy was inspired by the{" "}*/}
-        {/*  <Link*/}
-        {/*    href="https://github.com/nisrulz/app-privacy-policy-generator"*/}
-        {/*    target="_blank"*/}
-        {/*    rel="noopener noreferrer"*/}
-        {/*    style={styles.link}*/}
-        {/*  >*/}
-        {/*    nisrulz/app-privacy-policy-generator*/}
-        {/*  </Link>{" "}*/}
-        {/*  GitHub project.*/}
-        {/*</Typography>*/}
+// Removed commented-out code related to the privacy policy generator.
       </ScrollView>
     </>
   );

@@ -98,6 +98,14 @@ export default {
         initialOrientation: "DEFAULT",
       },
     ],
+    [
+      "expo-build-properties",
+      {
+        android: {
+          kotlinVersion: "2.0.21",
+        },
+      },
+    ],
     "expo-asset",
     "react-native-google-cast",
     [

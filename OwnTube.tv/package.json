@@ -70,7 +70,8 @@
     "react-test-renderer": "18.2.0",
     "ua-parser-js": "^1.0.38",
     "video.js": "^8.12.0",
-    "zod": "^3.23.8"
+    "zod": "^3.23.8",
+    "expo-build-properties": "~0.13.3"
   },
   "devDependencies": {
     "@babel/core": "^7.24.0",

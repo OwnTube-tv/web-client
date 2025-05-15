@@ -22,6 +22,7 @@ interface PlaybackSettingsPopupProps {
   handleSetCCLang?: (lang: string) => void;
   selectedCCLang?: string;
   isLiveVideo?: boolean;
+  hlsAutoQuality?: number;
 }
 
 const Setting = ({ name, state, onPress }: { name: string; state?: string; onPress: () => void }) => {
@@ -134,6 +135,7 @@ export const PlaybackSettingsPopup = ({
   handleSetCCLang,
   selectedCCLang,
   isLiveVideo,
+  hlsAutoQuality,
 }: PlaybackSettingsPopupProps) => {
   const { colors } = useTheme();
   const { t } = useTranslation();
@@ -147,7 +149,12 @@ export const PlaybackSettingsPopup = ({
       videoData?.streamingPlaylists?.[0]?.files?.length ? videoData?.streamingPlaylists?.[0]?.files : videoData?.files
     )
       ?.map(({ resolution }) => ({ ...resolution, id: String(resolution.id) }))
-      .concat([{ id: "auto", label: t("auto") }]);
+      .concat([
+        {
+          id: "auto",
+          label: `${t("auto")}${hlsAutoQuality && selectedQuality === "auto" ? " " + hlsAutoQuality + "p" : ""}`,
+        },
+      ]);
     const ccOptions = [{ id: "", label: t("off") }].concat(
       videoCaptions?.map(({ language }) => ({ id: language.id, label: language.label })) || [],
     );

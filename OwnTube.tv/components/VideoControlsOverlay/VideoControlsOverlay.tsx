@@ -65,6 +65,7 @@ export interface VideoControlsOverlayProps {
   setSelectedCCLang?: (lang: string) => void;
   isLiveVideo?: boolean;
   isWaitingForLive: boolean;
+  hlsAutoQuality?: number;
 }
 
 const VideoControlsOverlay = ({
@@ -109,6 +110,7 @@ const VideoControlsOverlay = ({
   setSelectedCCLang,
   isLiveVideo,
   isWaitingForLive,
+  hlsAutoQuality,
 }: PropsWithChildren<VideoControlsOverlayProps>) => {
   const {
     isSeekBarFocused,
@@ -223,6 +225,7 @@ const VideoControlsOverlay = ({
                       selectedSpeed={speed}
                       handleSetCCLang={setSelectedCCLang}
                       selectedCCLang={selectedCCLang}
+                      hlsAutoQuality={hlsAutoQuality}
                     />
                   </View>
                 )}

@@ -11,7 +11,11 @@ import { ROUTES } from "../../types";
 import { RootStackParams } from "../../app/_layout";
 import { TextTracks, TextTrackType, Video, VideoRef } from "react-native-video";
 import { SelectedTrackType } from "react-native-video/src/types/video";
-import type { OnProgressData, OnVideoErrorData } from "react-native-video/src/specs/VideoNativeComponent";
+import type {
+  OnBandwidthUpdateData,
+  OnProgressData,
+  OnVideoErrorData,
+} from "react-native-video/src/specs/VideoNativeComponent";
 import { OnLoadData, OnTextTracksData } from "react-native-video/src/types/events";
 import GoogleCast, {
   MediaHlsSegmentFormat,
@@ -328,6 +332,15 @@ const VideoView = ({
     }, [isCCAvailable, availableCCLangs, sessionCCLocale]),
   );
 
+  const [hlsResolution, setHlsResolution] = useState<number | undefined>();
+  const handleBandwidthUpdate = (event: OnBandwidthUpdateData) => {
+    if (Platform.OS !== "android") {
+      return;
+    }
+
+    setHlsResolution(event.height);
+  };
+
   return (
     <View collapsable={false} style={styles.container}>
       <VideoControlsOverlay
@@ -369,6 +382,7 @@ const VideoView = ({
         selectedCCLang={selectedCCLang}
         isCCVisible={isCCShown}
         isWaitingForLive={isWaitingForLive}
+        hlsAutoQuality={hlsResolution}
       >
         {googleCastClient ? (
           <IcoMoonIcon name="Chromecast" size={72} color={colors.white80} />
@@ -400,6 +414,8 @@ const VideoView = ({
           </View>
         ) : (
           <Video
+            reportBandwidth
+            onBandwidthUpdate={handleBandwidthUpdate}
             onEnd={() => setShouldReplay(true)}
             onLoad={handleVideoLoaded}
             onProgress={handleProgress}

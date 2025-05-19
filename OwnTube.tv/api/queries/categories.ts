@@ -1,7 +1,7 @@
 import { useLocalSearchParams } from "expo-router";
 import { RootStackParams } from "../../app/_layout";
 import { useQueries, useQuery } from "@tanstack/react-query";
-import { QUERY_KEYS } from "../constants";
+import { GLOBAL_QUERY_STALE_TIME, QUERY_KEYS } from "../constants";
 import { CategoriesApiImpl } from "../categoriesApi";
 import { combineCollectionQueryResults, retry } from "../helpers";
 import { ApiServiceImpl } from "../peertubeVideosApi";
@@ -16,7 +16,7 @@ export const useGetCategoriesQuery = ({ enabled = true }: { enabled?: boolean })
       return await CategoriesApiImpl.getCategories(backend!);
     },
     enabled: !!backend && enabled,
-    refetchOnWindowFocus: false,
+    staleTime: GLOBAL_QUERY_STALE_TIME,
     retry,
   });
 };
@@ -44,8 +44,8 @@ export const useGetCategoriesCollectionQuery = (categories: Array<{ name: string
         }
       },
       retry,
-      refetchOnWindowFocus: false,
       enabled: !!backend,
+      staleTime: GLOBAL_QUERY_STALE_TIME,
     })),
     combine: combineCollectionQueryResults<{ name: string; id: number }>,
   });

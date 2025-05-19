@@ -5,15 +5,16 @@ import { Screen } from "../../layouts";
 import { InfoFooter, Loader, VideoGrid } from "../../components";
 import { useGetCategoriesQuery, useInfiniteVideosQuery } from "../../api";
 import { useMemo } from "react";
-import { useInstanceConfig, usePageContentTopPadding } from "../../hooks";
+import { useCustomFocusManager, useInstanceConfig, usePageContentTopPadding } from "../../hooks";
 import { useTranslation } from "react-i18next";
 
 export const CategoryScreen = () => {
   const { currentInstanceConfig } = useInstanceConfig();
   const { category } = useLocalSearchParams<RootStackParams[ROUTES.CATEGORY]>();
-  const { data: categories, isFetching: isFetchingCategories } = useGetCategoriesQuery({});
+  const { data: categories, isLoading: isLoadingCategories } = useGetCategoriesQuery({});
   const { t } = useTranslation();
   const { top } = usePageContentTopPadding();
+  useCustomFocusManager();
 
   const categoryTitle = useMemo(() => {
     return categories?.find(({ id }) => String(id) === category)?.name;
@@ -29,7 +30,7 @@ export const CategoryScreen = () => {
     return data?.pages?.flatMap(({ data }) => data.flat());
   }, [data]);
 
-  if (isFetchingCategories) {
+  if (isLoadingCategories) {
     return <Loader />;
   }
 

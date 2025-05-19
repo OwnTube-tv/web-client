@@ -10,14 +10,14 @@ import { useTranslation } from "react-i18next";
 import { useLocalSearchParams } from "expo-router";
 import { useQueryClient } from "@tanstack/react-query";
 import { ErrorForbiddenLogo } from "../../components/Svg";
-import { usePageContentTopPadding } from "../../hooks";
+import { useCustomFocusManager, usePageContentTopPadding } from "../../hooks";
 
 export const ChannelsScreen = () => {
   const { backend } = useLocalSearchParams();
   const queryClient = useQueryClient();
   const {
     data: channels,
-    isFetching: isFetchingChannels,
+    isLoading: isLoadingChannels,
     isError: isChannelsError,
     error: channelsError,
   } = useGetChannelsQuery({ enabled: true });
@@ -25,18 +25,19 @@ export const ChannelsScreen = () => {
   const { top } = usePageContentTopPadding();
   const {
     data: channelSections,
-    isFetching: isFetchingChannelsCollection,
+    isLoading: isLoadingChannelsCollection,
     isError: isChannelsCollectionError,
   } = useGetChannelsCollectionQuery(channels?.map(({ name }) => name));
   const isError = isChannelsError || isChannelsCollectionError;
-  const isFetching = isFetchingChannels || isFetchingChannelsCollection;
+  const isLoading = isLoadingChannels || isLoadingChannelsCollection;
   const retry = async () => {
     await queryClient.refetchQueries({ queryKey: [QUERY_KEYS.channels] });
     await queryClient.refetchQueries({ queryKey: [QUERY_KEYS.channelsCollection] });
   };
+  useCustomFocusManager();
 
   const renderScreenContent = useMemo(() => {
-    if (isFetching) {
+    if (isLoading) {
       return <Loader />;
     }
 
@@ -53,12 +54,12 @@ export const ChannelsScreen = () => {
       );
     }
 
-    return channelSections?.map(({ data, isFetching, refetch }) => {
+    return channelSections?.map(({ data, isLoading, refetch }) => {
       const channelInfoSection = channels?.find(({ name }) => name === data?.id);
 
       return (
         <VideoGrid
-          isLoading={isFetching}
+          isLoading={isLoading}
           refetch={refetch}
           link={{
             text: t("visitChannel") + getAvailableVidsString(data?.total),
@@ -72,7 +73,7 @@ export const ChannelsScreen = () => {
         />
       );
     });
-  }, [isFetching, isFetchingChannels, channelSections, channels, backend]);
+  }, [isLoading, isLoadingChannels, channelSections, channels, backend]);
 
   if (!channelSections.length) {
     return <EmptyPage text={t("noChannelsAvailable")} />;

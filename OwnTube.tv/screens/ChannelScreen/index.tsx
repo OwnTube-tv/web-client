@@ -7,7 +7,7 @@ import { CategoryView, LatestVideos } from "./components";
 import { InfoFooter, Loader } from "../../components";
 import { PlaylistVideosView } from "../Playlists/components";
 import { ListInfoHeader } from "../../components";
-import { usePageContentTopPadding } from "../../hooks";
+import { useCustomFocusManager, usePageContentTopPadding } from "../../hooks";
 
 export const ChannelScreen = () => {
   const { backend, channel } = useLocalSearchParams<RootStackParams[ROUTES.CHANNEL]>();
@@ -16,6 +16,7 @@ export const ChannelScreen = () => {
   const { data: categories } = useGetCategoriesQuery({});
   const { data: playlists } = useGetChannelPlaylistsQuery(channel);
   const { top } = usePageContentTopPadding();
+  useCustomFocusManager();
 
   return (
     <Screen style={{ padding: 0, paddingTop: top }}>

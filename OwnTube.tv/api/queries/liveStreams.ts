@@ -22,7 +22,6 @@ export const useGetLiveStreamsCollectionQuery = (videoIds: string[] = []) => {
         }
       },
       retry,
-      refetchOnWindowFocus: false,
       enabled: !!backend,
     })),
     combine: (result) => {

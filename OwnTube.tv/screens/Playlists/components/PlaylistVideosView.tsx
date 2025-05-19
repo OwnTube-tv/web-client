@@ -15,11 +15,11 @@ interface PlaylistVideosViewProps {
 
 export const PlaylistVideosView = ({ id, title, channel, location = "other" }: PlaylistVideosViewProps) => {
   const { backend } = useLocalSearchParams();
-  const { data, isFetching, isError, refetch } = useGetPlaylistVideosQuery(id);
+  const { data, isLoading, isError, refetch } = useGetPlaylistVideosQuery(id);
   const { t } = useTranslation();
   const isOnHomePage = location === "home";
 
-  if ((!data?.data?.length || !data?.total) && !isFetching) {
+  if ((!data?.data?.length || !data?.total) && !isLoading) {
     return null;
   }
 
@@ -30,7 +30,7 @@ export const PlaylistVideosView = ({ id, title, channel, location = "other" }: P
         reduceHeaderContrast={isOnHomePage}
         isError={isError}
         refetch={refetch}
-        isLoading={isFetching}
+        isLoading={isLoading}
         title={title}
         data={data?.data}
         link={{

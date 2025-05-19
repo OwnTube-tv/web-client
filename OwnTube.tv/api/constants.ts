@@ -34,3 +34,5 @@ export enum QUERY_KEYS {
 }
 
 export const WRONG_SERVER_VERSION_STATUS_CODE = 444;
+
+export const GLOBAL_QUERY_STALE_TIME = 3_600_000; // 1 hour in ms

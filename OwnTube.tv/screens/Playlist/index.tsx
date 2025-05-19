@@ -5,7 +5,7 @@ import { ROUTES } from "../../types";
 import { BackToChannel, InfoFooter, ListInfoHeader, Loader, VideoGrid } from "../../components";
 import { useMemo } from "react";
 import { Screen } from "../../layouts";
-import { useInstanceConfig, usePageContentTopPadding } from "../../hooks";
+import { useCustomFocusManager, useInstanceConfig, usePageContentTopPadding } from "../../hooks";
 import { useTranslation } from "react-i18next";
 
 export const Playlist = () => {
@@ -18,14 +18,15 @@ export const Playlist = () => {
     currentInstanceConfig?.customizations?.showMoreSize,
   );
   const { data: channelInfo } = useGetChannelInfoQuery(channel);
-  const { data: playlistInfo, isFetching: isFetchingPlaylistInfo } = useGetPlaylistInfoQuery(Number(playlist));
+  const { data: playlistInfo, isLoading: isLoadingPlaylistInfo } = useGetPlaylistInfoQuery(Number(playlist));
   const videos = useMemo(() => {
     return data?.pages?.flatMap(({ data }) => data.flat());
   }, [data]);
   const { t } = useTranslation();
   const { top } = usePageContentTopPadding();
+  useCustomFocusManager();
 
-  if (isFetchingPlaylistInfo || isLoading) {
+  if (isLoadingPlaylistInfo || isLoading) {
     return <Loader />;
   }
 

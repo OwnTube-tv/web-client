@@ -7,7 +7,7 @@ import { VideosCommonQuery, Video } from "@peertube/peertube-types";
 import { SOURCES } from "../../types";
 import { getLocalData, retry } from "../helpers";
 
-import { QUERY_KEYS } from "../constants";
+import { GLOBAL_QUERY_STALE_TIME, QUERY_KEYS } from "../constants";
 import { useAppConfigContext } from "../../contexts";
 
 export const useGetVideosQuery = <TResult = GetVideosVideo[]>({
@@ -35,8 +35,8 @@ export const useGetVideosQuery = <TResult = GetVideosVideo[]>({
       return await ApiServiceImpl.getVideos(backend!, { count: 50, ...params });
     },
     enabled: enabled && !!backend,
-    refetchOnWindowFocus: false,
     select,
+    staleTime: GLOBAL_QUERY_STALE_TIME,
     refetchInterval,
     retry,
   });
@@ -70,8 +70,8 @@ export const useInfiniteVideosQuery = (
         ...queryParams,
       });
     },
-    refetchOnWindowFocus: false,
     enabled: !!backend,
+    staleTime: GLOBAL_QUERY_STALE_TIME,
     retry,
   });
 };
@@ -98,7 +98,6 @@ export const useGetVideoQuery = <TResult = Video>({
 
       return await ApiServiceImpl.getVideo(backend!, id!);
     },
-    refetchOnWindowFocus: false,
     enabled: !!backend && !!id && enabled,
     refetchInterval: (query: Query<Video>) => {
       return query.state.data?.isLive ? LIVE_REFETCH_INTERVAL : 0;
@@ -139,7 +138,6 @@ export const useGetVideoCaptionsQuery = (id?: string, enabled = true) => {
     queryFn: async () => {
       return await ApiServiceImpl.getVideoCaptions(backend!, id!);
     },
-    refetchOnWindowFocus: false,
     enabled: !!backend && !!id && enabled,
     retry,
   });

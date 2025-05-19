@@ -6,7 +6,7 @@ import { useLocalSearchParams } from "expo-router";
 import { RootStackParams } from "../../app/_layout";
 import { GetVideosVideo, OwnTubeError } from "../models";
 
-import { QUERY_KEYS } from "../constants";
+import { GLOBAL_QUERY_STALE_TIME, QUERY_KEYS } from "../constants";
 
 export const useGetChannelInfoQuery = (channelHandle?: string) => {
   const { backend } = useLocalSearchParams<RootStackParams["index"]>();
@@ -17,7 +17,7 @@ export const useGetChannelInfoQuery = (channelHandle?: string) => {
       return await ChannelsApiImpl.getChannelInfo(backend!, channelHandle!);
     },
     enabled: !!backend && !!channelHandle,
-    refetchOnWindowFocus: false,
+    staleTime: GLOBAL_QUERY_STALE_TIME,
     retry,
   });
 };
@@ -32,7 +32,7 @@ export const useGetChannelsQuery = ({ enabled = true }: { enabled?: boolean }) =
     },
     select: ({ data }) => data.filter(({ isLocal }) => isLocal),
     enabled: !!backend && enabled,
-    refetchOnWindowFocus: false,
+    staleTime: GLOBAL_QUERY_STALE_TIME,
     retry,
   });
 };
@@ -46,7 +46,7 @@ export const useGetChannelVideosQuery = (channelHandle?: string, queryParams: Vi
       return await ChannelsApiImpl.getChannelVideos(backend!, channelHandle!, queryParams);
     },
     enabled: !!backend && !!channelHandle,
-    refetchOnWindowFocus: false,
+    staleTime: GLOBAL_QUERY_STALE_TIME,
     retry,
   });
 };
@@ -75,7 +75,7 @@ export const useInfiniteGetChannelVideosQuery = (
       });
     },
     enabled: !!backend && !!channelHandle,
-    refetchOnWindowFocus: false,
+    staleTime: GLOBAL_QUERY_STALE_TIME,
     retry,
   });
 };
@@ -89,7 +89,7 @@ export const useGetChannelPlaylistsQuery = (channelHandle?: string) => {
       return await ChannelsApiImpl.getChannelPlaylists(backend!, channelHandle!);
     },
     enabled: !!backend && !!channelHandle,
-    refetchOnWindowFocus: false,
+    staleTime: GLOBAL_QUERY_STALE_TIME,
     select: (data) => data.filter(({ isLocal, videosLength }) => isLocal && videosLength > 0),
     retry,
   });
@@ -113,7 +113,7 @@ export const useGetChannelsCollectionQuery = (channelIds: string[] = []) => {
         }
       },
       retry,
-      refetchOnWindowFocus: false,
+      staleTime: GLOBAL_QUERY_STALE_TIME,
       enabled: !!backend,
     })),
     combine: combineCollectionQueryResults<{ id: string }>,

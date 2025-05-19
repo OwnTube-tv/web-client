@@ -9,7 +9,7 @@ import {
   useGetVideosQuery,
 } from "../../api";
 import { useMemo } from "react";
-import { useInstanceConfig, usePageContentTopPadding, useViewHistory } from "../../hooks";
+import { useCustomFocusManager, useInstanceConfig, usePageContentTopPadding, useViewHistory } from "../../hooks";
 import { spacing } from "../../theme";
 import { ROUTES } from "../../types";
 import { Platform, SectionList, StyleSheet, View } from "react-native";
@@ -31,6 +31,7 @@ export const HomeScreen = () => {
   const { currentInstanceConfig } = useInstanceConfig();
   const { top } = usePageContentTopPadding();
   const isFocused = useIsFocused();
+  useCustomFocusManager();
 
   const { data: channels } = useGetChannelsQuery({
     enabled: !currentInstanceConfig?.customizations?.homeHideChannelsOverview,

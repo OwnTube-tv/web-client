@@ -8,7 +8,7 @@ import { StyleSheet } from "react-native";
 import { useTheme } from "@react-navigation/native";
 import { spacing } from "../../theme";
 import { useMemo } from "react";
-import { useBreakpoints, useInstanceConfig, usePageContentTopPadding } from "../../hooks";
+import { useBreakpoints, useCustomFocusManager, useInstanceConfig, usePageContentTopPadding } from "../../hooks";
 import { useTranslation } from "react-i18next";
 
 export const ChannelCategoryScreen = () => {
@@ -26,6 +26,7 @@ export const ChannelCategoryScreen = () => {
   });
   const { t } = useTranslation();
   const { top } = usePageContentTopPadding();
+  useCustomFocusManager();
 
   const videos = useMemo(() => {
     return data?.pages?.flatMap(({ data }) => data.flat());

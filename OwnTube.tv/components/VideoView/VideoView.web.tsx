@@ -176,6 +176,9 @@ const VideoView = ({
     setIsAirPlayAvailable(event.availability === "available");
   };
 
+  const [hlsResolution, setHlsResolution] = useState<number | undefined>();
+  const hlsResolutionRef = useRef<number | null>(null);
+
   const onReady = (player: Player) => {
     playerRef.current = player;
     const video = document.getElementsByTagName("video")[0];
@@ -190,6 +193,28 @@ const VideoView = ({
         playableDuration: playerRef.current?.bufferedEnd(),
         isMetadataLoaded: true,
       });
+
+      let segmentMetadataTrack: TextTrack | null = null;
+      const tracks = player.textTracks();
+
+      for (let i = 0; i < tracks.length; i++) {
+        if (tracks[i].label === "segment-metadata") {
+          segmentMetadataTrack = tracks[i];
+        }
+      }
+
+      if (segmentMetadataTrack) {
+        segmentMetadataTrack.mode = "hidden";
+
+        segmentMetadataTrack.addEventListener("cuechange", () => {
+          const currentRes = segmentMetadataTrack?.activeCues?.[0]?.value?.resolution?.height;
+
+          if (currentRes && hlsResolutionRef.current !== currentRes) {
+            hlsResolutionRef.current = currentRes;
+            setHlsResolution(currentRes);
+          }
+        });
+      }
     });
 
     player.on("play", () => {
@@ -383,7 +408,8 @@ const VideoView = ({
 
   const handleSetCCLang = (lang: string) => {
     const textTracks = playerRef.current?.textTracks() || {};
-    const currentLangTrack = textTracks[textTracks.tracks_.findIndex((track) => track.language === selectedCCLang)];
+    const currentLangTrack =
+      textTracks[textTracks.tracks_.findIndex((track: TextTrack) => track.language === selectedCCLang)];
 
     if (!lang) {
       currentLangTrack.mode = "disabled";
@@ -394,7 +420,7 @@ const VideoView = ({
     }
     setMemorizedCCLang(lang);
 
-    const trackToShow = textTracks[textTracks.tracks_.findIndex((track) => track.language === lang)];
+    const trackToShow = textTracks[textTracks.tracks_.findIndex((track: TextTrack) => track.language === lang)];
 
     if (currentLangTrack) {
       currentLangTrack.mode = "disabled";
@@ -470,6 +496,7 @@ const VideoView = ({
         selectedCCLang={selectedCCLang}
         setSelectedCCLang={handleSetCCLang}
         isCCVisible={isCCShown}
+        hlsAutoQuality={hlsResolution}
       >
         {isChromecastConnected && (
           <View style={styles.chromecastOverlay}>
@@ -481,16 +508,15 @@ const VideoView = ({
             <Image
               source={{ uri: `https://${backend}${videoData?.previewPath}` }}
               resizeMode="contain"
-              style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0, flex: 1 }}
+              style={styles.liveStreamPoster}
             />
             <View
-              style={{
-                flex: 1,
-                zIndex: 1,
-                backgroundColor: colors.black50,
-                alignItems: "center",
-                justifyContent: "center",
-              }}
+              style={[
+                styles.liveStreamOfflineOverlay,
+                {
+                  backgroundColor: colors.black50,
+                },
+              ]}
             >
               <Typography
                 color={colors.theme50}
@@ -504,7 +530,7 @@ const VideoView = ({
           </View>
         ) : (
           <div
-            style={{ position: "fixed", cursor: "pointer" }}
+            style={{ cursor: "pointer", position: "fixed" }}
             ref={videoRef}
             data-testid={`${testID}-video-playback`}
           />

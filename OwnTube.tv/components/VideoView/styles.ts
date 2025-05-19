@@ -18,6 +18,8 @@ export const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
   },
+  liveStreamOfflineOverlay: { alignItems: "center", flex: 1, justifyContent: "center", zIndex: 1 },
+  liveStreamPoster: { bottom: 0, flex: 1, left: 0, position: "absolute", right: 0, top: 0 },
   opacityOverlay: {
     backgroundColor: colors.dark.black50,
     bottom: 0,

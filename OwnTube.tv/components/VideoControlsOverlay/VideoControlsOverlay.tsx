@@ -15,13 +15,13 @@ import { ROUTES } from "../../types";
 import PlayerButton from "./components/PlayerButton";
 import { useVideoControlsOverlay } from "./hooks/useVideoControlsOverlay";
 import { ViewOnSiteLink } from "../ViewOnSiteLink";
-import { useInstanceConfig } from "../../hooks";
 import AvRoutePickerButton from "../AvRoutePickerButton/AvRoutePickerButton";
 import { PlaybackSettingsPopup } from "../PlaybackSettingsPopup";
 import GoogleCastButton from "../GoogleCastButton";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { ChannelLink } from "../ChannelLink";
 import { VideoChannelSummary } from "@peertube/peertube-types";
+import { useAppConfigContext } from "../../contexts";
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
 export interface VideoControlsOverlayProps {
@@ -132,7 +132,7 @@ const VideoControlsOverlay = ({
     isVisible,
   });
   const isMobile = Device.deviceType !== DeviceType.DESKTOP;
-  const { currentInstanceConfig } = useInstanceConfig();
+  const { currentInstanceConfig } = useAppConfigContext();
 
   const hideVideoSiteLink =
     process.env.EXPO_PUBLIC_HIDE_VIDEO_SITE_LINKS || currentInstanceConfig?.customizations?.hideVideoSiteLinks;

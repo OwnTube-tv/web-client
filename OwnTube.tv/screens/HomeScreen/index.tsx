@@ -8,11 +8,11 @@ import {
   useGetPlaylistsQuery,
   useGetVideosQuery,
 } from "../../api";
-import { useMemo } from "react";
-import { useCustomFocusManager, useInstanceConfig, usePageContentTopPadding, useViewHistory } from "../../hooks";
+import { useMemo, useState } from "react";
+import { useCustomFocusManager, usePageContentTopPadding, useViewHistory } from "../../hooks";
 import { spacing } from "../../theme";
 import { ROUTES } from "../../types";
-import { Platform, SectionList, StyleSheet, View } from "react-native";
+import { Platform, RefreshControl, SectionList, StyleSheet, View } from "react-native";
 import { useTranslation } from "react-i18next";
 import { LatestVideosView, SectionHeader } from "./components";
 import { useLocalSearchParams } from "expo-router";
@@ -20,6 +20,8 @@ import { RootStackParams } from "../../app/_layout";
 import { ChannelView } from "../../components";
 import { PlaylistVideosView } from "../Playlists/components";
 import { VideoChannel, VideoPlaylist } from "@peertube/peertube-types";
+import { useAppConfigContext } from "../../contexts";
+import { useQueryClient } from "@tanstack/react-query";
 
 const LIVE_STREAM_LIST_REFETCH_INTERVAL = 10_000;
 
@@ -28,18 +30,19 @@ export const HomeScreen = () => {
   const { t } = useTranslation();
   const { backend } = useLocalSearchParams<RootStackParams[ROUTES.INDEX]>();
   const { viewHistory } = useViewHistory({ backendToFilter: backend });
-  const { currentInstanceConfig } = useInstanceConfig();
+  const { currentInstanceConfig } = useAppConfigContext();
   const { top } = usePageContentTopPadding();
   const isFocused = useIsFocused();
   useCustomFocusManager();
+  const queryClient = useQueryClient();
 
-  const { data: channels } = useGetChannelsQuery({
+  const { data: channels, refetch: refetchChannels } = useGetChannelsQuery({
     enabled: !currentInstanceConfig?.customizations?.homeHideChannelsOverview,
   });
-  const { data: categories } = useGetCategoriesQuery({
+  const { data: categories, refetch: refetchCategories } = useGetCategoriesQuery({
     enabled: !currentInstanceConfig?.customizations?.homeHideCategoriesOverview,
   });
-  const { data: playlistsData } = useGetPlaylistsQuery({
+  const { data: playlistsData, refetch: refetchPlaylists } = useGetPlaylistsQuery({
     enabled: !currentInstanceConfig?.customizations?.homeHidePlaylistsOverview,
     hiddenPlaylists: currentInstanceConfig?.customizations?.playlistsHidden,
   });
@@ -129,6 +132,21 @@ export const HomeScreen = () => {
     ].filter(({ isVisible }) => isVisible);
   }, [t, historyData, backend, playlistsData, channels, categories, currentInstanceConfig, liveVideosData]);
 
+  const [refreshing, setRefreshing] = useState(false);
+
+  const onRefresh = async () => {
+    setRefreshing(true);
+
+    await refetchCategories();
+    await refetchChannels();
+    await refetchPlaylists();
+    await queryClient.refetchQueries({ queryKey: [QUERY_KEYS.videos], type: "active" });
+    await queryClient.refetchQueries({ queryKey: [QUERY_KEYS.playlistVideos], type: "active" });
+    await queryClient.refetchQueries({ queryKey: [QUERY_KEYS.channelVideos], type: "active" });
+
+    setRefreshing(false);
+  };
+
   return (
     <View
       style={{
@@ -139,6 +157,7 @@ export const HomeScreen = () => {
     >
       <View style={{ ...styles.paddingContainer }}>
         <SectionList
+          refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
           // @ts-expect-error the sections do not change in runtime so we can be sure the typings match
           sections={sections}
           disableVirtualization

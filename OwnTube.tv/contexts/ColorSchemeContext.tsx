@@ -1,8 +1,8 @@
 import { createContext, PropsWithChildren, useContext, useEffect, useState } from "react";
 import { Appearance, ColorSchemeName, Platform } from "react-native";
 import { readFromAsyncStorage, writeToAsyncStorage } from "../utils";
-import { useInstanceConfig } from "../hooks";
 import { colorSchemes } from "../theme";
+import { useAppConfigContext } from "./AppConfigContext";
 
 const ColorSchemeContext = createContext<{ scheme: ColorSchemeName; toggleScheme?: () => void }>({
   scheme: null,
@@ -10,7 +10,7 @@ const ColorSchemeContext = createContext<{ scheme: ColorSchemeName; toggleScheme
 
 export const ColorSchemeContextProvider = ({ children }: PropsWithChildren) => {
   const [selectedColorScheme, setSelectedColorScheme] = useState<ColorSchemeName>(null);
-  const { currentInstanceConfig } = useInstanceConfig();
+  const { currentInstanceConfig } = useAppConfigContext();
 
   useEffect(() => {
     if (!selectedColorScheme) {

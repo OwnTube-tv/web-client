@@ -8,12 +8,13 @@ import { useLocalSearchParams } from "expo-router";
 import { useState } from "react";
 import { StyleSheet, View } from "react-native";
 import { spacing } from "../../theme";
-import { useCustomFocusManager, useInstanceConfig, usePageContentTopPadding } from "../../hooks";
+import { useCustomFocusManager, usePageContentTopPadding } from "../../hooks";
 import { ErrorForbiddenLogo } from "../../components/Svg";
 import { useQueryClient } from "@tanstack/react-query";
+import { useAppConfigContext } from "../../contexts";
 
 export const Playlists = () => {
-  const { currentInstanceConfig } = useInstanceConfig();
+  const { currentInstanceConfig } = useAppConfigContext();
   const queryClient = useQueryClient();
   const [showHiddenPlaylists, setShowHiddenPlaylists] = useState(false);
   const {
@@ -37,7 +38,7 @@ export const Playlists = () => {
   const isError = isPlaylistsError || isCollectionError;
   const isLoading = isLoadingPlaylists || isLoadingPlaylistVideos;
 
-  const retry = async () => {
+  const refetchPageData = async () => {
     await queryClient.refetchQueries({ queryKey: [QUERY_KEYS.playlists] });
     await queryClient.refetchQueries({ queryKey: [QUERY_KEYS.playlistsCollection] });
   };
@@ -56,7 +57,7 @@ export const Playlists = () => {
         title={t(title)}
         description={t(description)}
         logo={<ErrorForbiddenLogo />}
-        button={{ text: t("tryAgain"), action: retry }}
+        button={{ text: t("tryAgain"), action: refetchPageData }}
       />
     );
   }

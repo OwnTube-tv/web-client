@@ -29,7 +29,7 @@ export const CategoriesScreen = () => {
   const isLoading = isLoadingCategoriesCollection || isLoadingCategories;
   useCustomFocusManager();
 
-  const retry = async () => {
+  const refetchPageData = async () => {
     await queryClient.refetchQueries({ queryKey: [QUERY_KEYS.categories] });
     await queryClient.refetchQueries({ queryKey: [QUERY_KEYS.categoriesCollection] });
   };
@@ -46,7 +46,7 @@ export const CategoriesScreen = () => {
         title={t(title)}
         description={t(description)}
         logo={<ErrorForbiddenLogo />}
-        button={{ text: t("tryAgain"), action: retry }}
+        button={{ text: t("tryAgain"), action: refetchPageData }}
       />
     );
   }
@@ -56,7 +56,7 @@ export const CategoriesScreen = () => {
   }
 
   return (
-    <Screen style={{ padding: 0, paddingTop: top }}>
+    <Screen onRefresh={refetchPageData} style={{ padding: 0, paddingTop: top }}>
       {data?.map(({ data, isLoading, refetch }) => (
         <VideoGrid
           isLoading={isLoading}

@@ -14,6 +14,7 @@ export const useRecentInstances = () => {
     select: (data) => {
       return data.slice(0, 50);
     },
+    staleTime: 0,
   });
 
   const { mutateAsync: updateRecentInstances } = useMutation({

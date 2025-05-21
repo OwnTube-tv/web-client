@@ -16,6 +16,7 @@ export const useGetInstancesQuery = () => {
     },
     refetchOnWindowFocus: false,
     select: ({ data }) => data,
+    staleTime: 0,
     retry,
   });
 };
@@ -46,6 +47,7 @@ export const useGetInstanceInfoCollectionQuery = (instances: string[]) => {
       },
       retry,
       refetchOnWindowFocus: false,
+      staleTime: 0,
     })),
     combine: (result) => ({
       data: result.map(({ data }) => data?.instance),
@@ -78,5 +80,6 @@ export const useGetInstanceConfigQuery = (hostname?: string) => {
     enabled: !!hostname,
     refetchOnWindowFocus: false,
     retry: false,
+    staleTime: 0,
   });
 };

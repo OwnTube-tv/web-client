@@ -2,10 +2,11 @@ import { View, Image, StyleSheet, Platform } from "react-native";
 import { Typography } from "./Typography";
 import { useTheme } from "@react-navigation/native";
 import { borderRadius, spacing } from "../theme";
-import { useBreakpoints, useInstanceConfig } from "../hooks";
+import { useBreakpoints } from "../hooks";
 import { useMemo } from "react";
 import { Link } from "expo-router";
 import { IcoMoonIcon } from "./IcoMoonIcon";
+import { useAppConfigContext } from "../contexts";
 
 interface ListInfoHeaderProps {
   avatarUrl?: string;
@@ -31,7 +32,7 @@ export const ListInfoHeader = ({
     };
   }, [isMobile, variant]);
 
-  const { currentInstanceConfig } = useInstanceConfig();
+  const { currentInstanceConfig } = useAppConfigContext();
 
   const isLinkShown =
     linkHref &&

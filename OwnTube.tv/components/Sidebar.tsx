@@ -10,7 +10,7 @@ import { Platform, StyleSheet, View } from "react-native";
 import { Button, Separator } from "./shared";
 import { spacing } from "../theme";
 import { Spacer } from "./shared/Spacer";
-import { useBreakpoints, useInstanceConfig, useShareButton } from "../hooks";
+import { useBreakpoints, useShareButton } from "../hooks";
 import { InstanceInfo } from "./InstanceInfo";
 import { Settings } from "./VideoControlsOverlay/components/modals";
 import { useNetInfo } from "@react-native-community/netinfo";
@@ -66,10 +66,9 @@ export const Sidebar: FC<SidebarProps> = ({ backend, ...navigationProps }) => {
   const breakpoints = useBreakpoints();
   const shouldExpand = breakpoints.isDesktop || breakpoints.isMobile;
   const { toggleModal, setContent } = useFullScreenModalContext();
-  const { currentInstanceConfig } = useInstanceConfig();
   const { isConnected } = useNetInfo();
   const { isLeaveInstanceAllowed } = useLeaveInstancePermission(navigationProps);
-  const { primaryBackend } = useAppConfigContext();
+  const { primaryBackend, currentInstanceConfig } = useAppConfigContext();
   const safeArea = useSafeAreaInsets();
   const { handleToggleShareModal } = useShareButton();
 

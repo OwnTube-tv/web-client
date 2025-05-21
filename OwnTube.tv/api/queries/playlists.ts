@@ -1,7 +1,7 @@
 import { useLocalSearchParams } from "expo-router";
 import { RootStackParams } from "../../app/_layout";
 import { useInfiniteQuery, useQueries, useQuery } from "@tanstack/react-query";
-import { GLOBAL_QUERY_STALE_TIME, QUERY_KEYS } from "../constants";
+import { QUERY_KEYS } from "../constants";
 import { PlaylistsApiImpl } from "../playlistsApi";
 import { combineCollectionQueryResults, retry } from "../helpers";
 import { GetVideosVideo, OwnTubeError } from "../models";
@@ -26,7 +26,6 @@ export const useGetPlaylistsQuery = ({
     select: (queryData) => {
       return { ...queryData, data: queryData.data.filter(({ id }) => !hiddenPlaylists?.includes(String(id))) };
     },
-    staleTime: GLOBAL_QUERY_STALE_TIME,
     retry,
   });
 };
@@ -40,7 +39,6 @@ export const useGetPlaylistVideosQuery = (playlistId?: number, count: number = 4
       return await PlaylistsApiImpl.getPlaylistVideos(backend!, playlistId!, { count });
     },
     enabled: !!backend && !!playlistId,
-    staleTime: GLOBAL_QUERY_STALE_TIME,
     retry,
   });
 };
@@ -62,7 +60,6 @@ export const useInfiniteGetPlaylistVideosQuery = (playlistId?: number, pageSize:
         start: pageParam,
       });
     },
-    staleTime: GLOBAL_QUERY_STALE_TIME,
     enabled: !!backend && !!playlistId,
     retry,
   });
@@ -77,7 +74,6 @@ export const useGetPlaylistInfoQuery = (playlistId?: number) => {
       return await PlaylistsApiImpl.getPlaylistInfo(backend!, playlistId!);
     },
     enabled: !!backend && !!playlistId,
-    staleTime: GLOBAL_QUERY_STALE_TIME,
     retry,
   });
 };
@@ -100,7 +96,6 @@ export const useGetPlaylistsCollectionQuery = (playlists: Array<VideoPlaylist> =
         }
       },
       retry,
-      staleTime: GLOBAL_QUERY_STALE_TIME,
       enabled: !!backend,
     })),
     combine: combineCollectionQueryResults<{

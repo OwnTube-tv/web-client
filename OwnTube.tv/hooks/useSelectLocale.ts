@@ -17,6 +17,7 @@ export const useSelectLocale = () => {
     queryFn: async () => {
       return await readFromAsyncStorage(STORAGE.LOCALE);
     },
+    staleTime: 0,
   });
 
   const handleChangeLang = async (langCode: string) => {

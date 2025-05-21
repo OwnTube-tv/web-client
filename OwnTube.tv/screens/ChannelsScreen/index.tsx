@@ -30,7 +30,7 @@ export const ChannelsScreen = () => {
   } = useGetChannelsCollectionQuery(channels?.map(({ name }) => name));
   const isError = isChannelsError || isChannelsCollectionError;
   const isLoading = isLoadingChannels || isLoadingChannelsCollection;
-  const retry = async () => {
+  const refetchPageData = async () => {
     await queryClient.refetchQueries({ queryKey: [QUERY_KEYS.channels] });
     await queryClient.refetchQueries({ queryKey: [QUERY_KEYS.channelsCollection] });
   };
@@ -49,7 +49,7 @@ export const ChannelsScreen = () => {
           title={t(title)}
           description={t(description)}
           logo={<ErrorForbiddenLogo />}
-          button={{ text: t("tryAgain"), action: retry }}
+          button={{ text: t("tryAgain"), action: refetchPageData }}
         />
       );
     }
@@ -80,7 +80,7 @@ export const ChannelsScreen = () => {
   }
 
   return (
-    <Screen style={{ ...styles.screenContainer, paddingTop: top }}>
+    <Screen onRefresh={refetchPageData} style={{ ...styles.screenContainer, paddingTop: top }}>
       {renderScreenContent}
       <InfoFooter />
     </Screen>

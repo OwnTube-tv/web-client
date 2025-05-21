@@ -7,7 +7,7 @@ import { VideosCommonQuery, Video } from "@peertube/peertube-types";
 import { SOURCES } from "../../types";
 import { getLocalData, retry } from "../helpers";
 
-import { GLOBAL_QUERY_STALE_TIME, QUERY_KEYS } from "../constants";
+import { QUERY_KEYS } from "../constants";
 import { useAppConfigContext } from "../../contexts";
 
 export const useGetVideosQuery = <TResult = GetVideosVideo[]>({
@@ -36,7 +36,6 @@ export const useGetVideosQuery = <TResult = GetVideosVideo[]>({
     },
     enabled: enabled && !!backend,
     select,
-    staleTime: GLOBAL_QUERY_STALE_TIME,
     refetchInterval,
     retry,
   });
@@ -71,7 +70,6 @@ export const useInfiniteVideosQuery = (
       });
     },
     enabled: !!backend,
-    staleTime: GLOBAL_QUERY_STALE_TIME,
     retry,
   });
 };
@@ -103,6 +101,7 @@ export const useGetVideoQuery = <TResult = Video>({
       return query.state.data?.isLive ? LIVE_REFETCH_INTERVAL : 0;
     },
     select,
+    staleTime: 0,
     retry,
   });
 };
@@ -139,6 +138,7 @@ export const useGetVideoCaptionsQuery = (id?: string, enabled = true) => {
       return await ApiServiceImpl.getVideoCaptions(backend!, id!);
     },
     enabled: !!backend && !!id && enabled,
+    staleTime: 0,
     retry,
   });
 };

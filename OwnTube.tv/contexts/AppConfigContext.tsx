@@ -12,6 +12,7 @@ import {
   DeviceCapabilities,
   useDeviceCapabilities,
   useFeaturedInstancesData,
+  useInstanceConfig,
   useRecentInstances,
   useSubtitlesSessionLocale,
 } from "../hooks";
@@ -25,6 +26,8 @@ import { writeToAsyncStorage } from "../utils";
 import { STORAGE } from "../types";
 import { Platform } from "react-native";
 import uuid from "react-native-uuid";
+import { useQueryClient } from "@tanstack/react-query";
+import { GLOBAL_QUERY_STALE_TIME } from "../api";
 
 interface IAppConfigContext {
   isDebugMode: boolean;
@@ -35,6 +38,7 @@ interface IAppConfigContext {
   sessionId: string;
   sessionCCLocale: string;
   updateSessionCCLocale: (locale: string) => void;
+  currentInstanceConfig?: InstanceConfig;
 }
 
 const AppConfigContext = createContext<IAppConfigContext>({
@@ -56,6 +60,8 @@ export const AppConfigContextProvider = ({ children }: PropsWithChildren) => {
   const { recentInstances, addRecentInstance } = useRecentInstances();
   const { backend } = useGlobalSearchParams<{ backend: string }>();
   const { sessionCCLocale, updateSessionCCLocale } = useSubtitlesSessionLocale();
+  const { currentInstanceConfig } = useInstanceConfig(featuredInstances);
+  const queryClient = useQueryClient();
 
   useEffect(() => {
     if (lastRecordedConnectionState.current === true && !isConnected) {
@@ -77,6 +83,12 @@ export const AppConfigContextProvider = ({ children }: PropsWithChildren) => {
       writeToAsyncStorage(STORAGE.DATASOURCE, backend);
     }
   }, [backend]);
+
+  useEffect(() => {
+    queryClient.setDefaultOptions({
+      queries: { staleTime: currentInstanceConfig?.customizations?.refreshQueriesStaleTime || GLOBAL_QUERY_STALE_TIME },
+    });
+  }, [currentInstanceConfig, queryClient]);
 
   const [sessionId, setSessionId] = useState<string>("");
 
@@ -106,6 +118,7 @@ export const AppConfigContextProvider = ({ children }: PropsWithChildren) => {
         sessionId,
         sessionCCLocale,
         updateSessionCCLocale,
+        currentInstanceConfig,
       }}
     >
       {!featuredInstances?.length ? null : children}

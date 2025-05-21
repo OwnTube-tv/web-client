@@ -31,6 +31,9 @@ export enum QUERY_KEYS {
   videoCaptions = "videoCaptions",
   liveVideos = "liveVideos",
   liveStreamsCollection = "liveStreamsCollection",
+  homepageLatestVideosView = "homepageLatestVideosView",
+  categoryVideosView = "categoryVideosView",
+  channelLatestVideosView = "channelLatestVideosView",
 }
 
 export const WRONG_SERVER_VERSION_STATUS_CODE = 444;

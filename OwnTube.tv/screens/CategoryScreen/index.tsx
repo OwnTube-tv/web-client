@@ -3,13 +3,16 @@ import { RootStackParams } from "../../app/_layout";
 import { ROUTES } from "../../types";
 import { Screen } from "../../layouts";
 import { InfoFooter, Loader, VideoGrid } from "../../components";
-import { useGetCategoriesQuery, useInfiniteVideosQuery } from "../../api";
+import { QUERY_KEYS, useGetCategoriesQuery, useInfiniteVideosQuery } from "../../api";
 import { useMemo } from "react";
-import { useCustomFocusManager, useInstanceConfig, usePageContentTopPadding } from "../../hooks";
+import { useCustomFocusManager, usePageContentTopPadding } from "../../hooks";
 import { useTranslation } from "react-i18next";
+import { useAppConfigContext } from "../../contexts";
+import { useQueryClient } from "@tanstack/react-query";
 
 export const CategoryScreen = () => {
-  const { currentInstanceConfig } = useInstanceConfig();
+  const queryClient = useQueryClient();
+  const { currentInstanceConfig } = useAppConfigContext();
   const { category } = useLocalSearchParams<RootStackParams[ROUTES.CATEGORY]>();
   const { data: categories, isLoading: isLoadingCategories } = useGetCategoriesQuery({});
   const { t } = useTranslation();
@@ -21,7 +24,7 @@ export const CategoryScreen = () => {
   }, [categories, category]);
 
   const { fetchNextPage, data, hasNextPage, isLoading, isFetchingNextPage } = useInfiniteVideosQuery({
-    uniqueQueryKey: "categoryVideosView",
+    uniqueQueryKey: QUERY_KEYS.categoryVideosView,
     queryParams: { categoryOneOf: [Number(category)] },
     pageSize: currentInstanceConfig?.customizations?.showMoreSize,
   });
@@ -30,12 +33,16 @@ export const CategoryScreen = () => {
     return data?.pages?.flatMap(({ data }) => data.flat());
   }, [data]);
 
+  const refetchPageData = async () => {
+    await queryClient.refetchQueries({ queryKey: [QUERY_KEYS.videos], type: "active" });
+  };
+
   if (isLoadingCategories) {
     return <Loader />;
   }
 
   return (
-    <Screen style={{ padding: 0, paddingTop: top }}>
+    <Screen onRefresh={refetchPageData} style={{ padding: 0, paddingTop: top }}>
       <VideoGrid
         isLoading={isLoading}
         data={videos}

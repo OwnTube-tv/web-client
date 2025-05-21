@@ -4,15 +4,16 @@ import { useCallback, useEffect } from "react";
 import { writeToAsyncStorage } from "../../utils";
 import { ROUTES, STORAGE } from "../../types";
 import { RootStackParams } from "../_layout";
-import { useInstanceConfig, useRecentInstances } from "../../hooks";
+import { useRecentInstances } from "../../hooks";
 import { Platform, TVEventControl } from "react-native";
 import Head from "expo-router/head";
 import Constants from "expo-constants";
+import { useAppConfigContext } from "../../contexts";
 
 export default function home() {
   const { backend } = useLocalSearchParams<RootStackParams[ROUTES.HOME]>();
   const { recentInstances, addRecentInstance } = useRecentInstances();
-  const { currentInstanceConfig } = useInstanceConfig();
+  const { currentInstanceConfig } = useAppConfigContext();
 
   useEffect(() => {
     if (backend) {

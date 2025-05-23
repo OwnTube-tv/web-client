@@ -5,6 +5,7 @@
     hostname: "tube.rebellion.global",
     logoUrl: "https://owntube-tv.github.io/web-client/logos/tube.rebellion.global.png",
     customizations: {
+      refreshQueriesStaleTime: 10000,
       homeLatestPublishedVideoCount: 12,
       homeRecentlyWatchedVideoCount: 4,
       homeHideChannelsOverview: false,

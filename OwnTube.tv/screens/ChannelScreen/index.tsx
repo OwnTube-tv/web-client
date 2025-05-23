@@ -2,23 +2,32 @@ import { useLocalSearchParams } from "expo-router";
 import { RootStackParams } from "../../app/_layout";
 import { ROUTES } from "../../types";
 import { Screen } from "../../layouts";
-import { useGetCategoriesQuery, useGetChannelInfoQuery, useGetChannelPlaylistsQuery } from "../../api";
+import { QUERY_KEYS, useGetCategoriesQuery, useGetChannelInfoQuery, useGetChannelPlaylistsQuery } from "../../api";
 import { CategoryView, LatestVideos } from "./components";
 import { InfoFooter, Loader } from "../../components";
 import { PlaylistVideosView } from "../Playlists/components";
 import { ListInfoHeader } from "../../components";
-import { usePageContentTopPadding } from "../../hooks";
+import { useCustomFocusManager, usePageContentTopPadding } from "../../hooks";
+import { useQueryClient } from "@tanstack/react-query";
 
 export const ChannelScreen = () => {
+  const queryClient = useQueryClient();
   const { backend, channel } = useLocalSearchParams<RootStackParams[ROUTES.CHANNEL]>();
 
   const { data: channelInfo, isLoading: isLoadingChannelInfo } = useGetChannelInfoQuery(channel);
   const { data: categories } = useGetCategoriesQuery({});
   const { data: playlists } = useGetChannelPlaylistsQuery(channel);
   const { top } = usePageContentTopPadding();
+  useCustomFocusManager();
+
+  const refetchPageData = async () => {
+    await queryClient.refetchQueries({ queryKey: [QUERY_KEYS.channelVideos] });
+    await queryClient.refetchQueries({ queryKey: [QUERY_KEYS.channelPlaylists] });
+    await queryClient.refetchQueries({ queryKey: [QUERY_KEYS.playlistVideos] });
+  };
 
   return (
-    <Screen style={{ padding: 0, paddingTop: top }}>
+    <Screen onRefresh={refetchPageData} style={{ padding: 0, paddingTop: top }}>
       {isLoadingChannelInfo ? (
         <Loader />
       ) : (

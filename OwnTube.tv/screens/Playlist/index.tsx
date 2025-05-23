@@ -1,15 +1,23 @@
-import { useGetChannelInfoQuery, useGetPlaylistInfoQuery, useInfiniteGetPlaylistVideosQuery } from "../../api";
+import {
+  QUERY_KEYS,
+  useGetChannelInfoQuery,
+  useGetPlaylistInfoQuery,
+  useInfiniteGetPlaylistVideosQuery,
+} from "../../api";
 import { useLocalSearchParams } from "expo-router";
 import { RootStackParams } from "../../app/_layout";
 import { ROUTES } from "../../types";
 import { BackToChannel, InfoFooter, ListInfoHeader, Loader, VideoGrid } from "../../components";
 import { useMemo } from "react";
 import { Screen } from "../../layouts";
-import { useInstanceConfig, usePageContentTopPadding } from "../../hooks";
+import { useCustomFocusManager, usePageContentTopPadding } from "../../hooks";
 import { useTranslation } from "react-i18next";
+import { useAppConfigContext } from "../../contexts";
+import { useQueryClient } from "@tanstack/react-query";
 
 export const Playlist = () => {
-  const { currentInstanceConfig } = useInstanceConfig();
+  const { currentInstanceConfig } = useAppConfigContext();
+  const queryClient = useQueryClient();
   const { backend, playlist, channel } = useLocalSearchParams<
     RootStackParams[ROUTES.CHANNEL_PLAYLIST] & RootStackParams[ROUTES.PLAYLIST]
   >();
@@ -18,19 +26,25 @@ export const Playlist = () => {
     currentInstanceConfig?.customizations?.showMoreSize,
   );
   const { data: channelInfo } = useGetChannelInfoQuery(channel);
-  const { data: playlistInfo, isFetching: isFetchingPlaylistInfo } = useGetPlaylistInfoQuery(Number(playlist));
+  const { data: playlistInfo, isLoading: isLoadingPlaylistInfo } = useGetPlaylistInfoQuery(Number(playlist));
   const videos = useMemo(() => {
     return data?.pages?.flatMap(({ data }) => data.flat());
   }, [data]);
   const { t } = useTranslation();
   const { top } = usePageContentTopPadding();
+  useCustomFocusManager();
 
-  if (isFetchingPlaylistInfo || isLoading) {
+  const refetchPageData = async () => {
+    await queryClient.refetchQueries({ queryKey: [QUERY_KEYS.playlistInfo] });
+    await queryClient.refetchQueries({ queryKey: [QUERY_KEYS.playlistVideos] });
+  };
+
+  if (isLoadingPlaylistInfo || isLoading) {
     return <Loader />;
   }
 
   return (
-    <Screen style={{ padding: 0, paddingTop: top }}>
+    <Screen onRefresh={refetchPageData} style={{ padding: 0, paddingTop: top }}>
       {channelInfo && <BackToChannel channelInfo={channelInfo} />}
       <ListInfoHeader
         variant="playlist"

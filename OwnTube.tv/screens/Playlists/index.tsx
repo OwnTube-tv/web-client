@@ -8,17 +8,18 @@ import { useLocalSearchParams } from "expo-router";
 import { useState } from "react";
 import { StyleSheet, View } from "react-native";
 import { spacing } from "../../theme";
-import { useInstanceConfig, usePageContentTopPadding } from "../../hooks";
+import { useCustomFocusManager, usePageContentTopPadding } from "../../hooks";
 import { ErrorForbiddenLogo } from "../../components/Svg";
 import { useQueryClient } from "@tanstack/react-query";
+import { useAppConfigContext } from "../../contexts";
 
 export const Playlists = () => {
-  const { currentInstanceConfig } = useInstanceConfig();
+  const { currentInstanceConfig } = useAppConfigContext();
   const queryClient = useQueryClient();
   const [showHiddenPlaylists, setShowHiddenPlaylists] = useState(false);
   const {
     data: playlists,
-    isFetching: isFetchingPlaylists,
+    isLoading: isLoadingPlaylists,
     isError: isPlaylistsError,
     error: playlistsError,
   } = useGetPlaylistsQuery({
@@ -29,21 +30,22 @@ export const Playlists = () => {
   const { backend } = useLocalSearchParams();
   const {
     data: playlistSections,
-    isFetching: isFetchingPlaylistVideos,
+    isLoading: isLoadingPlaylistVideos,
     isError: isCollectionError,
   } = useGetPlaylistsCollectionQuery(playlists?.data);
   const isShowAllButtonVisible =
     currentInstanceConfig?.customizations?.playlistsShowHiddenButton && !showHiddenPlaylists;
   const isError = isPlaylistsError || isCollectionError;
-  const isFetching = isFetchingPlaylists || isFetchingPlaylistVideos;
+  const isLoading = isLoadingPlaylists || isLoadingPlaylistVideos;
 
-  const retry = async () => {
+  const refetchPageData = async () => {
     await queryClient.refetchQueries({ queryKey: [QUERY_KEYS.playlists] });
     await queryClient.refetchQueries({ queryKey: [QUERY_KEYS.playlistsCollection] });
   };
   const { top } = usePageContentTopPadding();
+  useCustomFocusManager();
 
-  if (isFetching) {
+  if (isLoading) {
     return <Loader />;
   }
 
@@ -55,7 +57,7 @@ export const Playlists = () => {
         title={t(title)}
         description={t(description)}
         logo={<ErrorForbiddenLogo />}
-        button={{ text: t("tryAgain"), action: retry }}
+        button={{ text: t("tryAgain"), action: refetchPageData }}
       />
     );
   }
@@ -66,9 +68,9 @@ export const Playlists = () => {
 
   return (
     <Screen style={{ padding: 0, paddingTop: top }}>
-      {playlistSections.map(({ data, isFetching, refetch }) => (
+      {playlistSections.map(({ data, isLoading, refetch }) => (
         <VideoGrid
-          isLoading={isFetching}
+          isLoading={isLoading}
           variant="playlist"
           isError={data?.isError}
           refetch={refetch}

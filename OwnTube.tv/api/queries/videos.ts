@@ -35,7 +35,6 @@ export const useGetVideosQuery = <TResult = GetVideosVideo[]>({
       return await ApiServiceImpl.getVideos(backend!, { count: 50, ...params });
     },
     enabled: enabled && !!backend,
-    refetchOnWindowFocus: false,
     select,
     refetchInterval,
     retry,
@@ -70,7 +69,6 @@ export const useInfiniteVideosQuery = (
         ...queryParams,
       });
     },
-    refetchOnWindowFocus: false,
     enabled: !!backend,
     retry,
   });
@@ -98,12 +96,12 @@ export const useGetVideoQuery = <TResult = Video>({
 
       return await ApiServiceImpl.getVideo(backend!, id!);
     },
-    refetchOnWindowFocus: false,
     enabled: !!backend && !!id && enabled,
     refetchInterval: (query: Query<Video>) => {
       return query.state.data?.isLive ? LIVE_REFETCH_INTERVAL : 0;
     },
     select,
+    staleTime: 0,
     retry,
   });
 };
@@ -139,8 +137,8 @@ export const useGetVideoCaptionsQuery = (id?: string, enabled = true) => {
     queryFn: async () => {
       return await ApiServiceImpl.getVideoCaptions(backend!, id!);
     },
-    refetchOnWindowFocus: false,
     enabled: !!backend && !!id && enabled,
+    staleTime: 0,
     retry,
   });
 };

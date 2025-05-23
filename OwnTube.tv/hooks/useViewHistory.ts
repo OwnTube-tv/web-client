@@ -34,6 +34,7 @@ export const useViewHistory = (queryArg?: { enabled?: boolean; maxItems?: number
 
       return Object.fromEntries((entries || []).map(([key, value]) => [key, JSON.parse(value || "")]));
     },
+    staleTime: 0,
     select: (data) =>
       Object.values(data)
         .filter(({ backend }) => (backendToFilter ? backend === backendToFilter : true))

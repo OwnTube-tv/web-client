@@ -7,33 +7,34 @@ import { useTranslation } from "react-i18next";
 import { useLocalSearchParams } from "expo-router";
 import { useQueryClient } from "@tanstack/react-query";
 import { ErrorForbiddenLogo } from "../../components/Svg";
-import { usePageContentTopPadding } from "../../hooks";
+import { useCustomFocusManager, usePageContentTopPadding } from "../../hooks";
 
 export const CategoriesScreen = () => {
   const queryClient = useQueryClient();
   const {
     data: categories,
-    isFetching: isFetchingCategories,
+    isLoading: isLoadingCategories,
     isError: isCategoriesError,
     error: categoriesError,
   } = useGetCategoriesQuery({});
   const {
     data,
-    isFetching: isFetchingCategoriesCollection,
+    isLoading: isLoadingCategoriesCollection,
     isError: isCollectionError,
   } = useGetCategoriesCollectionQuery(categories);
   const { backend } = useLocalSearchParams();
   const { t } = useTranslation();
   const { top } = usePageContentTopPadding();
   const isError = isCategoriesError || isCollectionError;
-  const isFetching = isFetchingCategoriesCollection || isFetchingCategories;
+  const isLoading = isLoadingCategoriesCollection || isLoadingCategories;
+  useCustomFocusManager();
 
-  const retry = async () => {
+  const refetchPageData = async () => {
     await queryClient.refetchQueries({ queryKey: [QUERY_KEYS.categories] });
     await queryClient.refetchQueries({ queryKey: [QUERY_KEYS.categoriesCollection] });
   };
 
-  if (isFetching) {
+  if (isLoading) {
     return <Loader />;
   }
 
@@ -45,7 +46,7 @@ export const CategoriesScreen = () => {
         title={t(title)}
         description={t(description)}
         logo={<ErrorForbiddenLogo />}
-        button={{ text: t("tryAgain"), action: retry }}
+        button={{ text: t("tryAgain"), action: refetchPageData }}
       />
     );
   }
@@ -55,10 +56,10 @@ export const CategoriesScreen = () => {
   }
 
   return (
-    <Screen style={{ padding: 0, paddingTop: top }}>
-      {data?.map(({ data, isFetching, refetch }) => (
+    <Screen onRefresh={refetchPageData} style={{ padding: 0, paddingTop: top }}>
+      {data?.map(({ data, isLoading, refetch }) => (
         <VideoGrid
-          isLoading={isFetching}
+          isLoading={isLoading}
           refetch={refetch}
           key={data?.id}
           link={{

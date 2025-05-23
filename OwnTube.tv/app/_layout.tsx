@@ -28,6 +28,7 @@ import { SafeAreaProvider, useSafeAreaInsets } from "react-native-safe-area-cont
 import { useBreakpoints } from "../hooks";
 import { DrawerHeaderProps } from "@react-navigation/drawer";
 import { SHAREABLE_ROUTE_MODAL_TITLES } from "../navigation/constants";
+import { GLOBAL_QUERY_STALE_TIME } from "../api";
 
 export const CLOSED_DRAWER_WIDTH = 64;
 export const OPEN_DRAWER_WIDTH = 272;
@@ -133,7 +134,13 @@ const RootStack = () => {
   );
 };
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: GLOBAL_QUERY_STALE_TIME,
+    },
+  },
+});
 
 export default function RootLayout() {
   const isWeb = Platform.OS === "web";

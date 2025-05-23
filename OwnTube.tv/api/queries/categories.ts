@@ -16,7 +16,6 @@ export const useGetCategoriesQuery = ({ enabled = true }: { enabled?: boolean })
       return await CategoriesApiImpl.getCategories(backend!);
     },
     enabled: !!backend && enabled,
-    refetchOnWindowFocus: false,
     retry,
   });
 };
@@ -44,7 +43,6 @@ export const useGetCategoriesCollectionQuery = (categories: Array<{ name: string
         }
       },
       retry,
-      refetchOnWindowFocus: false,
       enabled: !!backend,
     })),
     combine: combineCollectionQueryResults<{ name: string; id: number }>,

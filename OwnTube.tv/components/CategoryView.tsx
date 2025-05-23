@@ -13,7 +13,7 @@ interface CategoryViewProps {
 export const CategoryView = ({ category }: CategoryViewProps) => {
   const { t } = useTranslation();
   const { backend } = useLocalSearchParams();
-  const { data, isFetching, isError, refetch } = useGetVideosQuery({
+  const { data, isLoading, isError, refetch } = useGetVideosQuery({
     enabled: true,
     params: {
       categoryOneOf: [category.id],
@@ -23,7 +23,7 @@ export const CategoryView = ({ category }: CategoryViewProps) => {
     uniqueQueryKey: `category-${category.id}`,
   });
 
-  if (!data?.data?.length && !isFetching) {
+  if (!data?.data?.length && !isLoading) {
     return null;
   }
 
@@ -33,7 +33,7 @@ export const CategoryView = ({ category }: CategoryViewProps) => {
         reduceHeaderContrast
         refetch={refetch}
         isError={isError}
-        isLoading={isFetching}
+        isLoading={isLoading}
         link={{
           text: t("viewCategory") + getAvailableVidsString(data?.total),
           href: { pathname: `/${ROUTES.CATEGORY}`, params: { backend, category: category.id } },

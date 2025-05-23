@@ -142,7 +142,7 @@ The current instance configuration is retrieved using the `useInstanceConfig` cu
 
 4. **Return Value**: The hook returns an object with a `currentInstanceConfig` property, which contains the configuration of the matched instance, or `undefined` if no match is found.
 
-This approach allows components throughout the application to easily access the current instance's configuration by calling `useInstanceConfig()`. The returned configuration can then be used to customize the UI, set theme preferences, or control feature visibility based on the specific instance being accessed.
+This approach allows components throughout the application to easily access the current instance's configuration by accessing the app config context in `useAppConfigContext()`. The returned configuration can then be used to customize the UI, set theme preferences, or control feature visibility based on the specific instance being accessed.
 
 By combining the `useFeaturedInstancesData` hook (which loads all instance configurations) with the `useInstanceConfig` hook (which selects the current instance), OwnTube.tv 📺 is able to customize the experience for the user based on the instance they are currently accessing.
 

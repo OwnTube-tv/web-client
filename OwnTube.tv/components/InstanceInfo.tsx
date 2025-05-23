@@ -5,7 +5,7 @@ import { useTheme } from "@react-navigation/native";
 import { useGetInstanceInfoQuery } from "../api";
 import { useMemo } from "react";
 import { InstanceLogo } from "./InstanceLogo";
-import { useInstanceConfig } from "../hooks";
+import { useAppConfigContext } from "../contexts";
 
 interface InstanceInfoProps {
   backend?: string;
@@ -15,7 +15,7 @@ interface InstanceInfoProps {
 export const InstanceInfo = ({ backend, showText = true }: InstanceInfoProps) => {
   const { colors } = useTheme();
   const { data, isFetching } = useGetInstanceInfoQuery(backend);
-  const { currentInstanceConfig } = useInstanceConfig();
+  const { currentInstanceConfig } = useAppConfigContext();
 
   const logoSrc = useMemo(() => {
     return data?.avatars?.[0] ? `https://${backend}${data?.avatars[0]?.path}` : currentInstanceConfig?.logoUrl || "";

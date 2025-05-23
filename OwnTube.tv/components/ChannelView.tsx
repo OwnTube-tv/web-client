@@ -14,10 +14,10 @@ interface ChannelViewProps {
 
 export const ChannelView = ({ channel }: ChannelViewProps) => {
   const { backend } = useLocalSearchParams<RootStackParams[ROUTES.CHANNELS]>();
-  const { data, isFetching, isError, refetch } = useGetChannelVideosQuery(channel.name);
+  const { data, isLoading, isError, refetch } = useGetChannelVideosQuery(channel.name);
   const { t } = useTranslation();
 
-  if (!data?.data?.length && !isFetching) {
+  if (!data?.data?.length && !isLoading) {
     return null;
   }
 
@@ -27,7 +27,7 @@ export const ChannelView = ({ channel }: ChannelViewProps) => {
         reduceHeaderContrast
         isError={isError}
         refetch={refetch}
-        isLoading={isFetching}
+        isLoading={isLoading}
         link={{
           text: t("visitChannel") + getAvailableVidsString(data?.total),
           href: { pathname: `/${ROUTES.CHANNEL}`, params: { backend, channel: channel.name } },

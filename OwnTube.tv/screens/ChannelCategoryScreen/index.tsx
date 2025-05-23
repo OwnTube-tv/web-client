@@ -2,17 +2,20 @@ import { useLocalSearchParams } from "expo-router";
 import { RootStackParams } from "../../app/_layout";
 import { ROUTES } from "../../types";
 import { Screen } from "../../layouts";
-import { useGetCategoriesQuery, useGetChannelInfoQuery, useInfiniteGetChannelVideosQuery } from "../../api";
+import { QUERY_KEYS, useGetCategoriesQuery, useGetChannelInfoQuery, useInfiniteGetChannelVideosQuery } from "../../api";
 import { BackToChannel, InfoFooter, Typography, VideoGrid } from "../../components";
 import { StyleSheet } from "react-native";
 import { useTheme } from "@react-navigation/native";
 import { spacing } from "../../theme";
 import { useMemo } from "react";
-import { useBreakpoints, useInstanceConfig, usePageContentTopPadding } from "../../hooks";
+import { useBreakpoints, useCustomFocusManager, usePageContentTopPadding } from "../../hooks";
 import { useTranslation } from "react-i18next";
+import { useAppConfigContext } from "../../contexts";
+import { useQueryClient } from "@tanstack/react-query";
 
 export const ChannelCategoryScreen = () => {
-  const { currentInstanceConfig } = useInstanceConfig();
+  const queryClient = useQueryClient();
+  const { currentInstanceConfig } = useAppConfigContext();
   const { colors } = useTheme();
   const { isMobile } = useBreakpoints();
   const { channel, category } = useLocalSearchParams<RootStackParams[ROUTES.CHANNEL_CATEGORY]>();
@@ -26,6 +29,7 @@ export const ChannelCategoryScreen = () => {
   });
   const { t } = useTranslation();
   const { top } = usePageContentTopPadding();
+  useCustomFocusManager();
 
   const videos = useMemo(() => {
     return data?.pages?.flatMap(({ data }) => data.flat());
@@ -35,8 +39,12 @@ export const ChannelCategoryScreen = () => {
     return categories?.find(({ id }) => id === Number(category))?.name || "";
   }, [category, categories]);
 
+  const refetchPageData = async () => {
+    await queryClient.refetchQueries({ queryKey: [QUERY_KEYS.videos], type: "active" });
+  };
+
   return (
-    <Screen style={{ padding: 0, paddingTop: top }}>
+    <Screen onRefresh={refetchPageData} style={{ padding: 0, paddingTop: top }}>
       {channelInfo && <BackToChannel channelInfo={channelInfo} />}
       <Typography
         style={styles.header}

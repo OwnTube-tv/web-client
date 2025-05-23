@@ -26,7 +26,6 @@ export const useGetPlaylistsQuery = ({
     select: (queryData) => {
       return { ...queryData, data: queryData.data.filter(({ id }) => !hiddenPlaylists?.includes(String(id))) };
     },
-    refetchOnWindowFocus: false,
     retry,
   });
 };
@@ -40,7 +39,6 @@ export const useGetPlaylistVideosQuery = (playlistId?: number, count: number = 4
       return await PlaylistsApiImpl.getPlaylistVideos(backend!, playlistId!, { count });
     },
     enabled: !!backend && !!playlistId,
-    refetchOnWindowFocus: false,
     retry,
   });
 };
@@ -62,7 +60,6 @@ export const useInfiniteGetPlaylistVideosQuery = (playlistId?: number, pageSize:
         start: pageParam,
       });
     },
-    refetchOnWindowFocus: false,
     enabled: !!backend && !!playlistId,
     retry,
   });
@@ -77,7 +74,6 @@ export const useGetPlaylistInfoQuery = (playlistId?: number) => {
       return await PlaylistsApiImpl.getPlaylistInfo(backend!, playlistId!);
     },
     enabled: !!backend && !!playlistId,
-    refetchOnWindowFocus: false,
     retry,
   });
 };
@@ -100,7 +96,6 @@ export const useGetPlaylistsCollectionQuery = (playlists: Array<VideoPlaylist> =
         }
       },
       retry,
-      refetchOnWindowFocus: false,
       enabled: !!backend,
     })),
     combine: combineCollectionQueryResults<{

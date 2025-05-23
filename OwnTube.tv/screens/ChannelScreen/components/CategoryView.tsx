@@ -14,15 +14,15 @@ interface CategoryViewProps {
 export const CategoryView = ({ category, channelHandle }: CategoryViewProps) => {
   const { backend } = useLocalSearchParams<RootStackParams[ROUTES.CHANNEL]>();
   const { t } = useTranslation();
-  const { data, isFetching } = useGetChannelVideosQuery(channelHandle, { count: 4, categoryOneOf: [category.id] });
+  const { data, isLoading } = useGetChannelVideosQuery(channelHandle, { count: 4, categoryOneOf: [category.id] });
 
-  if (!data?.data?.length && !isFetching) {
+  if (!data?.data?.length && !isLoading) {
     return null;
   }
 
   return (
     <VideoGrid
-      isLoading={isFetching}
+      isLoading={isLoading}
       link={{
         text: t("viewCategory") + getAvailableVidsString(data?.total),
         href: {

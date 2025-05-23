@@ -17,7 +17,6 @@ export const useGetChannelInfoQuery = (channelHandle?: string) => {
       return await ChannelsApiImpl.getChannelInfo(backend!, channelHandle!);
     },
     enabled: !!backend && !!channelHandle,
-    refetchOnWindowFocus: false,
     retry,
   });
 };
@@ -32,7 +31,7 @@ export const useGetChannelsQuery = ({ enabled = true }: { enabled?: boolean }) =
     },
     select: ({ data }) => data.filter(({ isLocal }) => isLocal),
     enabled: !!backend && enabled,
-    refetchOnWindowFocus: false,
+
     retry,
   });
 };
@@ -46,7 +45,6 @@ export const useGetChannelVideosQuery = (channelHandle?: string, queryParams: Vi
       return await ChannelsApiImpl.getChannelVideos(backend!, channelHandle!, queryParams);
     },
     enabled: !!backend && !!channelHandle,
-    refetchOnWindowFocus: false,
     retry,
   });
 };
@@ -75,7 +73,6 @@ export const useInfiniteGetChannelVideosQuery = (
       });
     },
     enabled: !!backend && !!channelHandle,
-    refetchOnWindowFocus: false,
     retry,
   });
 };
@@ -89,7 +86,6 @@ export const useGetChannelPlaylistsQuery = (channelHandle?: string) => {
       return await ChannelsApiImpl.getChannelPlaylists(backend!, channelHandle!);
     },
     enabled: !!backend && !!channelHandle,
-    refetchOnWindowFocus: false,
     select: (data) => data.filter(({ isLocal, videosLength }) => isLocal && videosLength > 0),
     retry,
   });
@@ -113,7 +109,6 @@ export const useGetChannelsCollectionQuery = (channelIds: string[] = []) => {
         }
       },
       retry,
-      refetchOnWindowFocus: false,
       enabled: !!backend,
     })),
     combine: combineCollectionQueryResults<{ id: string }>,

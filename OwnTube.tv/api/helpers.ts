@@ -34,7 +34,7 @@ export const combineCollectionQueryResults = <T>(
 ) => {
   return {
     data: result.filter((item) => item?.data?.isError || Number(item?.data?.total) > 0),
-    isFetching: result.filter(({ isFetching }) => isFetching).length > 1,
+    isLoading: result.filter(({ isLoading }) => isLoading).length > 1,
     isError: result.length > 0 && result.every(({ data }) => data?.isError),
   };
 };

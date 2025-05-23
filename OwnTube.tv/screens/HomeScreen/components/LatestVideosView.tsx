@@ -1,14 +1,14 @@
-import { useInfiniteVideosQuery } from "../../../api";
+import { QUERY_KEYS, useInfiniteVideosQuery } from "../../../api";
 import { VideoGrid } from "../../../components";
 import { useMemo } from "react";
-import { useInstanceConfig } from "../../../hooks";
 import { ListSeparator } from "./ListSeparator";
 import { useTranslation } from "react-i18next";
+import { useAppConfigContext } from "../../../contexts";
 
 export const LatestVideosView = () => {
-  const { currentInstanceConfig } = useInstanceConfig();
+  const { currentInstanceConfig } = useAppConfigContext();
   const { fetchNextPage, data, hasNextPage, isLoading, isFetchingNextPage, isError, refetch } = useInfiniteVideosQuery({
-    uniqueQueryKey: "homepageLatestVideosView",
+    uniqueQueryKey: QUERY_KEYS.homepageLatestVideosView,
     firstPageSize: currentInstanceConfig?.customizations?.homeLatestPublishedVideoCount,
     pageSize: currentInstanceConfig?.customizations?.showMoreSize,
   });

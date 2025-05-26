@@ -72,6 +72,7 @@ const VideoControlsOverlay = ({
   handleToggleCC,
   isCCAvailable,
   isLiveVideo,
+  isWaitingForLive,
 }: PropsWithChildren<VideoControlsOverlayProps>) => {
   const {
     isSeekBarFocused,
@@ -270,14 +271,16 @@ const VideoControlsOverlay = ({
                   icon="Rewind-15"
                 />
               )}
-              <PlayerButton
-                scale={INTERFACE_SCALE}
-                nextFocusUp={backRef}
-                hasTVPreferredFocus
-                onPress={shouldReplay ? handleReplay : handlePlayPause}
-                icon={centralIconName}
-                nextFocusDown={isLiveVideo ? settingsRef.current : undefined}
-              />
+              {!isWaitingForLive && (
+                <PlayerButton
+                  scale={INTERFACE_SCALE}
+                  nextFocusUp={backRef}
+                  hasTVPreferredFocus
+                  onPress={shouldReplay ? handleReplay : handlePlayPause}
+                  icon={centralIconName}
+                  nextFocusDown={isLiveVideo ? settingsRef.current : undefined}
+                />
+              )}
               {!isLiveVideo && (
                 <PlayerButton
                   scale={INTERFACE_SCALE}

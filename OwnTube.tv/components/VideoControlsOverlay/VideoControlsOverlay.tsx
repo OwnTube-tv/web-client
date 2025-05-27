@@ -199,7 +199,9 @@ const VideoControlsOverlay = ({
               }}
             >
               {!isLiveVideo && <PlayerButton onPress={() => handleRW(15)} icon="Rewind-15" />}
-              <PlayerButton onPress={shouldReplay ? handleReplay : handlePlayPause} icon={centralIconName} />
+              {!isWaitingForLive && (
+                <PlayerButton onPress={shouldReplay ? handleReplay : handlePlayPause} icon={centralIconName} />
+              )}
               {!isLiveVideo && <PlayerButton onPress={() => handleFF(30)} icon="Fast-forward-30" />}
             </AnimatedPressable>
           )}

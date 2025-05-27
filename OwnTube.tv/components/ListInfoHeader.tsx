@@ -54,7 +54,7 @@ export const ListInfoHeader = ({
         <Image source={{ uri: avatarUrl }} style={{ ...avatarDimensions, borderRadius: borderRadius.radiusMd }} />
       )}
       <View style={styles.textContainer}>
-        <View style={styles.headerContainer}>
+        <View style={[styles.headerContainer, { paddingRight: isMobile ? 0 : spacing.xxxl }]}>
           <Typography fontSize={isMobile ? "sizeXL" : "sizeXXL"} fontWeight="ExtraBold" color={colors.theme900}>
             {name}
           </Typography>
@@ -85,7 +85,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     flexWrap: "wrap",
     gap: spacing.md,
-    paddingRight: spacing.xxxl,
   },
   textContainer: { flex: 1, gap: spacing.md },
 });

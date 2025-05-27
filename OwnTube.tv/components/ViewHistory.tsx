@@ -16,10 +16,9 @@ import Animated, { SlideInUp, SlideOutUp } from "react-native-reanimated";
 import { useLocalSearchParams } from "expo-router";
 import { RootStackParams } from "../app/_layout";
 import { ROUTES } from "../types";
-import { useFullScreenModalContext } from "../contexts";
+import { useAppConfigContext, useFullScreenModalContext } from "../contexts";
 import { EmptyPage } from "./EmptyPage";
 import { InfoFooter } from "./InfoFooter";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export const ViewHistory = () => {
   const { t } = useTranslation();
@@ -32,7 +31,7 @@ export const ViewHistory = () => {
   } = useViewHistory({ backendToFilter: backend });
   const { isMobile } = useBreakpoints();
   const { colors } = useTheme();
-  const { top } = useSafeAreaInsets();
+  const { currentInstanceConfig } = useAppConfigContext();
 
   const { toggleModal, setContent } = useFullScreenModalContext();
 
@@ -42,7 +41,7 @@ export const ViewHistory = () => {
       <Animated.View
         entering={SlideInUp}
         exiting={SlideOutUp}
-        style={{ alignItems: "center", flex: 1, justifyContent: "center" }}
+        style={styles.clearModalWrapper}
         pointerEvents="box-none"
       >
         <ModalContainer onClose={() => toggleModal(false)} title={t("clearSiteHistoryQuestion")}>
@@ -93,7 +92,6 @@ export const ViewHistory = () => {
       style={{
         paddingHorizontal: isMobile ? spacing.sm : spacing.xl,
         ...styles.screenContainer,
-        paddingTop: spacing.xl + top,
       }}
     >
       <View style={styles.headerContainer}>
@@ -105,7 +103,11 @@ export const ViewHistory = () => {
         >
           {t("yourWatchHistory")}
         </Typography>
-        <Button icon="Trash" onPress={handleClearConfirmation} text={t("clearSiteHistory")} />
+        <Button
+          icon="Trash"
+          onPress={handleClearConfirmation}
+          text={t("clearSiteHistory", { appName: currentInstanceConfig?.customizations?.pageTitle ?? backend })}
+        />
       </View>
       <Spacer height={spacing.xl} />
       <SectionList
@@ -126,6 +128,7 @@ export const ViewHistory = () => {
 };
 
 const styles = StyleSheet.create({
+  clearModalWrapper: { alignItems: "center", flex: 1, justifyContent: "center" },
   header: { marginBottom: 16 },
   headerContainer: {
     alignItems: "flex-start",

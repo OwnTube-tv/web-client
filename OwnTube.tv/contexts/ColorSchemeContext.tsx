@@ -30,7 +30,7 @@ export const ColorSchemeContextProvider = ({ children }: PropsWithChildren) => {
     if (Platform.OS === "web") {
       document?.documentElement?.style?.setProperty("--focus-color", colorSchemes[selectedColorScheme].colors.theme950);
     }
-  }, [selectedColorScheme]);
+  }, [selectedColorScheme, currentInstanceConfig]);
 
   const toggleScheme = () => setSelectedColorScheme((prev) => (prev === "light" ? "dark" : "light"));
 

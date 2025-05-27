@@ -60,6 +60,8 @@ export const VideoListItem = forwardRef<View, VideoListItemProps>(
             ref={ref}
             onFocus={() => setFocused(true)}
             onBlur={() => setFocused(false)}
+            onHoverIn={toggleHovered}
+            onHoverOut={toggleHovered}
             style={{
               height: focusGuideDimensions.height,
               width: "100%",
@@ -82,19 +84,6 @@ export const VideoListItem = forwardRef<View, VideoListItemProps>(
         </Link>
         <View style={styles.infoContainer}>
           <TVFocusGuideHelper focusable={false} style={styles.textContainer}>
-            {lastViewedAt && (
-              <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-                <Typography
-                  fontWeight="Medium"
-                  fontSize={isDesktop ? "sizeSm" : "sizeXS"}
-                  color={colors.themeDesaturated500}
-                  style={{ maxWidth: isDesktop ? null : 150 }}
-                >
-                  {t("lastWatched", { lastWatched: format(lastViewedAt, "yyyy-MM-dd HH:mm") })}
-                </Typography>
-                {!isDesktop && deleteBtn}
-              </View>
-            )}
             <Link asChild href={videoHref}>
               <Pressable focusable={false} isTVSelectable={false} onHoverOut={toggleHovered} onHoverIn={toggleHovered}>
                 <Typography
@@ -116,9 +105,19 @@ export const VideoListItem = forwardRef<View, VideoListItemProps>(
               sourceLink={video.channel?.url}
               text={video.channel?.displayName}
             />
-            <VideoItemFooter video={video} />
+            {lastViewedAt ? (
+              <Typography
+                fontWeight="Medium"
+                fontSize={isDesktop ? "sizeSm" : "sizeXS"}
+                color={colors.themeDesaturated500}
+              >
+                {t("lastWatched", { lastWatched: format(lastViewedAt, "yyyy-MM-dd HH:mm") })}
+              </Typography>
+            ) : (
+              <VideoItemFooter video={video} />
+            )}
           </TVFocusGuideHelper>
-          {isDesktop && deleteBtn}
+          {lastViewedAt && deleteBtn}
         </View>
       </View>
     );
@@ -133,7 +132,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     width: "100%",
   },
-  infoContainer: { flexDirection: "row", flex: 1, justifyContent: "space-between" },
+  infoContainer: { flexDirection: "row", flex: 1, justifyContent: "space-between", maxWidth: "63%" },
   textContainer: {
     flex: 1,
     gap: spacing.sm,

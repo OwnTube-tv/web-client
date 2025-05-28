@@ -147,5 +147,6 @@
   "liveStreamOffline": "Direktsändningen är för närvarande offline",
   "streamingNow": "Direktsändning pågår",
   "offline": "Offline",
-  "privacyPolicy": "Integritetspolicy"
+  "privacyPolicy": "Integritetspolicy",
+  "premiumVideoUnavailable": "Це відео зараз недоступне через обмеження преміум-контенту"
 }

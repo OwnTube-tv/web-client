@@ -1,10 +1,12 @@
-import { forwardRef, useImperativeHandle, useMemo, useRef, useState } from "react";
-import { Platform, StyleSheet, View, ViewStyle } from "react-native";
+import { forwardRef, useCallback, useImperativeHandle, useMemo, useRef, useState } from "react";
+import { FlatList, Platform, StyleSheet, View, ViewStyle } from "react-native";
 import { spacing } from "../../theme";
 import { VideoGridCardLoader } from "../loaders";
 import { VideoGridCard } from "../VideoGridCard";
 import { VideoGridProps } from "./VideoGrid";
 import { TVActionCard, TVActionCardProps } from "../TVActionCard";
+import { useBreakpoints } from "../../hooks";
+import { GetVideosVideo } from "../../api/models";
 
 export interface VideoGridContentHandle {
   focusLastItem: () => void;
@@ -16,16 +18,19 @@ interface VideoGridContentProps extends Pick<VideoGridProps, "data" | "variant">
   tvActionCardProps: Omit<TVActionCardProps, "width"> & { isHidden?: boolean };
 }
 
-const MINIMUM_COLUMN_WIDTH = 277;
-
 export const VideoGridContent = forwardRef<VideoGridContentHandle, VideoGridContentProps>(
   ({ isLoading, data = [], variant, backend, tvActionCardProps }, ref) => {
     const [containerWidth, setContainerWidth] = useState(0);
     const lastItemRef = useRef<View>(null);
+
+    const breakpoints = useBreakpoints();
+    const numColumns = useMemo(() => {
+      return breakpoints.isMobile ? 1 : breakpoints.isTablet ? 2 : Platform.isTV ? 4 : 3;
+    }, [breakpoints]);
+
     const columnWidth = useMemo(() => {
-      const numCols = Math.floor(containerWidth / MINIMUM_COLUMN_WIDTH) || 1;
-      return (containerWidth - (numCols - 1) * spacing.xl) / numCols;
-    }, [containerWidth]);
+      return (containerWidth - (numColumns - 1) * spacing.xl) / numColumns;
+    }, [containerWidth, numColumns]);
 
     useImperativeHandle(ref, () => ({
       focusLastItem: () => {
@@ -35,53 +40,107 @@ export const VideoGridContent = forwardRef<VideoGridContentHandle, VideoGridCont
 
     const isTVActionCardVisible = Platform.isTV && !isLoading && !tvActionCardProps.isHidden;
 
+    const listData = useMemo(() => {
+      const numItemsToAdd = numColumns - (data.length % numColumns);
+      if (numItemsToAdd > 0 && Platform.OS !== "web") {
+        return data.concat(
+          [...Array(numItemsToAdd)].map(
+            (_, index) =>
+              ({
+                isEmptyItemForListSpacing: true,
+                isReservedForTVActionCard: isTVActionCardVisible && index === 0,
+              }) as unknown as GetVideosVideo,
+          ),
+        );
+      }
+
+      return data;
+    }, [data, numColumns, isTVActionCardVisible]);
+
+    const renderFlatListItem = useCallback(
+      ({ item: card, index }: { item: (typeof listData)[number]; index: number }) => {
+        const isLastItem = index === data.length - 1;
+
+        if (card.isEmptyItemForListSpacing) {
+          if (card.isReservedForTVActionCard) {
+            return <TVActionCard width={columnWidth} {...tvActionCardProps} />;
+          }
+
+          return <View pointerEvents="none" key={`empty-item-${index}}`} style={styles.gridItemNonWeb} />;
+        }
+
+        return (
+          <View
+            key={card.uuid}
+            style={{
+              ...styles.gridItemNonWeb,
+              ...(Platform.isTV
+                ? {
+                    width: columnWidth,
+                    flex: 0,
+                  }
+                : {}),
+            }}
+          >
+            <VideoGridCard
+              ref={isLastItem ? lastItemRef : undefined}
+              backend={variant === "history" && "backend" in card ? card.backend : backend}
+              video={card}
+            />
+          </View>
+        );
+      },
+      [columnWidth],
+    );
+
     return (
       <View
         style={Platform.select({
           web: { $$css: true, _: "grid-container" },
-          default: {
-            flex: 1,
-            flexDirection: "row",
-            flexWrap: "wrap",
-            gap: spacing.xl,
-            alignItems: "flex-start",
-          },
+          default: styles.gridContainerNonWeb,
         })}
         onLayout={(e) => {
           setContainerWidth(e.nativeEvent.layout.width);
         }}
       >
-        {isLoading
-          ? [...Array(4)].map((_, index) => (
-              <View
-                key={index}
-                style={Platform.select<ViewStyle>({
-                  web: styles.loaderGridItemWeb,
-                  native: { ...styles.loaderGridItemNonWeb, width: columnWidth },
-                })}
-              >
-                <VideoGridCardLoader />
+        {isLoading ? (
+          [...Array(4)].map((_, index) => (
+            <View
+              key={index}
+              style={Platform.select<ViewStyle>({
+                web: styles.loaderGridItemWeb,
+                native: { ...styles.loaderGridItemNonWeb, width: columnWidth },
+              })}
+            >
+              <VideoGridCardLoader />
+            </View>
+          ))
+        ) : Platform.OS === "web" ? (
+          data.map((video, index) => {
+            const isLastItem = index === data.length - 1;
+            return (
+              <View key={video.uuid} style={styles.gridItemWeb}>
+                <VideoGridCard
+                  ref={isLastItem ? lastItemRef : undefined}
+                  backend={variant === "history" && "backend" in video ? video.backend : backend}
+                  video={video}
+                />
               </View>
-            ))
-          : data.map((video, index) => {
-              const isLastItem = index === data.length - 1;
-              return (
-                <View
-                  key={video.uuid}
-                  style={Platform.select<ViewStyle>({
-                    web: styles.gridItemWeb,
-                    default: { ...styles.gridItemNonWeb, width: columnWidth },
-                  })}
-                >
-                  <VideoGridCard
-                    ref={isLastItem ? lastItemRef : undefined}
-                    backend={variant === "history" && "backend" in video ? video.backend : backend}
-                    video={video}
-                  />
-                </View>
-              );
-            })}
-        {isTVActionCardVisible && <TVActionCard width={columnWidth} {...tvActionCardProps} />}
+            );
+          })
+        ) : (
+          <FlatList
+            removeClippedSubviews={false}
+            disableVirtualization
+            key={numColumns}
+            numColumns={numColumns}
+            data={listData}
+            columnWrapperStyle={numColumns > 1 ? styles.listColumnWrapper : undefined}
+            style={styles.gapXL}
+            contentContainerStyle={styles.gapXL}
+            renderItem={renderFlatListItem}
+          />
+        )}
       </View>
     );
   },
@@ -90,11 +149,20 @@ export const VideoGridContent = forwardRef<VideoGridContentHandle, VideoGridCont
 VideoGridContent.displayName = "VideoGridContent";
 
 const styles = StyleSheet.create({
+  gapXL: { gap: spacing.xl },
+  gridContainerNonWeb: {
+    alignItems: "flex-start",
+    flex: 1,
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: spacing.xl,
+  },
   gridItemNonWeb: {
     alignSelf: "flex-start",
-    height: "auto",
+    flex: 1,
   },
   gridItemWeb: { flex: 1, width: "auto" },
+  listColumnWrapper: { gap: spacing.xl, minWidth: "100%" },
   loaderGridItemNonWeb: {
     aspectRatio: 1.145,
     flexDirection: "row",

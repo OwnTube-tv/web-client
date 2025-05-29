@@ -3,4 +3,3 @@ export * from "./channels";
 export * from "./instances";
 export * from "./playlists";
 export * from "./videos";
-export * from "./liveStreams";

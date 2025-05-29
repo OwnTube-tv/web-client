@@ -34,6 +34,8 @@ export enum QUERY_KEYS {
   homepageLatestVideosView = "homepageLatestVideosView",
   categoryVideosView = "categoryVideosView",
   channelLatestVideosView = "channelLatestVideosView",
+  premiumAdsCollection = "premiumAdsCollection",
+  premiumAdsCaptionsCollection = "premiumAdsCaptionsCollection",
 }
 
 export const WRONG_SERVER_VERSION_STATUS_CODE = 444;

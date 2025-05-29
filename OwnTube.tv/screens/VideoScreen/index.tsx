@@ -4,7 +4,7 @@ import { RootStackParams } from "../../app/_layout";
 import { ROUTES } from "../../types";
 import { useGetVideoCaptionsQuery, useGetVideoQuery } from "../../api";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { Loader, FocusWrapper, FullScreenModal, ErrorTextWithRetry, Button } from "../../components";
+import { Loader, FocusWrapper, FullScreenModal, ErrorTextWithRetry, Button, Typography } from "../../components";
 import { useViewHistory } from "../../hooks";
 import { StatusBar } from "expo-status-bar";
 import { Settings } from "../../components/VideoControlsOverlay/components/modals";
@@ -15,6 +15,8 @@ import useFullScreenVideoPlayback from "../../hooks/useFullScreenVideoPlayback";
 import Share from "../../components/VideoControlsOverlay/components/modals/Share";
 import VideoDetails from "../../components/VideoControlsOverlay/components/modals/VideoDetails";
 import { colorSchemes, spacing } from "../../theme";
+import { useTheme } from "@react-navigation/native";
+import { ErrorUnavailableLogo } from "../../components/Svg";
 
 export const VideoScreen = () => {
   const { t } = useTranslation();
@@ -26,8 +28,10 @@ export const VideoScreen = () => {
   const { isFullscreen, toggleFullscreen } = useFullScreenVideoPlayback();
   const { top } = useSafeAreaInsets();
   const [quality, setQuality] = useState("auto");
+  const { colors } = useTheme();
 
   const isWaitingForLive = data?.state?.id === 4;
+  const isPremiumVideo = [true, "true"].includes(data?.pluginData?.["is-premium-content"]);
 
   useEffect(() => {
     if (data && params?.backend) {
@@ -116,6 +120,18 @@ export const VideoScreen = () => {
     );
   }
 
+  if (isPremiumVideo) {
+    return (
+      <View style={[{ paddingTop: top, backgroundColor: colors.theme50 }, styles.flex1]}>
+        <Button onPress={handleBackButtonPress} contrast="low" icon="Arrow-Left" style={styles.backButton} />
+        <View style={styles.premiumRestrictionContainer}>
+          <ErrorUnavailableLogo />
+          <Typography style={styles.premiumRestrictionText}>{t("premiumVideoUnavailable")}</Typography>
+        </View>
+      </View>
+    );
+  }
+
   if (!uri && !isWaitingForLive) {
     return null;
   }
@@ -176,6 +192,14 @@ const styles = StyleSheet.create({
   backButton: { alignSelf: "flex-start", height: 48, margin: spacing.sm, width: 48 },
   errorContainer: { alignItems: "center", flex: 1, height: "100%", justifyContent: "center", width: "100%" },
   flex1: { flex: 1 },
+  premiumRestrictionContainer: {
+    alignItems: "center",
+    flex: 1,
+    gap: spacing.xl,
+    justifyContent: "center",
+    paddingHorizontal: spacing.xl,
+  },
+  premiumRestrictionText: { textAlign: "center" },
   statusBarUnderlay: { backgroundColor: colorSchemes.dark.colors.black100, width: "100%" },
   videoContainer: { minHeight: "100%", minWidth: "100%" },
 });

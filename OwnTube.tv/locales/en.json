@@ -147,5 +147,6 @@
   "liveStreamOffline": "Live stream is currently offline",
   "streamingNow": "Streaming now",
   "offline": "Offline",
-  "privacyPolicy": "Privacy policy"
+  "privacyPolicy": "Privacy policy",
+  "premiumVideoUnavailable": "Den här videon är inte tillgänglig för tillfället på grund av begränsningar för premiuminnehåll"
 }

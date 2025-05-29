@@ -86,7 +86,9 @@ export const AppConfigContextProvider = ({ children }: PropsWithChildren) => {
 
   useEffect(() => {
     queryClient.setDefaultOptions({
-      queries: { staleTime: currentInstanceConfig?.customizations?.refreshQueriesStaleTime || GLOBAL_QUERY_STALE_TIME },
+      queries: {
+        staleTime: currentInstanceConfig?.customizations?.refreshQueriesStaleTimeMs || GLOBAL_QUERY_STALE_TIME,
+      },
     });
   }, [currentInstanceConfig, queryClient]);
 

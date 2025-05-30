@@ -15,11 +15,13 @@ describe("useViewHistory", () => {
 
   it("should get view history sorted by last viewed date and limited by the specified number", async () => {
     (readFromAsyncStorage as jest.Mock).mockResolvedValueOnce(["uuid1", "uuid2"]);
+    // First call for new format keys
     (multiGetFromAsyncStorage as jest.Mock).mockResolvedValueOnce([
-      ["uuid1", JSON.stringify({ lastViewedAt: 123 })],
-      ["uuid2", JSON.stringify({ lastViewedAt: 125 })],
-      ["uuid3", JSON.stringify({ lastViewedAt: 109 })],
+      ["view_history/uuid1", JSON.stringify({ lastViewedAt: 123 })],
+      ["view_history/uuid2", JSON.stringify({ lastViewedAt: 125 })],
     ]);
+    // Second call for old format keys (fallback)
+    (multiGetFromAsyncStorage as jest.Mock).mockResolvedValueOnce([]);
 
     const { result } = renderHook(() => useViewHistory({ enabled: true, maxItems: 2 }), { wrapper });
 
@@ -40,7 +42,7 @@ describe("useViewHistory", () => {
 
     expect(writeToAsyncStorage).toHaveBeenCalledWith(STORAGE.VIEW_HISTORY, ["uuid3", "uuid1"]);
 
-    expect(writeToAsyncStorage).toHaveBeenLastCalledWith("uuid3", {
+    expect(writeToAsyncStorage).toHaveBeenLastCalledWith("view_history/uuid3", {
       firstViewedAt: 1234,
       lastViewedAt: 1234,
       name: "big bug buggy",
@@ -67,7 +69,7 @@ describe("useViewHistory", () => {
       await result.current.updateHistory({ data: { uuid: "uuid3", timestamp: 12345 } });
     });
 
-    expect(writeToAsyncStorage).toHaveBeenCalledWith("uuid3", {
+    expect(writeToAsyncStorage).toHaveBeenCalledWith("view_history/uuid3", {
       firstViewedAt: 1234,
       lastViewedAt: 1234,
       name: "big bug buggy",
@@ -85,8 +87,13 @@ describe("useViewHistory", () => {
       await result.current.clearHistory();
     });
 
-    expect(deleteFromAsyncStorage).toHaveBeenNthCalledWith(1, ["uuid3", "uuid1", "uuid2"]);
-    expect(deleteFromAsyncStorage).toHaveBeenNthCalledWith(2, [STORAGE.VIEW_HISTORY]);
+    expect(deleteFromAsyncStorage).toHaveBeenNthCalledWith(1, [
+      "view_history/uuid3",
+      "view_history/uuid1",
+      "view_history/uuid2",
+    ]);
+    expect(deleteFromAsyncStorage).toHaveBeenNthCalledWith(2, ["uuid3", "uuid1", "uuid2"]);
+    expect(deleteFromAsyncStorage).toHaveBeenNthCalledWith(3, [STORAGE.VIEW_HISTORY]);
   });
 
   it("should remove history for a specified backend", async () => {
@@ -103,7 +110,8 @@ describe("useViewHistory", () => {
       await result.current.clearInstanceHistory("backend1");
     });
 
-    expect(deleteFromAsyncStorage).toHaveBeenCalledWith(["uuid1", "uuid3"]);
+    expect(deleteFromAsyncStorage).toHaveBeenNthCalledWith(1, ["view_history/uuid1", "view_history/uuid3"]);
+    expect(deleteFromAsyncStorage).toHaveBeenNthCalledWith(2, ["uuid1", "uuid3"]);
     expect(writeToAsyncStorage).toHaveBeenCalledWith(STORAGE.VIEW_HISTORY, ["uuid2"]);
   });
 });

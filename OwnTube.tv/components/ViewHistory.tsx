@@ -44,7 +44,12 @@ export const ViewHistory = () => {
         style={styles.clearModalWrapper}
         pointerEvents="box-none"
       >
-        <ModalContainer onClose={() => toggleModal(false)} title={t("clearSiteHistoryQuestion")}>
+        <ModalContainer
+          onClose={() => toggleModal(false)}
+          title={t("clearSiteHistoryQuestion", {
+            appName: currentInstanceConfig?.customizations?.pageTitle ?? backend,
+          })}
+        >
           <View style={styles.modalContentContainer}>
             <Button onPress={() => toggleModal(false)} text={t("cancel")} />
             <Button
@@ -106,7 +111,9 @@ export const ViewHistory = () => {
         <Button
           icon="Trash"
           onPress={handleClearConfirmation}
-          text={t("clearSiteHistory", { appName: currentInstanceConfig?.customizations?.pageTitle ?? backend })}
+          text={t("clearSiteHistory", {
+            appName: currentInstanceConfig?.customizations?.pageTitle ?? backend,
+          })}
         />
       </View>
       <Spacer height={spacing.xl} />

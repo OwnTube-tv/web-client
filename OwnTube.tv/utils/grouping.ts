@@ -25,7 +25,7 @@ export const groupHistoryEntriesByTime = (
       } else if (differenceInCalendarMonths(new Date(), date) <= 1) {
         titleKey = "lastMonth";
       } else if (differenceInCalendarYears(new Date(), date) <= 1) {
-        titleKey = "lastYear";
+        titleKey = "last12Months";
       } else {
         titleKey = "olderThanAYear";
       }

@@ -4,8 +4,8 @@ import {
   QUERY_KEYS,
   useGetCategoriesQuery,
   useGetChannelsQuery,
-  useGetLiveStreamsCollectionQuery,
   useGetPlaylistsQuery,
+  useGetVideoFullInfoCollectionQuery,
   useGetVideosQuery,
 } from "../../api";
 import { useMemo, useState } from "react";
@@ -62,7 +62,7 @@ export const HomeScreen = () => {
     );
   }, [currentLiveVideos, currentInstanceConfig]);
 
-  const liveVideosData = useGetLiveStreamsCollectionQuery(liveVideoIds);
+  const liveVideosData = useGetVideoFullInfoCollectionQuery(liveVideoIds, QUERY_KEYS.liveStreamsCollection);
 
   const historyData = useMemo(() => {
     return (

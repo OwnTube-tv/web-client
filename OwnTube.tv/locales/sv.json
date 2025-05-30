@@ -113,6 +113,7 @@
   "lastWeek": "Senaste veckan",
   "lastMonth": "Senaste månaden",
   "lastYear": "Senaste året",
+  "last12Months": "Senaste 12 månaderna",
   "olderThanAYear": "Äldre än ett år",
   "showMore": "Visa mer",
   "findAVideoSite": "Hitta en videosajt",
@@ -148,5 +149,5 @@
   "streamingNow": "Direktsändning pågår",
   "offline": "Offline",
   "privacyPolicy": "Integritetspolicy",
-  "premiumVideoUnavailable": "Це відео зараз недоступне через обмеження преміум-контенту"
+  "premiumVideoUnavailable": "Den här videon är inte tillgänglig för tillfället på grund av begränsningar för premiuminnehåll"
 }

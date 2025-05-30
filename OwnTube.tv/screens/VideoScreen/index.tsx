@@ -2,9 +2,15 @@ import VideoView from "../../components/VideoView";
 import { useFocusEffect, useLocalSearchParams, useRouter } from "expo-router";
 import { RootStackParams } from "../../app/_layout";
 import { ROUTES } from "../../types";
-import { useGetVideoCaptionsQuery, useGetVideoQuery } from "../../api";
+import {
+  QUERY_KEYS,
+  useGetVideoCaptionsCollectionQuery,
+  useGetVideoCaptionsQuery,
+  useGetVideoFullInfoCollectionQuery,
+  useGetVideoQuery,
+} from "../../api";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { Loader, FocusWrapper, FullScreenModal, ErrorTextWithRetry, Button, Typography } from "../../components";
+import { Loader, FocusWrapper, FullScreenModal, ErrorTextWithRetry, Button } from "../../components";
 import { useViewHistory } from "../../hooks";
 import { StatusBar } from "expo-status-bar";
 import { Settings } from "../../components/VideoControlsOverlay/components/modals";
@@ -15,26 +21,31 @@ import useFullScreenVideoPlayback from "../../hooks/useFullScreenVideoPlayback";
 import Share from "../../components/VideoControlsOverlay/components/modals/Share";
 import VideoDetails from "../../components/VideoControlsOverlay/components/modals/VideoDetails";
 import { colorSchemes, spacing } from "../../theme";
-import { useTheme } from "@react-navigation/native";
-import { ErrorUnavailableLogo } from "../../components/Svg";
+import { useAppConfigContext } from "../../contexts";
+import { VideoStreamingPlaylist } from "@peertube/peertube-types";
 
 export const VideoScreen = () => {
   const { t } = useTranslation();
   const router = useRouter();
   const params = useLocalSearchParams<RootStackParams[ROUTES.VIDEO]>();
   const { data, isLoading, isError, refetch } = useGetVideoQuery({ id: params?.id });
+  const { currentInstanceConfig } = useAppConfigContext();
+
+  const premiumAds = currentInstanceConfig?.customizations?.premiumContentAds;
+  const premiumAdsData = useGetVideoFullInfoCollectionQuery(premiumAds, QUERY_KEYS.premiumAdsCollection);
+  const premiumAdsCaptions = useGetVideoCaptionsCollectionQuery(premiumAds, QUERY_KEYS.premiumAdsCaptionsCollection);
+
   const { data: captions } = useGetVideoCaptionsQuery(params?.id);
   const { updateHistory } = useViewHistory();
   const { isFullscreen, toggleFullscreen } = useFullScreenVideoPlayback();
   const { top } = useSafeAreaInsets();
   const [quality, setQuality] = useState("auto");
-  const { colors } = useTheme();
 
   const isWaitingForLive = data?.state?.id === 4;
   const isPremiumVideo = [true, "true"].includes(data?.pluginData?.["is-premium-content"]);
 
   useEffect(() => {
-    if (data && params?.backend) {
+    if (data && params?.backend && !isPremiumVideo) {
       const updateData = {
         ...data,
         previewPath: `https://${params.backend}${data.previewPath}`,
@@ -46,13 +57,25 @@ export const VideoScreen = () => {
     }
   }, [data, params?.backend]);
 
+  const randomPremiumAdIndex = useMemo(() => {
+    return Math.floor(Math.random() * premiumAdsData.length);
+  }, [premiumAdsData.length]);
+
   const uri = useMemo(() => {
     if (!params?.id || !data) {
       return;
     }
 
     if (data?.streamingPlaylists?.length) {
-      const hlsStream = data.streamingPlaylists[0];
+      let hlsStream: VideoStreamingPlaylist;
+
+      const premiumAd = premiumAdsData[randomPremiumAdIndex];
+
+      if (isPremiumVideo && premiumAd?.streamingPlaylists?.length) {
+        hlsStream = premiumAd.streamingPlaylists[0];
+      } else {
+        hlsStream = data.streamingPlaylists[0];
+      }
 
       const streamByQuality = hlsStream.files.find(({ resolution }) => String(resolution.id) === quality);
 
@@ -67,10 +90,10 @@ export const VideoScreen = () => {
     if (!webVideoFileByQuality) return data.files?.filter(({ resolution }) => resolution.id <= 1080)[0]?.fileUrl;
 
     return webVideoFileByQuality?.fileUrl;
-  }, [params, data, quality]);
+  }, [params, data, quality, isPremiumVideo, premiumAdsData]);
 
   const handleSetTimeStamp = (timestamp: number) => {
-    if (!params?.id) {
+    if (!params?.id || isPremiumVideo) {
       return;
     }
 
@@ -120,18 +143,6 @@ export const VideoScreen = () => {
     );
   }
 
-  if (isPremiumVideo) {
-    return (
-      <View style={[{ paddingTop: top, backgroundColor: colors.theme50 }, styles.flex1]}>
-        <Button onPress={handleBackButtonPress} contrast="low" icon="Arrow-Left" style={styles.backButton} />
-        <View style={styles.premiumRestrictionContainer}>
-          <ErrorUnavailableLogo />
-          <Typography style={styles.premiumRestrictionText}>{t("premiumVideoUnavailable")}</Typography>
-        </View>
-      </View>
-    );
-  }
-
   if (!uri && !isWaitingForLive) {
     return null;
   }
@@ -165,7 +176,7 @@ export const VideoScreen = () => {
           viewUrl={data?.url}
           selectedQuality={quality}
           handleSetQuality={setQuality}
-          captions={captions}
+          captions={isPremiumVideo ? premiumAdsCaptions[randomPremiumAdIndex] : captions}
           isWaitingForLive={isWaitingForLive}
         />
         <FullScreenModal onBackdropPress={closeModal} isVisible={visibleModal === "details"}>
@@ -192,14 +203,6 @@ const styles = StyleSheet.create({
   backButton: { alignSelf: "flex-start", height: 48, margin: spacing.sm, width: 48 },
   errorContainer: { alignItems: "center", flex: 1, height: "100%", justifyContent: "center", width: "100%" },
   flex1: { flex: 1 },
-  premiumRestrictionContainer: {
-    alignItems: "center",
-    flex: 1,
-    gap: spacing.xl,
-    justifyContent: "center",
-    paddingHorizontal: spacing.xl,
-  },
-  premiumRestrictionText: { textAlign: "center" },
   statusBarUnderlay: { backgroundColor: colorSchemes.dark.colors.black100, width: "100%" },
   videoContainer: { minHeight: "100%", minWidth: "100%" },
 });

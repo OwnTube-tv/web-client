@@ -1,9 +1,9 @@
 import { useLocalSearchParams } from "expo-router";
 import { RootStackParams } from "../../app/_layout";
-import { Query, useInfiniteQuery, useMutation, useQuery } from "@tanstack/react-query";
-import { GetVideosVideo } from "../models";
+import { Query, useInfiniteQuery, useMutation, useQueries, useQuery } from "@tanstack/react-query";
+import { GetVideosVideo, OwnTubeError } from "../models";
 import { ApiServiceImpl } from "../peertubeVideosApi";
-import { VideosCommonQuery, Video } from "@peertube/peertube-types";
+import { VideosCommonQuery, Video, VideoCaption } from "@peertube/peertube-types";
 import { SOURCES } from "../../types";
 import { getLocalData, retry } from "../helpers";
 
@@ -140,5 +140,50 @@ export const useGetVideoCaptionsQuery = (id?: string, enabled = true) => {
     enabled: !!backend && !!id && enabled,
     staleTime: 0,
     retry,
+  });
+};
+
+export const useGetVideoCaptionsCollectionQuery = (videoIds: string[] = [], queryKey: string) => {
+  const { backend } = useLocalSearchParams<RootStackParams["index"]>();
+
+  return useQueries({
+    queries: videoIds.map((videoId) => ({
+      queryKey: [queryKey, videoId, "captions"],
+      queryFn: async () => {
+        try {
+          return await ApiServiceImpl.getVideoCaptions(backend!, videoId!);
+        } catch (e) {
+          throw new OwnTubeError({ message: (e as unknown as { message: string }).message });
+        }
+      },
+      retry,
+      enabled: !!backend && videoIds.length > 0,
+    })),
+    combine: (result) => {
+      return result.filter(({ data }) => !!data).map(({ data }) => data || ([] as VideoCaption[]));
+    },
+  });
+};
+
+export const useGetVideoFullInfoCollectionQuery = (videoIds: string[] = [], queryKey: string) => {
+  const { backend } = useLocalSearchParams<RootStackParams["index"]>();
+
+  return useQueries({
+    queries: videoIds.map((videoId) => ({
+      queryKey: [queryKey, videoId],
+      queryFn: async () => {
+        try {
+          const res = await ApiServiceImpl.getVideo(backend!, videoId!);
+          return { ...res, previewPath: `https://${backend}${res?.previewPath}` };
+        } catch (e) {
+          throw new OwnTubeError({ message: (e as unknown as { message: string }).message });
+        }
+      },
+      retry,
+      enabled: !!backend && videoIds.length > 0,
+    })),
+    combine: (result) => {
+      return result.filter(({ data }) => !!data).map(({ data }) => data || ({} as Video));
+    },
   });
 };

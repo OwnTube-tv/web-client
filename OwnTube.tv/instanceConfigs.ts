@@ -24,6 +24,7 @@ const customizationsSchema = z
     hideChannelPlaylistLinks: z.boolean(),
     homeFeaturedLives: z.array(z.string()),
     refreshQueriesStaleTimeMs: z.number(),
+    premiumContentAds: z.array(z.string()),
   })
   .partial();
 

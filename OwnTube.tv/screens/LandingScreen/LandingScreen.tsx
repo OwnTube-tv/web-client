@@ -10,7 +10,7 @@ import { Screen } from "../../layouts";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useAppConfigContext } from "../../contexts";
 import {
-  useGetInstanceConfigQuery,
+  useGetInstanceServerConfigQuery,
   useGetInstanceInfoCollectionQuery,
   useGetInstancesQuery,
   WRONG_SERVER_VERSION_STATUS_CODE,
@@ -41,7 +41,10 @@ export const LandingScreen = () => {
   }, [data]);
 
   const [hostnameToOpen, setHostnameToOpen] = useState<string | undefined>();
-  const { isSuccess: isInstanceConfigValid, error: instanceConfigError } = useGetInstanceConfigQuery(hostnameToOpen);
+  const { isSuccess: isInstanceConfigValid, error: instanceConfigError } = useGetInstanceServerConfigQuery({
+    hostname: hostnameToOpen,
+    shouldValidate: true,
+  });
   const handleSelectSource = (hostname: string) => {
     setHostnameToOpen(hostname);
   };

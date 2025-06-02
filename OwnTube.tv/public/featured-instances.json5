@@ -63,6 +63,9 @@
     description: "A video community focused on sharing best content at the crossroads of education and entertainment, made by some of the best independent creators.",
     hostname: "tilvids.com",
     logoUrl: "https://owntube-tv.github.io/web-client/logos/tilvids.com.jpg",
+    customizations: {
+      loginWithUsernameAndPassword: true,
+    },
   },
   {
     name: "Beeld & Geluid",

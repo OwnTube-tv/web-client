@@ -149,5 +149,14 @@
   "streamingNow": "Streaming now",
   "offline": "Offline",
   "privacyPolicy": "Privacy policy",
-  "premiumVideoUnavailable": "This video is unavailable at the moment, due to premium content restrictions"
+  "premiumVideoUnavailable": "This video is unavailable at the moment, due to premium content restrictions",
+  "signIn": "Sign in",
+  "signInToApp": "Sign in to {{appName}}",
+  "username": "Username",
+  "password": "Password",
+  "forgotPassword": "Forgot password? Reset it at",
+  "noAccountCreateOne": "No account? Create one at",
+  "signInDataIncorrect": "Username or password is incorrect",
+  "email": "Email",
+  "requiredField": "This field is required"
 }

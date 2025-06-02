@@ -58,17 +58,25 @@ export const useGetInstanceInfoCollectionQuery = (instances: string[]) => {
   });
 };
 
-export const useGetInstanceConfigQuery = (hostname?: string) => {
+export const useGetInstanceServerConfigQuery = ({
+  hostname,
+  shouldValidate,
+}: Partial<{
+  hostname: string;
+  shouldValidate: boolean;
+}>) => {
   const { t } = useTranslation();
 
   return useQuery({
-    queryKey: [QUERY_KEYS.instanceConfig, hostname],
+    queryKey: [QUERY_KEYS.instanceServerConfig, hostname],
     queryFn: async () => {
-      Toast.show({ type: "info", text1: t("checkingInstance", { hostname }), autoHide: false });
+      if (shouldValidate) {
+        Toast.show({ type: "info", text1: t("checkingInstance", { hostname }), autoHide: false });
+      }
 
       const res = await InstanceInformationApiImpl.getInstanceConfig(hostname!);
 
-      if (!!res.serverVersion && Number(res.serverVersion[0]) < 5) {
+      if (shouldValidate && !!res.serverVersion && Number(res.serverVersion[0]) < 5) {
         throw new OwnTubeError({
           message: t("incompatibleServerVersion", { serverVersion: res.serverVersion }),
           code: WRONG_SERVER_VERSION_STATUS_CODE,

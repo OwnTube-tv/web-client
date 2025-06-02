@@ -188,6 +188,16 @@ export const Sidebar: FC<SidebarProps> = ({ backend, ...navigationProps }) => {
         </>
       )}
       <View style={styles.routesContainer}>
+        {currentInstanceConfig?.customizations?.loginWithUsernameAndPassword && (
+          <Link href={{ pathname: ROUTES.SIGNIN, params: { backend } }} asChild>
+            <Button
+              justifyContent="flex-start"
+              icon={"Sign-in"}
+              text={shouldExpand ? t("signIn") : undefined}
+              style={paddingHelperStyle}
+            />
+          </Link>
+        )}
         <Button
           justifyContent="flex-start"
           onPress={() => handleToggleShareModal({ staticHeaderKey: "shareVideoSite", staticLink: homeShareLink })}

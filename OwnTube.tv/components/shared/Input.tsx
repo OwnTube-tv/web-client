@@ -1,15 +1,18 @@
 import { useState } from "react";
-import { StyleSheet, TextInput, TextInputProps, View } from "react-native";
+import { Platform, StyleSheet, TextInput, TextInputProps, View } from "react-native";
 import { Button } from "./Button";
-import { borderRadius } from "../../theme";
+import { borderRadius, spacing } from "../../theme";
 import { useTheme } from "@react-navigation/native";
+import { Typography } from "../Typography";
 
 interface InputProps extends TextInputProps {
   buttonText?: string;
   handleButtonPress?: () => void;
+  variant?: "outlined" | "default";
+  error?: string;
 }
 
-export const Input = ({ buttonText, handleButtonPress, ...props }: InputProps) => {
+export const Input = ({ buttonText, handleButtonPress, variant = "outlined", error, ...props }: InputProps) => {
   const [isFocused, setIsFocused] = useState(false);
   const { colors } = useTheme();
 
@@ -23,16 +26,16 @@ export const Input = ({ buttonText, handleButtonPress, ...props }: InputProps) =
         }}
         onBlur={(e) => {
           setIsFocused(false);
-          props.onFocus?.(e);
+          props.onBlur?.(e);
         }}
         style={[
           {
             ...styles.input,
-            borderColor: isFocused ? colors.theme500 : colors.theme200,
+            borderColor: isFocused ? colors.theme500 : error ? colors.error500 : colors.theme200,
             backgroundColor: colors.theme100,
-            borderWidth: isFocused ? 2 : 1,
+            borderWidth: isFocused || error ? 2 : variant === "default" ? 0 : 1,
             color: props.readOnly ? colors.themeDesaturated500 : colors.theme950,
-            padding: isFocused ? 15 : 16,
+            padding: (isFocused || error ? 14 : 16) - (Platform.isTVOS ? 16 : 0),
           },
           props.style,
         ]}
@@ -41,6 +44,11 @@ export const Input = ({ buttonText, handleButtonPress, ...props }: InputProps) =
         <View style={styles.buttonContainer}>
           <Button text={buttonText} onPress={handleButtonPress} contrast="high" />
         </View>
+      )}
+      {error && (
+        <Typography style={styles.errorText} fontSize="sizeXS" color={colors.error500}>
+          {error}
+        </Typography>
       )}
     </View>
   );
@@ -52,6 +60,9 @@ const styles = StyleSheet.create({
     position: "absolute",
     right: 6,
     top: 6,
+  },
+  errorText: {
+    marginTop: spacing.sm,
   },
   input: {
     borderRadius: borderRadius.radiusMd,

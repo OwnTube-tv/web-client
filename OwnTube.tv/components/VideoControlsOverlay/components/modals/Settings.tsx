@@ -13,12 +13,10 @@ import { Typography } from "../../../Typography";
 import { RootStackParams } from "../../../../app/_layout";
 import { writeToAsyncStorage } from "../../../../utils";
 import { STORAGE } from "../../../../types";
-import { useQueryClient } from "@tanstack/react-query";
-import { useMemo } from "react";
-import { PeertubeInstance } from "../../../../api/models";
 import Constants from "expo-constants";
 import DeviceCapabilities from "../../../DeviceCapabilities";
 import Picker from "../../../shared/Picker";
+import { useGetInstanceInfoQuery } from "../../../../api";
 
 interface SettingsProps {
   onClose: () => void;
@@ -30,13 +28,9 @@ export const Settings = ({ onClose }: SettingsProps) => {
   const { currentLang, handleChangeLang, t } = useSelectLocale();
   const { dark: isDarkTheme, colors } = useTheme();
   const router = useRouter();
-  const queryClient = useQueryClient();
 
-  const instanceName = useMemo(() => {
-    const instanceInfo = queryClient.getQueryData<{ instance: PeertubeInstance }>(["instance", backend]);
-
-    return instanceInfo?.instance?.name;
-  }, [queryClient, backend]);
+  const { data: instanceInfo } = useGetInstanceInfoQuery(backend);
+  const { currentInstanceConfig } = useAppConfigContext();
 
   const handleLeaveInstance = () => {
     writeToAsyncStorage(STORAGE.DATASOURCE, "").then(() => {
@@ -77,7 +71,9 @@ export const Settings = ({ onClose }: SettingsProps) => {
                   onPress={handleLeaveInstance}
                   contrast="none"
                   icon="Exit"
-                  text={t("leaveInstance", { instance: instanceName })}
+                  text={t("leaveInstance", {
+                    instance: currentInstanceConfig?.customizations?.pageTitle || instanceInfo?.name,
+                  })}
                 />
               </View>
               <Spacer height={spacing.lg} />

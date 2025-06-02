@@ -148,5 +148,14 @@
   "streamingNow": "Зараз в етері",
   "offline": "Не в етері",
   "privacyPolicy": "Політика конфіденційності",
-  "premiumVideoUnavailable": "Це відео зараз недоступне через обмеження преміум-контенту"
+  "premiumVideoUnavailable": "Це відео зараз недоступне через обмеження преміум-контенту",
+  "signIn": "Увійти",
+  "signInToApp": "Увійти в обліковий запис на {{appName}}",
+  "username": "Імʼя користувача",
+  "password": "Пароль",
+  "forgotPassword": "Забули пароль? Скиньте на",
+  "noAccountCreateOne": "Немає облікового запису? Створіть на",
+  "signInDataIncorrect": "Імʼя користувача або пароль не підходять",
+  "email": "Ел. пошта",
+  "requiredField": "Обовʼязкове поле"
 }

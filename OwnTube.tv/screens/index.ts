@@ -8,3 +8,4 @@ export * from "./Playlists";
 export * from "./CategoriesScreen";
 export * from "./CategoryScreen";
 export * from "./Playlist";
+export * from "./SignIn";

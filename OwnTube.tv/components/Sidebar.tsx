@@ -5,14 +5,19 @@ import { Link } from "expo-router";
 import { useTheme } from "@react-navigation/native";
 import { ROUTES, STORAGE } from "../types";
 import { useTranslation } from "react-i18next";
-import { useAppConfigContext, useColorSchemeContext, useFullScreenModalContext } from "../contexts";
+import {
+  useAppConfigContext,
+  useAuthSessionContext,
+  useColorSchemeContext,
+  useFullScreenModalContext,
+} from "../contexts";
 import { Platform, StyleSheet, View } from "react-native";
 import { Button, Separator } from "./shared";
 import { spacing } from "../theme";
 import { Spacer } from "./shared/Spacer";
 import { useBreakpoints, useShareButton } from "../hooks";
 import { InstanceInfo } from "./InstanceInfo";
-import { Settings } from "./VideoControlsOverlay/components/modals";
+import { Settings, SignOutModal } from "./VideoControlsOverlay/components/modals";
 import { useNetInfo } from "@react-native-community/netinfo";
 import { writeToAsyncStorage } from "../utils";
 import useLeaveInstancePermission from "../hooks/useLeaveInstancePermission";
@@ -71,6 +76,7 @@ export const Sidebar: FC<SidebarProps> = ({ backend, ...navigationProps }) => {
   const { primaryBackend, currentInstanceConfig } = useAppConfigContext();
   const safeArea = useSafeAreaInsets();
   const { handleToggleShareModal } = useShareButton();
+  const { session } = useAuthSessionContext();
 
   const isLeaveInstanceShown =
     !primaryBackend && isLeaveInstanceAllowed && !currentInstanceConfig?.customizations?.menuHideLeaveButton;
@@ -84,6 +90,11 @@ export const Sidebar: FC<SidebarProps> = ({ backend, ...navigationProps }) => {
     writeToAsyncStorage(STORAGE.DATASOURCE, "").then(() => {
       navigationProps.navigation.navigate(`(home)/${ROUTES.INDEX}`);
     });
+  };
+
+  const handleSignOut = () => {
+    toggleModal(true);
+    setContent(<SignOutModal handleClose={() => toggleModal(false)} />);
   };
 
   const paddingHelperStyle = { ...styles.paddingHHelper, width: shouldExpand ? undefined : 48 };
@@ -189,14 +200,26 @@ export const Sidebar: FC<SidebarProps> = ({ backend, ...navigationProps }) => {
       )}
       <View style={styles.routesContainer}>
         {currentInstanceConfig?.customizations?.loginWithUsernameAndPassword && (
-          <Link href={{ pathname: ROUTES.SIGNIN, params: { backend } }} asChild>
-            <Button
-              justifyContent="flex-start"
-              icon={"Sign-in"}
-              text={shouldExpand ? t("signIn") : undefined}
-              style={paddingHelperStyle}
-            />
-          </Link>
+          <>
+            {session ? (
+              <Button
+                justifyContent="flex-start"
+                icon={"Exit"}
+                text={shouldExpand ? t("signOut") : undefined}
+                style={paddingHelperStyle}
+                onPress={handleSignOut}
+              />
+            ) : (
+              <Link href={{ pathname: ROUTES.SIGNIN, params: { backend } }} asChild>
+                <Button
+                  justifyContent="flex-start"
+                  icon={"Sign-in"}
+                  text={shouldExpand ? t("signIn") : undefined}
+                  style={paddingHelperStyle}
+                />
+              </Link>
+            )}
+          </>
         )}
         <Button
           justifyContent="flex-start"

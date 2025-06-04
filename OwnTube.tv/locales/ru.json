@@ -150,6 +150,8 @@
   "privacyPolicy": "Политика конфиденциальности",
   "premiumVideoUnavailable": "Это видео сейчас недоступно из-за ограничений премиум-контента",
   "signIn": "Войти",
+  "signOut": "Выйти",
+  "signOutPermanently": "Выйти из учетной записи {{appName}}?",
   "signInToApp": "Войти в учетную запись на {{appName}}",
   "username": "Имя пользователя",
   "password": "Пароль",

@@ -151,6 +151,8 @@
   "privacyPolicy": "Integritetspolicy",
   "premiumVideoUnavailable": "Den här videon är inte tillgänglig för tillfället på grund av begränsningar för premiuminnehåll",
   "signIn": "Logga in",
+  "signOut": "Logga ut",
+  "signOutPermanently": "Logga ut permanent från {{appName}}?",
   "signInToApp": "Logga in på {{appName}}",
   "username": "Användarnamn",
   "password": "Lösenord",

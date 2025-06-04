@@ -29,6 +29,7 @@ import { useBreakpoints } from "../hooks";
 import { DrawerHeaderProps } from "@react-navigation/drawer";
 import { SHAREABLE_ROUTE_MODAL_TITLES } from "../navigation/constants";
 import { GLOBAL_QUERY_STALE_TIME } from "../api";
+import { AuthSessionContextProvider } from "../contexts";
 
 export const CLOSED_DRAWER_WIDTH = 64;
 export const OPEN_DRAWER_WIDTH = 272;
@@ -164,20 +165,22 @@ export default function RootLayout() {
   }
 
   return (
-    <SafeAreaProvider>
-      <GestureHandlerRootView>
-        <QueryClientProvider client={queryClient}>
-          <AppConfigContextProvider>
-            {isWeb && <ReactQueryDevtools initialIsOpen={false} />}
-            <ColorSchemeContextProvider>
-              <FullScreenModalContextProvider>
-                <RootStack />
-              </FullScreenModalContextProvider>
-            </ColorSchemeContextProvider>
-          </AppConfigContextProvider>
-        </QueryClientProvider>
-      </GestureHandlerRootView>
-    </SafeAreaProvider>
+    <AuthSessionContextProvider>
+      <SafeAreaProvider>
+        <GestureHandlerRootView>
+          <QueryClientProvider client={queryClient}>
+            <AppConfigContextProvider>
+              {isWeb && <ReactQueryDevtools initialIsOpen={false} />}
+              <ColorSchemeContextProvider>
+                <FullScreenModalContextProvider>
+                  <RootStack />
+                </FullScreenModalContextProvider>
+              </ColorSchemeContextProvider>
+            </AppConfigContextProvider>
+          </QueryClientProvider>
+        </GestureHandlerRootView>
+      </SafeAreaProvider>
+    </AuthSessionContextProvider>
   );
 }
 

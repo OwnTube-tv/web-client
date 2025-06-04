@@ -27,6 +27,7 @@ export enum ROUTES {
   PLAYLISTS = "playlists",
   PLAYLIST = "playlist",
   PRIVACY = "privacy",
+  SIGNIN = "signin",
 }
 
 export interface Category {

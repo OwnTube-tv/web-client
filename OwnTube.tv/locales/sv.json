@@ -149,5 +149,14 @@
   "streamingNow": "Direktsändning pågår",
   "offline": "Offline",
   "privacyPolicy": "Integritetspolicy",
-  "premiumVideoUnavailable": "Den här videon är inte tillgänglig för tillfället på grund av begränsningar för premiuminnehåll"
+  "premiumVideoUnavailable": "Den här videon är inte tillgänglig för tillfället på grund av begränsningar för premiuminnehåll",
+  "signIn": "Logga in",
+  "signInToApp": "Logga in på {{appName}}",
+  "username": "Användarnamn",
+  "password": "Lösenord",
+  "forgotPassword": "Glömt lösenordet? Återställ det på",
+  "noAccountCreateOne": "Inget konto? Skapa ett på",
+  "signInDataIncorrect": "Användarnamn eller lösenord är felaktigt",
+  "email": "E-post",
+  "requiredField": "Detta fält är obligatoriskt"
 }

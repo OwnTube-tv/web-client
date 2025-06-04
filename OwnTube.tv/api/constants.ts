@@ -16,7 +16,7 @@ export enum QUERY_KEYS {
   video = "video",
   instances = "instances",
   instance = "instance",
-  instanceConfig = "instanceConfig",
+  instanceServerConfig = "instanceServerConfig",
   channel = "channel",
   channels = "channels",
   channelsCollection = "channelsCollection",

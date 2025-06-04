@@ -118,6 +118,7 @@ const RootStack = () => {
             <Drawer.Screen name={`(home)/${ROUTES.CATEGORY}`} />
             <Drawer.Screen name={`(home)/${ROUTES.PLAYLISTS}`} />
             <Drawer.Screen name={`(home)/${ROUTES.PLAYLIST}`} />
+            <Drawer.Screen name={`(home)/${ROUTES.SIGNIN}`} />
           </Drawer>
           <Toast
             topOffset={top || undefined}
@@ -196,4 +197,5 @@ export type RootStackParams = {
   [ROUTES.CATEGORIES]: { backend: string };
   [ROUTES.CATEGORY]: { backend: string; category: string };
   [ROUTES.PLAYLIST]: { backend: string; playlist: string };
+  [ROUTES.SIGNIN]: { backend: string };
 };

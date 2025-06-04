@@ -1,6 +1,7 @@
 import { PeertubeInstance } from "./models";
 import { AxiosInstanceBasedApi } from "./axiosInstance";
 import { handleAxiosErrorWithRetry } from "./errorHandler";
+import { ServerConfig } from "@peertube/peertube-types";
 
 export class InstanceInformationApi extends AxiosInstanceBasedApi {
   constructor() {
@@ -23,11 +24,11 @@ export class InstanceInformationApi extends AxiosInstanceBasedApi {
   }
 
   /**
-   * Get "About instance" info
+   * Get "Instance server config" info
    */
-  async getInstanceConfig(instanceURL: string): Promise<{ serverVersion: string }> {
+  async getInstanceConfig(instanceURL: string): Promise<ServerConfig> {
     try {
-      const response = await this.instance.get("config", {
+      const response = await this.instance.get<ServerConfig>("config", {
         baseURL: `https://${instanceURL}/api/v1`,
       });
 

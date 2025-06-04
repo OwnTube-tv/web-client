@@ -3,7 +3,7 @@ import { z } from "zod";
 const colorSchemeNameSchema = z.union([z.literal("light"), z.literal("dark"), z.null(), z.undefined()]);
 
 const customizationsSchema = z
-  .object({
+  .strictObject({
     pageTitle: z.string(),
     homeLatestPublishedVideoCount: z.number(),
     homeRecentlyWatchedVideoCount: z.number(),
@@ -22,6 +22,7 @@ const customizationsSchema = z
     showMoreSize: z.number(),
     hideVideoSiteLinks: z.boolean(),
     hideChannelPlaylistLinks: z.boolean(),
+    loginWithUsernameAndPassword: z.boolean(),
     homeFeaturedLives: z.array(z.string()),
     refreshQueriesStaleTimeMs: z.number(),
     premiumContentAds: z.array(z.string()),

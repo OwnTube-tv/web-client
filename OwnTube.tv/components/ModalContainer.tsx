@@ -56,5 +56,5 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     marginBottom: spacing.lg,
   },
-  headerText: { alignSelf: "center", maxWidth: "80%" },
+  headerText: { alignSelf: "center" },
 });

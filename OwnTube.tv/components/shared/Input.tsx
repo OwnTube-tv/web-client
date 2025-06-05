@@ -14,7 +14,7 @@ interface InputProps extends TextInputProps {
 
 export const Input = ({ buttonText, handleButtonPress, variant = "outlined", error, ...props }: InputProps) => {
   const [isFocused, setIsFocused] = useState(false);
-  const { colors } = useTheme();
+  const { colors, dark: isDarkTheme } = useTheme();
 
   return (
     <View accessible={false}>
@@ -39,6 +39,7 @@ export const Input = ({ buttonText, handleButtonPress, variant = "outlined", err
           },
           props.style,
         ]}
+        keyboardAppearance={props.keyboardAppearance || isDarkTheme ? "dark" : "light"}
       />
       {buttonText && (
         <View style={styles.buttonContainer}>

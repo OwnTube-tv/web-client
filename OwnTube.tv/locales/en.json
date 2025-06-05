@@ -151,6 +151,8 @@
   "privacyPolicy": "Privacy policy",
   "premiumVideoUnavailable": "This video is unavailable at the moment, due to premium content restrictions",
   "signIn": "Sign in",
+  "signOut": "Sign out",
+  "signOutPermanently": "Sign out permanently from {{appName}}?",
   "signInToApp": "Sign in to {{appName}}",
   "username": "Username",
   "password": "Password",

@@ -5,12 +5,7 @@ import { Link } from "expo-router";
 import { useTheme } from "@react-navigation/native";
 import { ROUTES, STORAGE } from "../types";
 import { useTranslation } from "react-i18next";
-import {
-  useAppConfigContext,
-  useAuthSessionContext,
-  useColorSchemeContext,
-  useFullScreenModalContext,
-} from "../contexts";
+import { useAppConfigContext, useColorSchemeContext, useFullScreenModalContext } from "../contexts";
 import { Platform, StyleSheet, View } from "react-native";
 import { Button, Separator } from "./shared";
 import { spacing } from "../theme";
@@ -24,6 +19,7 @@ import useLeaveInstancePermission from "../hooks/useLeaveInstancePermission";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { QrCodeLinkModal } from "./QRCodeLinkModal";
 import build_info from "../build-info.json";
+import { useAuthSessionStore } from "../store";
 
 const SIDEBAR_ROUTES = [
   {
@@ -76,7 +72,7 @@ export const Sidebar: FC<SidebarProps> = ({ backend, ...navigationProps }) => {
   const { primaryBackend, currentInstanceConfig } = useAppConfigContext();
   const safeArea = useSafeAreaInsets();
   const { handleToggleShareModal } = useShareButton();
-  const { session } = useAuthSessionContext();
+  const { session } = useAuthSessionStore();
 
   const isLeaveInstanceShown =
     !primaryBackend && isLeaveInstanceAllowed && !currentInstanceConfig?.customizations?.menuHideLeaveButton;

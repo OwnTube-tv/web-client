@@ -22,7 +22,8 @@ import { z } from "zod";
 import { SignInFormLoader } from "../../components/loaders/SignInFormLoader";
 import { PropsWithChildren, useCallback } from "react";
 import { useCustomFocusManager } from "../../hooks";
-import { useAuthSessionContext } from "../../contexts";
+import { useAuthSessionStore } from "../../store";
+import { parseAuthSessionData } from "../../utils/auth";
 
 const signInFormValidationSchema = z.object({
   username: z.string().trim().min(1, "requiredField"),
@@ -58,7 +59,7 @@ export const SignIn = () => {
   const { top } = useSafeAreaInsets();
   const { toggleModal, setContent } = useFullScreenModalContext();
   useCustomFocusManager();
-  const { addSession, selectSession, updateSession } = useAuthSessionContext();
+  const { addSession, selectSession, updateSession } = useAuthSessionStore();
   const router = useRouter();
 
   const { control, handleSubmit, reset, formState } = useForm({
@@ -86,22 +87,7 @@ export const SignIn = () => {
   const handleSignIn = async (formValues: z.infer<typeof signInFormValidationSchema>) => {
     if (loginPrerequisites) {
       const loginResponse = await login({ loginPrerequisites, ...formValues });
-      const authSessionData = {
-        backend,
-        basePath: "/api/v1",
-        email: formValues.username,
-        twoFactorEnabled: false,
-        sessionCreatedAt: new Date().toISOString(),
-        sessionUpdatedAt: new Date().toISOString(),
-        sessionExpired: false,
-        tokenType: loginResponse.token_type,
-        accessToken: loginResponse.access_token,
-        accessTokenIssuedAt: new Date().toISOString(),
-        accessTokenExpiresIn: loginResponse.expires_in,
-        refreshToken: loginResponse.refresh_token,
-        refreshTokenIssuedAt: new Date().toISOString(),
-        refreshTokenExpiresIn: loginResponse.refresh_token_expires_in,
-      };
+      const authSessionData = parseAuthSessionData(loginResponse, backend, formValues.username);
 
       if (loginResponse) {
         await addSession(backend, authSessionData);
@@ -148,7 +134,7 @@ export const SignIn = () => {
                   autoCorrect={false}
                   autoCapitalize="none"
                   value={field.value}
-                  keyboardType="email-address"
+                  keyboardType={Platform.OS !== "web" ? "email-address" : undefined}
                   onChangeText={field.onChange}
                   onBlur={field.onBlur}
                   autoComplete="email"

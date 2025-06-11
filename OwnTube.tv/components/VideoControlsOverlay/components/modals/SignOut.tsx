@@ -7,13 +7,14 @@ import { useTranslation } from "react-i18next";
 import { useGlobalSearchParams } from "expo-router";
 import { RootStackParams } from "../../../../app/_layout";
 import { ROUTES } from "../../../../types";
-import { useAppConfigContext, useAuthSessionContext } from "../../../../contexts";
+import { useAppConfigContext } from "../../../../contexts";
 import { useGetInstanceInfoQuery } from "../../../../api";
+import { useAuthSessionStore } from "../../../../store";
 
 export const SignOutModal = ({ handleClose }: { handleClose: () => void }) => {
   const { t } = useTranslation();
   const { backend } = useGlobalSearchParams<RootStackParams[ROUTES.INDEX]>();
-  const { removeSession } = useAuthSessionContext();
+  const { removeSession } = useAuthSessionStore();
   const { currentInstanceConfig } = useAppConfigContext();
   const { data: instanceInfo } = useGetInstanceInfoQuery(backend);
 

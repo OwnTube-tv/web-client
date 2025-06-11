@@ -29,7 +29,7 @@ import { useBreakpoints } from "../hooks";
 import { DrawerHeaderProps } from "@react-navigation/drawer";
 import { SHAREABLE_ROUTE_MODAL_TITLES } from "../navigation/constants";
 import { GLOBAL_QUERY_STALE_TIME } from "../api";
-import { AuthSessionContextProvider } from "../contexts";
+import { useAuthSessionSync } from "../hooks/useAuthSessionSync";
 
 export const CLOSED_DRAWER_WIDTH = 64;
 export const OPEN_DRAWER_WIDTH = 272;
@@ -42,6 +42,7 @@ const RootStack = () => {
   useEffect(() => {
     readFromAsyncStorage(STORAGE.LOCALE).then(i18n.changeLanguage);
   }, []);
+  useAuthSessionSync();
 
   const breakpoints = useBreakpoints();
   const { backend } = useGlobalSearchParams<{ backend: string }>();
@@ -165,22 +166,20 @@ export default function RootLayout() {
   }
 
   return (
-    <AuthSessionContextProvider>
-      <SafeAreaProvider>
-        <GestureHandlerRootView>
-          <QueryClientProvider client={queryClient}>
-            <AppConfigContextProvider>
-              {isWeb && <ReactQueryDevtools initialIsOpen={false} />}
-              <ColorSchemeContextProvider>
-                <FullScreenModalContextProvider>
-                  <RootStack />
-                </FullScreenModalContextProvider>
-              </ColorSchemeContextProvider>
-            </AppConfigContextProvider>
-          </QueryClientProvider>
-        </GestureHandlerRootView>
-      </SafeAreaProvider>
-    </AuthSessionContextProvider>
+    <SafeAreaProvider>
+      <GestureHandlerRootView>
+        <QueryClientProvider client={queryClient}>
+          <AppConfigContextProvider>
+            {isWeb && <ReactQueryDevtools initialIsOpen={false} />}
+            <ColorSchemeContextProvider>
+              <FullScreenModalContextProvider>
+                <RootStack />
+              </FullScreenModalContextProvider>
+            </ColorSchemeContextProvider>
+          </AppConfigContextProvider>
+        </QueryClientProvider>
+      </GestureHandlerRootView>
+    </SafeAreaProvider>
   );
 }
 

@@ -9,3 +9,7 @@ export const getHumanReadableDuration = (ms: number = 0) => {
 export const removeSecondsFromISODate = (isoDate: string) => {
   return `${isoDate.slice(0, isoDate.lastIndexOf(":"))}Z`;
 };
+
+export function parseISOToEpoch(iso?: string) {
+  return iso ? Math.floor(new Date(iso).getTime() / 1000) : 0;
+}

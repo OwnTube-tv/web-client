@@ -34,7 +34,7 @@ export class AuthApi extends AxiosInstanceBasedApi {
    */
   async login(
     baseURL: string,
-    data: { grant_type: string; username: string; password: string } & OAuthClientLocal,
+    data: { grant_type: string; refresh_token?: string; username?: string; password?: string } & OAuthClientLocal,
   ): Promise<UserLogin & { expires_in: number; refresh_token_expires_in: number }> {
     try {
       const response = await this.instance.post("users/token", data, {

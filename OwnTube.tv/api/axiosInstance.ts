@@ -58,6 +58,7 @@ axiosInstance.interceptors.request.use(async (config) => {
   if (!backend || !session) return config;
 
   const {
+    basePath,
     tokenType,
     accessToken,
     accessTokenIssuedAt,
@@ -80,7 +81,7 @@ axiosInstance.interceptors.request.use(async (config) => {
   const shouldAttachAccessToken = Boolean(
     session &&
       session.backend === backend &&
-      config.baseURL?.startsWith(`https://${backend}`) &&
+      config.baseURL?.startsWith(`https://${backend}${basePath ?? ""}`) &&
       !sessionExpired &&
       accessTokenValid,
   );

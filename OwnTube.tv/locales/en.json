@@ -160,5 +160,7 @@
   "noAccountCreateOne": "No account? Create one at",
   "signInDataIncorrect": "Username or password is incorrect",
   "email": "Email",
-  "requiredField": "This field is required"
+  "requiredField": "This field is required",
+  "signedOut": "You have been signed out",
+  "signInAgain": "Sign in again"
 }

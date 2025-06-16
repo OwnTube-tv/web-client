@@ -49,7 +49,7 @@ const RootStack = () => {
   const pathname = usePathname();
   const { left, top } = useSafeAreaInsets();
 
-  const { isOpen: isModalOpen, content: modalContent, toggleModal } = useFullScreenModalContext();
+  const { isOpen: isModalOpen, content: modalContent, toggleModal, handleModalClose } = useFullScreenModalContext();
 
   const renderAppHeader = useCallback(
     (props: DrawerHeaderProps) => {
@@ -128,7 +128,13 @@ const RootStack = () => {
               info: (props) => <InfoToast {...props} />,
             }}
           />
-          <FullScreenModal onBackdropPress={() => toggleModal?.(false)} isVisible={isModalOpen}>
+          <FullScreenModal
+            onBackdropPress={() => {
+              handleModalClose?.();
+              toggleModal?.(false);
+            }}
+            isVisible={isModalOpen}
+          >
             {modalContent}
           </FullScreenModal>
         </ErrorBoundary>
@@ -199,5 +205,5 @@ export type RootStackParams = {
   [ROUTES.CATEGORIES]: { backend: string };
   [ROUTES.CATEGORY]: { backend: string; category: string };
   [ROUTES.PLAYLIST]: { backend: string; playlist: string };
-  [ROUTES.SIGNIN]: { backend: string };
+  [ROUTES.SIGNIN]: { backend: string; username?: string };
 };

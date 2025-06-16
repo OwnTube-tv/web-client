@@ -5,6 +5,8 @@ const FullScreenModalContext = createContext<{
   toggleModal: (newValue: boolean) => void;
   content?: JSX.Element;
   setContent: (newContent: JSX.Element) => void;
+  handleModalClose?: () => void;
+  setHandleModalClose?: (fn: () => void) => void;
 }>({
   isOpen: false,
   toggleModal: () => {},
@@ -14,6 +16,7 @@ const FullScreenModalContext = createContext<{
 export const FullScreenModalContextProvider: FC<PropsWithChildren> = ({ children }) => {
   const [content, setContent] = useState<JSX.Element>();
   const [isOpen, setIsOpen] = useState(false);
+  const [handleModalClose, setHandleModalClose] = useState<() => void | undefined>();
 
   return (
     <FullScreenModalContext.Provider
@@ -23,10 +26,13 @@ export const FullScreenModalContextProvider: FC<PropsWithChildren> = ({ children
           setIsOpen(newValue);
           if (!newValue) {
             setContent(undefined);
+            setHandleModalClose(undefined);
           }
         },
         content,
         setContent: (newContent: JSX.Element) => setContent(newContent),
+        handleModalClose,
+        setHandleModalClose,
       }}
     >
       {children}

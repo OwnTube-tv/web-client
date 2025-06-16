@@ -40,7 +40,7 @@ const FormComponent = ({ children, ...props }: PropsWithChildren<any>) => {
 
 export const SignIn = () => {
   const { t } = useTranslation();
-  const { backend } = useLocalSearchParams<RootStackParams[ROUTES.SIGNIN]>();
+  const { backend, username = "" } = useLocalSearchParams<RootStackParams[ROUTES.SIGNIN]>();
   const { colors } = useTheme();
 
   const { data: instanceInfo, isLoading: isLoadingInstanceInfo } = useGetInstanceInfoQuery(backend);
@@ -63,8 +63,8 @@ export const SignIn = () => {
   const router = useRouter();
 
   const { control, handleSubmit, reset, formState } = useForm({
-    defaultValues: {
-      username: "",
+    values: {
+      username,
       password: "",
     },
     mode: "onTouched",

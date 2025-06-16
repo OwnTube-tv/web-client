@@ -208,6 +208,10 @@ export const Sidebar: FC<SidebarProps> = ({ backend, ...navigationProps }) => {
             ) : (
               <Link href={{ pathname: ROUTES.SIGNIN, params: { backend } }} asChild>
                 <Button
+                  isActive={
+                    navigationProps.state.index ===
+                    navigationProps.state.routes.findIndex(({ name }) => name === `(home)/${ROUTES.SIGNIN}`)
+                  }
                   justifyContent="flex-start"
                   icon={"Sign-in"}
                   text={shouldExpand ? t("signIn") : undefined}

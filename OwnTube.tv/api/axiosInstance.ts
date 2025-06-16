@@ -105,7 +105,10 @@ axiosInstance.interceptors.request.use(async (config) => {
     }
   }
 
-  // Both tokens unusable logic here
+  if (!accessTokenValid && !refreshTokenValid) {
+    await useAuthSessionStore.getState().updateSession(backend, { sessionExpired: true });
+    return config;
+  }
 
   return config;
 });

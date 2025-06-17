@@ -45,7 +45,12 @@ export const Settings = ({ onClose }: SettingsProps) => {
 
   return (
     <Animated.View entering={SlideInUp} exiting={SlideOutUp} style={styles.animatedContainer} pointerEvents="box-none">
-      <ModalContainer onClose={onClose} title={t("settingsPageTitle")} containerStyle={styles.modalContainer}>
+      <ModalContainer
+        showCloseButton
+        onClose={onClose}
+        title={t("settingsPageTitle")}
+        containerStyle={styles.modalContainer}
+      >
         <ScrollView>
           <Spacer height={spacing.sm} />
           <DeviceCapabilities />

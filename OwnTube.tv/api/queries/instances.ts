@@ -79,7 +79,7 @@ export const useGetInstanceServerConfigQuery = ({
       if (shouldValidate && !!res.serverVersion && Number(res.serverVersion[0]) < 5) {
         throw new OwnTubeError({
           message: t("incompatibleServerVersion", { serverVersion: res.serverVersion }),
-          code: WRONG_SERVER_VERSION_STATUS_CODE,
+          status: WRONG_SERVER_VERSION_STATUS_CODE,
         });
       }
 

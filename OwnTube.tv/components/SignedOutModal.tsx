@@ -9,27 +9,29 @@ import { View, StyleSheet } from "react-native";
 import { Button } from "./shared";
 import { spacing } from "../theme";
 
-export const SignedOutModal = ({ handleClose }: { handleClose: () => Promise<void> }) => {
+export const SignedOutModal = ({ handleClose }: { handleClose: () => void }) => {
   const { t } = useTranslation();
   const { backend } = useGlobalSearchParams<RootStackParams[ROUTES.INDEX]>();
-  const { session } = useAuthSessionStore();
+  const { session, removeSession } = useAuthSessionStore();
   const router = useRouter();
 
   const handleSignInAgain = async () => {
-    await handleClose();
+    handleClose();
+    await removeSession(backend);
     router.navigate({ pathname: ROUTES.SIGNIN, params: { backend, username: session?.email } });
+  };
+
+  const handleSignOut = () => {
+    removeSession(backend);
+    handleClose();
   };
 
   return (
     <Animated.View entering={SlideInUp} exiting={SlideOutUp} style={styles.modalWrapper} pointerEvents="box-none">
-      <ModalContainer containerStyle={{ width: 328 }} onClose={handleClose} title={t("signedOut")}>
+      <ModalContainer containerStyle={styles.modalContainer} onClose={handleClose} title={t("signedOut")}>
         <View style={styles.modalContentContainer}>
-          <Button
-            contrast="high"
-            style={{ width: "100%", height: 48 }}
-            onPress={handleSignInAgain}
-            text={t("signInAgain")}
-          />
+          <Button contrast="low" style={styles.button} onPress={handleSignOut} text={t("signOut")} />
+          <Button contrast="high" style={styles.button} onPress={handleSignInAgain} text={t("signInAgain")} />
         </View>
       </ModalContainer>
     </Animated.View>
@@ -37,6 +39,8 @@ export const SignedOutModal = ({ handleClose }: { handleClose: () => Promise<voi
 };
 
 const styles = StyleSheet.create({
+  button: { flex: 1, height: 48 },
+  modalContainer: { width: 328 },
   modalContentContainer: { flexDirection: "row", gap: spacing.lg, justifyContent: "flex-end" },
   modalWrapper: { alignItems: "center", flex: 1, justifyContent: "center" },
 });

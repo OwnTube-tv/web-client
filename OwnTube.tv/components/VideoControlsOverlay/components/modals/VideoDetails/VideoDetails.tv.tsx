@@ -26,7 +26,7 @@ const VideoDetails = ({ onClose, name, channel, datePublished, description }: Vi
 
   return (
     <Animated.View entering={SlideInLeft} exiting={SlideOutLeft} style={styles.animatedContainer}>
-      <ModalContainer onClose={onClose} title={name} containerStyle={styles.modalContainer}>
+      <ModalContainer showCloseButton onClose={onClose} title={name} containerStyle={styles.modalContainer}>
         <View style={styles.metadataContainer}>
           <ChannelLink
             text={channel?.displayName || ""}

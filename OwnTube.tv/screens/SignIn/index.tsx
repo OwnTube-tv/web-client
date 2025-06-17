@@ -1,5 +1,5 @@
-import { Keyboard, Platform, Pressable, StyleSheet, View } from "react-native";
-import { Button, Input, QrCodeLinkModal, Separator, Typography } from "../../components";
+import { Keyboard, Platform, Pressable, StyleSheet, TextInput, View } from "react-native";
+import { Button, FormComponent, Input, QrCodeLinkModal, Separator, Typography } from "../../components";
 import { useTranslation } from "react-i18next";
 import {
   useGetInstanceInfoQuery,
@@ -20,23 +20,16 @@ import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { SignInFormLoader } from "../../components/loaders/SignInFormLoader";
-import { PropsWithChildren, useCallback } from "react";
+import { useCallback, useRef } from "react";
 import { useCustomFocusManager } from "../../hooks";
 import { useAuthSessionStore } from "../../store";
 import { parseAuthSessionData } from "../../utils/auth";
+import { ServerErrorCodes, UserLoginResponse } from "../../api/models";
 
 const signInFormValidationSchema = z.object({
   username: z.string().trim().min(1, "requiredField"),
   password: z.string().trim().min(1, "requiredField"),
 });
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const FormComponent = ({ children, ...props }: PropsWithChildren<any>) => {
-  return Platform.select({
-    web: <form {...props}>{children}</form>,
-    default: <View {...props}>{children}</View>,
-  });
-};
 
 export const SignIn = () => {
   const { t } = useTranslation();
@@ -86,7 +79,21 @@ export const SignIn = () => {
 
   const handleSignIn = async (formValues: z.infer<typeof signInFormValidationSchema>) => {
     if (loginPrerequisites) {
-      const loginResponse = await login({ loginPrerequisites, ...formValues });
+      let loginResponse: UserLoginResponse;
+
+      try {
+        loginResponse = await login({ loginPrerequisites, ...formValues });
+      } catch (e) {
+        const { code } = e as { code: string };
+
+        if (code === ServerErrorCodes.MISSING_TWO_FACTOR) {
+          router.navigate({ pathname: ROUTES.OTP, params: { backend } });
+          return;
+        }
+
+        throw e;
+      }
+
       const authSessionData = parseAuthSessionData(loginResponse, backend, formValues.username);
 
       if (loginResponse) {
@@ -110,6 +117,8 @@ export const SignIn = () => {
   const resetPwdHref = `https://${backend}/login`;
   const signUpHref = `https://${backend}/signup`;
 
+  const passwordFieldRef = useRef<TextInput | null>(null);
+
   const isLoading = isLoadingInstanceInfo || isLoadingInstanceServerConfig || isLoadingLoginPrerequisites;
 
   return (
@@ -131,6 +140,7 @@ export const SignIn = () => {
             render={({ field, fieldState }) => {
               return (
                 <Input
+                  autoFocus={!username}
                   autoCorrect={false}
                   autoCapitalize="none"
                   value={field.value}
@@ -142,6 +152,10 @@ export const SignIn = () => {
                   placeholder={t("email")}
                   placeholderTextColor={colors.themeDesaturated500}
                   error={fieldState.error?.message && t(fieldState.error?.message)}
+                  onSubmitEditing={() => {
+                    passwordFieldRef.current?.focus?.();
+                  }}
+                  enterKeyHint="next"
                 />
               );
             }}
@@ -153,23 +167,30 @@ export const SignIn = () => {
             render={({ field, fieldState }) => {
               return (
                 <Input
+                  autoFocus={!!username}
+                  ref={passwordFieldRef}
                   autoCorrect={false}
                   value={field.value}
                   secureTextEntry
                   onChangeText={field.onChange}
                   onBlur={field.onBlur}
+                  onSubmitEditing={() => {
+                    Keyboard.dismiss();
+                    handleSubmit(handleSignIn)();
+                  }}
                   autoComplete="current-password"
                   variant="default"
                   placeholder={t("password")}
                   placeholderTextColor={colors.themeDesaturated500}
                   error={fieldState.error?.message && t(fieldState.error?.message)}
+                  enterKeyHint="done"
                 />
               );
             }}
           />
           <Spacer height={spacing.xl} />
           <Button
-            disabled={isLoggingIn || isGettingUserInfo}
+            disabled={isLoggingIn || isGettingUserInfo || isLoadingLoginPrerequisites}
             onPress={() => {
               Keyboard.dismiss();
               handleSubmit(handleSignIn)();

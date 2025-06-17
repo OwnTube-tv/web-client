@@ -28,6 +28,7 @@ import { Platform } from "react-native";
 import uuid from "react-native-uuid";
 import { useQueryClient } from "@tanstack/react-query";
 import { GLOBAL_QUERY_STALE_TIME } from "../api";
+import { useInstanceConfigStore } from "../store";
 
 interface IAppConfigContext {
   isDebugMode: boolean;
@@ -62,6 +63,11 @@ export const AppConfigContextProvider = ({ children }: PropsWithChildren) => {
   const { sessionCCLocale, updateSessionCCLocale } = useSubtitlesSessionLocale();
   const { currentInstanceConfig } = useInstanceConfig(featuredInstances);
   const queryClient = useQueryClient();
+  const { setCurrentInstanceConfig } = useInstanceConfigStore();
+
+  useEffect(() => {
+    setCurrentInstanceConfig(currentInstanceConfig);
+  }, [currentInstanceConfig]);
 
   useEffect(() => {
     if (lastRecordedConnectionState.current === true && !isConnected) {

@@ -162,5 +162,10 @@
   "email": "Email",
   "requiredField": "This field is required",
   "signedOut": "You have been signed out",
-  "signInAgain": "Sign in again"
+  "signInAgain": "Sign in again",
+  "twoFactorAuth": "Two-factor authentication",
+  "check2ndFactor": "Check your authentication app and enter the code to verify.",
+  "verificationCode": "Verification code",
+  "invalidOtp": "Invalid or expired code. Please try again.",
+  "verify": "Verify"
 }

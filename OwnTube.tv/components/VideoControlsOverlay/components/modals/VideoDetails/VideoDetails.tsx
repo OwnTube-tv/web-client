@@ -62,6 +62,7 @@ ${description}
   return (
     <Animated.View entering={SlideInLeft} exiting={SlideOutLeft} style={styles.animatedContainer}>
       <ModalContainer
+        showCloseButton
         onClose={onClose}
         title={name}
         containerStyle={{ ...styles.modalContainer, paddingLeft: safeAreaInsets.left || spacing.xl }}

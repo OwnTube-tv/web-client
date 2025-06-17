@@ -26,6 +26,8 @@ const customizationsSchema = z
     homeFeaturedLives: z.array(z.string()),
     refreshQueriesStaleTimeMs: z.number(),
     premiumContentAds: z.array(z.string()),
+    loginAccessTokenExpirationOverride: z.number(),
+    loginRefreshTokenExpirationOverride: z.number(),
   })
   .partial();
 

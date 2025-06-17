@@ -16,7 +16,12 @@ export const QrCodeLinkModal = ({ link }: QRCodeLinkModalProps) => {
 
   return (
     <View style={styles.qrCodeContainer}>
-      <ModalContainer containerStyle={{ maxWidth: 350 }} onClose={() => toggleModal(false)} title={t("qrCodeForURL")}>
+      <ModalContainer
+        showCloseButton
+        containerStyle={{ maxWidth: 350 }}
+        onClose={() => toggleModal(false)}
+        title={t("qrCodeForURL")}
+      >
         <Typography>{link}</Typography>
         <Spacer height={16} />
         <QRCodeSection link={link} />

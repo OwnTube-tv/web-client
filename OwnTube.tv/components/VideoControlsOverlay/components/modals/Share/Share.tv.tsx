@@ -39,7 +39,7 @@ const Share = ({ onClose, titleKey }: ShareProps) => {
 
   return (
     <Animated.View entering={SlideInUp} exiting={SlideOutUp} style={styles.animatedContainer} pointerEvents="box-none">
-      <ModalContainer onClose={onClose} title={t(titleKey)} containerStyle={styles.modalContainer}>
+      <ModalContainer showCloseButton onClose={onClose} title={t(titleKey)} containerStyle={styles.modalContainer}>
         <ScrollView>
           {isTimestampShown && (
             <>

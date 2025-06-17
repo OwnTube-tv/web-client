@@ -9,7 +9,7 @@
   "toggleTheme": "Змінити тему",
   "revision": "Ревізія",
   "builtAtBy": "поставка від {{builtAt}} авторства",
-  "deviceCapabilityInfoTitle": "Информация о клиенте",
+  "deviceCapabilityInfoTitle": "Інформація про клієнта",
   "playerImpl": "Реалізація плеєра:",
   "deviceType": "Тип пристрою:",
   "operatingSystem": "Операційна система:",
@@ -159,5 +159,12 @@
   "noAccountCreateOne": "Немає облікового запису? Створіть на",
   "signInDataIncorrect": "Імʼя користувача або пароль не підходять",
   "email": "Ел. пошта",
-  "requiredField": "Обовʼязкове поле"
+  "requiredField": "Обовʼязкове поле",
+  "signedOut": "Ви вийшли з системи",
+  "signInAgain": "Увійти знову",
+  "twoFactorAuth": "Двофакторна автентифікація",
+  "check2ndFactor": "Перевірте свій додаток автентифікації та введіть код для підтвердження.",
+  "verificationCode": "Код підтвердження",
+  "invalidOtp": "Недійсний або прострочений код. Спробуйте ще раз.",
+  "verify": "Підтвердити"
 }

@@ -36,7 +36,7 @@ export const useGetCategoriesCollectionQuery = (categories: Array<{ name: string
 
           return { ...res, name, id };
         } catch (error) {
-          if ((error as unknown as OwnTubeError).code === 429) {
+          if ((error as unknown as OwnTubeError).status === 429) {
             throw error;
           }
           return { error, isError: true, id, name, data: [], total: 0 };

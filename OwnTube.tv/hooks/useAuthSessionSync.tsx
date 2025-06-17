@@ -8,18 +8,13 @@ import { SignedOutModal } from "../components";
 
 export const useAuthSessionSync = () => {
   const { backend } = useGlobalSearchParams<RootStackParams[ROUTES.INDEX]>();
-  const { session, selectSession, clearSession, removeSession } = useAuthSessionStore();
-  const { setContent, toggleModal, setHandleModalClose } = useFullScreenModalContext();
-  const handleClose = async () => {
-    await removeSession(backend);
-    toggleModal(false);
-  };
+  const { session, selectSession, clearSession } = useAuthSessionStore();
+  const { setContent, toggleModal } = useFullScreenModalContext();
 
   useEffect(() => {
     if (session?.sessionExpired) {
       toggleModal(true);
-      setContent(<SignedOutModal handleClose={handleClose} />);
-      setHandleModalClose?.(() => handleClose);
+      setContent(<SignedOutModal handleClose={() => toggleModal(false)} />);
     }
   }, [session]);
 

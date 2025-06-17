@@ -28,6 +28,7 @@ export enum ROUTES {
   PLAYLIST = "playlist",
   PRIVACY = "privacy",
   SIGNIN = "signin",
+  OTP = "otp",
 }
 
 export interface Category {

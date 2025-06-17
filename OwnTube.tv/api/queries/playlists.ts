@@ -89,7 +89,7 @@ export const useGetPlaylistsCollectionQuery = (playlists: Array<VideoPlaylist> =
           const res = await PlaylistsApiImpl.getPlaylistVideos(backend, id, { count: 4 });
           return { ...res, id, displayName, videoChannel };
         } catch (error) {
-          if ((error as unknown as OwnTubeError).code === 429) {
+          if ((error as unknown as OwnTubeError).status === 429) {
             throw error;
           }
           return { error, isError: true, id, displayName, videoChannel, data: [], total: 0 };

@@ -80,6 +80,7 @@ export const Button = forwardRef<View, ButtonProps>(
           },
         ]}
         ref={ref}
+        disabled={disabled}
       >
         {icon && iconPosition === "leading" && (
           <IcoMoonIcon name={icon} size={24} color={contrast === "high" ? colors.white94 : colors.theme900} />

@@ -60,10 +60,11 @@ export const LandingScreen = () => {
         type: "info",
         props: { isError: true },
         text1:
-          (instanceConfigError as unknown as OwnTubeError)?.code === WRONG_SERVER_VERSION_STATUS_CODE
+          (instanceConfigError as unknown as OwnTubeError)?.status === WRONG_SERVER_VERSION_STATUS_CODE
             ? instanceConfigError.message
             : t("siteDidNotRespondError", {
-                errorCode: (instanceConfigError as unknown as OwnTubeError)?.code || instanceConfigError.message || "",
+                errorCode:
+                  (instanceConfigError as unknown as OwnTubeError)?.status || instanceConfigError.message || "",
               }),
         autoHide: false,
       });

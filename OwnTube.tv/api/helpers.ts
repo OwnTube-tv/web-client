@@ -12,14 +12,14 @@ export const getLocalData = <TResult>(queryKey: keyof typeof QUERY_KEYS): TResul
 };
 
 export const retry = (failureCount: number, error: OwnTubeError) => {
-  if (error.code === 429) {
+  if (error.status === 429) {
     return true;
   }
   return failureCount < 5;
 };
 
 export const getErrorTextKeys = (error: OwnTubeError | null): { title: string; description: string } => {
-  if (error && Number(error.code) >= 401 && Number(error.code) <= 403) {
+  if (error && Number(error.status) >= 401 && Number(error.status) <= 403) {
     return { title: "accessDenied", description: "noPermissions" };
   } else {
     return { title: "pageCouldNotBeLoaded", description: "failedToEstablishConnection" };

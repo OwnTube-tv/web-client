@@ -102,7 +102,7 @@ export const useGetChannelsCollectionQuery = (channelIds: string[] = []) => {
           const res = await ChannelsApiImpl.getChannelVideos(backend!, id, { count: 4 });
           return { ...res, id };
         } catch (error) {
-          if ((error as unknown as OwnTubeError).code === 429) {
+          if ((error as unknown as OwnTubeError).status === 429) {
             throw error;
           }
           return { error, isError: true, id, data: [], total: 0 };

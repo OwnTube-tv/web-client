@@ -160,5 +160,12 @@
   "noAccountCreateOne": "Inget konto? Skapa ett på",
   "signInDataIncorrect": "Användarnamn eller lösenord är felaktigt",
   "email": "E-post",
-  "requiredField": "Detta fält är obligatoriskt"
+  "requiredField": "Detta fält är obligatoriskt",
+  "signedOut": "Du har loggats ut",
+  "signInAgain": "Logga in igen",
+  "twoFactorAuth": "Tvåfaktorsautentisering",
+  "check2ndFactor": "Kontrollera din autentiseringsapp och ange koden för att verifiera.",
+  "verificationCode": "Verifieringskod",
+  "invalidOtp": "Ogiltig eller utgången kod. Försök igen.",
+  "verify": "Verifiera"
 }

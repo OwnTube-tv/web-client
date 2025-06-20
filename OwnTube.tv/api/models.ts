@@ -1,4 +1,4 @@
-import { VideoChannelSummary, Video } from "@peertube/peertube-types";
+import { VideoChannelSummary, Video, UserLogin, OAuthClientLocal } from "@peertube/peertube-types";
 
 export interface Channel {
   id: number;
@@ -68,12 +68,27 @@ export type PeertubeInstance = {
 };
 
 export class OwnTubeError {
-  constructor({ text, code, message }: { text?: string; code?: number; message: string }) {
+  constructor({ text, code, message, status }: { text?: string; code?: string; message: string; status?: number }) {
     this.text = text || "Unexpected";
     this.code = code;
     this.message = message;
+    this.status = status;
   }
   public text: string;
-  public code?: number;
+  public code?: string;
   public message: string;
+  public status?: number;
 }
+
+export type UserLoginResponse = UserLogin & { expires_in: number; refresh_token_expires_in: number };
+
+export enum ServerErrorCodes {
+  MISSING_TWO_FACTOR = "missing_two_factor",
+}
+
+export type LoginRequestArgs = {
+  loginPrerequisites: OAuthClientLocal;
+  username: string;
+  password: string;
+  otp?: string;
+};

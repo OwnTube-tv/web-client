@@ -1,4 +1,4 @@
-import { StyleSheet, ViewStyle } from "react-native";
+import { Platform, StyleSheet, ViewStyle } from "react-native";
 import { borderRadius, spacing } from "../theme";
 import { FC, PropsWithChildren } from "react";
 import { useTheme } from "@react-navigation/native";
@@ -11,6 +11,7 @@ interface ModalContainerProps {
   title: string;
   onClose: () => void;
   containerStyle?: ViewStyle;
+  showCloseButton?: boolean;
 }
 
 export const ModalContainer: FC<PropsWithChildren<ModalContainerProps>> = ({
@@ -18,6 +19,7 @@ export const ModalContainer: FC<PropsWithChildren<ModalContainerProps>> = ({
   onClose,
   containerStyle,
   children,
+  showCloseButton = false,
 }) => {
   const { colors } = useTheme();
 
@@ -33,7 +35,9 @@ export const ModalContainer: FC<PropsWithChildren<ModalContainerProps>> = ({
         <Typography fontSize="sizeLg" fontWeight="SemiBold" color={colors.theme950} style={styles.headerText}>
           {title}
         </Typography>
-        <Button hasTVPreferredFocus style={styles.button} onPress={onClose} icon="Close" />
+        {showCloseButton && (
+          <Button hasTVPreferredFocus={Platform.isTV} style={styles.button} onPress={onClose} icon="Close" />
+        )}
       </TVFocusGuideHelper>
       {children}
     </TVFocusGuideHelper>

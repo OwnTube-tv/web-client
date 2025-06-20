@@ -15,7 +15,8 @@ export function handleAxiosErrorWithRetry(error: unknown, target: string): Promi
         reject(
           new OwnTubeError({
             text: `Failed to fetch ${target}. ${message}`,
-            code: response?.status,
+            status: response?.status,
+            code: (response?.data as { code: string })?.code,
             message,
           }),
         );

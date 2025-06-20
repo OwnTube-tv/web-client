@@ -53,6 +53,7 @@ const Share = ({ onClose, titleKey, staticLink }: ShareProps) => {
   return (
     <Animated.View entering={SlideInUp} exiting={SlideOutUp} style={styles.animatedContainer} pointerEvents="box-none">
       <ModalContainer
+        showCloseButton
         onClose={onClose}
         title={t(titleKey, { appName: Constants.expoConfig?.name })}
         containerStyle={styles.modalContainer}

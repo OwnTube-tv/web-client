@@ -65,6 +65,8 @@
     logoUrl: "https://owntube-tv.github.io/web-client/logos/tilvids.com.jpg",
     customizations: {
       loginWithUsernameAndPassword: true,
+      loginAccessTokenExpirationOverride: 10,
+      loginRefreshTokenExpirationOverride: 30,
     },
   },
   {
@@ -167,6 +169,7 @@
     hostname: "swebbtv.se",
     logoUrl: "https://owntube-tv.github.io/web-client/logos/swebbtv.se.png",
     customizations: {
+      loginWithUsernameAndPassword: true,
       pageTitle: "Swebbtv Play (beta)",
       pageDefaultTheme: "light",
       menuHideHistoryButton: false,

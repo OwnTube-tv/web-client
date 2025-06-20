@@ -1,6 +1,7 @@
 import { AxiosInstanceBasedApi } from "./axiosInstance";
 import { handleAxiosErrorWithRetry } from "./errorHandler";
-import { OAuthClientLocal, UserLogin } from "@peertube/peertube-types";
+import { OAuthClientLocal } from "@peertube/peertube-types";
+import { UserLoginResponse } from "./models";
 
 /**
  * PeerTube Auth API
@@ -35,12 +36,14 @@ export class AuthApi extends AxiosInstanceBasedApi {
   async login(
     baseURL: string,
     data: { grant_type: string; refresh_token?: string; username?: string; password?: string } & OAuthClientLocal,
-  ): Promise<UserLogin & { expires_in: number; refresh_token_expires_in: number }> {
+    otp?: string,
+  ): Promise<UserLoginResponse> {
     try {
       const response = await this.instance.post("users/token", data, {
         baseURL: `https://${baseURL}/api/v1`,
         headers: {
           "Content-Type": "application/x-www-form-urlencoded",
+          "x-peertube-otp": otp || undefined,
         },
       });
       return response.data;

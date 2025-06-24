@@ -4,5 +4,7 @@
   "editor.formatOnSave": true,
   "editor.trimAutoWhitespace": true,
   "editor.tabSize": 2,
-  "editor.detectIndentation": false
+  "editor.detectIndentation": false,
+  "i18n-ally.localesPaths": ["OwnTube.tv/locales"],
+  "i18n-ally.keystyle": "flat"
 }

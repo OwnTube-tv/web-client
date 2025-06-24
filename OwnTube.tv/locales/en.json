@@ -167,5 +167,11 @@
   "check2ndFactor": "Check your authentication app and enter the code to verify.",
   "verificationCode": "Verification code",
   "invalidOtp": "Invalid or expired code. Please try again.",
-  "verify": "Verify"
+  "verify": "Verify",
+  "downloadVideo": "Download video",
+  "chooseQuality": "Choose video quality:",
+  "download": "Download",
+  "downloadStarted": "Your download has started, please wait...",
+  "downloadComplete": "File {{fileName}} is downloaded!",
+  "downloadError": "Download error"
 }

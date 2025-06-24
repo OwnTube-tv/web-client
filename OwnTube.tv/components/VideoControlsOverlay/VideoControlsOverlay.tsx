@@ -1,5 +1,5 @@
 import { PropsWithChildren } from "react";
-import { Pressable, StyleSheet, View } from "react-native";
+import { Platform, Pressable, StyleSheet, View } from "react-native";
 import { Typography } from "../Typography";
 import { getHumanReadableDuration } from "../../utils";
 import { VolumeControl } from "./components/VolumeControl";
@@ -21,7 +21,9 @@ import GoogleCastButton from "../GoogleCastButton";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { ChannelLink } from "../ChannelLink";
 import { VideoChannelSummary } from "@peertube/peertube-types";
-import { useAppConfigContext } from "../../contexts";
+import { useAppConfigContext, useFullScreenModalContext } from "../../contexts";
+import VideoContextMenu from "../VideoContextMenu";
+import { DownloadVideo } from "./components/modals";
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
 export interface VideoControlsOverlayProps {
@@ -66,6 +68,7 @@ export interface VideoControlsOverlayProps {
   isLiveVideo?: boolean;
   isWaitingForLive: boolean;
   hlsAutoQuality?: number;
+  isDownloadAvailable?: boolean;
 }
 
 const VideoControlsOverlay = ({
@@ -111,6 +114,7 @@ const VideoControlsOverlay = ({
   isLiveVideo,
   isWaitingForLive,
   hlsAutoQuality,
+  isDownloadAvailable,
 }: PropsWithChildren<VideoControlsOverlayProps>) => {
   const {
     isSeekBarFocused,
@@ -123,6 +127,8 @@ const VideoControlsOverlay = ({
     colors,
     isSettingsMenuVisible,
     setIsSettingsMenuVisible,
+    isContextMenuVisible,
+    setIsContextMenuVisible,
   } = useVideoControlsOverlay({
     isPlaying,
     shouldReplay,
@@ -138,6 +144,13 @@ const VideoControlsOverlay = ({
     process.env.EXPO_PUBLIC_HIDE_VIDEO_SITE_LINKS || currentInstanceConfig?.customizations?.hideVideoSiteLinks;
 
   const insets = useSafeAreaInsets();
+
+  const { toggleModal, setContent: setModalContent } = useFullScreenModalContext();
+
+  const handleDownload = () => {
+    toggleModal(true);
+    setModalContent(<DownloadVideo />);
+  };
 
   return (
     // @ts-expect-error web cursor options not included in React Native core
@@ -181,7 +194,25 @@ const VideoControlsOverlay = ({
               </View>
               <View style={styles.topRightControls}>
                 <ShareButton onPress={handleShare} isMobile={isMobile} />
-                <PlayerButton onPress={handleOpenSettings} icon="Kebab-menu" />
+                <PlayerButton onPress={() => setIsContextMenuVisible((prev) => !prev)} icon="Kebab-menu" />
+                {isContextMenuVisible && (
+                  <View style={styles.contextMenuContainer}>
+                    <VideoContextMenu
+                      handleOpenSettings={() => {
+                        handleOpenSettings();
+                        setIsContextMenuVisible(false);
+                      }}
+                      handleDownload={
+                        isDownloadAvailable
+                          ? () => {
+                              handleDownload();
+                              setIsContextMenuVisible(false);
+                            }
+                          : undefined
+                      }
+                    />
+                  </View>
+                )}
               </View>
             </LinearGradient>
           </Animated.View>
@@ -346,6 +377,12 @@ const styles = StyleSheet.create({
     width: "100%",
     zIndex: 2,
   },
+  contextMenuContainer: {
+    position: "absolute",
+    right: 0,
+    top: Platform.OS === "web" ? "100%" : spacing.xxl,
+    zIndex: 1,
+  },
   functionButtonsContainer: { alignItems: "center", flexDirection: "row" },
   overlay: {
     alignItems: "center",
@@ -382,6 +419,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     gap: spacing.lg,
     justifyContent: "space-between",
+    overflow: "visible",
     paddingHorizontal: spacing.sm,
     paddingTop: spacing.xl,
     width: "100%",

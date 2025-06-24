@@ -5,46 +5,53 @@ import { Pressable, PressableProps, StyleSheet, View } from "react-native";
 import { useTheme } from "@react-navigation/native";
 
 export interface PlayerButtonProps extends PressableProps {
-  icon: string;
+  icon?: string;
   onHoverIn?: () => void;
   onHoverOut?: () => void;
   scale?: number;
   color?: string;
+  iconElement?: (isHovered: boolean) => JSX.Element;
 }
 
-const PlayerButton = forwardRef<View, PlayerButtonProps>(({ onPress, icon, onHoverIn, onHoverOut, color }, ref) => {
-  const { colors } = useTheme();
-  const [isHovered, setIsHovered] = useState(false);
+const PlayerButton = forwardRef<View, PlayerButtonProps>(
+  ({ onPress, icon, onHoverIn, onHoverOut, color, iconElement }, ref) => {
+    const { colors } = useTheme();
+    const [isHovered, setIsHovered] = useState(false);
 
-  const handleHoverIn = () => {
-    onHoverIn?.();
-    setIsHovered(true);
-  };
+    const handleHoverIn = () => {
+      onHoverIn?.();
+      setIsHovered(true);
+    };
 
-  const handleHoverOut = () => {
-    onHoverOut?.();
-    setIsHovered(false);
-  };
+    const handleHoverOut = () => {
+      onHoverOut?.();
+      setIsHovered(false);
+    };
 
-  return (
-    <Pressable
-      ref={ref}
-      onHoverIn={handleHoverIn}
-      onHoverOut={handleHoverOut}
-      onPress={onPress}
-      style={({ focused }) => [
-        styles.container,
-        {
-          padding: focused ? -2 : 0,
-          borderWidth: focused ? 2 : 0,
-          borderColor: colors.white94,
-        },
-      ]}
-    >
-      <IcoMoonIcon name={icon} size={spacing.xl} color={isHovered ? colors.white94 : color || colors.white80} />
-    </Pressable>
-  );
-});
+    return (
+      <Pressable
+        ref={ref}
+        onHoverIn={handleHoverIn}
+        onHoverOut={handleHoverOut}
+        onPress={onPress}
+        style={({ focused }) => [
+          styles.container,
+          {
+            padding: focused ? -2 : 0,
+            borderWidth: focused ? 2 : 0,
+            borderColor: colors.white94,
+          },
+        ]}
+      >
+        {iconElement ? (
+          iconElement(isHovered)
+        ) : (
+          <IcoMoonIcon name={icon} size={spacing.xl} color={isHovered ? colors.white94 : color || colors.white80} />
+        )}
+      </Pressable>
+    );
+  },
+);
 
 const styles = StyleSheet.create({
   container: {

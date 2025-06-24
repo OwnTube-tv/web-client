@@ -12,6 +12,7 @@ import { ROUTES } from "../types";
 import { useHoverState } from "../hooks";
 import TVFocusGuideHelper from "./helpers/TVFocusGuideHelper";
 import { useTranslation } from "react-i18next";
+import { Setting } from "./shared";
 
 interface PlaybackSettingsPopupProps {
   selectedSpeed: number;
@@ -24,38 +25,6 @@ interface PlaybackSettingsPopupProps {
   isLiveVideo?: boolean;
   hlsAutoQuality?: number;
 }
-
-const Setting = ({ name, state, onPress }: { name: string; state?: string; onPress: () => void }) => {
-  const { colors } = useTheme();
-  const { isHovered, toggleHovered } = useHoverState();
-  const [isFocused, setIsFocused] = useState(false);
-
-  return (
-    <Pressable
-      onHoverOut={toggleHovered}
-      onHoverIn={toggleHovered}
-      onFocus={() => setIsFocused(true)}
-      onBlur={() => setIsFocused(false)}
-      style={[
-        styles.settingContainer,
-        { backgroundColor: isHovered || (isFocused && Platform.isTV) ? colors.white10 : undefined },
-      ]}
-      onPress={onPress}
-      hasTVPreferredFocus
-    >
-      <View style={styles.settingContent}>
-        <Typography fontSize="sizeXS" color={colors.white94} fontWeight="SemiBold">
-          {name}
-        </Typography>
-        <Typography fontSize="sizeXS" color={colors.white94} fontWeight="Regular">
-          {state}
-        </Typography>
-      </View>
-      <Spacer width={spacing.xs} />
-      <IcoMoonIcon name="Chevron-Right" size={24} color={colors.white94} />
-    </Pressable>
-  );
-};
 
 const OptionsHeader = ({ onBackPress, text }: { onBackPress: () => void; text: string }) => {
   const { colors } = useTheme();
@@ -269,17 +238,5 @@ const styles = StyleSheet.create({
     alignItems: "center",
     flexDirection: "row",
     flex: 1,
-  },
-  settingContainer: {
-    alignItems: "center",
-    flexDirection: "row",
-    paddingHorizontal: spacing.lg,
-    paddingVertical: spacing.sm,
-  },
-  settingContent: {
-    alignItems: "center",
-    flexDirection: "row",
-    flex: 1,
-    justifyContent: "space-between",
   },
 });

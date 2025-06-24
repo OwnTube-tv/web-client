@@ -15,3 +15,4 @@ export * from "./useChromeCast";
 export * from "./useSubtitlesSessionLocale";
 export * from "./usePageContentTopPadding";
 export * from "./useCustomFocusManager";
+export * from "./useDownloadVideo";

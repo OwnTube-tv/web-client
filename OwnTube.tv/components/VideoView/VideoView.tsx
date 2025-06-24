@@ -383,6 +383,7 @@ const VideoView = ({
         isCCVisible={isCCShown}
         isWaitingForLive={isWaitingForLive}
         hlsAutoQuality={hlsResolution}
+        isDownloadAvailable={videoData?.downloadEnabled}
       >
         {googleCastClient ? (
           <IcoMoonIcon name="Chromecast" size={72} color={colors.white80} />

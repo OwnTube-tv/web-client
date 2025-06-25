@@ -329,7 +329,7 @@ const VideoView = ({
       if (isCCAvailable && sessionCCLocale && availableCCLangs.includes(sessionCCLocale)) {
         handleSetCCLang(sessionCCLocale);
       }
-    }, [isCCAvailable, availableCCLangs, sessionCCLocale]),
+    }, [isCCAvailable, sessionCCLocale]),
   );
 
   const [hlsResolution, setHlsResolution] = useState<number | undefined>();

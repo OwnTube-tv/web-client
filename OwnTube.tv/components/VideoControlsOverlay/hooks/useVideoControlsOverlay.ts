@@ -24,6 +24,7 @@ export const useVideoControlsOverlay = ({
   const { colors } = useTheme();
   const router = useRouter();
   const [isSeekBarFocused, setIsSeekBarFocused] = useState(false);
+  const [isContextMenuVisible, setIsContextMenuVisible] = useState(false);
 
   const centralIconName = useMemo(() => {
     return isPlaying ? "Pause" : shouldReplay ? "Restart" : "Play";
@@ -49,6 +50,7 @@ export const useVideoControlsOverlay = ({
   useEffect(() => {
     if (!isVisible) {
       setIsSettingsMenuVisible(false);
+      setIsContextMenuVisible(false);
     }
   }, [isVisible]);
 
@@ -64,5 +66,7 @@ export const useVideoControlsOverlay = ({
     router,
     isSettingsMenuVisible,
     setIsSettingsMenuVisible,
+    isContextMenuVisible,
+    setIsContextMenuVisible,
   };
 };

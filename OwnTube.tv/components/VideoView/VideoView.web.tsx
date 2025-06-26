@@ -497,6 +497,7 @@ const VideoView = ({
         setSelectedCCLang={handleSetCCLang}
         isCCVisible={isCCShown}
         hlsAutoQuality={hlsResolution}
+        isDownloadAvailable={videoData?.downloadEnabled}
       >
         {isChromecastConnected && (
           <View style={styles.chromecastOverlay}>

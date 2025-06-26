@@ -167,5 +167,11 @@
   "check2ndFactor": "Kontrollera din autentiseringsapp och ange koden för att verifiera.",
   "verificationCode": "Verifieringskod",
   "invalidOtp": "Ogiltig eller utgången kod. Försök igen.",
-  "verify": "Verifiera"
+  "verify": "Verifiera",
+  "downloadStarted": "Din nedladdning har börjat, vänta ...",
+  "downloadComplete": "Fil {{fileName}} laddas ner!",
+  "downloadVideo": "Ladda ner video",
+  "chooseQuality": "Välj videokvalitet:",
+  "download": "Ladda ner",
+  "downloadError": "Nedladdningsfel"
 }

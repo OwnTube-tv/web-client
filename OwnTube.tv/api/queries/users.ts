@@ -18,3 +18,16 @@ export const useGetMyUserInfoQuery = () => {
     retry,
   });
 };
+
+export const useGetSubscriptionByChannelQuery = (channelHandle: string, enabled: boolean) => {
+  const { backend } = useLocalSearchParams<RootStackParams[ROUTES.INDEX]>();
+
+  return useQuery({
+    queryKey: [QUERY_KEYS.myChannelSubscription, backend, channelHandle],
+    queryFn: async () => {
+      return await UsersApiImpl.getSubscriptionByChannel(backend!, channelHandle);
+    },
+    enabled: !!channelHandle && enabled,
+    retry: 1,
+  });
+};

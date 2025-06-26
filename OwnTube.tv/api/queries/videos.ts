@@ -1,6 +1,6 @@
 import { useLocalSearchParams } from "expo-router";
 import { RootStackParams } from "../../app/_layout";
-import { Query, useInfiniteQuery, useMutation, useQueries, useQuery } from "@tanstack/react-query";
+import { Query, QueryKey, useInfiniteQuery, useMutation, useQueries, useQuery } from "@tanstack/react-query";
 import { GetVideosVideo, OwnTubeError } from "../models";
 import { ApiServiceImpl } from "../peertubeVideosApi";
 import { VideosCommonQuery, Video, VideoCaption } from "@peertube/peertube-types";
@@ -97,7 +97,7 @@ export const useGetVideoQuery = <TResult = Video>({
       return await ApiServiceImpl.getVideo(backend!, id!);
     },
     enabled: !!backend && !!id && enabled,
-    refetchInterval: (query: Query<Video>) => {
+    refetchInterval: (query: Query<Video, OwnTubeError, Video, QueryKey>) => {
       return query.state.data?.isLive ? LIVE_REFETCH_INTERVAL : 0;
     },
     select,

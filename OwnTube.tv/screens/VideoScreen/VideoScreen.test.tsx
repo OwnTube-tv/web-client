@@ -23,6 +23,9 @@ jest.mock("../../api/queries", () => ({
   useGetVideoCaptionsQuery: jest.fn(() => ({ data: {} })),
   useGetVideoFullInfoCollectionQuery: jest.fn(() => []),
   useGetVideoCaptionsCollectionQuery: jest.fn(() => []),
+  useGetSubscriptionByChannelQuery: jest.fn(() => ({
+    data: { qualifiedChannelName: true },
+  })),
 }));
 const mockUpdHistory = jest.fn();
 jest.mock("../../hooks", () => ({

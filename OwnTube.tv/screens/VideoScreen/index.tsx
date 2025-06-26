@@ -4,6 +4,7 @@ import { RootStackParams } from "../../app/_layout";
 import { ROUTES } from "../../types";
 import {
   QUERY_KEYS,
+  useGetSubscriptionByChannelQuery,
   useGetVideoCaptionsCollectionQuery,
   useGetVideoCaptionsQuery,
   useGetVideoFullInfoCollectionQuery,
@@ -11,7 +12,7 @@ import {
 } from "../../api";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Loader, FocusWrapper, FullScreenModal, ErrorTextWithRetry, Button } from "../../components";
-import { useViewHistory } from "../../hooks";
+import { useCustomFocusManager, useViewHistory } from "../../hooks";
 import { StatusBar } from "expo-status-bar";
 import { Settings } from "../../components/VideoControlsOverlay/components/modals";
 import { Platform, StyleSheet, View } from "react-native";
@@ -29,6 +30,20 @@ export const VideoScreen = () => {
   const router = useRouter();
   const params = useLocalSearchParams<RootStackParams[ROUTES.VIDEO]>();
   const { data, isLoading, isError, refetch } = useGetVideoQuery({ id: params?.id });
+  const isPremiumVideo = [true, "true"].includes(data?.pluginData?.["is-premium-content"]);
+  const qualifiedChannelName = `${data?.channel?.name}@${data?.channel?.host}`;
+  useCustomFocusManager();
+
+  const { data: subscriptionData, isLoading: isLoadingSubscriptionData } = useGetSubscriptionByChannelQuery(
+    qualifiedChannelName,
+    isPremiumVideo && !!data,
+  );
+
+  const isPremiumVideoAvailable = useMemo(() => {
+    return isPremiumVideo && Boolean(subscriptionData?.[qualifiedChannelName]);
+  }, [isPremiumVideo, subscriptionData, qualifiedChannelName]);
+  const isPremiumVideoUnavailable = isPremiumVideo && !isPremiumVideoAvailable;
+
   const { currentInstanceConfig } = useAppConfigContext();
 
   const premiumAds = currentInstanceConfig?.customizations?.premiumContentAds;
@@ -42,10 +57,9 @@ export const VideoScreen = () => {
   const [quality, setQuality] = useState("auto");
 
   const isWaitingForLive = data?.state?.id === 4;
-  const isPremiumVideo = [true, "true"].includes(data?.pluginData?.["is-premium-content"]);
 
   useEffect(() => {
-    if (data && params?.backend && !isPremiumVideo) {
+    if (data && params?.backend && !isPremiumVideoUnavailable) {
       const updateData = {
         ...data,
         previewPath: `https://${params.backend}${data.previewPath}`,
@@ -66,12 +80,12 @@ export const VideoScreen = () => {
       return;
     }
 
-    if (data?.streamingPlaylists?.length) {
+    if (data.streamingPlaylists?.length) {
       let hlsStream: VideoStreamingPlaylist;
 
       const premiumAd = premiumAdsData[randomPremiumAdIndex];
 
-      if (isPremiumVideo && premiumAd?.streamingPlaylists?.length) {
+      if (isPremiumVideoUnavailable && premiumAd?.streamingPlaylists?.length) {
         hlsStream = premiumAd.streamingPlaylists[0];
       } else {
         hlsStream = data.streamingPlaylists[0];
@@ -90,10 +104,10 @@ export const VideoScreen = () => {
     if (!webVideoFileByQuality) return data.files?.filter(({ resolution }) => resolution.id <= 1080)[0]?.fileUrl;
 
     return webVideoFileByQuality?.fileUrl;
-  }, [params, data, quality, isPremiumVideo, premiumAdsData]);
+  }, [params, data, quality, premiumAdsData, isPremiumVideoUnavailable]);
 
   const handleSetTimeStamp = (timestamp: number) => {
-    if (!params?.id || isPremiumVideo) {
+    if (!params?.id || isPremiumVideoUnavailable) {
       return;
     }
 
@@ -122,7 +136,7 @@ export const VideoScreen = () => {
     }
   };
 
-  if (isLoading) {
+  if (isLoading || (isPremiumVideo && isLoadingSubscriptionData)) {
     return (
       <View style={[{ paddingTop: top }, styles.flex1]}>
         {Platform.OS !== "web" && (
@@ -158,7 +172,7 @@ export const VideoScreen = () => {
         <VideoView
           videoData={data}
           isModalOpen={!!visibleModal}
-          timestamp={params?.timestamp}
+          timestamp={isPremiumVideoUnavailable ? "0" : params?.timestamp}
           handleSetTimeStamp={handleSetTimeStamp}
           testID={`${params.id}-video-view`}
           uri={uri}
@@ -176,7 +190,7 @@ export const VideoScreen = () => {
           viewUrl={data?.url}
           selectedQuality={quality}
           handleSetQuality={setQuality}
-          captions={isPremiumVideo ? premiumAdsCaptions[randomPremiumAdIndex] : captions}
+          captions={isPremiumVideoUnavailable ? premiumAdsCaptions[randomPremiumAdIndex] : captions}
           isWaitingForLive={isWaitingForLive}
         />
         <FullScreenModal onBackdropPress={closeModal} isVisible={visibleModal === "details"}>

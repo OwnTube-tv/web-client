@@ -38,6 +38,7 @@ export enum QUERY_KEYS {
   premiumAdsCaptionsCollection = "premiumAdsCaptionsCollection",
   loginPrerequisites = "loginPrerequisites",
   myUserInfo = "myUserInfo",
+  myChannelSubscription = "myChannelSubscription",
 }
 
 export enum MUTATION_KEYS {

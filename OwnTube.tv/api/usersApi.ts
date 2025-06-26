@@ -27,6 +27,22 @@ export class UsersApi extends AxiosInstanceBasedApi {
       return handleAxiosErrorWithRetry(error, "my user info");
     }
   }
+
+  /**
+   * Get *my* subscription data on the specified channel
+   */
+  async getSubscriptionByChannel(baseURL: string, channelHandle: string): Promise<Record<string, boolean>> {
+    try {
+      const response = await this.instance.get("users/me/subscriptions/exist", {
+        baseURL: `https://${baseURL}/api/v1`,
+        params: { uris: channelHandle },
+      });
+
+      return response.data;
+    } catch (error: unknown) {
+      return handleAxiosErrorWithRetry(error, "my channel subscription");
+    }
+  }
 }
 
 export const UsersApiImpl = new UsersApi();

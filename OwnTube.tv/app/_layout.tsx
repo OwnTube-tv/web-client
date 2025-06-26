@@ -13,7 +13,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { useFonts } from "expo-font";
 import Toast from "react-native-toast-message";
-import { AppDesktopHeader, FullScreenModal, InfoToast, Sidebar, ErrorBoundary } from "../components";
+import { AppDesktopHeader, FullScreenModal, InfoToast, Sidebar, ErrorBoundary, Loader } from "../components";
 import "../i18n";
 import { useTranslation } from "react-i18next";
 import { useCallback, useEffect } from "react";
@@ -42,7 +42,7 @@ const RootStack = () => {
   useEffect(() => {
     readFromAsyncStorage(STORAGE.LOCALE).then(i18n.changeLanguage);
   }, []);
-  useAuthSessionSync();
+  const { isSessionDataLoaded } = useAuthSessionSync();
 
   const breakpoints = useBreakpoints();
   const { backend } = useGlobalSearchParams<{ backend: string }>();
@@ -83,6 +83,10 @@ const RootStack = () => {
       TVEventControl.disableTVMenuKey();
     };
   }, []);
+
+  if (!isSessionDataLoaded) {
+    return <Loader />;
+  }
 
   return (
     <>

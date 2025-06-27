@@ -1,6 +1,6 @@
 import axios, { AxiosInstance } from "axios";
 import build_info from "../build-info.json";
-import { useAuthSessionStore, useInstanceConfigStore } from "../store";
+import { useAuthSessionStore } from "../store";
 import { parseISOToEpoch } from "../utils";
 import { parseAuthSessionData } from "../utils/auth";
 import { OAuthClientLocal, UserLogin } from "@peertube/peertube-types";
@@ -15,17 +15,16 @@ export const axiosInstance = axios.create({
 
 const controller = new AbortController();
 
-const REFRESH_LOCKS: Record<string, { initiatedAt: number; expiresIn: number }> = {};
+const REFRESH_LOCKS: Record<string, boolean> = {};
 
 const refreshAccessToken = async (backend: string, refreshToken: string) => {
   const lock = REFRESH_LOCKS[backend];
-  const now = Math.floor(Date.now() / 1000);
 
-  if (lock && now < lock.initiatedAt + lock.expiresIn) {
-    return null; // Another refresh in progress
+  if (lock) {
+    return null;
   }
 
-  REFRESH_LOCKS[backend] = { initiatedAt: now, expiresIn: 60 };
+  REFRESH_LOCKS[backend] = true;
 
   try {
     const { data: prerequisites } = await axios.get<OAuthClientLocal>(`https://${backend}/api/v1/oauth-clients/local`);
@@ -56,7 +55,6 @@ axiosInstance.interceptors.request.use(async (config) => {
   const backend = config.baseURL?.replace("/api/v1", "").replace("https://", "");
 
   const { session, updateSession } = useAuthSessionStore.getState();
-  const { currentInstanceConfig } = useInstanceConfigStore.getState();
 
   if (!backend || !session) return config;
 
@@ -74,17 +72,11 @@ axiosInstance.interceptors.request.use(async (config) => {
 
   const now = Math.floor(Date.now() / 1000);
   const accessIssued = parseISOToEpoch(accessTokenIssuedAt);
-  const accessValidUntil =
-    accessIssued +
-    (currentInstanceConfig?.customizations?.loginAccessTokenExpirationOverride ?? accessTokenExpiresIn) -
-    10;
+  const accessValidUntil = accessIssued + accessTokenExpiresIn - 10;
   const accessTokenValid = accessIssued <= now && now < accessValidUntil;
 
   const refreshIssued = parseISOToEpoch(refreshTokenIssuedAt);
-  const refreshValidUntil =
-    refreshIssued +
-    (currentInstanceConfig?.customizations?.loginRefreshTokenExpirationOverride ?? refreshTokenExpiresIn) -
-    10;
+  const refreshValidUntil = refreshIssued + refreshTokenExpiresIn - 10;
   const refreshTokenValid = refreshIssued <= now && now < refreshValidUntil;
 
   const shouldAttachAccessToken = Boolean(

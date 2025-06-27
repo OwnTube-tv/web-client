@@ -63,11 +63,17 @@ export const AppConfigContextProvider = ({ children }: PropsWithChildren) => {
   const { sessionCCLocale, updateSessionCCLocale } = useSubtitlesSessionLocale();
   const { currentInstanceConfig } = useInstanceConfig(featuredInstances);
   const queryClient = useQueryClient();
-  const { setCurrentInstanceConfig } = useInstanceConfigStore();
+  const { setCurrentInstanceConfig, setInstanceConfigList } = useInstanceConfigStore();
 
   useEffect(() => {
     setCurrentInstanceConfig(currentInstanceConfig);
   }, [currentInstanceConfig]);
+
+  useEffect(() => {
+    if (featuredInstances?.length) {
+      setInstanceConfigList(featuredInstances);
+    }
+  }, [featuredInstances]);
 
   useEffect(() => {
     if (lastRecordedConnectionState.current === true && !isConnected) {

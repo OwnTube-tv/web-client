@@ -8,6 +8,7 @@ import { IcoMoonIcon } from "../IcoMoonIcon";
 import { borderRadius } from "../../theme";
 import { BuildInfo } from "../BuildInfo";
 import build_info from "../../build-info.json";
+import { useAuthSessionStore } from "../../store";
 
 const CapabilityKeyValuePair = ({ label, value }: { label: string; value: string }) => {
   const { colors } = useTheme();
@@ -26,6 +27,8 @@ const CapabilityKeyValuePair = ({ label, value }: { label: string; value: string
 
 const DeviceCapabilities = () => {
   const { deviceCapabilities } = useAppConfigContext();
+  const { session } = useAuthSessionStore();
+
   const { colors } = useTheme();
   const { t } = useTranslation();
 
@@ -34,7 +37,23 @@ const DeviceCapabilities = () => {
       ? { BUILD_TIMESTAMP: build_info.BUILD_TIMESTAMP }
       : build_info;
 
-    await Clipboard.setStringAsync(JSON.stringify({ buildInfo, ...deviceCapabilities }));
+    const authInfo = session
+      ? {
+          backend: session.backend,
+          email: session.email,
+          twoFactorEnabled: session.twoFactorEnabled,
+          sessionCreatedAt: session.sessionCreatedAt,
+          sessionUpdatedAt: session.sessionUpdatedAt,
+          sessionExpired: session.sessionExpired,
+          accessTokenIssuedAt: session.accessTokenIssuedAt,
+          refreshTokenIssuedAt: session.refreshTokenIssuedAt,
+          userInfoUpdatedAt: session.userInfoUpdatedAt,
+        }
+      : null;
+
+    await Clipboard.setStringAsync(
+      JSON.stringify({ buildInfo, ...deviceCapabilities, ...(authInfo ? { authInfo } : {}) }),
+    );
   };
 
   return (

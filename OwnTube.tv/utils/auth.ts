@@ -4,7 +4,6 @@ import { UserLogin } from "@peertube/peertube-types";
 export const parseAuthSessionData = (
   loginResponse: UserLogin & { expires_in: number; refresh_token_expires_in: number },
   backend: string,
-  email?: string,
 ): Partial<AuthSession> => {
   const { getConfigByBackend } = useInstanceConfigStore.getState();
   const instanceConfig = getConfigByBackend(backend);
@@ -12,7 +11,6 @@ export const parseAuthSessionData = (
   const res = {
     backend,
     basePath: "/api/v1",
-    email,
     twoFactorEnabled: false,
     sessionCreatedAt: new Date().toISOString(),
     sessionUpdatedAt: new Date().toISOString(),
@@ -27,8 +25,6 @@ export const parseAuthSessionData = (
     refreshTokenExpiresIn:
       instanceConfig?.customizations?.loginRefreshTokenExpirationOverride ?? loginResponse.refresh_token_expires_in,
   };
-
-  if (!email) delete res.email;
 
   return res;
 };

@@ -39,13 +39,13 @@ const Picker = (props: PickerSelectProps) => {
         inputIOS: textStyle,
         inputAndroidContainer: containerStyle,
         inputAndroid: { ...textStyle, fontWeight: "500" },
+        iconContainer: {
+          pointerEvents: "none",
+        },
         ...props.style,
       }}
       Icon={() => (
-        <View
-          pointerEvents="none"
-          style={[styles.chevronContainer, { transform: [{ rotate: isPickerOpen ? "180deg" : "0deg" }] }]}
-        >
+        <View style={[styles.chevronContainer, { transform: [{ rotate: isPickerOpen ? "180deg" : "0deg" }] }]}>
           <IcoMoonIcon name="Chevron" size={24} color={colors.theme500} />
         </View>
       )}

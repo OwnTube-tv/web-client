@@ -173,5 +173,11 @@
   "downloadVideo": "Ladda ner video",
   "chooseQuality": "Välj videokvalitet:",
   "download": "Ladda ner",
-  "downloadError": "Nedladdningsfel"
+  "downloadError": "Nedladdningsfel",
+  "currentAuth": "Aktuell autentisering:",
+  "_2faOn": "på",
+  "_2faOff": "av",
+  "sessionActive": "aktiv",
+  "sessionExpired": "utgången",
+  "currentAuthText": "Användare {{userName}} vid {{backend}}, med tvåfaktor {{_2fa}}, session startad {{sessionStartedAt}}, uppdaterad {{sessionUpdatedAt}}, {{expiredText}}, refresh token utfärdad {{refreshTokenIssuedAt}}"
 }

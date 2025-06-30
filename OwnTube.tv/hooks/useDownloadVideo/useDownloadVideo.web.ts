@@ -12,15 +12,15 @@ const useDownloadVideo = () => {
   const { data: videoData } = useGetVideoQuery({ id: params?.id });
 
   const pickerOptions = useMemo(() => {
-    if (videoData?.files && Number(videoData?.files?.length) > 0) {
-      return videoData.files.map((file) => ({
+    if (videoData?.streamingPlaylists && Number(videoData?.streamingPlaylists?.length) > 0) {
+      return videoData.streamingPlaylists[0].files.map((file) => ({
         label: `${file.resolution.label} (${formatFileSize(file.size)})`,
         value: file.fileDownloadUrl,
       }));
     }
 
-    if (videoData?.streamingPlaylists && Number(videoData?.streamingPlaylists?.length) > 0) {
-      return videoData.streamingPlaylists[0].files.map((file) => ({
+    if (videoData?.files && Number(videoData?.files?.length) > 0) {
+      return videoData.files.map((file) => ({
         label: `${file.resolution.label} (${formatFileSize(file.size)})`,
         value: file.fileDownloadUrl,
       }));
@@ -30,8 +30,12 @@ const useDownloadVideo = () => {
   }, [videoData]);
 
   useEffect(() => {
-    if (pickerOptions.length > 0) {
-      setSelectedFile(pickerOptions[0].value);
+    if (pickerOptions && pickerOptions.length > 1) {
+      const lowestQualityOption = pickerOptions.at(pickerOptions.at(-1)?.label.startsWith("Audio only") ? -2 : -1);
+
+      if (lowestQualityOption) {
+        setSelectedFile(lowestQualityOption.value);
+      }
     }
   }, [pickerOptions]);
 

@@ -107,14 +107,6 @@ export default {
       },
     ],
     "expo-asset",
-    [
-      "expo-media-library",
-      {
-        photosPermission: `Allow ${process.env.EXPO_PUBLIC_APP_NAME || "OwnTube.tv"} to access your media library.`,
-        savePhotosPermission: `Allow ${process.env.EXPO_PUBLIC_APP_NAME || "OwnTube.tv"} to save videos.`,
-        preventAutomaticLimitedAccessAlert: true,
-      },
-    ],
     "react-native-google-cast",
     [
       "./plugins/withReleaseSigningConfig.js",

@@ -17,15 +17,3 @@ export function formatFileSize(bytes: number): string {
 
   return `${size} ${units[unitIndex]}`;
 }
-
-export function sanitizeFileName(name?: string) {
-  if (!name) return null;
-
-  return name
-    .trim()
-    .replace(/\s+/g, "_")
-    .replace(/[^a-zA-Z0-9_\-.]/g, "_")
-    .replace(/_+/g, "_")
-    .replace(/^\.+/, "")
-    .replace(/\.+$/, "");
-}

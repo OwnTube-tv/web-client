@@ -172,5 +172,11 @@
   "downloadVideo": "Завантажити відео",
   "chooseQuality": "Виберіть якість відео:",
   "download": "Завантажити",
-  "downloadError": "Помилка завантаження"
+  "downloadError": "Помилка завантаження",
+  "currentAuth": "Поточна сесія:",
+  "currentAuthText": "Користувач {{userName}} на {{backend}}, з {{_2fa}} двофакторною аутентифікацією, сесію створено в {{sessionStartedAt}}, оновлено о {{sessionUpdatedAt}}, {{expiredText}}, токен продовження сесії виданий о {{refreshTokenIssuedAt}}",
+  "_2faOn": "увімкненою",
+  "_2faOff": "вимкненою",
+  "sessionExpired": "закінчилася",
+  "sessionActive": "активна"
 }

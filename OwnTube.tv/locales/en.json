@@ -173,5 +173,11 @@
   "download": "Download",
   "downloadStarted": "Your download has started, please wait...",
   "downloadComplete": "File {{fileName}} is downloaded!",
-  "downloadError": "Download error"
+  "downloadError": "Download error",
+  "currentAuth": "Current authentication:",
+  "currentAuthText": "User {{userName}} at {{backend}}, with two-factor {{_2fa}}, user session started at {{sessionStartedAt}}, updated at {{sessionUpdatedAt}}, {{expiredText}}, refresh token issued at {{refreshTokenIssuedAt}}",
+  "_2faOff": "off",
+  "_2faOn": "on",
+  "sessionExpired": "expired",
+  "sessionActive": "active"
 }

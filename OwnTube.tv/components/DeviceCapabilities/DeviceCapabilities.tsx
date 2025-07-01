@@ -9,6 +9,8 @@ import { borderRadius } from "../../theme";
 import { BuildInfo } from "../BuildInfo";
 import build_info from "../../build-info.json";
 import { useAuthSessionStore } from "../../store";
+import { format } from "date-fns";
+import { useMemo } from "react";
 
 const CapabilityKeyValuePair = ({ label, value }: { label: string; value: string }) => {
   const { colors } = useTheme();
@@ -31,30 +33,47 @@ const DeviceCapabilities = () => {
 
   const { colors } = useTheme();
   const { t } = useTranslation();
+  const authInfo = useMemo(
+    () =>
+      session
+        ? {
+            backend: session.backend,
+            email: session.email,
+            twoFactorEnabled: session.twoFactorEnabled,
+            sessionCreatedAt: session.sessionCreatedAt,
+            sessionUpdatedAt: session.sessionUpdatedAt,
+            sessionExpired: session.sessionExpired,
+            accessTokenIssuedAt: session.accessTokenIssuedAt,
+            refreshTokenIssuedAt: session.refreshTokenIssuedAt,
+            userInfoUpdatedAt: session.userInfoUpdatedAt,
+          }
+        : null,
+    [session],
+  );
 
   const handleCopyToClipboard = async () => {
     const buildInfo = process.env.EXPO_PUBLIC_HIDE_GIT_DETAILS
       ? { BUILD_TIMESTAMP: build_info.BUILD_TIMESTAMP }
       : build_info;
 
-    const authInfo = session
-      ? {
-          backend: session.backend,
-          email: session.email,
-          twoFactorEnabled: session.twoFactorEnabled,
-          sessionCreatedAt: session.sessionCreatedAt,
-          sessionUpdatedAt: session.sessionUpdatedAt,
-          sessionExpired: session.sessionExpired,
-          accessTokenIssuedAt: session.accessTokenIssuedAt,
-          refreshTokenIssuedAt: session.refreshTokenIssuedAt,
-          userInfoUpdatedAt: session.userInfoUpdatedAt,
-        }
-      : null;
-
     await Clipboard.setStringAsync(
       JSON.stringify({ buildInfo, ...deviceCapabilities, ...(authInfo ? { authInfo } : {}) }),
     );
   };
+
+  const currentAuthText = useMemo(() => {
+    if (!authInfo) return "";
+
+    return t("currentAuthText", {
+      userName: authInfo.email,
+      backend: authInfo.backend,
+      _2fa: authInfo.twoFactorEnabled ? t("_2faOn") : t("_2faOff"),
+      sessionStartedAt: format(authInfo.sessionCreatedAt, "yyyy-MM-dd HH:mm"),
+      sessionUpdatedAt: format(authInfo.sessionUpdatedAt, "yyyy-MM-dd HH:mm"),
+      expiredText: authInfo.sessionExpired ? t("sessionExpired") : t("sessionActive"),
+      refreshTokenIssuedAt: format(authInfo.refreshTokenIssuedAt, "yyyy-MM-dd HH:mm"),
+    });
+  }, [authInfo, t]);
 
   return (
     <View style={{ backgroundColor: colors.theme50 }}>
@@ -73,6 +92,7 @@ const DeviceCapabilities = () => {
           </Typography>
           <BuildInfo />
         </View>
+        {authInfo && <CapabilityKeyValuePair label={t("currentAuth")} value={currentAuthText} />}
         <CapabilityKeyValuePair label={t("playerImpl")} value={deviceCapabilities.playerImplementation} />
         <CapabilityKeyValuePair label={t("deviceType")} value={deviceCapabilities.deviceType} />
         <CapabilityKeyValuePair label={t("operatingSystem")} value={deviceCapabilities.OS} />

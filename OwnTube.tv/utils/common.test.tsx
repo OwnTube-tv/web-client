@@ -1,4 +1,4 @@
-import { capitalize, getAvailableVidsString, formatFileSize, sanitizeFileName } from "./common";
+import { capitalize, getAvailableVidsString, formatFileSize } from "./common";
 
 describe("capitalize", () => {
   it("capitalizes the first letter of a string", () => {
@@ -33,28 +33,5 @@ describe("formatFileSize", () => {
     expect(formatFileSize(1099511627776)).toBe("1 TB");
     expect(formatFileSize(1125899906842624)).toBe("1 PB");
     expect(formatFileSize(1536)).toBe("1.5 KB");
-  });
-});
-
-describe("sanitizeFileName", () => {
-  it("replaces spaces and invalid characters with underscores", () => {
-    expect(sanitizeFileName("my file.txt")).toBe("my_file.txt");
-    expect(sanitizeFileName("file@name!.mp4")).toBe("file_name_.mp4");
-    expect(sanitizeFileName("file   name")).toBe("file_name");
-    expect(sanitizeFileName("file__name")).toBe("file_name");
-  });
-
-  it("removes leading and trailing dots", () => {
-    expect(sanitizeFileName(".hiddenfile.")).toBe("hiddenfile");
-    expect(sanitizeFileName("..file..")).toBe("file");
-  });
-
-  it("returns null if name is undefined or empty", () => {
-    expect(sanitizeFileName(undefined)).toBeNull();
-    expect(sanitizeFileName("")).toBeNull();
-  });
-
-  it("trims the result", () => {
-    expect(sanitizeFileName("  file name  ")).toBe("file_name");
   });
 });

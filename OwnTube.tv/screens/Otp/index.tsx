@@ -71,7 +71,7 @@ export const Otp = () => {
     if (latestLoginMutation) {
       const loginResponse = await sendOtp({ ...latestLoginMutation, otp: formValues.otp });
 
-      const authSessionData = parseAuthSessionData(loginResponse, backend, latestLoginMutation.username);
+      const authSessionData = parseAuthSessionData(loginResponse, backend);
 
       if (loginResponse) {
         await addSession(backend, authSessionData);
@@ -83,6 +83,7 @@ export const Otp = () => {
           await updateSession(backend, {
             userInfoUpdatedAt: new Date().toISOString(),
             userInfoResponse,
+            email: userInfoResponse.email,
           });
         }
 

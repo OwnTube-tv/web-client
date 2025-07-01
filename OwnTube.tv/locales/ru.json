@@ -172,5 +172,11 @@
   "downloadComplete": "Загрузка файла {{fileName}} завершена",
   "chooseQuality": "Выберите качество видео:",
   "download": "Скачать",
-  "downloadError": "Ошибка загрузки"
+  "downloadError": "Ошибка загрузки",
+  "currentAuth": "Текущая сессия:",
+  "currentAuthText": "Пользователь {{userName}} на {{backend}}, с {{_2fa}} двухфакторной аутентификацией, сессия создана в {{sessionStartedAt}}, обновлена в {{sessionUpdatedAt}}, {{expiredText}}, токен продления сессии выдан в {{refreshTokenIssuedAt}}",
+  "_2faOn": "включенной",
+  "_2faOff": "выключенной",
+  "sessionExpired": "истекла",
+  "sessionActive": "активна"
 }

@@ -203,7 +203,7 @@ const VideoControlsOverlay = ({
                         setIsContextMenuVisible(false);
                       }}
                       handleDownload={
-                        isDownloadAvailable
+                        isDownloadAvailable && !isLiveVideo
                           ? () => {
                               handleDownload();
                               setIsContextMenuVisible(false);

@@ -94,7 +94,7 @@ export const SignIn = () => {
         throw e;
       }
 
-      const authSessionData = parseAuthSessionData(loginResponse, backend, formValues.username);
+      const authSessionData = parseAuthSessionData(loginResponse, backend);
 
       if (loginResponse) {
         await addSession(backend, authSessionData);
@@ -106,6 +106,7 @@ export const SignIn = () => {
           await updateSession(backend, {
             userInfoUpdatedAt: new Date().toISOString(),
             userInfoResponse,
+            email: userInfoResponse.email,
           });
         }
 

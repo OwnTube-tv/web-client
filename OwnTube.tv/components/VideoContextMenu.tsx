@@ -16,7 +16,7 @@ export const VideoContextMenu: React.FC<VideoContextMenuProps> = ({ handleOpenSe
   const { t } = useTranslation();
 
   return (
-    <TVFocusGuideHelper style={[styles.container, { backgroundColor: colors.black80 }]}>
+    <TVFocusGuideHelper style={[styles.container, { borderColor: colors.white25, backgroundColor: colors.black80 }]}>
       <Setting isSubmenuAvailable={false} onPress={handleOpenSettings} name={t("deviceCapabilityInfoTitle")} />
       {!!handleDownload && <Setting isSubmenuAvailable={false} onPress={handleDownload} name={t("downloadVideo")} />}
     </TVFocusGuideHelper>
@@ -26,8 +26,8 @@ export const VideoContextMenu: React.FC<VideoContextMenuProps> = ({ handleOpenSe
 const styles = StyleSheet.create({
   container: {
     borderRadius: borderRadius.radiusMd,
+    borderWidth: 0.5,
     paddingVertical: spacing.sm,
-    width: 256,
   },
 });
 

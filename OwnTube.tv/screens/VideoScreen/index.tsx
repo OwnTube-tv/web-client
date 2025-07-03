@@ -56,7 +56,7 @@ export const VideoScreen = () => {
   const { top } = useSafeAreaInsets();
   const [quality, setQuality] = useState("auto");
 
-  const isWaitingForLive = data?.state?.id === 4;
+  const isWaitingForLive = [4, 5].includes(Number(data?.state?.id));
 
   useEffect(() => {
     if (data && params?.backend && !isPremiumVideoUnavailable) {

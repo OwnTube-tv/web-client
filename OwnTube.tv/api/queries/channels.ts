@@ -31,7 +31,6 @@ export const useGetChannelsQuery = ({ enabled = true }: { enabled?: boolean }) =
     },
     select: ({ data }) => data.filter(({ isLocal }) => isLocal),
     enabled: !!backend && enabled,
-
     retry,
   });
 };

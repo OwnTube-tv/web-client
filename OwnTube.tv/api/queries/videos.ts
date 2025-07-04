@@ -9,6 +9,9 @@ import { getLocalData, retry } from "../helpers";
 
 import { QUERY_KEYS } from "../constants";
 import { useAppConfigContext } from "../../contexts";
+import Constants from "expo-constants";
+import * as Device from "expo-device";
+import { getDeviceTypeForVideoView } from "../../utils";
 
 export const useGetVideosQuery = <TResult = GetVideosVideo[]>({
   enabled = true,
@@ -124,6 +127,9 @@ export const usePostVideoViewMutation = () => {
         currentTime,
         viewEvent,
         sessionId,
+        client: Constants.expoConfig?.name ?? "OwnTube",
+        device: getDeviceTypeForVideoView(Device.deviceType),
+        operatingSystem: Device.osName ?? undefined,
       });
     },
   });

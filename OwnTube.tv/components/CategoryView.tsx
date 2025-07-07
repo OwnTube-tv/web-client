@@ -5,6 +5,7 @@ import { ROUTES } from "../types";
 import { useLocalSearchParams } from "expo-router";
 import { getAvailableVidsString } from "../utils";
 import { ListSeparator } from "../screens/HomeScreen/components";
+import { useAppConfigContext } from "../contexts";
 
 interface CategoryViewProps {
   category: { name: string; id: number };
@@ -22,6 +23,8 @@ export const CategoryView = ({ category }: CategoryViewProps) => {
     },
     uniqueQueryKey: `category-${category.id}`,
   });
+  const { currentInstanceConfig } = useAppConfigContext();
+  const showHorizontalScrollableLists = currentInstanceConfig?.customizations?.homeUseHorizontalListsForMobilePortrait;
 
   if (!data?.data?.length && !isLoading) {
     return null;
@@ -30,6 +33,7 @@ export const CategoryView = ({ category }: CategoryViewProps) => {
   return (
     <>
       <VideoGrid
+        scrollable={showHorizontalScrollableLists}
         reduceHeaderContrast
         refetch={refetch}
         isError={isError}

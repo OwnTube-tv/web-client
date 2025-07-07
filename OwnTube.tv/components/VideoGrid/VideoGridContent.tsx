@@ -16,10 +16,11 @@ interface VideoGridContentProps extends Pick<VideoGridProps, "data" | "variant">
   isLoading?: boolean;
   backend?: string;
   tvActionCardProps: Omit<TVActionCardProps, "width"> & { isHidden?: boolean };
+  scrollable?: boolean;
 }
 
 export const VideoGridContent = forwardRef<VideoGridContentHandle, VideoGridContentProps>(
-  ({ isLoading, data = [], variant, backend, tvActionCardProps }, ref) => {
+  ({ isLoading, data = [], variant, backend, tvActionCardProps, scrollable = false }, ref) => {
     const [containerWidth, setContainerWidth] = useState(0);
     const lastItemRef = useRef<View>(null);
 
@@ -39,10 +40,11 @@ export const VideoGridContent = forwardRef<VideoGridContentHandle, VideoGridCont
     }));
 
     const isTVActionCardVisible = Platform.isTV && !isLoading && !tvActionCardProps.isHidden;
+    const isHorizontalScrollingEnabled = scrollable && breakpoints.isMobile;
 
     const listData = useMemo(() => {
       const numItemsToAdd = numColumns - (data.length % numColumns);
-      if (numItemsToAdd > 0 && Platform.OS !== "web") {
+      if (numItemsToAdd > 0 && Platform.OS !== "web" && !isHorizontalScrollingEnabled) {
         return data.concat(
           [...Array(numItemsToAdd)].map(
             (_, index) =>
@@ -55,9 +57,9 @@ export const VideoGridContent = forwardRef<VideoGridContentHandle, VideoGridCont
       }
 
       return data;
-    }, [data, numColumns, isTVActionCardVisible]);
+    }, [data, numColumns, isTVActionCardVisible, isHorizontalScrollingEnabled]);
 
-    const renderFlatListItem = useCallback(
+    const renderVerticalListItem = useCallback(
       ({ item: card, index }: { item: (typeof listData)[number]; index: number }) => {
         const isLastItem = index === data.length - 1;
 
@@ -66,7 +68,7 @@ export const VideoGridContent = forwardRef<VideoGridContentHandle, VideoGridCont
             return <TVActionCard width={columnWidth} {...tvActionCardProps} />;
           }
 
-          return <View pointerEvents="none" key={`empty-item-${index}}`} style={styles.gridItemNonWeb} />;
+          return <View pointerEvents="none" key={`empty-item-${index}`} style={styles.gridItemNonWeb} />;
         }
 
         return (
@@ -90,18 +92,31 @@ export const VideoGridContent = forwardRef<VideoGridContentHandle, VideoGridCont
           </View>
         );
       },
-      [columnWidth],
+      [columnWidth, tvActionCardProps, variant, backend, data.length],
     );
+
+    const renderHorizontalListItem = useCallback(
+      ({ item: card }: { item: (typeof listData)[number] }) => {
+        return (
+          <View key={card.uuid} style={styles.horizontalCard}>
+            <VideoGridCard backend={variant === "history" && "backend" in card ? card.backend : backend} video={card} />
+          </View>
+        );
+      },
+      [variant, backend],
+    );
+
+    const handleLayout = useCallback((e: { nativeEvent: { layout: { width: number } } }) => {
+      setContainerWidth(e.nativeEvent.layout.width);
+    }, []);
 
     return (
       <View
-        style={Platform.select({
-          web: { $$css: true, _: "grid-container" },
-          default: styles.gridContainerNonWeb,
+        style={Platform.select<ViewStyle>({
+          web: { $$css: true, _: `grid-container${isHorizontalScrollingEnabled ? "-scrollable" : ""}` },
+          default: { ...styles.gridContainerNonWeb, flexWrap: isHorizontalScrollingEnabled ? "nowrap" : "wrap" },
         })}
-        onLayout={(e) => {
-          setContainerWidth(e.nativeEvent.layout.width);
-        }}
+        onLayout={isHorizontalScrollingEnabled ? undefined : handleLayout}
       >
         {isLoading ? (
           [...Array(4)].map((_, index) => (
@@ -109,7 +124,7 @@ export const VideoGridContent = forwardRef<VideoGridContentHandle, VideoGridCont
               key={index}
               style={Platform.select<ViewStyle>({
                 web: styles.loaderGridItemWeb,
-                native: { ...styles.loaderGridItemNonWeb, width: columnWidth },
+                native: { ...styles.loaderGridItemNonWeb, width: isHorizontalScrollingEnabled ? 277 : columnWidth },
               })}
             >
               <VideoGridCardLoader />
@@ -130,15 +145,17 @@ export const VideoGridContent = forwardRef<VideoGridContentHandle, VideoGridCont
           })
         ) : (
           <FlatList
+            showsHorizontalScrollIndicator={false}
             removeClippedSubviews={false}
             disableVirtualization
             key={numColumns}
-            numColumns={numColumns}
+            numColumns={isHorizontalScrollingEnabled ? undefined : numColumns}
             data={listData}
-            columnWrapperStyle={numColumns > 1 ? styles.listColumnWrapper : undefined}
+            columnWrapperStyle={numColumns > 1 && !isHorizontalScrollingEnabled ? styles.listColumnWrapper : undefined}
             style={styles.gapXL}
             contentContainerStyle={styles.gapXL}
-            renderItem={renderFlatListItem}
+            renderItem={isHorizontalScrollingEnabled ? renderHorizontalListItem : renderVerticalListItem}
+            horizontal={isHorizontalScrollingEnabled}
           />
         )}
       </View>
@@ -162,6 +179,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   gridItemWeb: { flex: 1, width: "auto" },
+  horizontalCard: { width: 277 },
   listColumnWrapper: { gap: spacing.xl, minWidth: "100%" },
   loaderGridItemNonWeb: {
     aspectRatio: 1.145,

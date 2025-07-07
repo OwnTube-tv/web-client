@@ -72,11 +72,20 @@ export const HomeScreen = () => {
     );
   }, [viewHistory, currentInstanceConfig]);
 
+  const showHorizontalScrollableLists = currentInstanceConfig?.customizations?.homeUseHorizontalListsForMobilePortrait;
+
   const sections = useMemo(() => {
     return [
       {
         title: t("liveStreams"),
-        renderItem: () => <VideoGrid isTVActionCardHidden={true} isHeaderHidden data={liveVideosData} />,
+        renderItem: () => (
+          <VideoGrid
+            scrollable={showHorizontalScrollableLists}
+            isTVActionCardHidden={true}
+            isHeaderHidden
+            data={liveVideosData}
+          />
+        ),
         data: ["dataItemPlaceholder"],
         isVisible: Number(liveVideosData?.length) > 0,
       },
@@ -91,6 +100,7 @@ export const HomeScreen = () => {
         link: { text: t("viewHistory"), route: `/${ROUTES.HISTORY}` },
         renderItem: () => (
           <VideoGrid
+            scrollable={showHorizontalScrollableLists}
             link={
               Platform.isTV
                 ? { text: t("viewHistory"), href: { pathname: `/${ROUTES.HISTORY}`, params: { backend } } }
@@ -130,7 +140,17 @@ export const HomeScreen = () => {
         isVisible: !currentInstanceConfig?.customizations?.homeHideCategoriesOverview && !!categories?.length,
       },
     ].filter(({ isVisible }) => isVisible);
-  }, [t, historyData, backend, playlistsData, channels, categories, currentInstanceConfig, liveVideosData]);
+  }, [
+    t,
+    historyData,
+    backend,
+    playlistsData,
+    channels,
+    categories,
+    currentInstanceConfig,
+    liveVideosData,
+    showHorizontalScrollableLists,
+  ]);
 
   const [refreshing, setRefreshing] = useState(false);
 

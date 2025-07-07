@@ -16,6 +16,7 @@ export const LatestVideosView = () => {
     return data?.pages?.flatMap(({ data }) => data.flat());
   }, [data]);
   const { t } = useTranslation();
+  const showHorizontalScrollableLists = currentInstanceConfig?.customizations?.homeUseHorizontalListsForMobilePortrait;
 
   return (
     <>
@@ -29,6 +30,7 @@ export const LatestVideosView = () => {
         handleShowMore={hasNextPage ? fetchNextPage : undefined}
         link={{ text: t("showMore") }}
         isTVActionCardHidden={!hasNextPage}
+        scrollable={showHorizontalScrollableLists}
       />
       <ListSeparator />
     </>

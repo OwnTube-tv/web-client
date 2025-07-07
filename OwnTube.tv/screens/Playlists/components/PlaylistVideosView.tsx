@@ -5,6 +5,7 @@ import { useLocalSearchParams } from "expo-router";
 import { useTranslation } from "react-i18next";
 import { getAvailableVidsString } from "../../../utils";
 import { ListSeparator } from "../../HomeScreen/components";
+import { useAppConfigContext } from "../../../contexts";
 
 interface PlaylistVideosViewProps {
   id: number;
@@ -18,6 +19,8 @@ export const PlaylistVideosView = ({ id, title, channel, location = "other" }: P
   const { data, isLoading, isError, refetch } = useGetPlaylistVideosQuery(id);
   const { t } = useTranslation();
   const isOnHomePage = location === "home";
+  const { currentInstanceConfig } = useAppConfigContext();
+  const showHorizontalScrollableLists = currentInstanceConfig?.customizations?.homeUseHorizontalListsForMobilePortrait;
 
   if ((!data?.data?.length || !data?.total) && !isLoading) {
     return null;
@@ -27,6 +30,7 @@ export const PlaylistVideosView = ({ id, title, channel, location = "other" }: P
     <>
       <VideoGrid
         variant="playlist"
+        scrollable={showHorizontalScrollableLists && isOnHomePage}
         reduceHeaderContrast={isOnHomePage}
         isError={isError}
         refetch={refetch}

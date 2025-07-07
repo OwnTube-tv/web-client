@@ -38,6 +38,7 @@
     logoUrl: "https://owntube-tv.github.io/web-client/logos/video.blender.org.jpg",
     customizations: {
       pageTitle: "Blender Tube",
+      homeUseHorizontalListsForMobilePortrait: true,
       menuExternalLinks: [
         {
           label: "Website",
@@ -241,6 +242,7 @@
         "18384",
       ],
       playlistsShowHiddenButton: true,
+      homeUseHorizontalListsForMobilePortrait: true,
       homeLatestPublishedVideoCount: 24,
       homeRecentlyWatchedVideoCount: 4,
       homeHideChannelsOverview: true,

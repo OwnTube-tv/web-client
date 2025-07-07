@@ -1,4 +1,4 @@
-import { VideosCommonQuery, Video, VideoCaption } from "@peertube/peertube-types";
+import { VideosCommonQuery, Video, VideoCaption, VideoView } from "@peertube/peertube-types";
 import { GetVideosVideo } from "./models";
 import { commonQueryParams } from "./constants";
 import { AxiosInstanceBasedApi } from "./axiosInstance";
@@ -160,15 +160,7 @@ export class PeertubeVideosApi extends AxiosInstanceBasedApi {
    * @param [viewData] - Object containing view data (currentTime, viewEvent, sessionId)
    * @returns void
    */
-  async postVideoView(
-    baseURL: string,
-    id: string,
-    viewData: {
-      currentTime?: number;
-      viewEvent?: "seek";
-      sessionId?: string;
-    } = { currentTime: 0 },
-  ): Promise<void> {
+  async postVideoView(baseURL: string, id: string, viewData: VideoView = { currentTime: 0 }): Promise<void> {
     try {
       await this.instance.post(`videos/${id}/views`, viewData, {
         baseURL: `https://${baseURL}/api/v1`,

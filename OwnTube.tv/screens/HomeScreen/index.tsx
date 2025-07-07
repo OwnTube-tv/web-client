@@ -157,7 +157,15 @@ export const HomeScreen = () => {
     >
       <View style={{ ...styles.paddingContainer }}>
         <SectionList
-          refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+          refreshControl={
+            <RefreshControl
+              colors={[colors.theme500]}
+              progressBackgroundColor={colors.theme900}
+              tintColor={colors.theme900}
+              refreshing={refreshing}
+              onRefresh={onRefresh}
+            />
+          }
           // @ts-expect-error the sections do not change in runtime so we can be sure the typings match
           sections={sections}
           disableVirtualization

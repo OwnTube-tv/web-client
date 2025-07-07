@@ -1,3 +1,6 @@
+import { VideoStatsUserAgentDevice } from "@peertube/peertube-types";
+import { DeviceType } from "expo-device";
+
 export const capitalize = (input: string) => {
   return input.charAt(0).toUpperCase() + input.slice(1);
 };
@@ -17,3 +20,18 @@ export function formatFileSize(bytes: number): string {
 
   return `${size} ${units[unitIndex]}`;
 }
+
+export const getDeviceTypeForVideoView = (deviceType: DeviceType | null): VideoStatsUserAgentDevice | undefined => {
+  if (deviceType === DeviceType.UNKNOWN || deviceType === null) {
+    return;
+  }
+
+  return (
+    {
+      [DeviceType.PHONE]: "mobile",
+      [DeviceType.TABLET]: "tablet",
+      [DeviceType.DESKTOP]: "desktop",
+      [DeviceType.TV]: "smarttv",
+    } as const
+  )[deviceType];
+};

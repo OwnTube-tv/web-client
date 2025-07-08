@@ -40,6 +40,7 @@ export interface VideoGridProps {
   isHeaderHidden?: boolean;
   reduceHeaderContrast?: boolean;
   isTVActionCardHidden?: boolean;
+  scrollable?: boolean;
 }
 
 export const VideoGrid = ({
@@ -58,6 +59,7 @@ export const VideoGrid = ({
   isHeaderHidden = false,
   reduceHeaderContrast = false,
   isTVActionCardHidden = false,
+  scrollable = false,
 }: VideoGridProps) => {
   const { backend } = useLocalSearchParams<RootStackParams[ROUTES.INDEX]>();
   const { colors } = useTheme();
@@ -82,7 +84,7 @@ export const VideoGrid = ({
       );
     }
 
-    const isShowMoreBtnVisible = !!handleShowMore && (!Platform.isTV || customPresentation === "list");
+    const isShowMoreBtnVisible = !!handleShowMore && (!Platform.isTV || customPresentation === "list") && !scrollable;
     const handleShowMorePress = () => {
       (customPresentation === "grid" ? gridContentRef : listContentRef).current?.focusLastItem();
       handleShowMore?.();
@@ -95,6 +97,7 @@ export const VideoGrid = ({
         )}
         {customPresentation === "grid" ? (
           <VideoGridContent
+            scrollable={scrollable}
             tvActionCardProps={{
               isHidden: isTVActionCardHidden,
               isLoading: isLoadingMore,
@@ -157,7 +160,14 @@ export const VideoGrid = ({
               <Image style={styles.image} source={{ uri: `https://${backend}${channelLogoUri}` }} />
             </View>
           )}
-          <View style={{ flexDirection: isMobile ? "column" : "row", gap: spacing.lg, flex: 1 }}>
+          <View
+            style={{
+              flexDirection: isMobile && !scrollable ? "column" : "row",
+              gap: spacing.lg,
+              flex: 1,
+              flexWrap: "wrap",
+            }}
+          >
             <View style={styles.headerTextContainer}>
               {icon && <IcoMoonIcon size={24} name={icon} color={colors.theme900} />}
               {title && (

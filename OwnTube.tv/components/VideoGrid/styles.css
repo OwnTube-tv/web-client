@@ -5,3 +5,12 @@
   row-gap: 40px;
   width: 100%;
 }
+.grid-container-scrollable {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 277px;
+  grid-template-rows: 1fr;
+  column-gap: 16px;
+  overflow-x: auto;
+  width: 100%;
+}

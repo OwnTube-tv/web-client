@@ -15,13 +15,10 @@ describe("useViewHistory", () => {
 
   it("should get view history sorted by last viewed date and limited by the specified number", async () => {
     (readFromAsyncStorage as jest.Mock).mockResolvedValueOnce(["uuid1", "uuid2"]);
-    // First call for new format keys
     (multiGetFromAsyncStorage as jest.Mock).mockResolvedValueOnce([
       ["view_history/uuid1", JSON.stringify({ lastViewedAt: 123 })],
       ["view_history/uuid2", JSON.stringify({ lastViewedAt: 125 })],
     ]);
-    // Second call for old format keys (fallback)
-    (multiGetFromAsyncStorage as jest.Mock).mockResolvedValueOnce([]);
 
     const { result } = renderHook(() => useViewHistory({ enabled: true, maxItems: 2 }), { wrapper });
 
@@ -46,7 +43,6 @@ describe("useViewHistory", () => {
       firstViewedAt: 1234,
       lastViewedAt: 1234,
       name: "big bug buggy",
-      timestamp: 0,
       uuid: "uuid3",
     });
   });
@@ -59,7 +55,6 @@ describe("useViewHistory", () => {
         firstViewedAt: 1234,
         lastViewedAt: 1234,
         name: "big bug buggy",
-        timestamp: 0,
         uuid: "uuid3",
       });
 
@@ -92,8 +87,7 @@ describe("useViewHistory", () => {
       "view_history/uuid1",
       "view_history/uuid2",
     ]);
-    expect(deleteFromAsyncStorage).toHaveBeenNthCalledWith(2, ["uuid3", "uuid1", "uuid2"]);
-    expect(deleteFromAsyncStorage).toHaveBeenNthCalledWith(3, [STORAGE.VIEW_HISTORY]);
+    expect(deleteFromAsyncStorage).toHaveBeenNthCalledWith(2, [STORAGE.VIEW_HISTORY]);
   });
 
   it("should remove history for a specified backend", async () => {
@@ -111,7 +105,6 @@ describe("useViewHistory", () => {
     });
 
     expect(deleteFromAsyncStorage).toHaveBeenNthCalledWith(1, ["view_history/uuid1", "view_history/uuid3"]);
-    expect(deleteFromAsyncStorage).toHaveBeenNthCalledWith(2, ["uuid1", "uuid3"]);
     expect(writeToAsyncStorage).toHaveBeenCalledWith(STORAGE.VIEW_HISTORY, ["uuid2"]);
   });
 });

@@ -30,39 +30,18 @@ export const useViewHistory = (queryArg?: { enabled?: boolean; maxItems?: number
     queryFn: async () => {
       const history: string[] | undefined = await readFromAsyncStorage(STORAGE.VIEW_HISTORY);
 
-      // Try the new format first, fall back to the old format for backward compatibility
-      const newFormatKeys = (history || []).map((uuid) => `view_history/${uuid}`);
+      const keys = (history || []).map((uuid) => `view_history/${uuid}`);
 
-      // TODO(clean-up): Remove in July 2025 when all clients are migrated
-      const oldFormatKeys = history || [];
-
-      const newEntries = await multiGetFromAsyncStorage(newFormatKeys);
-
-      // TODO(clean-up): Remove in July 2025 when all clients are migrated
-      const oldEntries = await multiGetFromAsyncStorage(oldFormatKeys);
+      const entries = await multiGetFromAsyncStorage(keys);
 
       const result: ViewHistoryBase = {};
 
-      // Process new format entries
-      newEntries?.forEach(([key, value]) => {
+      entries?.forEach(([key, value]) => {
         if (value) {
           const uuid = key.replace("view_history/", "");
           result[uuid] = JSON.parse(value);
         }
       });
-
-      // TODO(clean-up): Remove in July 2025 when all clients are migrated
-      // Process old format entries (fallback) and migrate them
-      for (const [uuid, value] of oldEntries || []) {
-        if (value && !result[uuid]) {
-          const entry = JSON.parse(value);
-          result[uuid] = entry;
-
-          // Lazy migration: move old entry to new format
-          await writeToAsyncStorage(`view_history/${uuid}`, entry);
-          await deleteFromAsyncStorage([uuid]);
-        }
-      }
 
       return result;
     },
@@ -88,24 +67,16 @@ export const useViewHistory = (queryArg?: { enabled?: boolean; maxItems?: number
       }
 
       const videoKey = `view_history/${data.uuid}`;
-      let videoToUpdate = await readFromAsyncStorage(videoKey);
-
-      // TODO(clean-up): Remove in July 2025 when all clients are migrated
-      // Fallback: check the old format if not found in the new format
-      if (!videoToUpdate) {
-        videoToUpdate = await readFromAsyncStorage(data.uuid);
-        // If found in old format, clean it up after migration
-        if (videoToUpdate) {
-          await deleteFromAsyncStorage([data.uuid]);
-        }
-      }
+      const videoToUpdate = await readFromAsyncStorage(videoKey);
 
       const updatedVideoEntry = {
         ...(videoToUpdate || {}),
         ...data,
         firstViewedAt: videoToUpdate?.firstViewedAt || data.lastViewedAt,
-        timestamp: data.timestamp ?? 0,
       };
+      if (data.timestamp !== null && data.timestamp !== undefined) {
+        updatedVideoEntry.timestamp = data.timestamp;
+      }
 
       await writeToAsyncStorage(videoKey, updatedVideoEntry);
     },
@@ -118,11 +89,8 @@ export const useViewHistory = (queryArg?: { enabled?: boolean; maxItems?: number
     mutationFn: async () => {
       const history: string[] = await readFromAsyncStorage(STORAGE.VIEW_HISTORY);
 
-      // Delete both new and old format entries
       await deleteFromAsyncStorage(history.map((uuid) => `view_history/${uuid}`));
 
-      // TODO(clean-up): Remove in July 2025 when all clients are migrated
-      await deleteFromAsyncStorage(history); // old format cleanup
       await deleteFromAsyncStorage([STORAGE.VIEW_HISTORY]);
     },
     onSuccess: () => {
@@ -137,13 +105,7 @@ export const useViewHistory = (queryArg?: { enabled?: boolean; maxItems?: number
       const toKeep: string[] = [];
 
       for (const uuid of history) {
-        let entry: ViewHistoryEntry = await readFromAsyncStorage(`view_history/${uuid}`);
-
-        // TODO(clean-up): Remove in July 2025 when all clients are migrated
-        // Fallback to the old format if it is not found in the new format
-        if (!entry) {
-          entry = await readFromAsyncStorage(uuid);
-        }
+        const entry: ViewHistoryEntry = await readFromAsyncStorage(`view_history/${uuid}`);
 
         if (entry?.backend === backend) {
           toDelete.push(uuid);
@@ -152,11 +114,8 @@ export const useViewHistory = (queryArg?: { enabled?: boolean; maxItems?: number
         }
       }
 
-      // Delete both new and old format entries
       await deleteFromAsyncStorage(toDelete.map((uuid) => `view_history/${uuid}`));
 
-      // TODO(clean-up): Remove in July 2025 when all clients are migrated
-      await deleteFromAsyncStorage(toDelete); // old format cleanup
       await writeToAsyncStorage(STORAGE.VIEW_HISTORY, toKeep);
     },
     onSuccess: () => {
@@ -177,11 +136,8 @@ export const useViewHistory = (queryArg?: { enabled?: boolean; maxItems?: number
       STORAGE.VIEW_HISTORY,
       history.filter((entry) => entry !== uuid),
     );
-    // Delete both new and old format entries
-    await deleteFromAsyncStorage([
-      `view_history/${uuid}`,
-      uuid, // TODO(clean-up): Remove in July 2025 when all clients are migrated
-    ]);
+
+    await deleteFromAsyncStorage([`view_history/${uuid}`]);
     await queryClient.invalidateQueries({ queryKey: ["viewHistory"] });
   };
 

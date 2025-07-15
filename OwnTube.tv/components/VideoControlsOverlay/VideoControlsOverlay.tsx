@@ -1,5 +1,5 @@
 import { PropsWithChildren } from "react";
-import { Platform, Pressable, StyleSheet, View } from "react-native";
+import { ActivityIndicator, Platform, Pressable, StyleSheet, View } from "react-native";
 import { Typography } from "../Typography";
 import { getHumanReadableDuration } from "../../utils";
 import { VolumeControl } from "./components/VolumeControl";
@@ -55,7 +55,7 @@ export interface VideoControlsOverlayProps {
   handleSetSpeed: (speed: number) => void;
   speed: number;
   selectedQuality: string;
-  handleSetQuality: (quality: string) => void;
+  handleSetQuality?: (quality: string) => void;
   isWebAirPlayAvailable?: boolean;
   isChromeCastAvailable?: boolean;
   castState?: "airPlay" | "chromecast";
@@ -69,6 +69,7 @@ export interface VideoControlsOverlayProps {
   isWaitingForLive: boolean;
   hlsAutoQuality?: number;
   isDownloadAvailable?: boolean;
+  isLoading: boolean;
 }
 
 const VideoControlsOverlay = ({
@@ -115,6 +116,7 @@ const VideoControlsOverlay = ({
   isWaitingForLive,
   hlsAutoQuality,
   isDownloadAvailable,
+  isLoading,
 }: PropsWithChildren<VideoControlsOverlayProps>) => {
   const {
     isSeekBarFocused,
@@ -216,7 +218,11 @@ const VideoControlsOverlay = ({
               </View>
             </LinearGradient>
           </Animated.View>
-          {isMobile && (
+          {isLoading ? (
+            <View style={styles.playbackControlsContainer}>
+              <ActivityIndicator size="large" />
+            </View>
+          ) : isMobile ? (
             <AnimatedPressable
               entering={FadeIn}
               exiting={FadeOut}
@@ -235,7 +241,7 @@ const VideoControlsOverlay = ({
               )}
               {!isLiveVideo && <PlayerButton onPress={() => handleFF(30)} icon="Fast-forward-30" />}
             </AnimatedPressable>
-          )}
+          ) : null}
           <Animated.View
             exiting={SlideOutDown}
             style={[styles.animatedBottomContainer, { paddingBottom: insets.bottom }]}
@@ -289,10 +295,16 @@ const VideoControlsOverlay = ({
                     <View style={styles.bottomRowControlsContainer}>
                       {!isMobile && (
                         <>
-                          <PlayerButton
-                            onPress={shouldReplay ? handleReplay : handlePlayPause}
-                            icon={centralIconName}
-                          />
+                          {isLoading ? (
+                            <View style={{ padding: 12 }}>
+                              <ActivityIndicator size={24} />
+                            </View>
+                          ) : (
+                            <PlayerButton
+                              onPress={shouldReplay ? handleReplay : handlePlayPause}
+                              icon={centralIconName}
+                            />
+                          )}
                           {!isLiveVideo && (
                             <>
                               <PlayerButton onPress={() => handleRW(15)} icon="Rewind-15" />

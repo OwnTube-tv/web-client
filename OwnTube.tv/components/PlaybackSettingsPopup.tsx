@@ -18,7 +18,7 @@ interface PlaybackSettingsPopupProps {
   selectedSpeed: number;
   handleSetSpeed: (speed: number) => void;
   selectedQuality: string;
-  handleSetQuality: (quality: string) => void;
+  handleSetQuality?: (quality: string) => void;
   onSelectOption?: () => void;
   handleSetCCLang?: (lang: string) => void;
   selectedCCLang?: string;
@@ -149,7 +149,15 @@ export const PlaybackSettingsPopup = ({
                 },
               ]
             : []),
-          { name: t("quality"), id: "quality", state: qualityOptions?.find(({ id }) => selectedQuality === id)?.label },
+          ...(handleSetQuality
+            ? [
+                {
+                  name: t("quality"),
+                  id: "quality",
+                  state: qualityOptions?.find(({ id }) => selectedQuality === id)?.label,
+                },
+              ]
+            : []),
         ] as const
       ).map(({ name, id, state }) => (
         <Setting key={id} name={name} state={state} onPress={() => setSelectedScreen(id as keyof typeof screens)} />
@@ -177,7 +185,7 @@ export const PlaybackSettingsPopup = ({
           {qualityOptions?.map(({ id, label }) => (
             <Option
               onPress={(quality: string) => {
-                handleSetQuality(quality);
+                handleSetQuality?.(quality);
                 onSelectOption?.();
               }}
               key={id}
@@ -206,7 +214,7 @@ export const PlaybackSettingsPopup = ({
         </>
       ),
     };
-  }, [colors, selectedSpeed, selectedQuality, videoData, t, selectedCCLang, handleSetCCLang]);
+  }, [colors, selectedSpeed, selectedQuality, videoData, t, selectedCCLang, handleSetCCLang, handleSetQuality]);
 
   return (
     <TVFocusGuideHelper style={[styles.container, { backgroundColor: colors.black80 }]}>

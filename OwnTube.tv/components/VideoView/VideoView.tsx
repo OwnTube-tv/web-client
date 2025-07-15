@@ -9,7 +9,7 @@ import Toast from "react-native-toast-message";
 import { useFocusEffect, useLocalSearchParams } from "expo-router";
 import { ROUTES } from "../../types";
 import { RootStackParams } from "../../app/_layout";
-import { TextTracks, TextTrackType, Video, VideoRef } from "react-native-video";
+import { SelectedVideoTrackType, TextTracks, TextTrackType, Video, VideoRef } from "react-native-video";
 import { SelectedTrackType } from "react-native-video/src/types/video";
 import type {
   OnBandwidthUpdateData,
@@ -182,8 +182,14 @@ const VideoView = ({
     setPlayableDuration(playableDuration);
   };
 
+  const [isLoadingData, setIsLoadingData] = useState(true);
+  const toggleLoading = (state: boolean) => () => {
+    setIsLoadingData(state);
+  };
+
   const handleVideoLoaded = ({ duration }: OnLoadData) => {
     setDuration(duration);
+    setIsLoadingData(false);
   };
 
   const [playbackSpeed, setPlaybackSpeed] = useState(1);
@@ -341,9 +347,12 @@ const VideoView = ({
     setHlsResolution(event.height);
   };
 
+  const allowQualityControls = Platform.OS === "ios" || !videoData?.streamingPlaylists?.length;
+
   return (
     <View collapsable={false} style={styles.container}>
       <VideoControlsOverlay
+        isLoading={isLoadingData}
         isLiveVideo={videoData?.isLive}
         videoLinkProps={{ backend, url: viewUrl }}
         handlePlayPause={handlePlayPause}
@@ -373,7 +382,7 @@ const VideoView = ({
         handleSetSpeed={setPlaybackSpeed}
         speed={playbackSpeed}
         selectedQuality={selectedQuality}
-        handleSetQuality={handleSetQuality}
+        handleSetQuality={allowQualityControls ? handleSetQuality : undefined}
         castState={castState}
         isChromeCastAvailable
         handleToggleCC={handleToggleCC}
@@ -392,21 +401,15 @@ const VideoView = ({
             <Image
               source={{ uri: `https://${backend}${videoData?.previewPath}` }}
               resizeMode="contain"
-              style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0, flex: 1 }}
+              style={styles.previewImage}
             />
             <View
-              style={{
-                position: "absolute",
-                top: 0,
-                left: 0,
-                right: 0,
-                bottom: 0,
-                flex: 1,
-                zIndex: 1,
-                backgroundColor: colors.black50,
-                alignItems: "center",
-                justifyContent: "center",
-              }}
+              style={[
+                styles.liveStreamAnnouncementContainer,
+                {
+                  backgroundColor: colors.black50,
+                },
+              ]}
             >
               <Typography
                 color={colors.theme50}
@@ -445,6 +448,7 @@ const VideoView = ({
               type: SelectedTrackType.INDEX,
               value: 0,
             }}
+            selectedVideoTrack={{ type: SelectedVideoTrackType.RESOLUTION, value: Number(selectedQuality) }}
             onExternalPlaybackChange={(e) => {
               setCastState(e.isExternalPlaybackActive ? "airPlay" : undefined);
             }}
@@ -457,6 +461,11 @@ const VideoView = ({
                   }
                 : undefined
             }
+            onLoadStart={toggleLoading(true)}
+            onBuffer={({ isBuffering }) => {
+              setIsLoadingData(isBuffering);
+            }}
+            onReadyForDisplay={toggleLoading(false)}
           />
         )}
         {isMobile && !Platform.isTVOS && isControlsVisible && (

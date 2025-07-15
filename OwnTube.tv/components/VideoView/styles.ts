@@ -18,6 +18,17 @@ export const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
   },
+  liveStreamAnnouncementContainer: {
+    alignItems: "center",
+    bottom: 0,
+    flex: 1,
+    justifyContent: "center",
+    left: 0,
+    position: "absolute",
+    right: 0,
+    top: 0,
+    zIndex: 1,
+  },
   liveStreamOfflineOverlay: { alignItems: "center", flex: 1, justifyContent: "center", zIndex: 1 },
   liveStreamPoster: { bottom: 0, flex: 1, left: 0, position: "absolute", right: 0, top: 0 },
   opacityOverlay: {
@@ -29,5 +40,6 @@ export const styles = StyleSheet.create({
     right: 0,
     top: 0,
   },
-  videoWrapper: { flex: 1, height: "100%", width: "100%" },
+  previewImage: { bottom: 0, flex: 1, left: 0, position: "absolute", right: 0, top: 0 },
+  videoWrapper: { flex: 1, height: "100%", pointerEvents: "none", width: "100%", zIndex: 1 },
 });

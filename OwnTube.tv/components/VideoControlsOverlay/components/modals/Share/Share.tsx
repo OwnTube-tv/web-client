@@ -59,7 +59,12 @@ const Share = ({ onClose, titleKey, staticLink }: ShareProps) => {
         containerStyle={styles.modalContainer}
       >
         <ScrollView>
-          <Input buttonText={copyButtonText} readOnly value={staticLink || link} handleButtonPress={handleCopy} />
+          <Input
+            buttonText={copyButtonText}
+            readOnly
+            value={(staticLink || link).replace(/^https?:\/\//, "")}
+            handleButtonPress={handleCopy}
+          />
           <Spacer height={spacing.xl} />
           {isTimestampShown && (
             <>

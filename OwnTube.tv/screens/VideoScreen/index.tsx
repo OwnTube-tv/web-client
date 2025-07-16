@@ -91,12 +91,7 @@ export const VideoScreen = () => {
         hlsStream = data.streamingPlaylists[0];
       }
 
-      const streamByQuality = hlsStream.files.find(({ resolution }) => String(resolution.id) === quality);
-
-      if (!streamByQuality) return hlsStream.playlistUrl;
-
-      // fallback to .replace() is for older instances without playlistUrl support
-      return streamByQuality.playlistUrl || streamByQuality.fileUrl.replace(`-fragmented.mp4`, ".m3u8");
+      return hlsStream.playlistUrl;
     }
 
     const webVideoFileByQuality = data.files?.find(({ resolution }) => String(resolution.id) === quality);

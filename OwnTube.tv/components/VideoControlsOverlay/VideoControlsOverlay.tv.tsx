@@ -8,6 +8,7 @@ import {
   TVFocusGuideView,
   Platform,
   BackHandler,
+  ActivityIndicator,
 } from "react-native";
 import { Typography } from "../Typography";
 import { getHumanReadableDuration } from "../../utils";
@@ -73,6 +74,7 @@ const VideoControlsOverlay = ({
   isCCAvailable,
   isLiveVideo,
   isWaitingForLive,
+  isLoading,
 }: PropsWithChildren<VideoControlsOverlayProps>) => {
   const {
     isSeekBarFocused,
@@ -271,7 +273,9 @@ const VideoControlsOverlay = ({
                   icon="Rewind-15"
                 />
               )}
-              {!isWaitingForLive && (
+              {isLoading ? (
+                <ActivityIndicator size={"large"} />
+              ) : !isWaitingForLive ? (
                 <PlayerButton
                   scale={INTERFACE_SCALE}
                   nextFocusUp={backRef}
@@ -280,7 +284,7 @@ const VideoControlsOverlay = ({
                   icon={centralIconName}
                   nextFocusDown={isLiveVideo ? settingsRef.current : undefined}
                 />
-              )}
+              ) : null}
               {!isLiveVideo && (
                 <PlayerButton
                   scale={INTERFACE_SCALE}

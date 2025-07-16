@@ -14,7 +14,7 @@ import { ROUTES, STORAGE } from "../../types";
 import { usePostVideoViewMutation } from "../../api";
 import { IcoMoonIcon } from "../IcoMoonIcon";
 import { useTheme } from "@react-navigation/native";
-import { useChromeCast } from "../../hooks";
+import { useChromeCast, useViewHistory } from "../../hooks";
 import { useTranslation } from "react-i18next";
 import { useAppConfigContext } from "../../contexts";
 import { Typography } from "..";
@@ -77,10 +77,12 @@ const VideoView = ({
   const isMobile = Device.deviceType !== DeviceType.DESKTOP;
   const [isControlsVisible, setIsControlsVisible] = useState(false);
   const [isAirPlayAvailable, setIsAirPlayAvailable] = useState(false);
+  const [isLoadingData, setIsLoadingData] = useState(true);
   const [availableCCLangs, setAvailableCCLangs] = useState<string[]>([]);
   const [selectedCCLang, setSelectedCCLang] = useState("");
   const [memorizedCCLang, setMemorizedCCLang] = useState<string | null>(null);
   const { top } = useSafeAreaInsets();
+  const { getViewHistoryEntryByUuid } = useViewHistory();
 
   const { colors } = useTheme();
 
@@ -183,9 +185,33 @@ const VideoView = ({
     playerRef.current = player;
     const video = document.getElementsByTagName("video")[0];
 
-    if (window.WebKitPlaybackTargetAvailabilityEvent) {
-      video?.addEventListener("webkitplaybacktargetavailabilitychanged", handleAirPlayAvailabilityChange);
+    if (window.WebKitPlaybackTargetAvailabilityEvent && video) {
+      video.addEventListener("webkitplaybacktargetavailabilitychanged", handleAirPlayAvailabilityChange);
     }
+
+    player.on("loadstart", () => {
+      setIsLoadingData(true);
+    });
+
+    player.on("waiting", () => {
+      setIsLoadingData(true);
+    });
+
+    player.on("loadeddata", () => {
+      setIsLoadingData(false);
+    });
+
+    player.on("canplay", () => {
+      setIsLoadingData(false);
+    });
+
+    player.on("canplaythrough", () => {
+      setIsLoadingData(false);
+    });
+
+    player.on("ready", () => {
+      setIsLoadingData(false);
+    });
 
     player.on("loadedmetadata", () => {
       updatePlaybackStatus({
@@ -284,7 +310,10 @@ const VideoView = ({
 
   useEffect(() => {
     const { position } = playbackStatus;
-    handleSetTimeStamp(position);
+
+    if (isInitialVideoLoadDone.current) {
+      handleSetTimeStamp(position);
+    }
 
     const currentTimeInt = Math.trunc(position);
 
@@ -293,6 +322,22 @@ const VideoView = ({
       postVideoView({ videoId: videoData?.uuid, currentTime: currentTimeInt });
     }
   }, [playbackStatus.position]);
+
+  const handleSelectQuality = (quality: string) => {
+    handleSetQuality(quality);
+
+    const vhs = playerRef.current?.tech().vhs;
+
+    if (vhs) {
+      vhs.representations().forEach(function (rep) {
+        if (rep.height === Number(quality)) {
+          rep.enabled(true);
+        } else {
+          rep.enabled(false);
+        }
+      });
+    }
+  };
 
   useEffect(() => {
     const handleKeyboard = (e: KeyboardEvent) => {
@@ -342,13 +387,17 @@ const VideoView = ({
   useFocusEffect(
     useCallback(() => {
       const position = playerRef.current?.currentTime();
+      const viewHistoryEntry = getViewHistoryEntryByUuid(videoData?.uuid || "");
+
       if (playerRef.current?.paused() && isInitialVideoLoadDone.current) {
         playerRef.current?.autoplay(false);
       }
 
       playerRef.current?.src(uri);
       playerRef.current?.currentTime(
-        !isInitialVideoLoadDone.current ? Number(timestamp || 0) : Math.floor(position || 0),
+        !isInitialVideoLoadDone.current
+          ? Number(viewHistoryEntry?.timestamp || timestamp || 0)
+          : Math.floor(position || 0),
       );
       isInitialVideoLoadDone.current = true;
 
@@ -426,7 +475,9 @@ const VideoView = ({
       currentLangTrack.mode = "disabled";
     }
 
-    trackToShow.mode = "showing";
+    if (trackToShow) {
+      trackToShow.mode = "showing";
+    }
     setSelectedCCLang(lang);
     updateSessionCCLocale(lang);
     setIsCCShown(true);
@@ -455,9 +506,12 @@ const VideoView = ({
     }, [isCCAvailable, availableCCLangs]),
   );
 
+  const allowQualityControls = !videojs.browser.IS_ANY_SAFARI || !videoData?.streamingPlaylists?.length;
+
   return (
     <View style={styles.container}>
       <VideoControlsOverlay
+        isLoading={isLoadingData}
         isWaitingForLive={isWaitingForLive}
         isLiveVideo={videoData?.isLive}
         videoLinkProps={{ backend, url: viewUrl }}
@@ -487,7 +541,7 @@ const VideoView = ({
         handleSetSpeed={handleSetSpeed}
         speed={playbackStatus.rate}
         selectedQuality={selectedQuality}
-        handleSetQuality={handleSetQuality}
+        handleSetQuality={allowQualityControls ? handleSelectQuality : undefined}
         isWebAirPlayAvailable={isAirPlayAvailable}
         isChromeCastAvailable={isChromeCastAvailable}
         handleLoadGoogleCastMedia={handleCreateSession}

@@ -1,4 +1,5 @@
 import { VideosCommonQuery } from "@peertube/peertube-types";
+import buildInfo from "../build-info.json";
 
 // Common query parameters for fetching videos that are classified as "local", "non-live", and "Safe-For-Work"
 export const commonQueryParams: VideosCommonQuery = {
@@ -48,3 +49,5 @@ export enum MUTATION_KEYS {
 export const WRONG_SERVER_VERSION_STATUS_CODE = 444;
 
 export const GLOBAL_QUERY_STALE_TIME = 3_600_000; // 1 hour in ms
+
+export const APP_IDENTIFIER = `${buildInfo.GITHUB_REPOSITORY}@${buildInfo.GITHUB_SHA_SHORT} (https://github.com/${buildInfo.GITHUB_ACTOR})`;

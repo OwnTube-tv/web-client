@@ -8,33 +8,33 @@ By default, analytics are set to opt-in. This means that no tracking occurs unle
 
 ## Enabling analytics
 
-By default, analytics are collected to the OwnTube.tv PostHog service. You can change this behavior by specifying your own PostHog project API key in your environment configuration files. To do this, set the `EXPO_PUBLIC_ANALYTICS_API_KEY` variable to your PostHog project's key.
+By default, analytics are collected to the OwnTube.tv PostHog service. You can change this behavior by specifying your own PostHog project API key in your environment configuration files. To do this, set the `EXPO_PUBLIC_POSTHOG_API_KEY` variable to your PostHog project's key.
 
-If you do not wish to collect any analytics, set the `EXPO_PUBLIC_ANALYTICS_API_KEY` to `null` in your environment files. This will disable analytics collection entirely.
+If you do not wish to collect any analytics, set the `EXPO_PUBLIC_POSTHOG_API_KEY` to `null` in your environment files. This will disable analytics collection entirely.
 
 **Example:**
 
 ```env
 # Use your own PostHog project
-EXPO_PUBLIC_ANALYTICS_API_KEY=phc_xxxxxxxxxxxxxxxxxxxxxxxx
+EXPO_PUBLIC_POSTHOG_API_KEY=phc_xxxxxxxxxxxxxxxxxxxxxxxx
 
 # Or disable analytics
-EXPO_PUBLIC_ANALYTICS_API_KEY=null
+EXPO_PUBLIC_POSTHOG_API_KEY=null
 ```
 
 ## Specifying the analytics host
 
-You can also configure the analytics host by setting the `EXPO_PUBLIC_ANALYTICS_HOST` variable in your environment files. This allows you to choose between the default US or EU PostHog hosts, or provide the URL of your own self-hosted PostHog instance.
+You can also configure the analytics host by setting the `EXPO_PUBLIC_POSTHOG_HOST` variable in your environment files. This allows you to choose between the default US or EU PostHog hosts, or provide the URL of your own self-hosted PostHog instance.
 
 **Example:**
 
 ```env
 # Use the US PostHog host
-EXPO_PUBLIC_ANALYTICS_HOST=https://app.posthog.com
+EXPO_PUBLIC_POSTHOG_HOST=https://app.posthog.com
 
 # Use the EU PostHog host
-EXPO_PUBLIC_ANALYTICS_HOST=https://eu.posthog.com
+EXPO_PUBLIC_POSTHOG_HOST=https://eu.posthog.com
 
 # Use your own self-hosted PostHog instance
-EXPO_PUBLIC_ANALYTICS_HOST=https://analytics.yourdomain.com
+EXPO_PUBLIC_POSTHOG_HOST=https://analytics.yourdomain.com
 ```

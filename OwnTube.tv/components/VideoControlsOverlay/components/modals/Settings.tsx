@@ -17,6 +17,7 @@ import Constants from "expo-constants";
 import DeviceCapabilities from "../../../DeviceCapabilities";
 import Picker from "../../../shared/Picker";
 import { useGetInstanceInfoQuery } from "../../../../api";
+import { usePostHog } from "posthog-react-native/lib/posthog-react-native/src/hooks/usePostHog";
 
 interface SettingsProps {
   onClose: () => void;
@@ -28,6 +29,7 @@ export const Settings = ({ onClose }: SettingsProps) => {
   const { currentLang, handleChangeLang, t } = useSelectLocale();
   const { dark: isDarkTheme, colors } = useTheme();
   const router = useRouter();
+  const posthog = usePostHog();
 
   const { data: instanceInfo } = useGetInstanceInfoQuery(backend);
   const { currentInstanceConfig } = useAppConfigContext();
@@ -41,6 +43,17 @@ export const Settings = ({ onClose }: SettingsProps) => {
 
   const handleSelectLanguage = (langCode: string) => {
     handleChangeLang(langCode);
+  };
+
+  const handleToggleDebugMode = (debugModeOn: boolean) => {
+    setIsDebugMode(debugModeOn);
+    writeToAsyncStorage(STORAGE.DEBUG_MODE, String(debugModeOn));
+
+    if (debugModeOn) {
+      posthog.optIn();
+    } else {
+      posthog.optOut();
+    }
   };
 
   return (
@@ -65,7 +78,7 @@ export const Settings = ({ onClose }: SettingsProps) => {
             items={LANGUAGE_OPTIONS}
           />
           <Spacer height={spacing.xl} />
-          <Checkbox checked={isDebugMode} onChange={setIsDebugMode} label={t("debugLogging")} />
+          <Checkbox checked={isDebugMode} onChange={handleToggleDebugMode} label={t("debugLogging")} />
           <Spacer height={spacing.xl} />
           {!primaryBackend && (
             <>

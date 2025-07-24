@@ -22,13 +22,14 @@ import { InstanceConfig } from "../instanceConfigs";
 import Toast from "react-native-toast-message";
 import { useTranslation } from "react-i18next";
 import { useGlobalSearchParams } from "expo-router";
-import { writeToAsyncStorage } from "../utils";
+import { readFromAsyncStorage, writeToAsyncStorage } from "../utils";
 import { STORAGE } from "../types";
 import { Platform } from "react-native";
 import uuid from "react-native-uuid";
 import { useQueryClient } from "@tanstack/react-query";
 import { GLOBAL_QUERY_STALE_TIME } from "../api";
 import { useInstanceConfigStore } from "../store";
+import { usePostHog } from "posthog-react-native/lib/posthog-react-native/src/hooks/usePostHog";
 
 interface IAppConfigContext {
   isDebugMode: boolean;
@@ -64,6 +65,7 @@ export const AppConfigContextProvider = ({ children }: PropsWithChildren) => {
   const { currentInstanceConfig } = useInstanceConfig(featuredInstances);
   const queryClient = useQueryClient();
   const { setCurrentInstanceConfig, setInstanceConfigList } = useInstanceConfigStore();
+  const posthog = usePostHog();
 
   useEffect(() => {
     setCurrentInstanceConfig(currentInstanceConfig);
@@ -119,6 +121,18 @@ export const AppConfigContextProvider = ({ children }: PropsWithChildren) => {
     } else {
       setSessionId(uuid.v4());
     }
+  }, []);
+
+  useEffect(() => {
+    readFromAsyncStorage(STORAGE.DEBUG_MODE).then((debugMode) => {
+      setIsDebugMode(debugMode === "true");
+
+      if (debugMode === "true") {
+        posthog.optIn();
+      } else {
+        posthog.optOut();
+      }
+    });
   }, []);
 
   return (

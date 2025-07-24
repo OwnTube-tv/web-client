@@ -1,15 +1,15 @@
 import axios, { AxiosInstance } from "axios";
-import build_info from "../build-info.json";
 import { useAuthSessionStore } from "../store";
 import { parseISOToEpoch } from "../utils";
 import { parseAuthSessionData } from "../utils/auth";
 import { OAuthClientLocal, UserLogin } from "@peertube/peertube-types";
+import { APP_IDENTIFIER } from "./constants";
 
 export const axiosInstance = axios.create({
   withCredentials: false,
   headers: {
     "Access-Control-Allow-Origin": "*",
-    "X-App-Identifier": `OwnTube-tv/web-client@${build_info.GITHUB_SHA_SHORT} (https://github.com/${build_info.GITHUB_ACTOR})`,
+    "X-App-Identifier": APP_IDENTIFIER,
   },
 });
 

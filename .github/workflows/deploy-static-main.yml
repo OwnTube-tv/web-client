@@ -100,7 +100,7 @@ jobs:
             \"GITHUB_SHA_SHORT\": \"${{ steps.create.outputs.GITHUB_SHA_SHORT }}\",
             \"COMMIT_URL\": \"${{ steps.create.outputs.COMMIT_URL }}\",
             \"BUILD_TIMESTAMP\": \"${{ steps.create.outputs.BUILD_TIMESTAMP }}\",
-            \"GITHUB_REPO\": \"${{ github.repository }}\",
+            \"GITHUB_REPOSITORY\": \"${{ github.repository }}\",
             \"WEB_URL\": \"${{ steps.create.outputs.WEB_URL }}\"
           }
           " >> $GITHUB_OUTPUT

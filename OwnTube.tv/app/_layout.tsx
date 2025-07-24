@@ -31,7 +31,7 @@ import { SHAREABLE_ROUTE_MODAL_TITLES } from "../navigation/constants";
 import { GLOBAL_QUERY_STALE_TIME } from "../api";
 import { useAuthSessionSync } from "../hooks/useAuthSessionSync";
 import { PostHogProvider, usePostHog } from "posthog-react-native";
-import { postHogInstance } from "../analytics";
+import { postHogInstance } from "../diagnostics";
 
 export const CLOSED_DRAWER_WIDTH = 64;
 export const OPEN_DRAWER_WIDTH = 272;

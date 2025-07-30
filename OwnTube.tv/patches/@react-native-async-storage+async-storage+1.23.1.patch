@@ -1,0 +1,100 @@
+diff --git a/node_modules/@react-native-async-storage/async-storage/lib/commonjs/AsyncStorage.js b/node_modules/@react-native-async-storage/async-storage/lib/commonjs/AsyncStorage.js
+index 2c9ef18..4bed333 100644
+--- a/node_modules/@react-native-async-storage/async-storage/lib/commonjs/AsyncStorage.js
++++ b/node_modules/@react-native-async-storage/async-storage/lib/commonjs/AsyncStorage.js
+@@ -23,14 +23,16 @@ const merge = _mergeOptions.default.bind({
+   ignoreUndefined: true
+ });
+ function mergeLocalStorageItem(key, value) {
+-  const oldValue = window.localStorage.getItem(key);
+-  if (oldValue) {
+-    const oldObject = JSON.parse(oldValue);
+-    const newObject = JSON.parse(value);
+-    const nextValue = JSON.stringify(merge(oldObject, newObject));
+-    window.localStorage.setItem(key, nextValue);
+-  } else {
+-    window.localStorage.setItem(key, value);
++  if (typeof window !== "undefined") {
++    const oldValue = window.localStorage.getItem(key);
++    if (oldValue) {
++      const oldObject = JSON.parse(oldValue);
++      const newObject = JSON.parse(value);
++      const nextValue = JSON.stringify(merge(oldObject, newObject));
++      window.localStorage.setItem(key, nextValue);
++    } else {
++      window.localStorage.setItem(key, value);
++    }
+   }
+ }
+ function createPromise(getValue, callback) {
+@@ -60,19 +62,32 @@ const AsyncStorage = {
+    * Fetches `key` value.
+    */
+   getItem: (key, callback) => {
+-    return createPromise(() => window.localStorage.getItem(key), callback);
++    return createPromise(() => {
++      if (typeof window !== "undefined") {
++        return window.localStorage.getItem(key);
++      }
++      return null;
++    }, callback);
+   },
+   /**
+    * Sets `value` for `key`.
+    */
+   setItem: (key, value, callback) => {
+-    return createPromise(() => window.localStorage.setItem(key, value), callback);
++    return createPromise(() => {
++      if (typeof window !== "undefined") {
++        window.localStorage.setItem(key, value);
++      }
++    }, callback);
+   },
+   /**
+    * Removes a `key`
+    */
+   removeItem: (key, callback) => {
+-    return createPromise(() => window.localStorage.removeItem(key), callback);
++    return createPromise(() => {
++      if (typeof window !== "undefined") {
++        window.localStorage.removeItem(key);
++      }
++    }, callback);
+   },
+   /**
+    * Merges existing value with input value, assuming they are stringified JSON.
+@@ -84,20 +99,27 @@ const AsyncStorage = {
+    * Erases *all* AsyncStorage for the domain.
+    */
+   clear: callback => {
+-    return createPromise(() => window.localStorage.clear(), callback);
++    return createPromise(() => {
++      if (typeof window !== "undefined") {
++        window.localStorage.clear();
++      }
++    }, callback);
+   },
+   /**
+    * Gets *all* keys known to the app, for all callers, libraries, etc.
+    */
+   getAllKeys: callback => {
+     return createPromise(() => {
+-      const numberOfKeys = window.localStorage.length;
+-      const keys = [];
+-      for (let i = 0; i < numberOfKeys; i += 1) {
+-        const key = window.localStorage.key(i) || "";
+-        keys.push(key);
++      if (typeof window !== "undefined") {
++        const numberOfKeys = window.localStorage.length;
++        const keys = [];
++        for (let i = 0; i < numberOfKeys; i += 1) {
++          const key = window.localStorage.key(i) || "";
++          keys.push(key);
++        }
++        return keys;
+       }
+-      return keys;
++      return [];
+     }, callback);
+   },
+   /**

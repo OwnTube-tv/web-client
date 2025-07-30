@@ -17,6 +17,8 @@ import { ROUTES } from "../../types";
 import { RootStackParams } from "../../app/_layout";
 import { parseAuthSessionData } from "../../utils/auth";
 import { useAuthSessionStore } from "../../store";
+import { useCustomDiagnosticsEvents } from "../../diagnostics/useCustomDiagnosticEvents";
+import { CustomPostHogEvents } from "../../diagnostics/constants";
 
 const otpValidationSchema = z.object({
   otp: z.string().trim().min(1, "requiredField"),
@@ -44,6 +46,7 @@ export const Otp = () => {
     isPending: isSendingOtp,
     reset: resetSendOtp,
   } = useLoginWithUsernameAndPasswordMutation();
+  const { captureDiagnosticsEvent } = useCustomDiagnosticsEvents();
 
   useFocusEffect(
     useCallback(() => {
@@ -87,6 +90,7 @@ export const Otp = () => {
           });
         }
 
+        captureDiagnosticsEvent(CustomPostHogEvents.Login, { backend });
         router.navigate({ pathname: ROUTES.HOME, params: { backend } });
       }
     }

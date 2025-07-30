@@ -223,7 +223,13 @@ export const Sidebar: FC<SidebarProps> = ({ backend, ...navigationProps }) => {
         )}
         <Button
           justifyContent="flex-start"
-          onPress={() => handleToggleShareModal({ staticHeaderKey: "shareVideoSite", staticLink: homeShareLink })}
+          onPress={() =>
+            handleToggleShareModal({
+              staticHeaderKey: "shareVideoSite",
+              staticLink: homeShareLink,
+              analyticsEventType: "app",
+            })
+          }
           icon={"Share"}
           text={shouldExpand ? t("shareAppURL") : undefined}
           style={paddingHelperStyle}

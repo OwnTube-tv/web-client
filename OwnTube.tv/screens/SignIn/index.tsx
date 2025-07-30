@@ -25,6 +25,8 @@ import { useCustomFocusManager } from "../../hooks";
 import { useAuthSessionStore } from "../../store";
 import { parseAuthSessionData } from "../../utils/auth";
 import { ServerErrorCodes, UserLoginResponse } from "../../api/models";
+import { useCustomDiagnosticsEvents } from "../../diagnostics/useCustomDiagnosticEvents";
+import { CustomPostHogEvents } from "../../diagnostics/constants";
 
 const signInFormValidationSchema = z.object({
   username: z.string().trim().min(1, "requiredField"),
@@ -35,6 +37,7 @@ export const SignIn = () => {
   const { t } = useTranslation();
   const { backend, username = "" } = useLocalSearchParams<RootStackParams[ROUTES.SIGNIN]>();
   const { colors } = useTheme();
+  const { captureDiagnosticsEvent } = useCustomDiagnosticsEvents();
 
   const { data: instanceInfo, isLoading: isLoadingInstanceInfo } = useGetInstanceInfoQuery(backend);
   const { data: instanceServerConfig, isLoading: isLoadingInstanceServerConfig } = useGetInstanceServerConfigQuery({
@@ -88,6 +91,7 @@ export const SignIn = () => {
 
         if (code === ServerErrorCodes.MISSING_TWO_FACTOR) {
           router.navigate({ pathname: ROUTES.OTP, params: { backend } });
+          captureDiagnosticsEvent(CustomPostHogEvents.TwoFAScreen, { backend });
           return;
         }
 
@@ -110,6 +114,7 @@ export const SignIn = () => {
           });
         }
 
+        captureDiagnosticsEvent(CustomPostHogEvents.Login, { backend });
         router.navigate({ pathname: ROUTES.HOME, params: { backend } });
       }
     }

@@ -188,7 +188,7 @@ export default function RootLayout() {
   return (
     <SafeAreaProvider>
       <GestureHandlerRootView>
-        <PostHogProvider client={postHogInstance}>
+        <PostHogProvider client={postHogInstance} autocapture={{ captureScreens: false }}>
           <QueryClientProvider client={queryClient}>
             <AppConfigContextProvider>
               {isWeb && <ReactQueryDevtools initialIsOpen={false} />}

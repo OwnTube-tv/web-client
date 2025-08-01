@@ -2,6 +2,9 @@ import { Video } from "@peertube/peertube-types";
 import { useEffect, useRef, useState } from "react";
 import Player from "video.js/dist/types/player";
 import { PlaybackStatus } from "../components/VideoView/VideoView.web";
+import { CustomPostHogEvents } from "../diagnostics/constants";
+import { useCustomDiagnosticsEvents } from "../diagnostics/useCustomDiagnosticEvents";
+import { getHumanReadableDuration } from "../utils";
 
 interface UseChromeCastProps {
   uri?: string;
@@ -21,6 +24,7 @@ export const useChromeCast = ({
   const [isChromecastConnected, setIsChromecastConnected] = useState(false);
   const [isChromeCastAvailable, setIsChromeCastAvailable] = useState(false);
   const isChromecastConnectedRef = useRef(false);
+  const { captureDiagnosticsEvent } = useCustomDiagnosticsEvents();
 
   const handleLoadGoogleCastMedia = () => {
     const castSession = window.cast?.framework?.CastContext.getInstance().getCurrentSession();
@@ -44,7 +48,10 @@ export const useChromeCast = ({
 
     castSession
       .loadMedia(request)
-      .then(() => (isChromecastConnectedRef.current = true))
+      .then(() => {
+        isChromecastConnectedRef.current = true;
+        captureDiagnosticsEvent(CustomPostHogEvents.ChromecastStarted);
+      })
       .catch((error: Error) => console.error("Error loading media:", error));
 
     playerRef.current?.pause();
@@ -131,6 +138,15 @@ export const useChromeCast = ({
         updatePlaybackStatus({
           isPlaying: !value,
         });
+        if (value) {
+          captureDiagnosticsEvent(CustomPostHogEvents.Pause, {
+            currentTime: getHumanReadableDuration((playerRef.current?.currentTime() || 0) * 1000),
+          });
+        } else {
+          captureDiagnosticsEvent(CustomPostHogEvents.Play, {
+            currentTime: getHumanReadableDuration((playerRef.current?.currentTime() || 0) * 1000),
+          });
+        }
       },
     );
   }, []);
@@ -172,6 +188,7 @@ export const useChromeCast = ({
         if (isPlayingRef.current) {
           playerRef.current?.play();
         }
+        captureDiagnosticsEvent(CustomPostHogEvents.ChromecastStopped);
         updatePlaybackStatus({ volume: playerRef.current?.volume() || 1 });
       }
     });

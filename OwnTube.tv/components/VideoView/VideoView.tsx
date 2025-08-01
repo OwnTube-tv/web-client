@@ -31,6 +31,9 @@ import { useTranslation } from "react-i18next";
 import { useAppConfigContext } from "../../contexts";
 import { Typography } from "../Typography";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useCustomDiagnosticsEvents } from "../../diagnostics/useCustomDiagnosticEvents";
+import { CustomPostHogEvents } from "../../diagnostics/constants";
+import { getHumanReadableDuration } from "../../utils";
 
 export interface VideoViewProps {
   uri?: string;
@@ -88,21 +91,30 @@ const VideoView = ({
   const { colors } = useTheme();
   const { t } = useTranslation();
   const { top } = useSafeAreaInsets();
+  const { captureDiagnosticsEvent } = useCustomDiagnosticsEvents();
 
   const googleCastClient = Platform.isTV
     ? null
     : useRemoteMediaClient({ ignoreSessionUpdatesInBackground: Platform.OS === "ios" });
   const { mutate: postVideoView } = usePostVideoViewMutation();
 
-  const handlePlayPause = () => {
+  const handlePlayPause = async () => {
     videoRef.current?.[isPlaying ? "pause" : "resume"]();
     googleCastClient?.[isPlaying ? "pause" : "play"]();
+    const currentTime = await videoRef.current?.getCurrentPosition();
+    captureDiagnosticsEvent(CustomPostHogEvents[isPlaying ? "Pause" : "Play"], {
+      currentTime: getHumanReadableDuration((currentTime || 0) * 1000),
+    });
   };
 
   const isPlayingRef = useRef(false);
 
   const handleRW = (seconds: number) => {
     const updatedTime = currentTime - seconds;
+    captureDiagnosticsEvent(CustomPostHogEvents.Scrubbing, {
+      currentTime: getHumanReadableDuration((currentTime || 0) * 1000),
+      targetTime: getHumanReadableDuration((updatedTime || 0) * 1000),
+    });
     videoRef.current?.seek(updatedTime);
     googleCastClient?.seek({ position: currentTime - seconds, resumeState: isPlaying ? "play" : "pause" });
     postVideoView({ videoId: videoData?.uuid, currentTime: updatedTime, viewEvent: "seek" });
@@ -110,6 +122,10 @@ const VideoView = ({
 
   const handleFF = (seconds: number) => {
     const updatedTime = currentTime + seconds;
+    captureDiagnosticsEvent(CustomPostHogEvents.Scrubbing, {
+      currentTime: getHumanReadableDuration((currentTime || 0) * 1000),
+      targetTime: getHumanReadableDuration((updatedTime || 0) * 1000),
+    });
     videoRef.current?.seek(updatedTime);
     googleCastClient?.seek({ position: currentTime + seconds, resumeState: isPlaying ? "play" : "pause" });
     postVideoView({ videoId: videoData?.uuid, currentTime: updatedTime, viewEvent: "seek" });
@@ -118,6 +134,7 @@ const VideoView = ({
   const toggleMute = () => {
     googleCastClient?.setStreamMuted(!muted);
     setMuted((prev) => !prev);
+    captureDiagnosticsEvent(muted ? CustomPostHogEvents.UnmuteAudio : CustomPostHogEvents.MuteAudio);
   };
 
   const handleReplay = () => {
@@ -126,7 +143,11 @@ const VideoView = ({
     setShouldReplay(false);
   };
 
-  const handleJumpTo = (position: number) => {
+  const handleJumpTo = async (position: number) => {
+    captureDiagnosticsEvent(CustomPostHogEvents.Scrubbing, {
+      currentTime: getHumanReadableDuration((currentTime || 0) * 1000),
+      targetTime: getHumanReadableDuration((position || 0) * 1000),
+    });
     videoRef.current?.seek(position);
     googleCastClient?.seek({ position, resumeState: isPlaying ? "play" : "pause" });
     postVideoView({ videoId: videoData?.uuid, currentTime: position, viewEvent: "seek" });
@@ -238,6 +259,7 @@ const VideoView = ({
     if (googleCastClient && uri) {
       isCastActivated.current = true;
       setCastState("chromecast");
+      captureDiagnosticsEvent(CustomPostHogEvents.ChromecastStarted);
       googleCastClient.loadMedia({
         mediaInfo: {
           metadata: {
@@ -265,6 +287,7 @@ const VideoView = ({
     } else if (isCastActivated.current) {
       isCastActivated.current = false;
       setCastState(undefined);
+      captureDiagnosticsEvent(CustomPostHogEvents.ChromecastStopped);
       videoRef.current?.setSource({
         ...videoSource,
         uri,
@@ -311,8 +334,10 @@ const VideoView = ({
     if (!lang) {
       setSelectedCCLang("");
       setIsCCShown(false);
+      captureDiagnosticsEvent(CustomPostHogEvents.DisableCaptions);
       return;
     }
+    captureDiagnosticsEvent(CustomPostHogEvents.EnableCaptions, { captionLanguage: lang });
     setMemorizedCCLang(lang);
     setSelectedCCLang(lang);
     updateSessionCCLocale(lang);
@@ -347,7 +372,7 @@ const VideoView = ({
     setHlsResolution(event.height);
   };
 
-  const allowQualityControls = Platform.OS === "ios" || !videoData?.streamingPlaylists?.length;
+  const allowQualityControls = Platform.OS !== "ios" || !videoData?.streamingPlaylists?.length;
 
   return (
     <View collapsable={false} style={styles.container}>
@@ -451,6 +476,9 @@ const VideoView = ({
             selectedVideoTrack={{ type: SelectedVideoTrackType.RESOLUTION, value: Number(selectedQuality) }}
             onExternalPlaybackChange={(e) => {
               setCastState(e.isExternalPlaybackActive ? "airPlay" : undefined);
+              captureDiagnosticsEvent(
+                e.isExternalPlaybackActive ? CustomPostHogEvents.AirPlayStarted : CustomPostHogEvents.AirPlayStopped,
+              );
             }}
             onTextTracks={handleTextTracks}
             selectedTextTrack={

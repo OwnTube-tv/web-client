@@ -12,6 +12,7 @@ export enum STORAGE {
   INSTANCE_ENTRYPOINTS = "instance_entrypoints",
   CC_LOCALE = "cc_locale",
   DEBUG_MODE = "debug_mode",
+  DIAGNOSTICS_REPORTED_BACKEND = "diagnostics/reported_backend",
 }
 
 export enum ROUTES {

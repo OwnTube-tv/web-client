@@ -10,6 +10,8 @@ import { ROUTES } from "../../../../types";
 import { useAppConfigContext } from "../../../../contexts";
 import { useGetInstanceInfoQuery } from "../../../../api";
 import { useAuthSessionStore } from "../../../../store";
+import { useCustomDiagnosticsEvents } from "../../../../diagnostics/useCustomDiagnosticEvents";
+import { CustomPostHogEvents } from "../../../../diagnostics/constants";
 
 export const SignOutModal = ({ handleClose }: { handleClose: () => void }) => {
   const { t } = useTranslation();
@@ -17,6 +19,7 @@ export const SignOutModal = ({ handleClose }: { handleClose: () => void }) => {
   const { removeSession } = useAuthSessionStore();
   const { currentInstanceConfig } = useAppConfigContext();
   const { data: instanceInfo } = useGetInstanceInfoQuery(backend);
+  const { captureDiagnosticsEvent } = useCustomDiagnosticsEvents();
 
   return (
     <Animated.View entering={SlideInUp} exiting={SlideOutUp} style={styles.modalWrapper} pointerEvents="box-none">
@@ -34,6 +37,7 @@ export const SignOutModal = ({ handleClose }: { handleClose: () => void }) => {
             onPress={() => {
               handleClose();
               removeSession(backend);
+              captureDiagnosticsEvent(CustomPostHogEvents.Logout);
             }}
           />
         </View>

@@ -16,6 +16,8 @@ import { useVideoLink, useViewHistory } from "../../../../../hooks";
 import { ROUTES } from "../../../../../types";
 import { QRCodeSection } from "../../../../../components";
 import Constants from "expo-constants";
+import { useCustomDiagnosticsEvents } from "../../../../../diagnostics/useCustomDiagnosticEvents";
+import { CustomPostHogEvents } from "../../../../../diagnostics/constants";
 
 interface ShareProps {
   onClose: () => void;
@@ -25,6 +27,7 @@ interface ShareProps {
 
 const Share = ({ onClose, titleKey, staticLink }: ShareProps) => {
   const { t } = useTranslation();
+  const { captureDiagnosticsEvent } = useCustomDiagnosticsEvents();
   const { colors } = useTheme();
   const params = useGlobalSearchParams();
   const [copyButtonText, setCopyButtonText] = useState(t("copy"));
@@ -44,6 +47,7 @@ const Share = ({ onClose, titleKey, staticLink }: ShareProps) => {
   const handleCopy = async () => {
     await Clipboard.setStringAsync(link);
     setCopyButtonText(t("linkCopied"));
+    captureDiagnosticsEvent(CustomPostHogEvents.CopyShareLink);
     clearTimeout(timeoutRef.current);
     timeoutRef.current = setTimeout(() => {
       setCopyButtonText(t("copy"));

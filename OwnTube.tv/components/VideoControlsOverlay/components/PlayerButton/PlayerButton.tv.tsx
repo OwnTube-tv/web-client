@@ -6,8 +6,8 @@ import { useTheme } from "@react-navigation/native";
 
 const BORDER_WIDTH = 2;
 
-const PlayerButton = forwardRef<View, TouchableOpacityProps & { icon: string; scale?: number }>(
-  ({ onPress, icon, scale = 1, ...restProps }, ref) => {
+const PlayerButton = forwardRef<View, TouchableOpacityProps & { icon: string; scale?: number; color?: string }>(
+  ({ onPress, icon, scale = 1, color, ...restProps }, ref) => {
     const { colors } = useTheme();
     const [focused, setFocused] = useState(false);
 
@@ -33,7 +33,7 @@ const PlayerButton = forwardRef<View, TouchableOpacityProps & { icon: string; sc
         ]}
         {...restProps}
       >
-        <IcoMoonIcon name={icon} size={spacing.xl * scale} color={colors.white80} />
+        <IcoMoonIcon name={icon} size={spacing.xl * scale} color={color || colors.white80} />
       </TouchableOpacity>
     );
   },

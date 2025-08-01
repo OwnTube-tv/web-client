@@ -19,6 +19,9 @@ import { useTranslation } from "react-i18next";
 import { useAppConfigContext } from "../../contexts";
 import { Typography } from "..";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useCustomDiagnosticsEvents } from "../../diagnostics/useCustomDiagnosticEvents";
+import { CustomPostHogEvents } from "../../diagnostics/constants";
+import { getHumanReadableDuration } from "../../utils";
 
 export interface PlaybackStatus {
   didJustFinish: boolean;
@@ -83,6 +86,7 @@ const VideoView = ({
   const [memorizedCCLang, setMemorizedCCLang] = useState<string | null>(null);
   const { top } = useSafeAreaInsets();
   const { getViewHistoryEntryByUuid } = useViewHistory();
+  const { captureDiagnosticsEvent } = useCustomDiagnosticsEvents();
 
   const { colors } = useTheme();
 
@@ -117,23 +121,39 @@ const VideoView = ({
 
     if (playerRef.current?.paused()) {
       playerRef.current?.play();
+      captureDiagnosticsEvent(CustomPostHogEvents.Play, {
+        currentTime: getHumanReadableDuration((playerRef.current?.currentTime() || 0) * 1000),
+      });
     } else {
       playerRef.current?.pause();
+      captureDiagnosticsEvent(CustomPostHogEvents.Pause, {
+        currentTime: getHumanReadableDuration((playerRef.current?.currentTime() || 0) * 1000),
+      });
     }
   };
 
   const handleRW = (seconds: number) => {
+    const currentTime = playerRef.current?.currentTime() || 0;
     const updatedTime = playbackStatus.position - seconds;
     playerRef.current?.currentTime(updatedTime);
     postVideoView({ videoId: videoData?.uuid, currentTime: updatedTime, viewEvent: "seek" });
     handleChromeCastSeek(playbackStatus.position - seconds);
+    captureDiagnosticsEvent(CustomPostHogEvents.Scrubbing, {
+      currentTime: getHumanReadableDuration(currentTime * 1000),
+      targetTime: getHumanReadableDuration(updatedTime * 1000),
+    });
   };
 
   const handleFF = (seconds: number) => {
+    const currentTime = playerRef.current?.currentTime() || 0;
     const updatedTime = playbackStatus.position + seconds;
     handleChromeCastSeek(updatedTime);
     playerRef.current?.currentTime(updatedTime);
     postVideoView({ videoId: videoData?.uuid, currentTime: updatedTime, viewEvent: "seek" });
+    captureDiagnosticsEvent(CustomPostHogEvents.Scrubbing, {
+      currentTime: getHumanReadableDuration(currentTime * 1000),
+      targetTime: getHumanReadableDuration(updatedTime * 1000),
+    });
   };
 
   const toggleMute = () => {
@@ -141,6 +161,11 @@ const VideoView = ({
     playerRef.current?.muted(newValue);
     updatePlaybackStatus({ isMuted: newValue });
     handleChromeCastMute(newValue);
+    if (newValue) {
+      captureDiagnosticsEvent(CustomPostHogEvents.MuteAudio);
+    } else {
+      captureDiagnosticsEvent(CustomPostHogEvents.UnmuteAudio);
+    }
   };
 
   const handleReplay = () => {
@@ -150,8 +175,13 @@ const VideoView = ({
 
   const handleJumpTo = (position: number) => {
     handleChromeCastSeek(position);
+    const currentTime = playerRef.current?.currentTime() || 0;
     playerRef.current?.tech().setCurrentTime(position);
     postVideoView({ videoId: videoData?.uuid, currentTime: position, viewEvent: "seek" });
+    captureDiagnosticsEvent(CustomPostHogEvents.Scrubbing, {
+      currentTime: getHumanReadableDuration(currentTime * 1000),
+      targetTime: getHumanReadableDuration(position * 1000),
+    });
   };
 
   const options = {
@@ -187,6 +217,15 @@ const VideoView = ({
 
     if (window.WebKitPlaybackTargetAvailabilityEvent && video) {
       video.addEventListener("webkitplaybacktargetavailabilitychanged", handleAirPlayAvailabilityChange);
+      video.addEventListener("webkitcurrentplaybacktargetiswirelesschanged", () => {
+        const isCasting = video.webkitCurrentPlaybackTargetIsWireless;
+
+        if (isCasting) {
+          captureDiagnosticsEvent(CustomPostHogEvents.AirPlayStarted);
+        } else {
+          captureDiagnosticsEvent(CustomPostHogEvents.AirPlayStopped);
+        }
+      });
     }
 
     player.on("loadstart", () => {
@@ -247,12 +286,18 @@ const VideoView = ({
       if (!isChromecastConnectedRef.current) {
         updatePlaybackStatus({ isPlaying: true, didJustFinish: false });
       }
+      captureDiagnosticsEvent(CustomPostHogEvents.Play, {
+        currentTime: getHumanReadableDuration((playerRef.current?.currentTime() || 0) * 1000),
+      });
     });
 
     player.on("pause", () => {
       if (!isChromecastConnectedRef.current) {
         updatePlaybackStatus({ isPlaying: false });
       }
+      captureDiagnosticsEvent(CustomPostHogEvents.Pause, {
+        currentTime: getHumanReadableDuration((playerRef.current?.currentTime() || 0) * 1000),
+      });
     });
 
     player.on("timeupdate", () => {
@@ -433,8 +478,13 @@ const VideoView = ({
 
     if (formattedVolume === 0) {
       playerRef.current?.muted(true);
+      captureDiagnosticsEvent(CustomPostHogEvents.MuteAudio);
       updatePlaybackStatus({ isMuted: true });
       return;
+    }
+
+    if (playerRef.current?.muted()) {
+      captureDiagnosticsEvent(CustomPostHogEvents.UnmuteAudio);
     }
 
     playerRef.current?.volume(formattedVolume);
@@ -465,6 +515,7 @@ const VideoView = ({
       setSelectedCCLang("");
       updateSessionCCLocale(lang);
       setIsCCShown(false);
+      captureDiagnosticsEvent(CustomPostHogEvents.DisableCaptions);
       return;
     }
     setMemorizedCCLang(lang);
@@ -477,6 +528,9 @@ const VideoView = ({
 
     if (trackToShow) {
       trackToShow.mode = "showing";
+      captureDiagnosticsEvent(CustomPostHogEvents.EnableCaptions, {
+        captionLanguage: lang,
+      });
     }
     setSelectedCCLang(lang);
     updateSessionCCLocale(lang);

@@ -8,16 +8,20 @@ import { ModalContainer } from "./ModalContainer";
 import { View, StyleSheet } from "react-native";
 import { Button } from "./shared";
 import { spacing } from "../theme";
+import { useCustomDiagnosticsEvents } from "../diagnostics/useCustomDiagnosticEvents";
+import { CustomPostHogEvents } from "../diagnostics/constants";
 
 export const SignedOutModal = ({ handleClose }: { handleClose: () => void }) => {
   const { t } = useTranslation();
   const { backend } = useGlobalSearchParams<RootStackParams[ROUTES.INDEX]>();
   const { session, removeSession } = useAuthSessionStore();
   const router = useRouter();
+  const { captureDiagnosticsEvent } = useCustomDiagnosticsEvents();
 
   const handleSignInAgain = async () => {
     handleClose();
     await removeSession(backend);
+    captureDiagnosticsEvent(CustomPostHogEvents.Reauthenticate, { backend });
     router.navigate({ pathname: ROUTES.SIGNIN, params: { backend, username: session?.email } });
   };
 

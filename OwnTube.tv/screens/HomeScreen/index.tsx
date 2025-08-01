@@ -22,6 +22,8 @@ import { PlaylistVideosView } from "../Playlists/components";
 import { VideoChannel, VideoPlaylist } from "@peertube/peertube-types";
 import { useAppConfigContext } from "../../contexts";
 import { useQueryClient } from "@tanstack/react-query";
+import { useCustomDiagnosticsEvents } from "../../diagnostics/useCustomDiagnosticEvents";
+import { CustomPostHogEvents } from "../../diagnostics/constants";
 
 const LIVE_STREAM_LIST_REFETCH_INTERVAL = 10_000;
 
@@ -35,6 +37,7 @@ export const HomeScreen = () => {
   const isFocused = useIsFocused();
   useCustomFocusManager();
   const queryClient = useQueryClient();
+  const { captureDiagnosticsEvent } = useCustomDiagnosticsEvents();
 
   const { data: channels, refetch: refetchChannels } = useGetChannelsQuery({
     enabled: !currentInstanceConfig?.customizations?.homeHideChannelsOverview,
@@ -165,6 +168,7 @@ export const HomeScreen = () => {
     await queryClient.refetchQueries({ queryKey: [QUERY_KEYS.channelVideos], type: "active" });
 
     setRefreshing(false);
+    captureDiagnosticsEvent(CustomPostHogEvents.PullToRefresh);
   };
 
   return (

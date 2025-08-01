@@ -2,6 +2,8 @@ import { useTheme } from "@react-navigation/native";
 import { PropsWithChildren, FC, useState } from "react";
 import { ScrollView, View, StyleSheet, ViewStyle, RefreshControl } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useCustomDiagnosticsEvents } from "../diagnostics/useCustomDiagnosticEvents";
+import { CustomPostHogEvents } from "../diagnostics/constants";
 
 interface ScreenProps extends PropsWithChildren {
   style?: ViewStyle;
@@ -12,6 +14,7 @@ export const Screen: FC<ScreenProps> = ({ children, style, onRefresh }) => {
   const [refreshing, setRefreshing] = useState(false);
   const { right } = useSafeAreaInsets();
   const { colors } = useTheme();
+  const { captureDiagnosticsEvent } = useCustomDiagnosticsEvents();
 
   const handleRefresh = async () => {
     if (!onRefresh) return;
@@ -19,6 +22,7 @@ export const Screen: FC<ScreenProps> = ({ children, style, onRefresh }) => {
     setRefreshing(true);
     await onRefresh();
     setRefreshing(false);
+    captureDiagnosticsEvent(CustomPostHogEvents.PullToRefresh);
   };
 
   return (

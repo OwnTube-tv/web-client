@@ -67,7 +67,7 @@ export const Playlists = () => {
   }
 
   return (
-    <Screen style={{ padding: 0, paddingTop: top }}>
+    <Screen style={{ padding: 0, paddingTop: top }} onRefresh={refetchPageData}>
       {playlistSections.map(({ data, isLoading, refetch }) => (
         <VideoGrid
           isLoading={isLoading}

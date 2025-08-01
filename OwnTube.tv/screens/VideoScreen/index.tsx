@@ -24,6 +24,8 @@ import VideoDetails from "../../components/VideoControlsOverlay/components/modal
 import { colorSchemes, spacing } from "../../theme";
 import { useAppConfigContext } from "../../contexts";
 import { VideoStreamingPlaylist } from "@peertube/peertube-types";
+import { useCustomDiagnosticsEvents } from "../../diagnostics/useCustomDiagnosticEvents";
+import { CustomPostHogEvents } from "../../diagnostics/constants";
 
 export const VideoScreen = () => {
   const { t } = useTranslation();
@@ -45,6 +47,7 @@ export const VideoScreen = () => {
   const isPremiumVideoUnavailable = isPremiumVideo && !isPremiumVideoAvailable;
 
   const { currentInstanceConfig } = useAppConfigContext();
+  const { captureDiagnosticsEvent } = useCustomDiagnosticsEvents();
 
   const premiumAds = currentInstanceConfig?.customizations?.premiumContentAds;
   const premiumAdsData = useGetVideoFullInfoCollectionQuery(premiumAds, QUERY_KEYS.premiumAdsCollection);
@@ -130,6 +133,25 @@ export const VideoScreen = () => {
       router.navigate({ pathname: ROUTES.HOME, params });
     }
   };
+  const handleOpenDetails = () => {
+    setVisibleModal("details");
+    captureDiagnosticsEvent(CustomPostHogEvents.ShowVideoDescription);
+  };
+
+  const handleCloseDetails = () => {
+    setVisibleModal(null);
+    captureDiagnosticsEvent(CustomPostHogEvents.HideVideoDescription);
+  };
+
+  const handleOpenShare = () => {
+    setVisibleModal("share");
+    captureDiagnosticsEvent(CustomPostHogEvents.Share, { type: "video" });
+  };
+
+  const handleSetQuality = (quality: string) => {
+    setQuality(quality);
+    captureDiagnosticsEvent(CustomPostHogEvents.ResolutionChanged, { resolution: quality });
+  };
 
   if (isLoading || (isPremiumVideo && isLoadingSubscriptionData)) {
     return (
@@ -175,22 +197,20 @@ export const VideoScreen = () => {
           channel={data?.channel}
           toggleFullscreen={toggleFullscreen}
           isFullscreen={isFullscreen}
-          handleOpenDetails={() => setVisibleModal("details")}
+          handleOpenDetails={handleOpenDetails}
           handleOpenSettings={() => {
             setVisibleModal("settings");
           }}
-          handleShare={() => {
-            setVisibleModal("share");
-          }}
+          handleShare={handleOpenShare}
           viewUrl={data?.url}
           selectedQuality={quality}
-          handleSetQuality={setQuality}
+          handleSetQuality={handleSetQuality}
           captions={isPremiumVideoUnavailable ? premiumAdsCaptions[randomPremiumAdIndex] : captions}
           isWaitingForLive={isWaitingForLive}
         />
-        <FullScreenModal onBackdropPress={closeModal} isVisible={visibleModal === "details"}>
+        <FullScreenModal onBackdropPress={handleCloseDetails} isVisible={visibleModal === "details"}>
           <VideoDetails
-            onClose={closeModal}
+            onClose={handleCloseDetails}
             name={data?.name || ""}
             channel={data?.channel}
             description={data?.description || ""}

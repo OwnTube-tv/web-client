@@ -31,5 +31,6 @@ declare global {
 
   interface HTMLVideoElement {
     webkitShowPlaybackTargetPicker(): void;
+    webkitCurrentPlaybackTargetIsWireless: boolean;
   }
 }

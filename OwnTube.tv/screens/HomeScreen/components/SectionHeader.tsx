@@ -25,10 +25,7 @@ export const SectionHeader = ({ title, link }: SectionHeaderProps) => {
           backgroundColor: colors.background,
           marginLeft: (!isMobile ? spacing.xl : 0) - Number(Boolean(Platform.isTV)) * 24,
           paddingLeft: (isMobile ? 10 : 0) + Number(Boolean(Platform.isTV)) * 24,
-          paddingRight: Platform.select({
-            default: (isMobile ? spacing.sm : 48) - Number(Boolean(Platform.isTV)) * 24,
-            web: 48,
-          }),
+          paddingRight: (isMobile ? spacing.sm : 48) - Number(Boolean(Platform.isTV)) * 24,
         },
         styles.container,
       ]}

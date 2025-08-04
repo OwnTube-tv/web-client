@@ -17,7 +17,6 @@ import {
   useSubtitlesSessionLocale,
 } from "../hooks";
 import { useNetInfo } from "@react-native-community/netinfo";
-
 import { InstanceConfig } from "../instanceConfigs";
 import Toast from "react-native-toast-message";
 import { useTranslation } from "react-i18next";
@@ -30,6 +29,8 @@ import { useQueryClient } from "@tanstack/react-query";
 import { GLOBAL_QUERY_STALE_TIME } from "../api";
 import { useInstanceConfigStore } from "../store";
 import { usePostHog } from "posthog-react-native/lib/posthog-react-native/src/hooks/usePostHog";
+import { useCustomDiagnosticsEvents } from "../diagnostics/useCustomDiagnosticEvents";
+import { CustomPostHogEvents } from "../diagnostics/constants";
 
 interface IAppConfigContext {
   isDebugMode: boolean;
@@ -66,6 +67,7 @@ export const AppConfigContextProvider = ({ children }: PropsWithChildren) => {
   const queryClient = useQueryClient();
   const { setCurrentInstanceConfig, setInstanceConfigList } = useInstanceConfigStore();
   const posthog = usePostHog();
+  const { captureDiagnosticsEvent } = useCustomDiagnosticsEvents();
 
   useEffect(() => {
     setCurrentInstanceConfig(currentInstanceConfig);
@@ -92,6 +94,15 @@ export const AppConfigContextProvider = ({ children }: PropsWithChildren) => {
   const primaryBackend = process.env.EXPO_PUBLIC_PRIMARY_BACKEND;
 
   useEffect(() => {
+    if (backend) {
+      readFromAsyncStorage(STORAGE.DIAGNOSTICS_REPORTED_BACKEND).then((storedBackend) => {
+        if (String(storedBackend) !== backend) {
+          captureDiagnosticsEvent(CustomPostHogEvents.ChangeBackendServer, { backend });
+          writeToAsyncStorage(STORAGE.DIAGNOSTICS_REPORTED_BACKEND, backend);
+        }
+      });
+    }
+
     if (backend && !recentInstances?.length) {
       addRecentInstance(backend);
       writeToAsyncStorage(STORAGE.DATASOURCE, backend);

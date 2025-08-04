@@ -75,6 +75,7 @@ const VideoControlsOverlay = ({
   isLiveVideo,
   isWaitingForLive,
   isLoading,
+  isCCVisible,
 }: PropsWithChildren<VideoControlsOverlayProps>) => {
   const {
     isSeekBarFocused,
@@ -348,7 +349,13 @@ const VideoControlsOverlay = ({
                   )}
                 </View>
                 <TVFocusGuideView style={{ flexDirection: "row" }}>
-                  {isCCAvailable && <PlayerButton icon="Closed-Captions" onPress={handleToggleCC} />}
+                  {isCCAvailable && (
+                    <PlayerButton
+                      color={isCCVisible ? undefined : colors.white25}
+                      icon="Closed-Captions"
+                      onPress={handleToggleCC}
+                    />
+                  )}
                   <PlayerButton
                     ref={settingsRef}
                     icon="Settings"

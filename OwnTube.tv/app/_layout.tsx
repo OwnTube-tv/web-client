@@ -25,7 +25,7 @@ import "../global.css";
 import { Drawer } from "expo-router/drawer";
 import { AppHeader } from "../components/AppHeader";
 import { SafeAreaProvider, useSafeAreaInsets } from "react-native-safe-area-context";
-import { useBreakpoints } from "../hooks";
+import { useAppStateDiagnostics, useBreakpoints } from "../hooks";
 import { DrawerHeaderProps } from "@react-navigation/drawer";
 import { SHAREABLE_ROUTE_MODAL_TITLES } from "../navigation/constants";
 import { GLOBAL_QUERY_STALE_TIME } from "../api";
@@ -92,6 +92,8 @@ const RootStack = () => {
   useEffect(() => {
     posthog.screen(pathname, { routeParams: params });
   }, [pathname, params]);
+
+  useAppStateDiagnostics();
 
   if (!isSessionDataLoaded) {
     return <Loader />;

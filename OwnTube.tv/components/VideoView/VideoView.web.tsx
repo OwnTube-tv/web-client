@@ -310,6 +310,7 @@ const VideoView = ({
 
     player.on("ended", () => {
       updatePlaybackStatus({ didJustFinish: true });
+      captureDiagnosticsEvent(CustomPostHogEvents.VideoCompleted);
     });
 
     player.on("volumechange", () => {

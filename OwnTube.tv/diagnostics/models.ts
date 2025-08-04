@@ -24,4 +24,6 @@ export type CustomPostHogEventParams = {
   [CustomPostHogEvents.Logout]: undefined;
   [CustomPostHogEvents.ChangeBackendServer]: { backend: string };
   [CustomPostHogEvents.PullToRefresh]: undefined;
+  [CustomPostHogEvents.TabFocus]: { tabUrl: string };
+  [CustomPostHogEvents.TabBlur]: { tabUrl: string };
 };

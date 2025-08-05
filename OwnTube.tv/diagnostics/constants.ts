@@ -22,4 +22,13 @@ export enum CustomPostHogEvents {
   Logout = "logout",
   ChangeBackendServer = "change_backend_server",
   PullToRefresh = "pull_to_refresh",
+  TabFocus = "tab_focus",
+  TabBlur = "tab_blur",
+  AppInBackground = "app_in_background",
+  AppInForeground = "app_in_foreground",
+  VideoCompleted = "video_completed",
+}
+
+export enum CustomPostHogExceptions {
+  OutOfMemory = "out_of_memory",
 }

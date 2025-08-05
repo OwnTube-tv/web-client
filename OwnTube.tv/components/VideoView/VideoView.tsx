@@ -450,7 +450,10 @@ const VideoView = ({
           <Video
             reportBandwidth
             onBandwidthUpdate={handleBandwidthUpdate}
-            onEnd={() => setShouldReplay(true)}
+            onEnd={() => {
+              setShouldReplay(true);
+              captureDiagnosticsEvent(CustomPostHogEvents.VideoCompleted);
+            }}
             onLoad={handleVideoLoaded}
             onProgress={handleProgress}
             showNotificationControls

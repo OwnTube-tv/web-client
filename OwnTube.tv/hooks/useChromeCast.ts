@@ -2,7 +2,7 @@ import { Video } from "@peertube/peertube-types";
 import { useEffect, useRef, useState } from "react";
 import Player from "video.js/dist/types/player";
 import { PlaybackStatus } from "../components/VideoView/VideoView.web";
-import { CustomPostHogEvents } from "../diagnostics/constants";
+import { CustomPostHogEvents, CustomPostHogExceptions } from "../diagnostics/constants";
 import { useCustomDiagnosticsEvents } from "../diagnostics/useCustomDiagnosticEvents";
 import { getHumanReadableDuration } from "../utils";
 
@@ -24,7 +24,7 @@ export const useChromeCast = ({
   const [isChromecastConnected, setIsChromecastConnected] = useState(false);
   const [isChromeCastAvailable, setIsChromeCastAvailable] = useState(false);
   const isChromecastConnectedRef = useRef(false);
-  const { captureDiagnosticsEvent } = useCustomDiagnosticsEvents();
+  const { captureDiagnosticsEvent, captureError } = useCustomDiagnosticsEvents();
 
   const handleLoadGoogleCastMedia = () => {
     const castSession = window.cast?.framework?.CastContext.getInstance().getCurrentSession();
@@ -52,7 +52,10 @@ export const useChromeCast = ({
         isChromecastConnectedRef.current = true;
         captureDiagnosticsEvent(CustomPostHogEvents.ChromecastStarted);
       })
-      .catch((error: Error) => console.error("Error loading media:", error));
+      .catch((error: Error) => {
+        console.error("Error loading media:", error);
+        captureError(error, CustomPostHogExceptions.ChromecastError);
+      });
 
     playerRef.current?.pause();
     updatePlaybackStatus({ isPlaying: !isPaused });
@@ -64,9 +67,23 @@ export const useChromeCast = ({
       if (castSession && chrome.cast) {
         const player = castSession.getMediaSession();
         if (player?.playerState === "PAUSED") {
-          player.play(new chrome.cast.media.PlayRequest(), () => {}, console.error);
+          player.play(
+            new chrome.cast.media.PlayRequest(),
+            () => {},
+            (error) => {
+              console.error("Error playing media:", error);
+              captureError(error, CustomPostHogExceptions.ChromecastError);
+            },
+          );
         } else {
-          player?.pause(new chrome.cast.media.PauseRequest(), () => {}, console.error);
+          player?.pause(
+            new chrome.cast.media.PauseRequest(),
+            () => {},
+            (error) => {
+              console.error("Error pausing media:", error);
+              captureError(error, CustomPostHogExceptions.ChromecastError);
+            },
+          );
         }
       }
       return true;
@@ -81,7 +98,14 @@ export const useChromeCast = ({
         const player = castSession.getMediaSession();
         const seekRequest = new chrome.cast.media.SeekRequest();
         seekRequest.currentTime = position;
-        player?.seek(seekRequest, () => {}, console.error);
+        player?.seek(
+          seekRequest,
+          () => {},
+          (error) => {
+            console.error("Error seeking media:", error);
+            captureError(error, CustomPostHogExceptions.ChromecastError);
+          },
+        );
       }
     }
   };
@@ -191,12 +215,21 @@ export const useChromeCast = ({
         captureDiagnosticsEvent(CustomPostHogEvents.ChromecastStopped);
         updatePlaybackStatus({ volume: playerRef.current?.volume() || 1 });
       }
+      if (event.errorCode) {
+        captureError(new Error(`Chromecast error: ${event.errorCode}`), CustomPostHogExceptions.ChromecastError);
+      }
     });
   };
 
   const handleCreateSession = () => {
     const context = window.cast.framework.CastContext.getInstance();
-    context.requestSession().then(handleLoadGoogleCastMedia).catch(console.error);
+    context
+      .requestSession()
+      .then(handleLoadGoogleCastMedia)
+      .catch((error) => {
+        console.error("Error creating Chromecast session:", error);
+        captureError(error, CustomPostHogExceptions.ChromecastError);
+      });
   };
 
   return {

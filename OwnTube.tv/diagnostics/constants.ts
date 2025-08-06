@@ -27,8 +27,15 @@ export enum CustomPostHogEvents {
   AppInBackground = "app_in_background",
   AppInForeground = "app_in_foreground",
   VideoCompleted = "video_completed",
+  BandwidthChanged = "bandwidth_changed",
+  PlaybackQualityDegradation = "playback_quality_degradation",
+  SessionExpired = "session_expired",
 }
 
 export enum CustomPostHogExceptions {
   OutOfMemory = "out_of_memory",
+  VideoPlayerError = "video_player_error",
+  HttpRequestError = "http_request_error",
+  ChromecastError = "chromecast_error",
+  TokenError = "token_error",
 }

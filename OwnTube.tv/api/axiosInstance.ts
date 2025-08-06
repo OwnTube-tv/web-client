@@ -4,6 +4,8 @@ import { parseISOToEpoch } from "../utils";
 import { parseAuthSessionData } from "../utils/auth";
 import { OAuthClientLocal, UserLogin } from "@peertube/peertube-types";
 import { APP_IDENTIFIER } from "./constants";
+import { postHogInstance } from "../diagnostics";
+import { CustomPostHogEvents, CustomPostHogExceptions } from "../diagnostics/constants";
 
 export const axiosInstance = axios.create({
   withCredentials: false,
@@ -46,6 +48,8 @@ const refreshAccessToken = async (backend: string, refreshToken: string) => {
       },
     );
     return loginResponse;
+  } catch (error) {
+    postHogInstance.captureException(error, { errorType: CustomPostHogExceptions.TokenError });
   } finally {
     delete REFRESH_LOCKS[backend];
   }
@@ -103,12 +107,14 @@ axiosInstance.interceptors.request.use(async (config) => {
       }
     } catch (err) {
       console.error("Refresh token attempt failed", err);
+      postHogInstance.captureException(err, { errorType: CustomPostHogExceptions.TokenError });
     }
   }
 
   if (!accessTokenValid && !refreshTokenValid) {
     await useAuthSessionStore.getState().updateSession(backend, { sessionExpired: true });
     controller.abort("Session expired, aborting request");
+    postHogInstance.capture(CustomPostHogEvents.SessionExpired);
     return config;
   }
 

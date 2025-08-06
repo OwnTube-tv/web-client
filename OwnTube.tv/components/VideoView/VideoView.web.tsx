@@ -20,7 +20,7 @@ import { useAppConfigContext } from "../../contexts";
 import { Typography } from "..";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useCustomDiagnosticsEvents } from "../../diagnostics/useCustomDiagnosticEvents";
-import { CustomPostHogEvents } from "../../diagnostics/constants";
+import { CustomPostHogEvents, CustomPostHogExceptions } from "../../diagnostics/constants";
 import { getHumanReadableDuration } from "../../utils";
 
 export interface PlaybackStatus {
@@ -38,6 +38,9 @@ export interface PlaybackStatus {
 declare const window: {
   videojs: typeof videojs;
 } & Window;
+
+const PLAYBACK_QUALITY_DEGRADATION_PERCENT_THRESHOLD = 2;
+const PLAYBACK_QUALITY_DEGRADATION_MIN_TOTAL_FRAMES = 300;
 
 const VideoView = ({
   uri,
@@ -86,7 +89,7 @@ const VideoView = ({
   const [memorizedCCLang, setMemorizedCCLang] = useState<string | null>(null);
   const { top } = useSafeAreaInsets();
   const { getViewHistoryEntryByUuid } = useViewHistory();
-  const { captureDiagnosticsEvent } = useCustomDiagnosticsEvents();
+  const { captureDiagnosticsEvent, captureError } = useCustomDiagnosticsEvents();
 
   const { colors } = useTheme();
 
@@ -210,6 +213,7 @@ const VideoView = ({
 
   const [hlsResolution, setHlsResolution] = useState<number | undefined>();
   const hlsResolutionRef = useRef<number | null>(null);
+  const isPlaybackQualityDegradationReported = useRef(false);
 
   const onReady = (player: Player) => {
     playerRef.current = player;
@@ -272,11 +276,17 @@ const VideoView = ({
         segmentMetadataTrack.mode = "hidden";
 
         segmentMetadataTrack.addEventListener("cuechange", () => {
-          const currentRes = segmentMetadataTrack?.activeCues?.[0]?.value?.resolution?.height;
+          const activeCueValue = segmentMetadataTrack?.activeCues?.[0]?.value;
+          const currentRes = activeCueValue?.resolution?.height;
 
           if (currentRes && hlsResolutionRef.current !== currentRes) {
             hlsResolutionRef.current = currentRes;
             setHlsResolution(currentRes);
+            captureDiagnosticsEvent(CustomPostHogEvents.BandwidthChanged, {
+              bandwidth: activeCueValue?.resolution?.bitrate,
+              width: activeCueValue?.resolution?.width,
+              height: activeCueValue?.resolution?.height,
+            });
           }
         });
       }
@@ -306,6 +316,27 @@ const VideoView = ({
         didJustFinish: false,
         playableDuration: playerRef.current?.bufferedEnd(),
       });
+
+      const videoElement = playerRef.current?.el()?.getElementsByTagName("video")[0];
+      if (videoElement && typeof videoElement.getVideoPlaybackQuality === "function") {
+        const quality = videoElement.getVideoPlaybackQuality();
+        const droppedFrames = quality.droppedVideoFrames || 0;
+        const totalFrames = quality.totalVideoFrames || 0;
+        const droppedFramesPercent = totalFrames > 0 ? (droppedFrames / totalFrames) * 100 : 0;
+
+        if (
+          droppedFramesPercent > PLAYBACK_QUALITY_DEGRADATION_PERCENT_THRESHOLD &&
+          !isPlaybackQualityDegradationReported.current &&
+          totalFrames >= PLAYBACK_QUALITY_DEGRADATION_MIN_TOTAL_FRAMES
+        ) {
+          captureDiagnosticsEvent(CustomPostHogEvents.PlaybackQualityDegradation, {
+            droppedFrames,
+            totalFrames,
+            droppedFramesPercent,
+          });
+          isPlaybackQualityDegradationReported.current = true; // report degradation only once
+        }
+      }
     });
 
     player.on("ended", () => {
@@ -321,6 +352,14 @@ const VideoView = ({
     player.on("ratechange", () => {
       const rate = playerRef.current?.playbackRate();
       updatePlaybackStatus({ rate });
+    });
+
+    player.on("error", () => {
+      const error = playerRef.current?.error();
+
+      if (error) {
+        captureError(error, CustomPostHogExceptions.VideoPlayerError);
+      }
     });
   };
 
@@ -387,20 +426,24 @@ const VideoView = ({
 
   useEffect(() => {
     const handleKeyboard = (e: KeyboardEvent) => {
-      if (e.code === "Space") {
-        handlePlayPause();
-      }
-      if (e.code === "ArrowRight") {
-        handleFF(30);
-      }
-      if (e.code === "ArrowLeft") {
-        handleRW(15);
-      }
-      if (e.code === "KeyM") {
-        toggleMute();
-      }
-      if (e.code === "KeyF") {
-        toggleFullscreen();
+      switch (e.code) {
+        case "Space":
+          handlePlayPause();
+          break;
+        case "ArrowRight":
+          handleFF(30);
+          break;
+        case "ArrowLeft":
+          handleRW(15);
+          break;
+        case "KeyM":
+          toggleMute();
+          break;
+        case "KeyF":
+          toggleFullscreen();
+          break;
+        default:
+          break;
       }
     };
 

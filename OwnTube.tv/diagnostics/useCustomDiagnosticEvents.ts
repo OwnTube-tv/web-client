@@ -1,5 +1,5 @@
 import { usePostHog } from "posthog-react-native/lib/posthog-react-native/src/hooks/usePostHog";
-import { CustomPostHogEvents } from "./constants";
+import { CustomPostHogEvents, CustomPostHogExceptions } from "./constants";
 import { CustomPostHogEventParams } from "./models";
 
 export const useCustomDiagnosticsEvents = () => {
@@ -9,7 +9,12 @@ export const useCustomDiagnosticsEvents = () => {
     posthog.capture(event, properties);
   };
 
+  const captureError = (error: unknown, errorType: CustomPostHogExceptions) => {
+    posthog.captureException(error, { errorType });
+  };
+
   return {
     captureDiagnosticsEvent,
+    captureError,
   };
 };

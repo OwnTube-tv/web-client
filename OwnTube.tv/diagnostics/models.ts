@@ -26,4 +26,14 @@ export type CustomPostHogEventParams = {
   [CustomPostHogEvents.PullToRefresh]: undefined;
   [CustomPostHogEvents.TabFocus]: { tabUrl: string };
   [CustomPostHogEvents.TabBlur]: { tabUrl: string };
+  [CustomPostHogEvents.AppInBackground]: undefined;
+  [CustomPostHogEvents.AppInForeground]: undefined;
+  [CustomPostHogEvents.VideoCompleted]: undefined;
+  [CustomPostHogEvents.BandwidthChanged]: { bandwidth?: number; width?: number; height?: number };
+  [CustomPostHogEvents.PlaybackQualityDegradation]: {
+    droppedFrames: number;
+    totalFrames: number;
+    droppedFramesPercent: number;
+  };
+  [CustomPostHogEvents.SessionExpired]: undefined;
 };

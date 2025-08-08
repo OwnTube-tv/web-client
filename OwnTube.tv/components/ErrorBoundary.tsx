@@ -2,6 +2,7 @@ import { Component, PropsWithChildren } from "react";
 import { ErrorPage } from "./ErrorPage";
 import { ErrorUnavailableLogo } from "./Svg";
 import * as Expo from "expo";
+import { postHogInstance } from "../diagnostics";
 
 export class ErrorBoundary extends Component<
   PropsWithChildren,
@@ -19,6 +20,7 @@ export class ErrorBoundary extends Component<
   componentDidCatch(error: unknown, info: { componentStack?: string }) {
     this.setState({ ...this.state, error, info });
     console.error(error, info.componentStack);
+    postHogInstance.captureException(error);
   }
 
   render() {

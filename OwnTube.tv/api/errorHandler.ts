@@ -1,9 +1,12 @@
 import { AxiosError } from "axios";
 import { OwnTubeError } from "./models";
+import { postHogInstance } from "../diagnostics";
+import { CustomPostHogExceptions } from "../diagnostics/constants";
 
 export function handleAxiosErrorWithRetry(error: unknown, target: string): Promise<never> {
   const { message, response } = error as AxiosError;
   const retryAfter = response?.headers["retry-after"];
+  postHogInstance.captureException(error, { errorType: `${CustomPostHogExceptions.HttpRequestError} (${target})` });
 
   if (retryAfter) {
     console.info(`Too many requests. Retrying to fetch ${target} in ${retryAfter} seconds...`);

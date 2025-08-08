@@ -6,6 +6,13 @@ import UAParser from "ua-parser-js";
 import { capitalize } from "../utils";
 import { useTranslation } from "react-i18next";
 
+export const PLAYER_IMPLEMENTATION = Platform.select({
+  web: "video.js",
+  android: "ExoPlayer",
+  ios: "AVPlayer",
+  default: "Native Player",
+});
+
 export interface DeviceCapabilities {
   playerImplementation: string;
   deviceType: string;
@@ -42,10 +49,7 @@ export const useDeviceCapabilities = () => {
     orientation: height > width ? t("portrait") : t("landscape"),
     deviceType: Device.deviceType ? DeviceType[Device.deviceType] : t("unknown"),
     browser: getBrowserInfo(),
-    playerImplementation: Platform.select({
-      web: `${t("web")} video.js`,
-      default: playerImplementation,
-    }),
+    playerImplementation: PLAYER_IMPLEMENTATION,
   };
 
   return { deviceCapabilities, setPlayerImplementation };

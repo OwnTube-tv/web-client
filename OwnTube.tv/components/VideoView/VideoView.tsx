@@ -32,7 +32,7 @@ import { useAppConfigContext } from "../../contexts";
 import { Typography } from "../Typography";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useCustomDiagnosticsEvents } from "../../diagnostics/useCustomDiagnosticEvents";
-import { CustomPostHogEvents } from "../../diagnostics/constants";
+import { CustomPostHogEvents, CustomPostHogExceptions } from "../../diagnostics/constants";
 import { getHumanReadableDuration } from "../../utils";
 
 export interface VideoViewProps {
@@ -91,7 +91,7 @@ const VideoView = ({
   const { colors } = useTheme();
   const { t } = useTranslation();
   const { top } = useSafeAreaInsets();
-  const { captureDiagnosticsEvent } = useCustomDiagnosticsEvents();
+  const { captureDiagnosticsEvent, captureError } = useCustomDiagnosticsEvents();
 
   const googleCastClient = Platform.isTV
     ? null
@@ -194,8 +194,9 @@ const VideoView = ({
     setIsControlsVisible(false);
   };
 
-  const handlePlayerError = (error: OnVideoErrorData) => {
-    Toast.show({ type: "info", text1: `Error: ${String(error.error.errorString)}`, props: { isError: true } });
+  const handlePlayerError = ({ error }: OnVideoErrorData) => {
+    captureError(error, CustomPostHogExceptions.VideoPlayerError);
+    Toast.show({ type: "info", text1: `Error: ${String(error.localizedDescription)}`, props: { isError: true } });
   };
 
   const handleProgress = ({ currentTime, playableDuration }: OnProgressData) => {
@@ -370,6 +371,11 @@ const VideoView = ({
     }
 
     setHlsResolution(event.height);
+    captureDiagnosticsEvent(CustomPostHogEvents.BandwidthChanged, {
+      bandwidth: event.bitrate,
+      width: event.width,
+      height: event.height,
+    });
   };
 
   const allowQualityControls = Platform.OS !== "ios" || !videoData?.streamingPlaylists?.length;

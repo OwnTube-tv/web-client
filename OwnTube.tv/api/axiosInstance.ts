@@ -3,9 +3,9 @@ import { useAuthSessionStore } from "../store";
 import { parseISOToEpoch } from "../utils";
 import { parseAuthSessionData } from "../utils/auth";
 import { OAuthClientLocal, UserLogin } from "@peertube/peertube-types";
-import { APP_IDENTIFIER } from "./constants";
 import { postHogInstance } from "../diagnostics";
 import { CustomPostHogEvents, CustomPostHogExceptions } from "../diagnostics/constants";
+import { APP_IDENTIFIER } from "./sharedConstants";
 
 export const axiosInstance = axios.create({
   withCredentials: false,

@@ -12,4 +12,5 @@ export interface ComboBoxInputProps {
   width?: number;
   allowCustomOptions?: boolean;
   getCustomOptionText?: (input: string) => string;
+  onChangeText?: (text: string) => void;
 }

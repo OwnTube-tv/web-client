@@ -18,6 +18,8 @@ import DeviceCapabilities from "../../../DeviceCapabilities";
 import Picker from "../../../shared/Picker";
 import { useGetInstanceInfoQuery } from "../../../../api";
 import { usePostHog } from "posthog-react-native/lib/posthog-react-native/src/hooks/usePostHog";
+import { useState } from "react";
+import { PostHogPersistedProperty } from "posthog-react-native/lib/posthog-core/src/types";
 
 interface SettingsProps {
   onClose: () => void;
@@ -33,6 +35,9 @@ export const Settings = ({ onClose }: SettingsProps) => {
 
   const { data: instanceInfo } = useGetInstanceInfoQuery(backend);
   const { currentInstanceConfig } = useAppConfigContext();
+  const [isOptedOut, setIsOptedOut] = useState(
+    posthog.getPersistedProperty(PostHogPersistedProperty.OptedOut) || false,
+  );
 
   const handleLeaveInstance = () => {
     writeToAsyncStorage(STORAGE.DATASOURCE, "").then(() => {
@@ -48,12 +53,16 @@ export const Settings = ({ onClose }: SettingsProps) => {
   const handleToggleDebugMode = (debugModeOn: boolean) => {
     setIsDebugMode(debugModeOn);
     writeToAsyncStorage(STORAGE.DEBUG_MODE, String(debugModeOn));
+  };
 
-    if (debugModeOn) {
+  const handleToggleOptOutCheckbox = (optOut: boolean) => {
+    if (!optOut) {
       posthog.optIn();
     } else {
       posthog.optOut();
     }
+
+    setIsOptedOut(optOut);
   };
 
   return (
@@ -78,7 +87,14 @@ export const Settings = ({ onClose }: SettingsProps) => {
             items={LANGUAGE_OPTIONS}
           />
           <Spacer height={spacing.xl} />
-          <Checkbox checked={isDebugMode} onChange={handleToggleDebugMode} label={t("debugLogging")} />
+          <Checkbox
+            disabled={isOptedOut}
+            checked={isDebugMode && !isOptedOut}
+            onChange={handleToggleDebugMode}
+            label={t("debugLogging")}
+          />
+          <Spacer height={spacing.md} />
+          <Checkbox checked={isOptedOut} onChange={handleToggleOptOutCheckbox} label={t("optOutOfDiagnostics")} />
           <Spacer height={spacing.xl} />
           {!primaryBackend && (
             <>

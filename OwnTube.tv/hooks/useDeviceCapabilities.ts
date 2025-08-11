@@ -1,9 +1,7 @@
-import { useState } from "react";
 import * as Device from "expo-device";
 import { DeviceType } from "expo-device";
 import { Platform, useWindowDimensions } from "react-native";
 import UAParser from "ua-parser-js";
-import { capitalize } from "../utils";
 import { useTranslation } from "react-i18next";
 
 export const PLAYER_IMPLEMENTATION = Platform.select({
@@ -25,7 +23,6 @@ export interface DeviceCapabilities {
 
 export const useDeviceCapabilities = () => {
   const { t } = useTranslation();
-  const [playerImplementation, setPlayerImplementation] = useState(capitalize(Platform.OS));
   const { height, width } = useWindowDimensions();
 
   const getBrowserInfo = () => {
@@ -52,5 +49,5 @@ export const useDeviceCapabilities = () => {
     playerImplementation: PLAYER_IMPLEMENTATION,
   };
 
-  return { deviceCapabilities, setPlayerImplementation };
+  return { deviceCapabilities };
 };

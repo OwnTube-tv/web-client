@@ -36,4 +36,15 @@ export type CustomPostHogEventParams = {
     droppedFramesPercent: number;
   };
   [CustomPostHogEvents.SessionExpired]: undefined;
+  [CustomPostHogEvents.PlaybackSpeedChanged]: { playbackSpeed: number };
+  [CustomPostHogEvents.InstanceSearchTextChanged]: { searchText: string };
+  [CustomPostHogEvents.AppInBackground]: undefined;
+  [CustomPostHogEvents.AppInForeground]: undefined;
+  [CustomPostHogEvents.VideoCompleted]: undefined;
+  [CustomPostHogEvents.BandwidthChanged]: { bandwidth?: number; width?: number; height?: number };
+  [CustomPostHogEvents.PlaybackQualityDegradation]: {
+    droppedFrames: number;
+    totalFrames: number;
+    droppedFramesPercent: number;
+  };
 };

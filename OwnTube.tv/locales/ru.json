@@ -5,7 +5,7 @@
   "viewVideo": "Просмотр видео",
   "videoPageTitle": "Видео",
   "error": "Ошибка",
-  "debugLogging": "Вести журнал отладки",
+  "debugLogging": "Журнал отладки для удаленной диагностики",
   "toggleTheme": "Переключить тему",
   "revision": "Ревизия",
   "builtAtBy": "поставка от {{builtAt}} авторства",
@@ -178,5 +178,6 @@
   "_2faOn": "включенной",
   "_2faOff": "выключенной",
   "sessionExpired": "истекла",
-  "sessionActive": "активна"
+  "sessionActive": "активна",
+  "optOutOfDiagnostics": "Отказ от обмена анонимной диагностикой"
 }

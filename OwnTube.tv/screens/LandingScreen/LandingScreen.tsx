@@ -22,6 +22,8 @@ import { OwnTubeError } from "../../api/models";
 import { ROUTES } from "../../types";
 import Constants from "expo-constants";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useCustomDiagnosticsEvents } from "../../diagnostics/useCustomDiagnosticEvents";
+import { CustomPostHogEvents } from "../../diagnostics/constants";
 
 export const LandingScreen = () => {
   const { colors } = useTheme();
@@ -30,6 +32,7 @@ export const LandingScreen = () => {
   const { featuredInstances } = useAppConfigContext();
   const insets = useSafeAreaInsets();
   const { data } = useGetInstancesQuery();
+  const { captureDiagnosticsEvent } = useCustomDiagnosticsEvents();
   const router = useRouter();
   const availableInstances = useMemo(() => {
     return data
@@ -91,6 +94,12 @@ export const LandingScreen = () => {
     return calculatedWidth < 344 ? 344 : calculatedWidth > 600 ? 600 : calculatedWidth;
   }, [width]);
 
+  const onChangeComboBoxInput = (text: string) => {
+    captureDiagnosticsEvent(CustomPostHogEvents.InstanceSearchTextChanged, {
+      searchText: text,
+    });
+  };
+
   return (
     <Screen
       style={{
@@ -125,6 +134,7 @@ export const LandingScreen = () => {
       </Typography>
       <Spacer height={isDesktop ? spacing.xxl : spacing.xl} />
       <ComboBoxInput
+        onChangeText={onChangeComboBoxInput}
         width={searchInputWidth}
         testID={"custom-instance-select"}
         data={availableInstances}

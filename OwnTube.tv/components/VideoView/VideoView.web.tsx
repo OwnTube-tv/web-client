@@ -543,6 +543,7 @@ const VideoView = ({
   };
 
   const handleSetSpeed = (speed: number) => {
+    captureDiagnosticsEvent(CustomPostHogEvents.PlaybackSpeedChanged, { playbackSpeed: speed });
     playerRef.current?.playbackRate(speed);
   };
   const [isCCShown, setIsCCShown] = useState(false);

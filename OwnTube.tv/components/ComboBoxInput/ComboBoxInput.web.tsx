@@ -15,6 +15,7 @@ const ComboBoxInput = ({
   width,
   allowCustomOptions,
   getCustomOptionText,
+  onChangeText,
 }: ComboBoxInputProps) => {
   const { colors } = useTheme();
   const listRef = useRef<FlatList | null>(null);
@@ -25,6 +26,11 @@ const ComboBoxInput = ({
     ({ item }: { item: DropDownItem }) => <DropdownItem item={item} onSelect={onSelect} value={value} />,
     [value, onSelect],
   );
+
+  const handleTextChange = (text: string) => {
+    setInputValue(text);
+    onChangeText?.(text);
+  };
 
   return (
     <View
@@ -47,7 +53,7 @@ const ComboBoxInput = ({
           }, 300);
         }}
         value={inputValue}
-        onChangeText={setInputValue}
+        onChangeText={handleTextChange}
         onSubmitEditing={(event) => {
           if (allowCustomOptions && event.nativeEvent.text && getCustomOptionText) {
             onSelect({ label: getCustomOptionText(event.nativeEvent.text), value: event.nativeEvent.text })();

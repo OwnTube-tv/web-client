@@ -30,7 +30,11 @@ export enum CustomPostHogEvents {
   BandwidthChanged = "bandwidth_changed",
   PlaybackQualityDegradation = "playback_quality_degradation",
   SessionExpired = "session_expired",
+  PlaybackSpeedChanged = "playback_speed_changed",
+  InstanceSearchTextChanged = "instance_search_text_changed",
 }
+
+export const DebugLevelCustomPostHogEvents = [CustomPostHogEvents.MuteAudio, CustomPostHogEvents.UnmuteAudio];
 
 export enum CustomPostHogExceptions {
   OutOfMemory = "out_of_memory",

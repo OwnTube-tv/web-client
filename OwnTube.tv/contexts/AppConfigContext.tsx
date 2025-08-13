@@ -28,7 +28,6 @@ import uuid from "react-native-uuid";
 import { useQueryClient } from "@tanstack/react-query";
 import { GLOBAL_QUERY_STALE_TIME } from "../api";
 import { useInstanceConfigStore } from "../store";
-import { usePostHog } from "posthog-react-native/lib/posthog-react-native/src/hooks/usePostHog";
 import { useCustomDiagnosticsEvents } from "../diagnostics/useCustomDiagnosticEvents";
 import { CustomPostHogEvents } from "../diagnostics/constants";
 
@@ -66,7 +65,6 @@ export const AppConfigContextProvider = ({ children }: PropsWithChildren) => {
   const { currentInstanceConfig } = useInstanceConfig(featuredInstances);
   const queryClient = useQueryClient();
   const { setCurrentInstanceConfig, setInstanceConfigList } = useInstanceConfigStore();
-  const posthog = usePostHog();
   const { captureDiagnosticsEvent } = useCustomDiagnosticsEvents();
 
   useEffect(() => {
@@ -137,12 +135,6 @@ export const AppConfigContextProvider = ({ children }: PropsWithChildren) => {
   useEffect(() => {
     readFromAsyncStorage(STORAGE.DEBUG_MODE).then((debugMode) => {
       setIsDebugMode(debugMode === "true");
-
-      if (debugMode === "true") {
-        posthog.optIn();
-      } else {
-        posthog.optOut();
-      }
     });
   }, []);
 

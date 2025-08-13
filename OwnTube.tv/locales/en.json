@@ -5,7 +5,7 @@
   "viewVideo": "View video",
   "videoPageTitle": "Video",
   "error": "Error",
-  "debugLogging": "Debug logging",
+  "debugLogging": "Debug logging for remote diagnostics",
   "toggleTheme": "Toggle Theme",
   "revision": "Revision",
   "builtAtBy": "built at {{builtAt}} by",
@@ -179,5 +179,6 @@
   "_2faOff": "off",
   "_2faOn": "on",
   "sessionExpired": "expired",
-  "sessionActive": "active"
+  "sessionActive": "active",
+  "optOutOfDiagnostics": "Opt-out of sharing anonymized diagnostics"
 }

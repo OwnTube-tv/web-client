@@ -378,6 +378,11 @@ const VideoView = ({
     });
   };
 
+  const handleSetSpeed = (speed: number) => {
+    setPlaybackSpeed(speed);
+    captureDiagnosticsEvent(CustomPostHogEvents.PlaybackSpeedChanged, { playbackSpeed: speed });
+  };
+
   const allowQualityControls = Platform.OS !== "ios" || !videoData?.streamingPlaylists?.length;
 
   return (
@@ -410,7 +415,7 @@ const VideoView = ({
         handleShare={handleShare}
         handleOpenSettings={handleOpenSettings}
         handleHideOverlay={hideOverlay}
-        handleSetSpeed={setPlaybackSpeed}
+        handleSetSpeed={handleSetSpeed}
         speed={playbackSpeed}
         selectedQuality={selectedQuality}
         handleSetQuality={allowQualityControls ? handleSetQuality : undefined}

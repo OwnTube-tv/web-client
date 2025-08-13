@@ -15,6 +15,7 @@ const ComboBoxInput = ({
   width,
   allowCustomOptions,
   getCustomOptionText,
+  onChangeText,
 }: ComboBoxInputProps) => {
   const { colors } = useTheme();
   const modalControls = useFullScreenModalContext();
@@ -49,6 +50,7 @@ const ComboBoxInput = ({
           modalControls.toggleModal(true);
           modalControls.setContent(modalContent);
         }}
+        onChangeText={onChangeText}
         editable={false}
         placeholder={placeholder}
         placeholderTextColor={colors.text}

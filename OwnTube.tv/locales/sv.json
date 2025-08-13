@@ -5,7 +5,7 @@
   "viewVideo": "Visa video",
   "videoPageTitle": "Video",
   "error": "Felmeddelande",
-  "debugLogging": "Debug-loggning",
+  "debugLogging": "Felsökning av loggning för fjärrdiagnostik",
   "toggleTheme": "Växla tema",
   "revision": "Revision",
   "builtAtBy": "byggd {{builtAt}} av",
@@ -179,5 +179,6 @@
   "_2faOff": "av",
   "sessionActive": "aktiv",
   "sessionExpired": "utgången",
-  "currentAuthText": "Användare {{userName}} vid {{backend}}, med tvåfaktor {{_2fa}}, session startad {{sessionStartedAt}}, uppdaterad {{sessionUpdatedAt}}, {{expiredText}}, refresh token utfärdad {{refreshTokenIssuedAt}}"
+  "currentAuthText": "Användare {{userName}} vid {{backend}}, med tvåfaktor {{_2fa}}, session startad {{sessionStartedAt}}, uppdaterad {{sessionUpdatedAt}}, {{expiredText}}, refresh token utfärdad {{refreshTokenIssuedAt}}",
+  "optOutOfDiagnostics": "Välja bort delning av anonymiserad diagnostik"
 }

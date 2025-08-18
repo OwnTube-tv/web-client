@@ -104,7 +104,8 @@
     "latest": "Failed to load latest videos.",
     "channel": "Failed to load channel videos.",
     "category": "Failed to load category videos.",
-    "playlist": "Failed to load playlist videos."
+    "playlist": "Failed to load playlist videos.",
+    "default": "Failed to load videos."
   },
   "retryQuestion": "Retry?",
   "videoFailedToLoad": "Video failed to load.",

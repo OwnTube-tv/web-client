@@ -32,6 +32,8 @@ export enum CustomPostHogEvents {
   SessionExpired = "session_expired",
   PlaybackSpeedChanged = "playback_speed_changed",
   InstanceSearchTextChanged = "instance_search_text_changed",
+  VideoView = "video_view",
+  VideoPercentageComplete = "video_percentage_complete",
 }
 
 export const DebugLevelCustomPostHogEvents = [CustomPostHogEvents.MuteAudio, CustomPostHogEvents.UnmuteAudio];
@@ -42,4 +44,5 @@ export enum CustomPostHogExceptions {
   HttpRequestError = "http_request_error",
   ChromecastError = "chromecast_error",
   TokenError = "token_error",
+  RateLimitError = "rate_limit_error",
 }

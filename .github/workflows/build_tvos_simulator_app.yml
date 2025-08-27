@@ -58,6 +58,11 @@ jobs:
           ${{ inputs.build_info }}
           EOF
 
+      - name: Set Xcode version
+        run: |
+          sudo xcode-select -s /Applications/Xcode_16.2.app
+          xcodebuild -showsdks
+
       - name: Build release tvOS .app for simulators by @${{ github.actor }}
         run: |
           export EXPO_TV=1 &&
@@ -67,7 +72,7 @@ jobs:
 
           if [[ -n "$WORKSPACE_FILE" && -n "$SCHEME" ]]; then
             echo "Running xcodebuild with workspace $WORKSPACE_FILE and scheme $SCHEME"
-            xcodebuild -workspace "$WORKSPACE_FILE" -scheme "$SCHEME" -configuration Release -sdk appletvsimulator -derivedDataPath ./build-simulator
+            xcodebuild -workspace "$WORKSPACE_FILE" -scheme "$SCHEME" -configuration Release -sdk appletvsimulator18.2 -derivedDataPath ./build-simulator
           else
             echo "Error: No .xcworkspace or scheme file found."
             exit 1

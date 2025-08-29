@@ -2,15 +2,15 @@
 
 OwnTube.tv 📺 allows you to collect product diagnostics through the PostHog service, which you can self-host, use your own cloud account, or trust us with the diagnostics.
 
-## Opt-in behavior
+## Opt-out behavior
 
-By default, diagnostics are set to opt-in. This means that no tracking occurs unless the user explicitly enables it. Users can allow diagnostics collection by selecting the **Debug Logging** checkbox in the Settings menu. Until this option is enabled, no diagnostics data will be sent.
+By default, diagnostics are enabled (opt-out). This means that anonymized diagnostics are collected unless the user explicitly disables it. Users can opt out of diagnostics collection at any time by selecting the **Opt-out of diagnostics** checkbox in the Settings menu. If this option is enabled, no diagnostics data will be sent.
 
-## Enabling diagnostics
+## Disabling diagnostics
 
 By default, diagnostics are collected to the OwnTube.tv PostHog service. You can change this behavior by specifying your own PostHog project API key in your environment configuration files. To do this, set the `EXPO_PUBLIC_POSTHOG_API_KEY` variable to your PostHog project's key.
 
-If you do not wish to collect any diagnostics, set the `EXPO_PUBLIC_POSTHOG_API_KEY` to `null` in your environment files. This will disable diagnostics collection entirely.
+If you do not wish to collect any diagnostics, set the `EXPO_PUBLIC_POSTHOG_API_KEY` to `null` in your environment files. This will disable diagnostics collection entirely for all users, regardless of their opt-out setting.
 
 **Example:**
 
@@ -18,7 +18,7 @@ If you do not wish to collect any diagnostics, set the `EXPO_PUBLIC_POSTHOG_API_
 # Use your own PostHog project
 EXPO_PUBLIC_POSTHOG_API_KEY=phc_xxxxxxxxxxxxxxxxxxxxxxxx
 
-# Or disable diagnostics
+# Or disable diagnostics for everyone
 EXPO_PUBLIC_POSTHOG_API_KEY=null
 ```
 

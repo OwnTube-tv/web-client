@@ -1,4 +1,4 @@
-import { StyleSheet } from "react-native";
+import { Platform, StyleSheet } from "react-native";
 import { spacing } from "../theme";
 import { Button } from "./shared";
 import { useShareButton } from "../hooks";
@@ -10,11 +10,15 @@ export const AppDesktopHeader = () => {
   const { top } = useSafeAreaInsets();
 
   return (
-    <TVFocusGuideHelper autoFocus style={styles.container} pointerEvents="box-none">
+    <TVFocusGuideHelper
+      autoFocus
+      style={Platform.isTV ? styles.tvContainer : styles.container}
+      pointerEvents="box-none"
+    >
       <Button
         onPress={() => handleToggleShareModal({})}
         contrast="low"
-        style={{ ...styles.button, marginTop: top }}
+        style={{ ...styles.button, marginTop: top + (Platform.isTV ? spacing.sm : 0) }}
         icon="Share"
       />
     </TVFocusGuideHelper>
@@ -31,5 +35,11 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: 0,
     width: "100%",
+  },
+  tvContainer: {
+    height: spacing.xs,
+    paddingRight: spacing.xs,
+    position: "relative",
+    zIndex: 1,
   },
 });

@@ -104,7 +104,8 @@
     "latest": "Misslyckades att ladda senaste videor.",
     "channel": "Misslyckades att ladda videor för kanalen.",
     "category": "Misslyckades att ladda videor för kategorin.",
-    "playlist": "Misslyckades att ladda videor för spellistan."
+    "playlist": "Misslyckades att ladda videor för spellistan.",
+    "default": "Misslyckades att ladda videor."
   },
   "retryQuestion": "Försök igen?",
   "videoFailedToLoad": "Inläsning av videon misslyckades.",

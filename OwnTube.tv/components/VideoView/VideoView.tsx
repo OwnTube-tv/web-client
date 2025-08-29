@@ -34,6 +34,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useCustomDiagnosticsEvents } from "../../diagnostics/useCustomDiagnosticEvents";
 import { CustomPostHogEvents, CustomPostHogExceptions } from "../../diagnostics/constants";
 import { getHumanReadableDuration } from "../../utils";
+import { useWatchedDuration } from "../../hooks";
 
 export interface VideoViewProps {
   uri?: string;
@@ -92,6 +93,7 @@ const VideoView = ({
   const { t } = useTranslation();
   const { top } = useSafeAreaInsets();
   const { captureDiagnosticsEvent, captureError } = useCustomDiagnosticsEvents();
+  const { handleTimeUpdate } = useWatchedDuration(duration);
 
   const googleCastClient = Platform.isTV
     ? null
@@ -112,8 +114,10 @@ const VideoView = ({
   const handleRW = (seconds: number) => {
     const updatedTime = currentTime - seconds;
     captureDiagnosticsEvent(CustomPostHogEvents.Scrubbing, {
+      videoId: videoData?.uuid,
       currentTime: getHumanReadableDuration((currentTime || 0) * 1000),
       targetTime: getHumanReadableDuration((updatedTime || 0) * 1000),
+      targetPercentage: Math.trunc((updatedTime / duration) * 100),
     });
     videoRef.current?.seek(updatedTime);
     googleCastClient?.seek({ position: currentTime - seconds, resumeState: isPlaying ? "play" : "pause" });
@@ -123,8 +127,10 @@ const VideoView = ({
   const handleFF = (seconds: number) => {
     const updatedTime = currentTime + seconds;
     captureDiagnosticsEvent(CustomPostHogEvents.Scrubbing, {
+      videoId: videoData?.uuid,
       currentTime: getHumanReadableDuration((currentTime || 0) * 1000),
       targetTime: getHumanReadableDuration((updatedTime || 0) * 1000),
+      targetPercentage: Math.trunc((updatedTime / duration) * 100),
     });
     videoRef.current?.seek(updatedTime);
     googleCastClient?.seek({ position: currentTime + seconds, resumeState: isPlaying ? "play" : "pause" });
@@ -145,8 +151,10 @@ const VideoView = ({
 
   const handleJumpTo = async (position: number) => {
     captureDiagnosticsEvent(CustomPostHogEvents.Scrubbing, {
+      videoId: videoData?.uuid,
       currentTime: getHumanReadableDuration((currentTime || 0) * 1000),
       targetTime: getHumanReadableDuration((position || 0) * 1000),
+      targetPercentage: Math.trunc((position / duration) * 100),
     });
     videoRef.current?.seek(position);
     googleCastClient?.seek({ position, resumeState: isPlaying ? "play" : "pause" });
@@ -162,6 +170,7 @@ const VideoView = ({
 
     const currentTimeInt = Math.trunc(currentTime);
 
+    handleTimeUpdate(currentTimeInt);
     if (currentTimeInt % 5 === 0 && currentTimeInt !== lastReportedTime.current) {
       lastReportedTime.current = currentTimeInt;
       postVideoView({ videoId: videoData?.uuid, currentTime: currentTimeInt });

@@ -14,7 +14,7 @@ import { ROUTES, STORAGE } from "../../types";
 import { usePostVideoViewMutation } from "../../api";
 import { IcoMoonIcon } from "../IcoMoonIcon";
 import { useTheme } from "@react-navigation/native";
-import { useChromeCast, useViewHistory } from "../../hooks";
+import { useChromeCast, useViewHistory, useWatchedDuration } from "../../hooks";
 import { useTranslation } from "react-i18next";
 import { useAppConfigContext } from "../../contexts";
 import { Typography } from "..";
@@ -90,6 +90,7 @@ const VideoView = ({
   const { top } = useSafeAreaInsets();
   const { getViewHistoryEntryByUuid } = useViewHistory();
   const { captureDiagnosticsEvent, captureError } = useCustomDiagnosticsEvents();
+  const { handleTimeUpdate } = useWatchedDuration(playbackStatus.duration);
 
   const { colors } = useTheme();
 
@@ -142,8 +143,10 @@ const VideoView = ({
     postVideoView({ videoId: videoData?.uuid, currentTime: updatedTime, viewEvent: "seek" });
     handleChromeCastSeek(playbackStatus.position - seconds);
     captureDiagnosticsEvent(CustomPostHogEvents.Scrubbing, {
+      videoId: videoData?.uuid,
       currentTime: getHumanReadableDuration(currentTime * 1000),
       targetTime: getHumanReadableDuration(updatedTime * 1000),
+      targetPercentage: Math.trunc((updatedTime / playbackStatus.duration) * 100),
     });
   };
 
@@ -154,8 +157,10 @@ const VideoView = ({
     playerRef.current?.currentTime(updatedTime);
     postVideoView({ videoId: videoData?.uuid, currentTime: updatedTime, viewEvent: "seek" });
     captureDiagnosticsEvent(CustomPostHogEvents.Scrubbing, {
+      videoId: videoData?.uuid,
       currentTime: getHumanReadableDuration(currentTime * 1000),
       targetTime: getHumanReadableDuration(updatedTime * 1000),
+      targetPercentage: Math.trunc((updatedTime / playbackStatus.duration) * 100),
     });
   };
 
@@ -182,8 +187,10 @@ const VideoView = ({
     playerRef.current?.tech().setCurrentTime(position);
     postVideoView({ videoId: videoData?.uuid, currentTime: position, viewEvent: "seek" });
     captureDiagnosticsEvent(CustomPostHogEvents.Scrubbing, {
+      videoId: videoData?.uuid,
       currentTime: getHumanReadableDuration(currentTime * 1000),
       targetTime: getHumanReadableDuration(position * 1000),
+      targetPercentage: Math.trunc((position / playbackStatus.duration) * 100),
     });
   };
 
@@ -316,6 +323,7 @@ const VideoView = ({
         didJustFinish: false,
         playableDuration: playerRef.current?.bufferedEnd(),
       });
+      handleTimeUpdate(Math.trunc(playerRef.current?.currentTime() ?? 0));
 
       const videoElement = playerRef.current?.el()?.getElementsByTagName("video")[0];
       if (videoElement && typeof videoElement.getVideoPlaybackQuality === "function") {

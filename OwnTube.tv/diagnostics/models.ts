@@ -1,7 +1,12 @@
 import { CustomPostHogEvents } from "./constants";
 
 export type CustomPostHogEventParams = {
-  [CustomPostHogEvents.Scrubbing]: { currentTime: string; targetTime: string };
+  [CustomPostHogEvents.Scrubbing]: {
+    videoId: string;
+    currentTime: string;
+    targetTime: string;
+    targetPercentage: number;
+  };
   [CustomPostHogEvents.Pause]: { currentTime: string };
   [CustomPostHogEvents.Play]: { currentTime: string };
   [CustomPostHogEvents.EnableCaptions]: { captionLanguage?: string };

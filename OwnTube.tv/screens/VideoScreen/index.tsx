@@ -74,6 +74,15 @@ export const VideoScreen = () => {
     }
   }, [data, params?.backend]);
 
+  useFocusEffect(
+    useCallback(() => {
+      captureDiagnosticsEvent(CustomPostHogEvents.VideoView, {
+        videoId: params?.id,
+        backend: params?.backend,
+      });
+    }, [params?.id, params?.backend]),
+  );
+
   const randomPremiumAdIndex = useMemo(() => {
     return Math.floor(Math.random() * premiumAdsData.length);
   }, [premiumAdsData.length]);

@@ -23,8 +23,6 @@ import { useTranslation } from "react-i18next";
 import { useGlobalSearchParams } from "expo-router";
 import { readFromAsyncStorage, writeToAsyncStorage } from "../utils";
 import { STORAGE } from "../types";
-import { Platform } from "react-native";
-import uuid from "react-native-uuid";
 import { useQueryClient } from "@tanstack/react-query";
 import { GLOBAL_QUERY_STALE_TIME } from "../api";
 import { useInstanceConfigStore } from "../store";
@@ -37,7 +35,6 @@ interface IAppConfigContext {
   deviceCapabilities: DeviceCapabilities;
   featuredInstances?: InstanceConfig[];
   primaryBackend?: string;
-  sessionId: string;
   sessionCCLocale: string;
   updateSessionCCLocale: (locale: string) => void;
   currentInstanceConfig?: InstanceConfig;
@@ -115,23 +112,6 @@ export const AppConfigContextProvider = ({ children }: PropsWithChildren) => {
     });
   }, [currentInstanceConfig, queryClient]);
 
-  const [sessionId, setSessionId] = useState<string>("");
-
-  useEffect(() => {
-    if (Platform.OS === "web" && typeof window !== "undefined" && window.sessionStorage) {
-      let storedSessionId = window.sessionStorage.getItem("owntube_session_id");
-
-      if (!storedSessionId) {
-        storedSessionId = uuid.v4();
-        window.sessionStorage.setItem("owntube_session_id", storedSessionId);
-      }
-
-      setSessionId(storedSessionId);
-    } else {
-      setSessionId(uuid.v4());
-    }
-  }, []);
-
   useEffect(() => {
     readFromAsyncStorage(STORAGE.DEBUG_MODE).then((debugMode) => {
       setIsDebugMode(debugMode === "true");
@@ -146,7 +126,6 @@ export const AppConfigContextProvider = ({ children }: PropsWithChildren) => {
         deviceCapabilities,
         featuredInstances,
         primaryBackend,
-        sessionId,
         sessionCCLocale,
         updateSessionCCLocale,
         currentInstanceConfig,

@@ -69,7 +69,6 @@
     "react-native-screens": "~4.4.0",
     "react-native-svg": "^15.5.0",
     "react-native-toast-message": "^2.2.0",
-    "react-native-uuid": "^2.0.3",
     "react-native-video": "^6.16.1",
     "react-native-web": "~0.19.6",
     "react-qr-code": "^2.0.15",

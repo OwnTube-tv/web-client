@@ -8,10 +8,10 @@ import { SOURCES } from "../../types";
 import { getLocalData, retry } from "../helpers";
 
 import { QUERY_KEYS } from "../constants";
-import { useAppConfigContext } from "../../contexts";
 import Constants from "expo-constants";
 import * as Device from "expo-device";
 import { getDeviceTypeForVideoView } from "../../utils";
+import { postHogInstance } from "../../diagnostics";
 
 export const useGetVideosQuery = <TResult = GetVideosVideo[]>({
   enabled = true,
@@ -111,7 +111,6 @@ export const useGetVideoQuery = <TResult = Video>({
 
 export const usePostVideoViewMutation = () => {
   const { backend } = useLocalSearchParams<RootStackParams["index"]>();
-  const { sessionId } = useAppConfigContext();
 
   return useMutation({
     mutationFn: async ({
@@ -126,7 +125,7 @@ export const usePostVideoViewMutation = () => {
       return await ApiServiceImpl.postVideoView(backend!, videoId!, {
         currentTime,
         viewEvent,
-        sessionId,
+        sessionId: postHogInstance.getSessionId(),
         client: Constants.expoConfig?.name ?? "OwnTube",
         device: getDeviceTypeForVideoView(Device.deviceType),
         operatingSystem: Device.osName ?? undefined,

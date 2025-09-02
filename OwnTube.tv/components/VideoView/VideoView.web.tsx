@@ -91,6 +91,17 @@ const VideoView = ({
   const { getViewHistoryEntryByUuid } = useViewHistory();
   const { captureDiagnosticsEvent, captureError } = useCustomDiagnosticsEvents();
   const { handleTimeUpdate } = useWatchedDuration(playbackStatus.duration);
+  const capturePlaybackEvent = (viewEvent: "watch" | "seek") => {
+    captureDiagnosticsEvent(CustomPostHogEvents.VideoPlayback, {
+      videoId: videoData?.uuid,
+      currentTime: playbackStatus.position,
+      isFullscreen,
+      externalPlaybackState: isChromecastConnected ? "chromecast" : undefined,
+      captionsEnabled: isCCShown,
+      captionsLanguage: selectedCCLang,
+      viewEvent,
+    });
+  };
 
   const { colors } = useTheme();
 
@@ -148,6 +159,7 @@ const VideoView = ({
       targetTime: getHumanReadableDuration(updatedTime * 1000),
       targetPercentage: Math.trunc((updatedTime / playbackStatus.duration) * 100),
     });
+    capturePlaybackEvent("seek");
   };
 
   const handleFF = (seconds: number) => {
@@ -162,6 +174,7 @@ const VideoView = ({
       targetTime: getHumanReadableDuration(updatedTime * 1000),
       targetPercentage: Math.trunc((updatedTime / playbackStatus.duration) * 100),
     });
+    capturePlaybackEvent("seek");
   };
 
   const toggleMute = () => {
@@ -192,6 +205,7 @@ const VideoView = ({
       targetTime: getHumanReadableDuration(position * 1000),
       targetPercentage: Math.trunc((position / playbackStatus.duration) * 100),
     });
+    capturePlaybackEvent("seek");
   };
 
   const options = {
@@ -413,6 +427,7 @@ const VideoView = ({
     if (currentTimeInt % 5 === 0 && currentTimeInt !== lastReportedTime.current) {
       lastReportedTime.current = currentTimeInt;
       postVideoView({ videoId: videoData?.uuid, currentTime: currentTimeInt });
+      capturePlaybackEvent("watch");
     }
   }, [playbackStatus.position]);
 

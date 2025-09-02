@@ -34,6 +34,7 @@ export enum CustomPostHogEvents {
   InstanceSearchTextChanged = "instance_search_text_changed",
   VideoView = "video_view",
   VideoPercentageComplete = "video_percentage_complete",
+  VideoPlayback = "video_playback",
 }
 
 export const DebugLevelCustomPostHogEvents = [CustomPostHogEvents.MuteAudio, CustomPostHogEvents.UnmuteAudio];

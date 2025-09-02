@@ -52,4 +52,14 @@ export type CustomPostHogEventParams = {
     totalFrames: number;
     droppedFramesPercent: number;
   };
+  [CustomPostHogEvents.VideoPlayback]: {
+    videoId: string;
+    currentTime: string;
+    isFullscreen: boolean;
+    externalPlaybackState?: "airplay" | "chromecast";
+    isMuted: boolean;
+    captionsEnabled: boolean;
+    captionsLanguage?: string;
+    viewEvent: "watch" | "seek";
+  };
 };

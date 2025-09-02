@@ -87,6 +87,11 @@ const VideoView = ({
   const [shouldReplay, setShouldReplay] = useState(false);
   const [castState, setCastState] = useState<"airPlay" | "chromecast">();
   const [isControlsVisible, setIsControlsVisible] = useState(false);
+  const { i18n } = useTranslation();
+  const [availableCCLangs, setAvailableCCLangs] = useState<string[]>([]);
+  const [selectedCCLang, setSelectedCCLang] = useState("");
+  const [memorizedCCLang, setMemorizedCCLang] = useState<string | null>(null);
+  const [isCCShown, setIsCCShown] = useState(false);
   const isMobile = Device.deviceType !== DeviceType.DESKTOP;
   const { backend } = useLocalSearchParams<RootStackParams[ROUTES.VIDEO]>();
   const { colors } = useTheme();
@@ -94,6 +99,17 @@ const VideoView = ({
   const { top } = useSafeAreaInsets();
   const { captureDiagnosticsEvent, captureError } = useCustomDiagnosticsEvents();
   const { handleTimeUpdate } = useWatchedDuration(duration);
+  const capturePlaybackEvent = (viewEvent: "watch" | "seek") => {
+    captureDiagnosticsEvent(CustomPostHogEvents.VideoPlayback, {
+      videoId: videoData?.uuid,
+      currentTime,
+      isFullscreen,
+      externalPlaybackState: castState,
+      captionsEnabled: isCCShown,
+      captionsLanguage: selectedCCLang,
+      viewEvent,
+    });
+  };
 
   const googleCastClient = Platform.isTV
     ? null
@@ -122,6 +138,7 @@ const VideoView = ({
     videoRef.current?.seek(updatedTime);
     googleCastClient?.seek({ position: currentTime - seconds, resumeState: isPlaying ? "play" : "pause" });
     postVideoView({ videoId: videoData?.uuid, currentTime: updatedTime, viewEvent: "seek" });
+    capturePlaybackEvent("seek");
   };
 
   const handleFF = (seconds: number) => {
@@ -135,6 +152,7 @@ const VideoView = ({
     videoRef.current?.seek(updatedTime);
     googleCastClient?.seek({ position: currentTime + seconds, resumeState: isPlaying ? "play" : "pause" });
     postVideoView({ videoId: videoData?.uuid, currentTime: updatedTime, viewEvent: "seek" });
+    capturePlaybackEvent("seek");
   };
 
   const toggleMute = () => {
@@ -159,6 +177,7 @@ const VideoView = ({
     videoRef.current?.seek(position);
     googleCastClient?.seek({ position, resumeState: isPlaying ? "play" : "pause" });
     postVideoView({ videoId: videoData?.uuid, currentTime: position, viewEvent: "seek" });
+    capturePlaybackEvent("seek");
   };
 
   const lastReportedTime = useRef<number>(0);
@@ -174,6 +193,7 @@ const VideoView = ({
     if (currentTimeInt % 5 === 0 && currentTimeInt !== lastReportedTime.current) {
       lastReportedTime.current = currentTimeInt;
       postVideoView({ videoId: videoData?.uuid, currentTime: currentTimeInt });
+      capturePlaybackEvent("watch");
     }
   }, [currentTime]);
 
@@ -315,12 +335,6 @@ const VideoView = ({
       };
     }, []),
   );
-
-  const { i18n } = useTranslation();
-  const [availableCCLangs, setAvailableCCLangs] = useState<string[]>([]);
-  const [selectedCCLang, setSelectedCCLang] = useState("");
-  const [memorizedCCLang, setMemorizedCCLang] = useState<string | null>(null);
-  const [isCCShown, setIsCCShown] = useState(false);
 
   const handleTextTracks = (e: OnTextTracksData) => {
     setAvailableCCLangs(

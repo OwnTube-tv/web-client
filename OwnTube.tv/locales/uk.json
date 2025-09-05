@@ -56,7 +56,7 @@
   "shareVideoChannel": "Поділитися URL каналу в {{appName}}",
   "shareVideoChannelCategory": "Поділитися URL категорії на канале в {{appName}}",
   "sharePlaylist": "Поділитися URL плейліста в {{appName}}",
-  "shareAppURL": "Поділитися URL додатку",
+  "shareAppURL": "Поділитися веб-URL",
   "shareChannelPlaylist": "Поділитися плейлістом каналу",
   "qrCode": "QR-код",
   "qrCodeForURL": "QR-код для URL",

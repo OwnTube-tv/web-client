@@ -56,7 +56,7 @@
   "shareVideoChannel": "Share channel URL in {{appName}}",
   "shareVideoChannelCategory": "Share channel category URL in {{appName}}",
   "sharePlaylist": "Share playlist URL in {{appName}}",
-  "shareAppURL": "Share app URL",
+  "shareAppURL": "Share web URL",
   "shareChannelPlaylist": "Share channel playlist",
   "qrCode": "QR code",
   "qrCodeForURL": "QR code for URL",

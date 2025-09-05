@@ -74,11 +74,14 @@ export const Settings = ({ onClose }: SettingsProps) => {
         containerStyle={styles.modalContainer}
       >
         <ScrollView>
-          <Spacer height={spacing.sm} />
           <DeviceCapabilities />
-          <Spacer height={spacing.xl} />
+          <Spacer height={spacing.sm} />
           <Separator />
-          <Spacer height={spacing.xl} />
+          <Spacer height={spacing.sm} />
+          <Typography fontSize="sizeSm" fontWeight="SemiBold" color={colors.theme950}>
+            {t("settingsPageUiLanguageHeading")}
+          </Typography>
+          <Spacer height={spacing.sm} />
           <Picker
             darkTheme={isDarkTheme}
             placeholder={{}}
@@ -86,16 +89,25 @@ export const Settings = ({ onClose }: SettingsProps) => {
             onValueChange={handleSelectLanguage}
             items={LANGUAGE_OPTIONS}
           />
-          <Spacer height={spacing.xl} />
+          <Spacer height={spacing.sm} />
+          <Separator />
+          <Spacer height={spacing.sm} />
+          <Typography fontSize="sizeSm" fontWeight="SemiBold" color={colors.theme950}>
+            {t("settingsPageAppDiagnosticsHeading")}
+          </Typography>
+          <Spacer height={spacing.sm} />
           <Checkbox
             disabled={isOptedOut}
             checked={isDebugMode && !isOptedOut}
             onChange={handleToggleDebugMode}
-            label={t("debugLogging")}
+            label={t("settingsPageDebugLogging")}
           />
-          <Spacer height={spacing.md} />
-          <Checkbox checked={isOptedOut} onChange={handleToggleOptOutCheckbox} label={t("optOutOfDiagnostics")} />
-          <Spacer height={spacing.xl} />
+          <Checkbox
+            checked={isOptedOut}
+            onChange={handleToggleOptOutCheckbox}
+            label={t("settingsPageOptOutOfDiagnostics")}
+          />
+          <Spacer height={spacing.sm} />
           {!primaryBackend && (
             <>
               <Separator />

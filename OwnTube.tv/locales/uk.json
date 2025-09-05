@@ -5,11 +5,11 @@
   "viewVideo": "Переглянути відео",
   "videoPageTitle": "Відео",
   "error": "Помилка",
-  "debugLogging": "Журнал налагодження для віддаленої діагностики",
+  "settingsPageDebugLogging": "Debug-логування для віддаленої діагностики",
   "toggleTheme": "Змінити тему",
   "revision": "Ревізія",
   "builtAtBy": "поставка від {{builtAt}} авторства",
-  "deviceCapabilityInfoTitle": "Інформація про клієнта",
+  "settingsPageDeviceCapabilityInfoHeading": "Інформація про клієнта",
   "playerImpl": "Реалізація плеєра:",
   "deviceType": "Тип пристрою:",
   "operatingSystem": "Операційна система:",
@@ -180,5 +180,7 @@
   "_2faOff": "вимкненою",
   "sessionExpired": "закінчилася",
   "sessionActive": "активна",
-  "optOutOfDiagnostics": "Відмова від обміну анонімізованою діагностикою"
+  "settingsPageOptOutOfDiagnostics": "Відключити обмін діагностикою",
+  "settingsPageUiLanguageHeading": "Мова інтерфейсу",
+  "settingsPageAppDiagnosticsHeading": "Діагностика додатку"
 }

@@ -79,7 +79,7 @@ const DeviceCapabilities = () => {
     <View style={{ backgroundColor: colors.theme50 }}>
       <View style={styles.modalHeader}>
         <Typography fontSize="sizeSm" fontWeight="SemiBold" color={colors.theme950}>
-          {t("deviceCapabilityInfoTitle")}
+          {t("settingsPageDeviceCapabilityInfoHeading")}
         </Typography>
         <Pressable onPress={handleCopyToClipboard} style={[styles.iconButton, { backgroundColor: colors.theme500 }]}>
           <IcoMoonIcon color={colors.white94} name="Content-Copy" size={24} />

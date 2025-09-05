@@ -5,11 +5,11 @@
   "viewVideo": "View video",
   "videoPageTitle": "Video",
   "error": "Error",
-  "debugLogging": "Debug logging for remote diagnostics",
+  "settingsPageDebugLogging": "Debug logging for remote diagnostics",
   "toggleTheme": "Toggle Theme",
   "revision": "Revision",
   "builtAtBy": "built at {{builtAt}} by",
-  "deviceCapabilityInfoTitle": "Client information",
+  "settingsPageDeviceCapabilityInfoHeading": "Client information",
   "playerImpl": "Player implementation:",
   "deviceType": "Device type:",
   "operatingSystem": "Operating system:",
@@ -181,5 +181,7 @@
   "_2faOn": "on",
   "sessionExpired": "expired",
   "sessionActive": "active",
-  "optOutOfDiagnostics": "Opt-out of sharing anonymized diagnostics"
+  "settingsPageOptOutOfDiagnostics": "Opt-out of sharing diagnostics",
+  "settingsPageUiLanguageHeading": "UI language",
+  "settingsPageAppDiagnosticsHeading": "App diagnostics"
 }

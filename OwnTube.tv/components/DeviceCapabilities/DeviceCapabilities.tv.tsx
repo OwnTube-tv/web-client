@@ -28,7 +28,7 @@ const DeviceCapabilities = () => {
     <View style={{ backgroundColor: colors.theme50 }}>
       <View style={styles.modalHeader}>
         <Typography fontSize="sizeSm" fontWeight="SemiBold" color={colors.theme950}>
-          {t("deviceCapabilityInfoTitle")}
+          {t("settingsPageDeviceCapabilityInfoHeading")}
         </Typography>
       </View>
       <View style={styles.capabilitiesContainer}>

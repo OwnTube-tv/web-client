@@ -5,11 +5,11 @@
   "viewVideo": "Просмотр видео",
   "videoPageTitle": "Видео",
   "error": "Ошибка",
-  "debugLogging": "Журнал отладки для удаленной диагностики",
+  "settingsPageDebugLogging": "Debug-логирование для удаленной диагностики",
   "toggleTheme": "Переключить тему",
   "revision": "Ревизия",
   "builtAtBy": "поставка от {{builtAt}} авторства",
-  "deviceCapabilityInfoTitle": "Информация о клиенте",
+  "settingsPageDeviceCapabilityInfoHeading": "Информация о клиенте",
   "playerImpl": "Реализация плеера:",
   "deviceType": "Тип устройства:",
   "operatingSystem": "Операционная система:",
@@ -180,5 +180,7 @@
   "_2faOff": "выключенной",
   "sessionExpired": "истекла",
   "sessionActive": "активна",
-  "optOutOfDiagnostics": "Отказ от обмена анонимной диагностикой"
+  "settingsPageOptOutOfDiagnostics": "Отключить обмен диагностикой",
+  "settingsPageUiLanguageHeading": "Язык интерфейса",
+  "settingsPageAppDiagnosticsHeading": "Диагностика приложения"
 }

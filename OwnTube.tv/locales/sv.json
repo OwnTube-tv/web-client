@@ -5,11 +5,11 @@
   "viewVideo": "Visa video",
   "videoPageTitle": "Video",
   "error": "Felmeddelande",
-  "debugLogging": "Felsökning av loggning för fjärrdiagnostik",
+  "settingsPageDebugLogging": "Debug-loggning i fjärrdiagnostik",
   "toggleTheme": "Växla tema",
   "revision": "Revision",
   "builtAtBy": "byggd {{builtAt}} av",
-  "deviceCapabilityInfoTitle": "Klient-information",
+  "settingsPageDeviceCapabilityInfoHeading": "Klient-information",
   "playerImpl": "Video-spelare:",
   "deviceType": "Typ av hårdvara:",
   "operatingSystem": "Operativsystem:",
@@ -181,5 +181,7 @@
   "sessionActive": "aktiv",
   "sessionExpired": "utgången",
   "currentAuthText": "Användare {{userName}} vid {{backend}}, med tvåfaktor {{_2fa}}, session startad {{sessionStartedAt}}, uppdaterad {{sessionUpdatedAt}}, {{expiredText}}, refresh token utfärdad {{refreshTokenIssuedAt}}",
-  "optOutOfDiagnostics": "Välja bort delning av anonymiserad diagnostik"
+  "settingsPageOptOutOfDiagnostics": "Inaktivera delning av diagnostik",
+  "settingsPageUiLanguageHeading": "Gränssnittsspråk",
+  "settingsPageAppDiagnosticsHeading": "App-diagnostik"
 }

@@ -10,3 +10,4 @@ export * from "./CategoryScreen";
 export * from "./Playlist";
 export * from "./SignIn";
 export * from "./Otp";
+export * from "./SearchResults";

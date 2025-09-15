@@ -20,6 +20,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { QrCodeLinkModal } from "./QRCodeLinkModal";
 import build_info from "../build-info.json";
 import { useAuthSessionStore } from "../store";
+import { SearchPopup } from "./SearchPopup";
 
 const SIDEBAR_ROUTES = [
   {
@@ -27,6 +28,10 @@ const SIDEBAR_ROUTES = [
     icon: "Home",
     href: { pathname: "/home" },
     routeName: "(home)/home",
+  },
+  {
+    nameKey: "search",
+    icon: "Search",
   },
   {
     nameKey: "history",
@@ -144,6 +149,25 @@ export const Sidebar: FC<SidebarProps> = ({ backend, ...navigationProps }) => {
             navigationProps.state.index === navigationProps.state.routes.findIndex(({ name }) => name === routeName);
           const isDisabled = !isConnected && !isAvailableOffline;
 
+          if (!href) {
+            return (
+              <Button
+                key={"search"}
+                disabled={isDisabled}
+                isActive={isActive}
+                justifyContent="flex-start"
+                icon={"Search"}
+                text={shouldExpand ? t("search") : undefined}
+                style={{ ...styles.button, ...paddingHelperStyle }}
+                onPress={() => {
+                  navigationProps.navigation.closeDrawer();
+                  toggleModal(true);
+                  setContent(<SearchPopup backend={backend} handleClose={() => toggleModal(false)} />);
+                }}
+              />
+            );
+          }
+
           return (
             <Link href={{ ...href, params: { backend } }} key={routeName} asChild>
               <Button
@@ -227,7 +251,6 @@ export const Sidebar: FC<SidebarProps> = ({ backend, ...navigationProps }) => {
             handleToggleShareModal({
               staticHeaderKey: "shareVideoSite",
               staticLink: homeShareLink,
-              analyticsEventType: "app",
             })
           }
           icon={"Share"}

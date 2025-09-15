@@ -29,6 +29,7 @@ const customizationsSchema = z
     premiumContentAds: z.array(z.string()),
     loginAccessTokenExpirationOverride: z.number(),
     loginRefreshTokenExpirationOverride: z.number(),
+    searchPageSize: z.number(),
   })
   .partial();
 

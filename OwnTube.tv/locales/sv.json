@@ -183,5 +183,18 @@
   "currentAuthText": "Användare {{userName}} vid {{backend}}, med tvåfaktor {{_2fa}}, session startad {{sessionStartedAt}}, uppdaterad {{sessionUpdatedAt}}, {{expiredText}}, refresh token utfärdad {{refreshTokenIssuedAt}}",
   "settingsPageOptOutOfDiagnostics": "Inaktivera delning av diagnostik",
   "settingsPageUiLanguageHeading": "Gränssnittsspråk",
-  "settingsPageAppDiagnosticsHeading": "App-diagnostik"
+  "settingsPageAppDiagnosticsHeading": "App-diagnostik",
+  "nResultsFor": "{{resultsCount}} resultat för",
+  "sort": "Sortera",
+  "loading": "Belastning",
+  "noResults": "Inga",
+  "failedToLoadVideoSection.search": "Det gick inte att ladda sökresultaten.",
+  "reload": "Ladda om",
+  "noResultsFound": "Inga resultat hittades",
+  "searchForVideos": "Sök efter videor",
+  "sortBy": "Sortera förbi",
+  "relevance": "Relevans",
+  "publishDate": "Publicera datum",
+  "viewsSortKey": "Åsikter",
+  "sortOrder": "Sortering"
 }

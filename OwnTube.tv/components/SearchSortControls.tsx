@@ -2,7 +2,7 @@ import { useTranslation } from "react-i18next";
 import { View, Platform } from "react-native";
 import { Typography } from "./Typography";
 import { VideosSearchQuery } from "@peertube/peertube-types";
-import { Button, Separator } from "./shared";
+import { Separator } from "./shared";
 import { spacing } from "../theme";
 import { RadioButton } from "./RadioButton";
 import { Spacer } from "./shared/Spacer";
@@ -13,19 +13,18 @@ import { useBreakpoints } from "../hooks";
 interface SearchSortControlsProps {
   sort: VideosSearchQuery["sort"];
   setSort: (sort: VideosSearchQuery["sort"]) => void;
-  order?: "asc" | "desc";
-  setOrder: (order: "asc" | "desc") => void;
   isExpanded: boolean;
 }
 
-export const SearchSortControls = ({ sort, setSort, order, setOrder, isExpanded }: SearchSortControlsProps) => {
+export const SearchSortControls = ({ sort, setSort, isExpanded }: SearchSortControlsProps) => {
   const { t } = useTranslation();
   const breakpoints = useBreakpoints();
 
   const sortOptions = [
-    { label: t("relevance"), value: "match" },
-    { label: t("publishDate"), value: "publishedAt" },
-    { label: t("viewsSortKey"), value: "views" },
+    { label: t("relevance"), value: "-match" },
+    { label: t("publishDateNewest"), value: "-publishedAt" },
+    { label: t("publishDateOldest"), value: "publishedAt" },
+    { label: t("viewsSortKey"), value: "-views" },
   ];
   const isExpandedSV = useSharedValue(isExpanded ? 1 : 0);
   const height = useSharedValue(0);
@@ -83,13 +82,6 @@ export const SearchSortControls = ({ sort, setSort, order, setOrder, isExpanded 
               />
             ))}
           </View>
-          <Button
-            contrast="low"
-            text={t("sortOrder")}
-            onPress={() => setOrder(order === "asc" ? "desc" : "asc")}
-            icon={order === "asc" ? "Chevron-Up" : "Chevron"}
-            iconPosition="trailing"
-          />
         </View>
         <Spacer height={spacing.lg} />
         <Separator />

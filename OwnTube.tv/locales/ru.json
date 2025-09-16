@@ -180,7 +180,7 @@
   "_2faOff": "выключенной",
   "sessionExpired": "истекла",
   "sessionActive": "активна",
-  "settingsPageOptOutOfDiagnostics": "Отключить обмен диагностикой",
+  "settingsPageOptOutOfDiagnostics": "Отключить отправку диагностических данных",
   "settingsPageUiLanguageHeading": "Язык интерфейса",
   "settingsPageAppDiagnosticsHeading": "Диагностика приложения",
   "nResultsFor": "{{resultsCount}} результатов для запроса",
@@ -189,11 +189,13 @@
   "noResults": "Нет",
   "failedToLoadVideoSection.search": "Не удалось загрузить результаты поиска.",
   "reload": "Перезагрузить",
-  "noResultsFound": "Результаты не обнаружены",
+  "noResultsFound": "Результаты не найдены",
   "searchForVideos": "Поиск видео",
   "sortBy": "Сортировать по",
   "relevance": "Актуальность",
   "publishDate": "Дата публикации",
   "viewsSortKey": "Просмотры",
-  "sortOrder": "Сортировка порядок"
+  "sortOrder": "Порядок сортировки",
+  "publishDateNewest": "Дата публикации (сначала новые)",
+  "publishDateOldest": "Дата публикации (сначала старые)"
 }

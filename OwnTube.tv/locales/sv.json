@@ -186,15 +186,17 @@
   "settingsPageAppDiagnosticsHeading": "App-diagnostik",
   "nResultsFor": "{{resultsCount}} resultat för",
   "sort": "Sortera",
-  "loading": "Belastning",
+  "loading": "Laddar",
   "noResults": "Inga",
   "failedToLoadVideoSection.search": "Det gick inte att ladda sökresultaten.",
   "reload": "Ladda om",
   "noResultsFound": "Inga resultat hittades",
   "searchForVideos": "Sök efter videor",
-  "sortBy": "Sortera förbi",
+  "sortBy": "Sortera efter",
   "relevance": "Relevans",
   "publishDate": "Publicera datum",
   "viewsSortKey": "Åsikter",
-  "sortOrder": "Sortering"
+  "sortOrder": "Sortering",
+  "publishDateNewest": "Publicera datum (nyaste)",
+  "publishDateOldest": "Publicera datum (äldsta)"
 }

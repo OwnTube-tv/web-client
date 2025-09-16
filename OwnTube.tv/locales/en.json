@@ -197,5 +197,7 @@
   "relevance": "Relevance",
   "publishDate": "Publish Date",
   "viewsSortKey": "Views",
-  "sortOrder": "Sort order"
+  "sortOrder": "Sort order",
+  "publishDateNewest": "Publish Date (newest)",
+  "publishDateOldest": "Publish Date (oldest)"
 }

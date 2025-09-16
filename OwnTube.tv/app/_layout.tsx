@@ -227,5 +227,5 @@ export type RootStackParams = {
   [ROUTES.PLAYLIST]: { backend: string; playlist: string };
   [ROUTES.SIGNIN]: { backend: string; username?: string };
   [ROUTES.OTP]: { backend: string };
-  [ROUTES.SEARCH]: { backend: string; searchQuery: string; sort?: VideosSearchQuery["sort"]; order?: "asc" | "desc" };
+  [ROUTES.SEARCH]: { backend: string; searchQuery: string; sort?: VideosSearchQuery["sort"] };
 };

@@ -189,11 +189,13 @@
   "noResults": "Немає",
   "failedToLoadVideoSection.search": "Не вдалося завантажити результати пошуку.",
   "reload": "Перезавантажити",
-  "noResultsFound": "Жодних результатів не знайдено",
+  "noResultsFound": "Результатів не знайдено",
   "searchForVideos": "Пошук відео",
   "sortBy": "Сортувати за",
   "relevance": "Актуальність",
-  "publishDate": "Опублікувати дату",
+  "publishDate": "Дата публікації",
   "viewsSortKey": "Перегляди",
-  "sortOrder": "Сортувати порядок"
+  "sortOrder": "Порядок сортування",
+  "publishDateNewest": "Дата публікації (спочатку новіші)",
+  "publishDateOldest": "Дата публікації (спочатку старіші)"
 }

@@ -674,6 +674,8 @@ const VideoView = ({
         isCCVisible={isCCShown}
         hlsAutoQuality={hlsResolution}
         isDownloadAvailable={videoData?.downloadEnabled}
+        viewsCount={videoData?.views}
+        publishedAt={videoData?.publishedAt}
       >
         {isChromecastConnected && (
           <View style={styles.chromecastOverlay}>

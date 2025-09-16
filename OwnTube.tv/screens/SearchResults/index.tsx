@@ -37,12 +37,7 @@ export const SearchResultsScreen = () => {
   const { t } = useTranslation();
   const breakpoints = useBreakpoints();
   const { colors } = useTheme();
-  const {
-    searchQuery,
-    backend,
-    sort = SEARCH_DEFAULTS.sort,
-    order = "desc",
-  } = useLocalSearchParams<RootStackParams[ROUTES.SEARCH]>();
+  const { searchQuery, backend, sort = SEARCH_DEFAULTS.sort } = useLocalSearchParams<RootStackParams[ROUTES.SEARCH]>();
   const {
     fetchNextPage,
     data: searchResults,
@@ -55,7 +50,7 @@ export const SearchResultsScreen = () => {
   } = useSearchQuery({
     search: searchQuery || "",
     count: currentInstanceConfig?.customizations?.searchPageSize || SEARCH_DEFAULTS.count,
-    sort: `${order === "desc" ? "-" : ""}${sort || SEARCH_DEFAULTS.sort}`,
+    sort: sort || SEARCH_DEFAULTS.sort,
   });
   const [inputValue, setInputValue] = useState("");
   const [isSortExpanded, setIsSortExpanded] = useState(false);
@@ -79,7 +74,9 @@ export const SearchResultsScreen = () => {
 
   useFocusEffect(
     useCallback(() => {
-      setIsSortExpanded(false);
+      return () => {
+        setIsSortExpanded(false);
+      };
     }, []),
   );
 
@@ -123,9 +120,6 @@ export const SearchResultsScreen = () => {
   };
   const setSort = (newSort: VideosSearchQuery["sort"]) => {
     router.setParams({ sort: newSort });
-  };
-  const setSortOrder = (newOrder: "asc" | "desc") => {
-    router.setParams({ order: newOrder });
   };
 
   const inputFocusRef = useRef<TextInput | null>(null);
@@ -178,13 +172,7 @@ export const SearchResultsScreen = () => {
           hasTVPreferredFocus
         />
       </TVFocusGuideHelper>
-      <SearchSortControls
-        isExpanded={isSortExpanded}
-        sort={sort}
-        setSort={setSort}
-        order={order}
-        setOrder={setSortOrder}
-      />
+      <SearchSortControls isExpanded={isSortExpanded} sort={sort} setSort={setSort} />
       <Spacer height={spacing.xxl} />
       {isLoading || isRefetching ? <Loader /> : renderContent()}
       <InfoFooter />

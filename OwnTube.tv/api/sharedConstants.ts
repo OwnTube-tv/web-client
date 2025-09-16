@@ -6,5 +6,5 @@ export const APP_IDENTIFIER = `${buildInfo.GITHUB_REPOSITORY}@${buildInfo.GITHUB
 export const SEARCH_DEFAULTS: VideosSearchQuery = {
   isLocal: true,
   count: 15,
-  sort: "match",
+  sort: "-match",
 };

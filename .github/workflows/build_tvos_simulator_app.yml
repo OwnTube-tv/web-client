@@ -61,7 +61,7 @@ jobs:
       - name: Setup Xcode
         uses: maxim-lobanov/setup-xcode@v1
         with:
-          xcode-version: latest-stable
+          xcode-version: 16.4
 
       - name: Build release tvOS .app for simulators by @${{ github.actor }}
         run: |

@@ -194,9 +194,9 @@
   "searchForVideos": "Sök efter videor",
   "sortBy": "Sortera efter",
   "relevance": "Relevans",
-  "publishDate": "Publicera datum",
-  "viewsSortKey": "Åsikter",
+  "publishDate": "Publiceringsdatum",
+  "viewsSortKey": "Visningar",
   "sortOrder": "Sortering",
-  "publishDateNewest": "Publicera datum (nyaste)",
-  "publishDateOldest": "Publicera datum (äldsta)"
+  "publishDateNewest": "Publiceringsdatum (nyast först)",
+  "publishDateOldest": "Publiceringsdatum (äldst först)"
 }

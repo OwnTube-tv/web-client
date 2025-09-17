@@ -195,9 +195,9 @@
   "searchForVideos": "Search for videos",
   "sortBy": "Sort by",
   "relevance": "Relevance",
-  "publishDate": "Publish Date",
+  "publishDate": "Published date",
   "viewsSortKey": "Views",
   "sortOrder": "Sort order",
-  "publishDateNewest": "Publish Date (newest)",
-  "publishDateOldest": "Publish Date (oldest)"
+  "publishDateNewest": "Published date (newest first)",
+  "publishDateOldest": "Published date (oldest first)"
 }

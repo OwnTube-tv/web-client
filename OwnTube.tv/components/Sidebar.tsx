@@ -150,7 +150,7 @@ export const Sidebar: FC<SidebarProps> = ({ backend, ...navigationProps }) => {
           const isDisabled = !isConnected && !isAvailableOffline;
 
           if (!href) {
-            return (
+            return breakpoints.isMobile ? null : (
               <Button
                 key={"search"}
                 disabled={isDisabled}

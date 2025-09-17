@@ -97,13 +97,14 @@ export const SearchResultsScreen = () => {
 
     return (
       <FlatList
+        bounces={false}
         key={searchQuery}
         initialNumToRender={15}
         disableVirtualization
+        disableScrollViewPanResponder
         data={videos || []}
         renderItem={renderItem}
         ItemSeparatorComponent={() => <Spacer height={spacing.xl} />}
-        contentInset={{ bottom: spacing.xl }}
         style={{ overflow: "visible" }}
         ListFooterComponent={
           hasNextPage ? (

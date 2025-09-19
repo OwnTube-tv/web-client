@@ -39,6 +39,7 @@ export enum QUERY_KEYS {
   loginPrerequisites = "loginPrerequisites",
   myUserInfo = "myUserInfo",
   myChannelSubscription = "myChannelSubscription",
+  search = "search",
 }
 
 export enum MUTATION_KEYS {

@@ -105,7 +105,8 @@
     "channel": "Failed to load channel videos.",
     "category": "Failed to load category videos.",
     "playlist": "Failed to load playlist videos.",
-    "default": "Failed to load videos."
+    "default": "Failed to load videos.",
+    "search": "Failed to load search results."
   },
   "retryQuestion": "Retry?",
   "videoFailedToLoad": "Video failed to load.",
@@ -183,5 +184,20 @@
   "sessionActive": "active",
   "settingsPageOptOutOfDiagnostics": "Opt-out of sharing diagnostics",
   "settingsPageUiLanguageHeading": "UI language",
-  "settingsPageAppDiagnosticsHeading": "App diagnostics"
+  "settingsPageAppDiagnosticsHeading": "App diagnostics",
+  "search": "Search",
+  "nResultsFor": "{{resultsCount}} results for",
+  "sort": "Sort",
+  "loading": "Loading",
+  "noResults": "No",
+  "reload": "Reload",
+  "noResultsFound": "No results found",
+  "searchForVideos": "Search for videos",
+  "sortBy": "Sort by",
+  "relevance": "Relevance",
+  "publishDate": "Published date",
+  "viewsSortKey": "Views",
+  "sortOrder": "Sort order",
+  "publishDateNewest": "Published date (newest first)",
+  "publishDateOldest": "Published date (oldest first)"
 }

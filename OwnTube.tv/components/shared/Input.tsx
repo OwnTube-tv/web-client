@@ -10,10 +10,11 @@ interface InputProps extends TextInputProps {
   handleButtonPress?: () => void;
   variant?: "outlined" | "default";
   error?: string;
+  trailingIcon?: React.ReactNode;
 }
 
 export const Input = forwardRef<TextInput, InputProps>(
-  ({ buttonText, handleButtonPress, variant = "outlined", error, ...props }, ref) => {
+  ({ buttonText, handleButtonPress, variant = "outlined", error, trailingIcon, ...props }, ref) => {
     const [isFocused, setIsFocused] = useState(false);
     const { colors, dark: isDarkTheme } = useTheme();
 
@@ -37,7 +38,7 @@ export const Input = forwardRef<TextInput, InputProps>(
               backgroundColor: colors.theme100,
               borderWidth: isFocused || error ? 2 : variant === "default" ? 0 : 1,
               color: props.readOnly ? colors.themeDesaturated500 : colors.theme950,
-              padding: (isFocused || error ? 14 : 16) - (Platform.isTVOS ? 16 : 0),
+              padding: (isFocused || error ? 15 : 16) - (Platform.isTVOS ? 16 : 0),
             },
             props.style,
           ]}
@@ -48,6 +49,7 @@ export const Input = forwardRef<TextInput, InputProps>(
             <Button text={buttonText} onPress={handleButtonPress} contrast="high" />
           </View>
         )}
+        {trailingIcon && <View style={styles.trailingIconContainer}>{trailingIcon}</View>}
         {error && (
           <Typography style={styles.errorText} fontSize="sizeXS" color={colors.error500}>
             {error}
@@ -73,5 +75,11 @@ const styles = StyleSheet.create({
   input: {
     borderRadius: borderRadius.radiusMd,
     height: 48,
+  },
+  trailingIconContainer: {
+    bottom: 6,
+    position: "absolute",
+    right: 6,
+    top: 6,
   },
 });

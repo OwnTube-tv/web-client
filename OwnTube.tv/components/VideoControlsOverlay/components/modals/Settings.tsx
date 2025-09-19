@@ -102,6 +102,7 @@ export const Settings = ({ onClose }: SettingsProps) => {
             onChange={handleToggleDebugMode}
             label={t("settingsPageDebugLogging")}
           />
+          <Spacer height={spacing.sm} />
           <Checkbox
             checked={isOptedOut}
             onChange={handleToggleOptOutCheckbox}

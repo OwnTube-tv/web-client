@@ -32,6 +32,7 @@ import { GLOBAL_QUERY_STALE_TIME } from "../api";
 import { useAuthSessionSync } from "../hooks/useAuthSessionSync";
 import { PostHogProvider, usePostHog } from "posthog-react-native";
 import { postHogInstance } from "../diagnostics";
+import { VideosSearchQuery } from "@peertube/peertube-types";
 
 export const CLOSED_DRAWER_WIDTH = 64;
 export const OPEN_DRAWER_WIDTH = 272;
@@ -137,6 +138,7 @@ const RootStack = () => {
             <Drawer.Screen name={`(home)/${ROUTES.PLAYLIST}`} />
             <Drawer.Screen name={`(home)/${ROUTES.SIGNIN}`} />
             <Drawer.Screen name={`(home)/${ROUTES.OTP}`} />
+            <Drawer.Screen name={`(home)/${ROUTES.SEARCH}`} />
           </Drawer>
           <Toast
             topOffset={top || undefined}
@@ -225,4 +227,5 @@ export type RootStackParams = {
   [ROUTES.PLAYLIST]: { backend: string; playlist: string };
   [ROUTES.SIGNIN]: { backend: string; username?: string };
   [ROUTES.OTP]: { backend: string };
+  [ROUTES.SEARCH]: { backend: string; searchQuery: string; sort?: VideosSearchQuery["sort"] };
 };

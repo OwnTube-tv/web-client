@@ -24,6 +24,7 @@ import { VideoChannelSummary } from "@peertube/peertube-types";
 import { useAppConfigContext, useFullScreenModalContext } from "../../contexts";
 import VideoContextMenu from "../VideoContextMenu";
 import DownloadVideo from "../DownloadVideo";
+import { format } from "date-fns";
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
 export interface VideoControlsOverlayProps {
@@ -70,6 +71,8 @@ export interface VideoControlsOverlayProps {
   hlsAutoQuality?: number;
   isDownloadAvailable?: boolean;
   isLoading: boolean;
+  viewsCount?: number;
+  publishedAt?: string | Date;
 }
 
 const VideoControlsOverlay = ({
@@ -117,6 +120,8 @@ const VideoControlsOverlay = ({
   hlsAutoQuality,
   isDownloadAvailable,
   isLoading,
+  viewsCount,
+  publishedAt,
 }: PropsWithChildren<VideoControlsOverlayProps>) => {
   const {
     isSeekBarFocused,
@@ -188,6 +193,9 @@ const VideoControlsOverlay = ({
                     style={{ width: "88%" }}
                   >
                     {title}
+                  </Typography>
+                  <Typography fontSize="sizeXS" color={colors.white80} fontWeight="Medium">
+                    {`${publishedAt ? format(new Date(publishedAt), "dd MMMM yyyy") : null} • ${t("views", { count: viewsCount })}`}
                   </Typography>
                   <View accessible={false} style={{ alignSelf: "flex-start" }}>
                     <TextLink text={t("details")} onPress={handleOpenDetails} isMobile={isMobile} />

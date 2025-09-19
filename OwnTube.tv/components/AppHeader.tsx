@@ -6,6 +6,10 @@ import { Button } from "./shared";
 import { InstanceInfo } from "./InstanceInfo";
 import { DrawerHeaderProps } from "@react-navigation/drawer";
 import { useShareButton } from "../hooks";
+import { useFullScreenModalContext } from "../contexts";
+import { SearchPopup } from "./SearchPopup";
+import { usePathname } from "expo-router";
+import { ROUTES } from "../types";
 
 interface AppHeaderProps extends DrawerHeaderProps {
   backend?: string;
@@ -13,8 +17,16 @@ interface AppHeaderProps extends DrawerHeaderProps {
 
 export const AppHeader = ({ backend, ...props }: AppHeaderProps) => {
   const { colors } = useTheme();
+  const pathname = usePathname();
   const { top } = useSafeAreaInsets();
   const { isRouteShareable, handleToggleShareModal } = useShareButton();
+  const { toggleModal, setContent } = useFullScreenModalContext();
+  const disableSearch = pathname === `/${ROUTES.SEARCH}`;
+
+  const handleSearchPress = () => {
+    toggleModal(true);
+    setContent(<SearchPopup backend={backend} handleClose={() => toggleModal(false)} />);
+  };
 
   return (
     <View
@@ -30,9 +42,12 @@ export const AppHeader = ({ backend, ...props }: AppHeaderProps) => {
         <Button style={styles.menuBtn} onPress={props.navigation.toggleDrawer} icon="Menu" contrast="low" />
         <InstanceInfo backend={backend} />
       </View>
-      {isRouteShareable && (
-        <Button style={styles.menuBtn} onPress={() => handleToggleShareModal({})} icon="Share" contrast="low" />
-      )}
+      <View style={{ flexDirection: "row", gap: spacing.sm }}>
+        {!disableSearch && <Button style={styles.menuBtn} onPress={handleSearchPress} icon="Search" contrast="low" />}
+        {isRouteShareable && (
+          <Button style={styles.menuBtn} onPress={() => handleToggleShareModal({})} icon="Share" contrast="low" />
+        )}
+      </View>
     </View>
   );
 };

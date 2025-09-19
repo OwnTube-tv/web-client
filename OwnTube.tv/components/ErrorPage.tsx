@@ -7,7 +7,7 @@ import { spacing } from "../theme";
 
 interface ErrorPageProps {
   title: string;
-  description: string;
+  description?: string;
   logo: JSX.Element;
   button: { action: () => void; text: string };
 }

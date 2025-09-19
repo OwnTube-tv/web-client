@@ -122,7 +122,7 @@ export const VideoGrid = ({
         )}
         {isShowMoreBtnVisible && (
           <View style={styles.showMoreContainer}>
-            <Button contrast="low" text="Show more" onPress={handleShowMorePress} />
+            <Button contrast="low" text={t("showMore")} onPress={handleShowMorePress} />
             <View>{isLoadingMore && <Loader />}</View>
           </View>
         )}

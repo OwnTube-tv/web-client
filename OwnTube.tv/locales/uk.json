@@ -182,5 +182,20 @@
   "sessionActive": "активна",
   "settingsPageOptOutOfDiagnostics": "Відключити обмін діагностикою",
   "settingsPageUiLanguageHeading": "Мова інтерфейсу",
-  "settingsPageAppDiagnosticsHeading": "Діагностика додатку"
+  "settingsPageAppDiagnosticsHeading": "Діагностика додатку",
+  "nResultsFor": "{{resultsCount}} результатів для запиту",
+  "sort": "Сортувати",
+  "loading": "Завантаження",
+  "noResults": "Немає",
+  "failedToLoadVideoSection.search": "Не вдалося завантажити результати пошуку.",
+  "reload": "Перезавантажити",
+  "noResultsFound": "Результатів не знайдено",
+  "searchForVideos": "Пошук відео",
+  "sortBy": "Сортувати за",
+  "relevance": "Актуальність",
+  "publishDate": "Дата публікації",
+  "viewsSortKey": "Перегляди",
+  "sortOrder": "Порядок сортування",
+  "publishDateNewest": "Дата публікації (спочатку новіші)",
+  "publishDateOldest": "Дата публікації (спочатку старіші)"
 }

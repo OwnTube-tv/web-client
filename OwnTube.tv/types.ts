@@ -31,6 +31,7 @@ export enum ROUTES {
   PRIVACY = "privacy",
   SIGNIN = "signin",
   OTP = "otp",
+  SEARCH = "search",
 }
 
 export interface Category {

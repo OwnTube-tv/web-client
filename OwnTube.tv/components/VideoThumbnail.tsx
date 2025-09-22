@@ -7,6 +7,8 @@ import { borderRadius, spacing } from "../theme";
 import { Typography } from "./Typography";
 import { getHumanReadableDuration } from "../utils";
 import { useTranslation } from "react-i18next";
+import { formatDistanceToNow } from "date-fns";
+import { LANGUAGE_OPTIONS } from "../i18n";
 
 interface VideoThumbnailProps {
   video: GetVideosVideo & Partial<ViewHistoryEntry>;
@@ -21,12 +23,16 @@ const fallback = require("../assets/thumbnailFallback.png");
 export const VideoThumbnail: FC<VideoThumbnailProps> = ({ video, backend, timestamp, imageDimensions }) => {
   const { colors } = useTheme();
   const [isError, setIsError] = useState(false);
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const isVideoCurrentlyLive = video.state?.id === 1 && video.isLive;
+  const isVideoScheduledLive = Array.isArray(video.liveSchedules) && video.liveSchedules.length > 0;
+  console.log(isVideoCurrentlyLive, isVideoScheduledLive);
 
   const percentageWatched = timestamp ? (timestamp / video.duration) * 100 : 0;
 
   const imageSource = video.previewPath ? { uri: video.previewPath } : fallback;
+
+  const scheduledLiveDate = isVideoScheduledLive ? video?.liveSchedules?.[0]?.startAt : null;
 
   if (!backend || !imageDimensions.width || !imageDimensions.height) {
     return null;
@@ -46,7 +52,7 @@ export const VideoThumbnail: FC<VideoThumbnailProps> = ({ video, backend, timest
           <View style={{ backgroundColor: colors.theme500, width: `${percentageWatched}%`, height: spacing.xs }} />
         </View>
       )}
-      {video.isLive ? (
+      {video.isLive || isVideoScheduledLive ? (
         <View
           style={[
             styles.durationContainer,
@@ -68,7 +74,18 @@ export const VideoThumbnail: FC<VideoThumbnailProps> = ({ video, backend, timest
             fontWeight="SemiBold"
             style={{ textTransform: "uppercase" }}
           >
-            {isVideoCurrentlyLive ? t("live") : t("offline")}
+            {isVideoCurrentlyLive
+              ? t("live")
+              : isVideoScheduledLive
+                ? t("liveScheduledFor", {
+                    date: scheduledLiveDate
+                      ? formatDistanceToNow(scheduledLiveDate, {
+                          addSuffix: true,
+                          locale: LANGUAGE_OPTIONS.find(({ value }) => value === i18n.language)?.dateLocale,
+                        })
+                      : null,
+                  })
+                : t("offline")}
           </Typography>
         </View>
       ) : (

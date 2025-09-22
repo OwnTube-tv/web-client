@@ -22,6 +22,8 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useCustomDiagnosticsEvents } from "../../diagnostics/useCustomDiagnosticEvents";
 import { CustomPostHogEvents, CustomPostHogExceptions } from "../../diagnostics/constants";
 import { getHumanReadableDuration } from "../../utils";
+import { formatDistanceToNow } from "date-fns";
+import { LANGUAGE_OPTIONS } from "../../i18n";
 
 export interface PlaybackStatus {
   didJustFinish: boolean;
@@ -102,6 +104,7 @@ const VideoView = ({
       viewEvent,
     });
   };
+  const isScheduledLive = Array.isArray(videoData?.liveSchedules) && videoData?.liveSchedules?.length > 0;
 
   const { colors } = useTheme();
 
@@ -633,7 +636,7 @@ const VideoView = ({
   return (
     <View style={styles.container}>
       <VideoControlsOverlay
-        isLoading={isLoadingData}
+        isLoading={isLoadingData && !isScheduledLive}
         isWaitingForLive={isWaitingForLive}
         isLiveVideo={videoData?.isLive}
         videoLinkProps={{ backend, url: viewUrl }}
@@ -705,6 +708,23 @@ const VideoView = ({
               >
                 {t("liveStreamOffline")}
               </Typography>
+              {isScheduledLive && (
+                <Typography
+                  fontWeight="SemiBold"
+                  color={colors.theme50}
+                  fontSize="sizeXL"
+                  style={{ textAlign: "center" }}
+                >
+                  {t("liveScheduledFor", {
+                    date: videoData?.liveSchedules?.[0]?.startAt
+                      ? formatDistanceToNow(videoData?.liveSchedules?.[0]?.startAt, {
+                          addSuffix: true,
+                          locale: LANGUAGE_OPTIONS.find(({ value }) => value === i18n.language)?.dateLocale,
+                        })
+                      : "",
+                  })}
+                </Typography>
+              )}
             </View>
           </View>
         ) : (

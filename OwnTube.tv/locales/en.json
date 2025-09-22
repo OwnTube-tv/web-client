@@ -199,5 +199,6 @@
   "viewsSortKey": "Views",
   "sortOrder": "Sort order",
   "publishDateNewest": "Published date (newest first)",
-  "publishDateOldest": "Published date (oldest first)"
+  "publishDateOldest": "Published date (oldest first)",
+  "liveScheduledFor": "Scheduled live {{date}}"
 }

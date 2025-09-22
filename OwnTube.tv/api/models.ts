@@ -32,6 +32,7 @@ export type GetVideosVideo = Pick<
   | "isLive"
   | "viewers"
   | "state"
+  | "liveSchedules"
 > & {
   previewPath: string;
   category: { id: number | null; label: string };

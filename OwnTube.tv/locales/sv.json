@@ -198,5 +198,6 @@
   "viewsSortKey": "Visningar",
   "sortOrder": "Sortering",
   "publishDateNewest": "Publiceringsdatum (nyast först)",
-  "publishDateOldest": "Publiceringsdatum (äldst först)"
+  "publishDateOldest": "Publiceringsdatum (äldst först)",
+  "liveScheduledFor": "Schemalagd live i {{date}}"
 }

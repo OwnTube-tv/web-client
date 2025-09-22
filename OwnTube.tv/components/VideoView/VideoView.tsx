@@ -35,6 +35,8 @@ import { useCustomDiagnosticsEvents } from "../../diagnostics/useCustomDiagnosti
 import { CustomPostHogEvents, CustomPostHogExceptions } from "../../diagnostics/constants";
 import { getHumanReadableDuration } from "../../utils";
 import { useWatchedDuration } from "../../hooks";
+import { LANGUAGE_OPTIONS } from "../../i18n";
+import { formatDistanceToNow } from "date-fns/formatDistanceToNow";
 
 export interface VideoViewProps {
   uri?: string;
@@ -95,6 +97,7 @@ const VideoView = ({
   const isMobile = Device.deviceType !== DeviceType.DESKTOP;
   const { backend } = useLocalSearchParams<RootStackParams[ROUTES.VIDEO]>();
   const { colors } = useTheme();
+  const isScheduledLive = Array.isArray(videoData?.liveSchedules) && videoData?.liveSchedules?.length > 0;
   const { t } = useTranslation();
   const { top } = useSafeAreaInsets();
   const { captureDiagnosticsEvent, captureError } = useCustomDiagnosticsEvents();
@@ -411,7 +414,7 @@ const VideoView = ({
   return (
     <View collapsable={false} style={styles.container}>
       <VideoControlsOverlay
-        isLoading={isLoadingData}
+        isLoading={isLoadingData && !isScheduledLive}
         isLiveVideo={videoData?.isLive}
         videoLinkProps={{ backend, url: viewUrl }}
         handlePlayPause={handlePlayPause}
@@ -480,6 +483,23 @@ const VideoView = ({
               >
                 {t("liveStreamOffline")}
               </Typography>
+              {isScheduledLive && (
+                <Typography
+                  fontWeight="SemiBold"
+                  color={colors.theme50}
+                  fontSize="sizeXL"
+                  style={{ textAlign: "center" }}
+                >
+                  {t("liveScheduledFor", {
+                    date: videoData?.liveSchedules?.[0]?.startAt
+                      ? formatDistanceToNow(videoData?.liveSchedules?.[0]?.startAt, {
+                          addSuffix: true,
+                          locale: LANGUAGE_OPTIONS.find(({ value }) => value === i18n.language)?.dateLocale,
+                        })
+                      : "",
+                  })}
+                </Typography>
+              )}
             </View>
           </View>
         ) : (

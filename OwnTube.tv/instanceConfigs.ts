@@ -11,6 +11,7 @@ const customizationsSchema = z
     homeHideCategoriesOverview: z.boolean(),
     homeHidePlaylistsOverview: z.boolean(),
     homeUseHorizontalListsForMobilePortrait: z.boolean(),
+    homeDisplayScheduledLivesThreshold: z.string().optional().nullable(),
     pageDefaultTheme: colorSchemeNameSchema,
     menuHideHistoryButton: z.boolean(),
     menuHideChannelsButton: z.boolean(),

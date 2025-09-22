@@ -26,7 +26,6 @@ export const VideoThumbnail: FC<VideoThumbnailProps> = ({ video, backend, timest
   const { t, i18n } = useTranslation();
   const isVideoCurrentlyLive = video.state?.id === 1 && video.isLive;
   const isVideoScheduledLive = Array.isArray(video.liveSchedules) && video.liveSchedules.length > 0;
-  console.log(isVideoCurrentlyLive, isVideoScheduledLive);
 
   const percentageWatched = timestamp ? (timestamp / video.duration) * 100 : 0;
 

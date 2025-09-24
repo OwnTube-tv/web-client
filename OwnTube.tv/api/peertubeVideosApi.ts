@@ -128,6 +128,7 @@ export class PeertubeVideosApi extends AxiosInstanceBasedApi {
           isLive: video.isLive,
           viewers: video.viewers,
           state: video.state,
+          thumbnailPath: `https://${baseURL}${video.thumbnailPath}`,
         };
       }),
       total,

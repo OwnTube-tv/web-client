@@ -74,6 +74,7 @@ export class PlaylistsApi extends AxiosInstanceBasedApi {
               views: video.views,
               isLive: video.isLive,
               viewers: video.viewers,
+              thumbnailPath: `https://${baseURL}${video.thumbnailPath}`,
             };
           }),
         total: response.data.total,

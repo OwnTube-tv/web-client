@@ -34,9 +34,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useCustomDiagnosticsEvents } from "../../diagnostics/useCustomDiagnosticEvents";
 import { CustomPostHogEvents, CustomPostHogExceptions } from "../../diagnostics/constants";
 import { getHumanReadableDuration } from "../../utils";
-import { useWatchedDuration } from "../../hooks";
-import { LANGUAGE_OPTIONS } from "../../i18n";
-import { formatDistanceToNow } from "date-fns/formatDistanceToNow";
+import { useTimeLeftUpdates, useWatchedDuration } from "../../hooks";
 
 export interface VideoViewProps {
   uri?: string;
@@ -113,6 +111,8 @@ const VideoView = ({
       viewEvent,
     });
   };
+  const scheduledLiveDate = isScheduledLive ? videoData?.liveSchedules?.[0]?.startAt : null;
+  const formattedTimeLeft = useTimeLeftUpdates(scheduledLiveDate);
 
   const googleCastClient = Platform.isTV
     ? null
@@ -491,12 +491,7 @@ const VideoView = ({
                   style={{ textAlign: "center" }}
                 >
                   {t("liveScheduledFor", {
-                    date: videoData?.liveSchedules?.[0]?.startAt
-                      ? formatDistanceToNow(videoData?.liveSchedules?.[0]?.startAt, {
-                          addSuffix: true,
-                          locale: LANGUAGE_OPTIONS.find(({ value }) => value === i18n.language)?.dateLocale,
-                        })
-                      : "",
+                    date: videoData?.liveSchedules?.[0]?.startAt ? formattedTimeLeft : "",
                   })}
                 </Typography>
               )}

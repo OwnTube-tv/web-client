@@ -14,7 +14,7 @@ import { ROUTES, STORAGE } from "../../types";
 import { usePostVideoViewMutation } from "../../api";
 import { IcoMoonIcon } from "../IcoMoonIcon";
 import { useTheme } from "@react-navigation/native";
-import { useChromeCast, useViewHistory, useWatchedDuration } from "../../hooks";
+import { useChromeCast, useTimeLeftUpdates, useViewHistory, useWatchedDuration } from "../../hooks";
 import { useTranslation } from "react-i18next";
 import { useAppConfigContext } from "../../contexts";
 import { Typography } from "..";
@@ -22,8 +22,6 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useCustomDiagnosticsEvents } from "../../diagnostics/useCustomDiagnosticEvents";
 import { CustomPostHogEvents, CustomPostHogExceptions } from "../../diagnostics/constants";
 import { getHumanReadableDuration } from "../../utils";
-import { formatDistanceToNow } from "date-fns";
-import { LANGUAGE_OPTIONS } from "../../i18n";
 
 export interface PlaybackStatus {
   didJustFinish: boolean;
@@ -105,6 +103,8 @@ const VideoView = ({
     });
   };
   const isScheduledLive = Array.isArray(videoData?.liveSchedules) && videoData?.liveSchedules?.length > 0;
+  const scheduledLiveDate = isScheduledLive ? videoData?.liveSchedules?.[0]?.startAt : null;
+  const formattedTimeLeft = useTimeLeftUpdates(scheduledLiveDate);
 
   const { colors } = useTheme();
 
@@ -716,12 +716,7 @@ const VideoView = ({
                   style={{ textAlign: "center" }}
                 >
                   {t("liveScheduledFor", {
-                    date: videoData?.liveSchedules?.[0]?.startAt
-                      ? formatDistanceToNow(videoData?.liveSchedules?.[0]?.startAt, {
-                          addSuffix: true,
-                          locale: LANGUAGE_OPTIONS.find(({ value }) => value === i18n.language)?.dateLocale,
-                        })
-                      : "",
+                    date: videoData?.liveSchedules?.[0]?.startAt ? formattedTimeLeft : "",
                   })}
                 </Typography>
               )}

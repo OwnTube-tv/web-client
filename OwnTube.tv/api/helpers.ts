@@ -59,5 +59,5 @@ export const filterScheduledLivestreams = (videosList: Array<Video>, scheduledLi
     });
   }
 
-  return [];
+  return videosList;
 };

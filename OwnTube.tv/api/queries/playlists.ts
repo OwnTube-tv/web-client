@@ -6,6 +6,8 @@ import { PlaylistsApiImpl } from "../playlistsApi";
 import { combineCollectionQueryResults, retry } from "../helpers";
 import { GetVideosVideo, OwnTubeError } from "../models";
 import { VideoPlaylist } from "@peertube/peertube-types";
+import { useAppConfigContext } from "../../contexts";
+import semver from "semver";
 
 export const useGetPlaylistsQuery = ({
   enabled = true,
@@ -15,11 +17,16 @@ export const useGetPlaylistsQuery = ({
   hiddenPlaylists?: string[];
 }) => {
   const { backend } = useLocalSearchParams<RootStackParams["index"]>();
+  const { currentInstanceServerConfig } = useAppConfigContext();
+  const serverVersion = semver.coerce(currentInstanceServerConfig?.serverVersion)?.version;
 
   return useQuery({
     queryKey: [QUERY_KEYS.playlists, backend],
     queryFn: async () => {
-      const data = await PlaylistsApiImpl.getPlaylists(backend!);
+      const data = await PlaylistsApiImpl.getPlaylists(
+        backend!,
+        serverVersion ? semver.gte(serverVersion, "7.3.0") : false,
+      );
       return { ...data, data: data.data.filter(({ isLocal, videosLength }) => isLocal && videosLength > 0) };
     },
     enabled: !!backend && enabled,

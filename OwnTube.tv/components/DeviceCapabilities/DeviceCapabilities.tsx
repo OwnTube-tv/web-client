@@ -11,6 +11,7 @@ import build_info from "../../build-info.json";
 import { useAuthSessionStore } from "../../store";
 import { format } from "date-fns";
 import { useMemo } from "react";
+import { useGlobalSearchParams } from "expo-router";
 
 const CapabilityKeyValuePair = ({ label, value }: { label: string; value: string }) => {
   const { colors } = useTheme();
@@ -30,6 +31,8 @@ const CapabilityKeyValuePair = ({ label, value }: { label: string; value: string
 const DeviceCapabilities = () => {
   const { deviceCapabilities } = useAppConfigContext();
   const { session } = useAuthSessionStore();
+  const { backend } = useGlobalSearchParams<{ backend: string }>();
+  const { currentInstanceServerConfig } = useAppConfigContext();
 
   const { colors } = useTheme();
   const { t } = useTranslation();
@@ -57,7 +60,15 @@ const DeviceCapabilities = () => {
       : build_info;
 
     await Clipboard.setStringAsync(
-      JSON.stringify({ buildInfo, ...deviceCapabilities, ...(authInfo ? { authInfo } : {}) }),
+      JSON.stringify({
+        buildInfo,
+        ...deviceCapabilities,
+        ...(authInfo ? { authInfo } : {}),
+        backend: {
+          hostname: backend,
+          version: currentInstanceServerConfig?.serverVersion,
+        },
+      }),
     );
   };
 

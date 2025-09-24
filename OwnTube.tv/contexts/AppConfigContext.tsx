@@ -24,10 +24,11 @@ import { useGlobalSearchParams } from "expo-router";
 import { readFromAsyncStorage, writeToAsyncStorage } from "../utils";
 import { STORAGE } from "../types";
 import { useQueryClient } from "@tanstack/react-query";
-import { GLOBAL_QUERY_STALE_TIME } from "../api";
+import { GLOBAL_QUERY_STALE_TIME, useGetInstanceServerConfigQuery } from "../api";
 import { useInstanceConfigStore } from "../store";
 import { useCustomDiagnosticsEvents } from "../diagnostics/useCustomDiagnosticEvents";
 import { CustomPostHogEvents } from "../diagnostics/constants";
+import { ServerConfig } from "@peertube/peertube-types";
 
 interface IAppConfigContext {
   isDebugMode: boolean;
@@ -38,13 +39,13 @@ interface IAppConfigContext {
   sessionCCLocale: string;
   updateSessionCCLocale: (locale: string) => void;
   currentInstanceConfig?: InstanceConfig;
+  currentInstanceServerConfig?: ServerConfig;
 }
 
 const AppConfigContext = createContext<IAppConfigContext>({
   isDebugMode: false,
   setIsDebugMode: () => {},
   deviceCapabilities: {} as DeviceCapabilities,
-  sessionId: "",
   sessionCCLocale: "",
   updateSessionCCLocale: () => {},
 });
@@ -63,6 +64,10 @@ export const AppConfigContextProvider = ({ children }: PropsWithChildren) => {
   const queryClient = useQueryClient();
   const { setCurrentInstanceConfig, setInstanceConfigList } = useInstanceConfigStore();
   const { captureDiagnosticsEvent } = useCustomDiagnosticsEvents();
+  const { data: currentInstanceServerConfig } = useGetInstanceServerConfigQuery({
+    hostname: backend,
+    shouldValidate: false,
+  });
 
   useEffect(() => {
     setCurrentInstanceConfig(currentInstanceConfig);
@@ -129,6 +134,7 @@ export const AppConfigContextProvider = ({ children }: PropsWithChildren) => {
         sessionCCLocale,
         updateSessionCCLocale,
         currentInstanceConfig,
+        currentInstanceServerConfig,
       }}
     >
       {!featuredInstances?.length ? null : children}

@@ -67,7 +67,12 @@ export class ChannelsApi extends AxiosInstanceBasedApi {
   ): Promise<{ data: GetVideosVideo[]; total: number }> {
     try {
       const response = await this.instance.get(`video-channels/${channelHandle}/videos`, {
-        params: { ...commonQueryParams, ...queryParams, sort: "-originallyPublishedAt" },
+        params: {
+          ...commonQueryParams,
+          isLive: undefined,
+          sort: "-originallyPublishedAt",
+          ...queryParams,
+        },
         baseURL: `https://${baseURL}/api/v1`,
       });
 
@@ -84,6 +89,7 @@ export class ChannelsApi extends AxiosInstanceBasedApi {
             publishedAt: video.publishedAt,
             originallyPublishedAt: video.originallyPublishedAt,
             views: video.views,
+            liveSchedules: video.liveSchedules,
           };
         }),
         total: response.data.total,
@@ -100,13 +106,17 @@ export class ChannelsApi extends AxiosInstanceBasedApi {
    * @param [channelHandle] - Channel handle
    * @returns List of channel videos
    */
-  async getChannelPlaylists(baseURL: string, channelHandle: string): Promise<VideoPlaylist[]> {
+  async getChannelPlaylists(
+    baseURL: string,
+    channelHandle: string,
+    enableSortingByPosition: boolean,
+  ): Promise<VideoPlaylist[]> {
     try {
       const response = await this.instance.get<{ data: VideoPlaylist[]; total: number }>(
         `video-channels/${channelHandle}/video-playlists`,
         {
           baseURL: `https://${baseURL}/api/v1`,
-          params: { count: 100, sort: "-updatedAt" },
+          params: { count: 100, sort: enableSortingByPosition ? "videoChannelPosition" : undefined },
         },
       );
 

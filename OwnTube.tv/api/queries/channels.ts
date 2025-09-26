@@ -5,8 +5,9 @@ import { VideosCommonQuery } from "@peertube/peertube-types";
 import { useLocalSearchParams } from "expo-router";
 import { RootStackParams } from "../../app/_layout";
 import { GetVideosVideo, OwnTubeError } from "../models";
-
 import { QUERY_KEYS } from "../constants";
+import { useAppConfigContext } from "../../contexts";
+import semver from "semver";
 
 export const useGetChannelInfoQuery = (channelHandle?: string) => {
   const { backend } = useLocalSearchParams<RootStackParams["index"]>();
@@ -78,11 +79,17 @@ export const useInfiniteGetChannelVideosQuery = (
 
 export const useGetChannelPlaylistsQuery = (channelHandle?: string) => {
   const { backend } = useLocalSearchParams<RootStackParams["index"]>();
+  const { currentInstanceServerConfig } = useAppConfigContext();
+  const serverVersion = semver.coerce(currentInstanceServerConfig?.serverVersion)?.version;
 
   return useQuery({
     queryKey: [QUERY_KEYS.channelPlaylists, backend, channelHandle],
     queryFn: async () => {
-      return await ChannelsApiImpl.getChannelPlaylists(backend!, channelHandle!);
+      return await ChannelsApiImpl.getChannelPlaylists(
+        backend!,
+        channelHandle!,
+        serverVersion ? semver.gte(serverVersion, "7.3.0") : false,
+      );
     },
     enabled: !!backend && !!channelHandle,
     select: (data) => data.filter(({ isLocal, videosLength }) => isLocal && videosLength > 0),

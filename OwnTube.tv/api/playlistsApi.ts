@@ -19,10 +19,13 @@ export class PlaylistsApi extends AxiosInstanceBasedApi {
    * @param [baseURL] - Selected instance url
    * @returns List of playlists
    */
-  async getPlaylists(baseURL: string): Promise<{ data: VideoPlaylist[]; total: number }> {
+  async getPlaylists(
+    baseURL: string,
+    enableSortingByPosition: boolean,
+  ): Promise<{ data: VideoPlaylist[]; total: number }> {
     try {
       const response = await this.instance.get<{ data: VideoPlaylist[]; total: number }>("video-playlists", {
-        params: { count: 100, sort: "-updatedAt" },
+        params: { count: 100, sort: enableSortingByPosition ? "videoChannelPosition" : undefined },
         baseURL: `https://${baseURL}/api/v1`,
       });
 

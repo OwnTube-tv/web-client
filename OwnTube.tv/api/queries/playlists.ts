@@ -19,19 +19,37 @@ export const useGetPlaylistsQuery = ({
   const { backend } = useLocalSearchParams<RootStackParams["index"]>();
   const { currentInstanceServerConfig } = useAppConfigContext();
   const serverVersion = semver.coerce(currentInstanceServerConfig?.serverVersion)?.version;
+  const isVideoChannelPositionSortingSupported = serverVersion ? semver.gte(serverVersion, "7.3.0") : false;
 
   return useQuery({
     queryKey: [QUERY_KEYS.playlists, backend],
     queryFn: async () => {
-      const data = await PlaylistsApiImpl.getPlaylists(
-        backend!,
-        serverVersion ? semver.gte(serverVersion, "7.3.0") : false,
-      );
+      const data = await PlaylistsApiImpl.getPlaylists(backend!, isVideoChannelPositionSortingSupported);
+
       return { ...data, data: data.data.filter(({ isLocal, videosLength }) => isLocal && videosLength > 0) };
     },
     enabled: !!backend && enabled,
     select: (queryData) => {
-      return { ...queryData, data: queryData.data.filter(({ id }) => !hiddenPlaylists?.includes(String(id))) };
+      const filtered = queryData.data.filter(({ id }) => !hiddenPlaylists?.includes(String(id)));
+
+      // Group by channel, sort each group by videoChannelPosition (ascending), then flatten
+      const groups = new Map<string, VideoPlaylist[]>();
+      for (const pl of filtered) {
+        const channelId = String(pl.videoChannel?.id ?? "__unknown__");
+        const arr = groups.get(channelId) ?? [];
+        arr.push(pl);
+        groups.set(channelId, arr);
+      }
+
+      if (isVideoChannelPositionSortingSupported) {
+        for (const [, arr] of groups) {
+          arr.sort((a, b) => (a.videoChannelPosition ?? 0) - (b.videoChannelPosition ?? 0));
+        }
+      }
+
+      const data = Array.from(groups.values()).flat();
+
+      return { ...queryData, data };
     },
     retry,
   });

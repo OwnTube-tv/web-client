@@ -91,7 +91,7 @@ const RootStack = () => {
   const posthog = usePostHog();
 
   useEffect(() => {
-    posthog.screen(pathname, { routeParams: params });
+    posthog.screen(pathname.replace("/", ""), { routeParams: params });
   }, [pathname, params]);
 
   useAppStateDiagnostics();

@@ -6,7 +6,7 @@ import { useTranslation } from "react-i18next";
 export const useTimeLeftUpdates = (scheduledLiveDate: string | Date | null | undefined) => {
   const { i18n } = useTranslation();
   const formatDate = useCallback(
-    (date: string | Date) => {
+    (date?: string | Date | null) => {
       if (!date) {
         return "";
       }
@@ -22,10 +22,10 @@ export const useTimeLeftUpdates = (scheduledLiveDate: string | Date | null | und
   const [formattedTimeLeft, setFormattedTimeLeft] = useState<string | null>(null);
 
   useEffect(() => {
-    setFormattedTimeLeft(formatDate(scheduledLiveDate!));
+    setFormattedTimeLeft(formatDate(scheduledLiveDate));
 
     const interval = setInterval(() => {
-      return setFormattedTimeLeft(formatDate(scheduledLiveDate!));
+      setFormattedTimeLeft(formatDate(scheduledLiveDate));
     }, 60 * 1000);
 
     return () => clearInterval(interval);

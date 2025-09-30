@@ -1,7 +1,6 @@
 import { GetVideosVideo, OwnTubeError } from "./models";
 import { QUERY_KEYS } from "./constants";
 import { UseQueryResult } from "@tanstack/react-query";
-import ms from "ms";
 import { Video } from "@peertube/peertube-types";
 
 const jsonPaths: Record<keyof typeof QUERY_KEYS, string> = {
@@ -41,8 +40,10 @@ export const combineCollectionQueryResults = <T>(
   };
 };
 
-export const filterScheduledLivestreams = (videosList: Array<Video>, scheduledLiveThreshold?: string): Video[] => {
-  const thresholdMs = ms(scheduledLiveThreshold || "24h");
+const _24HoursInSeconds = 24 * 60 * 60;
+
+export const filterScheduledLivestreams = (videosList: Array<Video>, scheduledLiveThreshold?: number): Video[] => {
+  const thresholdMs = (scheduledLiveThreshold || _24HoursInSeconds) * 1000;
 
   if (!isNaN(thresholdMs) && thresholdMs > 0) {
     const nowMs = new Date().getTime();

@@ -678,6 +678,7 @@ const VideoView = ({
         hlsAutoQuality={hlsResolution}
         isDownloadAvailable={videoData?.downloadEnabled}
         viewsCount={videoData?.views}
+        viewersCount={videoData?.viewers}
         publishedAt={videoData?.publishedAt}
       >
         {isChromecastConnected && (

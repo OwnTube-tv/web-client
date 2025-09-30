@@ -194,7 +194,7 @@ export const useGetVideoFullInfoCollectionQuery = (
     combine: (result) => {
       const combinedList = result.filter(({ data }) => !!data).map(({ data }) => data || ({} as Video));
 
-      if (typeof scheduledLiveThreshold === "string" || scheduledLiveThreshold === undefined) {
+      if (typeof scheduledLiveThreshold === "number" || scheduledLiveThreshold === undefined) {
         return filterScheduledLivestreams(combinedList, scheduledLiveThreshold);
       }
 

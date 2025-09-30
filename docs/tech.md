@@ -99,7 +99,7 @@ The `customizations` object allows for fine-tuning of the instance's appearance 
 - `playlistsHidden`: An array of playlist IDs to hide from the Playlists page.
 - `playlistsShowHiddenButton`: Enables a button to show all playlists, including hidden ones.
 - `home*`: Various options to customize the home page, such as video counts and section visibility.
-- `homeDisplayScheduledLivesThreshold`: custom time threshold for displaying scheduled live videos, usage: if set to "9 days", live streams scheduled to start 10 days from now will be filtered out on the homepage (unless included in the "featured" list), if not set, a default threshold of 24 hours will be applied, if set to null, threshold validation is removed entirely. The syntax for threshold value can be found in [ms library](https://github.com/vercel/ms) docs.
+- `homeUpcomingScheduledLiveThreshold`: Cut-off for showing upcoming scheduled live streams (in seconds). Example usage: If set to 604800 (7 days), live streams scheduled to more than 7 days in the future will filtered out on the homepage (unless specified in the `homeFeaturedLives` list).
 - `menuExternalLinks`: External links to include in the sidebar
 
 To ensure the integrity and consistency of instance configurations, OwnTube.tv 📺 employs a validation mechanism using Zod, a TypeScript-first schema declaration and validation library.

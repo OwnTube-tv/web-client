@@ -1,4 +1,3 @@
-import ms from "ms";
 import { retry, getErrorTextKeys, combineCollectionQueryResults, filterScheduledLivestreams } from "../helpers";
 import { Video } from "@peertube/peertube-types";
 
@@ -103,20 +102,24 @@ describe("filterScheduledLivestreams", () => {
   });
 
   it("returns videos with schedules within threshold and those without schedules", () => {
-    const videos = [videoWithSchedule(ms("1h"), 1), videoWithSchedule(ms("25h"), 2), videoWithoutSchedule()];
-    const filtered = filterScheduledLivestreams(videos as Video[], "22h");
+    const videos = [
+      videoWithSchedule(60 * 60 * 1000, 1),
+      videoWithSchedule(25 * 60 * 60 * 1000, 2),
+      videoWithoutSchedule(),
+    ];
+    const filtered = filterScheduledLivestreams(videos as Video[], 22 * 60 * 60);
     expect(filtered.map((video) => video.id)).toEqual([1, 999]);
   });
 
   it("returns videos within default 24h if threshold is undefined", () => {
-    const videos = [videoWithSchedule(ms("1h"), 1), videoWithSchedule(ms("25h"), 2)];
+    const videos = [videoWithSchedule(60 * 60 * 1000, 1), videoWithSchedule(25 * 60 * 60 * 1000, 2)];
     const filtered = filterScheduledLivestreams(videos as Video[]);
-    expect(filtered).toEqual([videoWithSchedule(ms("1h"), 1)]);
+    expect(filtered).toEqual([videoWithSchedule(60 * 60 * 1000, 1)]);
   });
 
   it("returns videos with no liveSchedules", () => {
     const videos = [videoWithoutSchedule()];
-    const filtered = filterScheduledLivestreams(videos as any, "24h");
+    const filtered = filterScheduledLivestreams(videos as any);
     expect(filtered).toEqual([videoWithoutSchedule()]);
   });
 });

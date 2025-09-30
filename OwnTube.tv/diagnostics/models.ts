@@ -2,7 +2,7 @@ import { CustomPostHogEvents } from "./constants";
 
 export type CustomPostHogEventParams = {
   [CustomPostHogEvents.Scrubbing]: {
-    videoId: string;
+    videoUuid: string;
     currentTime: string;
     targetTime: string;
     targetPercentage: number;
@@ -53,13 +53,15 @@ export type CustomPostHogEventParams = {
     droppedFramesPercent: number;
   };
   [CustomPostHogEvents.VideoPlayback]: {
-    videoId: string;
-    currentTime: string;
+    videoUuid: string;
+    currentTime: number;
     isFullscreen: boolean;
-    externalPlaybackState?: "airplay" | "chromecast";
+    externalPlaybackState?: "airPlay" | "chromecast";
     isMuted: boolean;
     captionsEnabled: boolean;
     captionsLanguage?: string;
     viewEvent: "watch" | "seek";
   };
+  [CustomPostHogEvents.VideoView]: { videoUuid: string; backend?: string };
+  [CustomPostHogEvents.VideoPercentageComplete]: { videoUuid: string; percentageWatched: string };
 };

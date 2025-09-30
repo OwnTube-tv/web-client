@@ -98,17 +98,20 @@ const VideoView = ({
   const { t } = useTranslation();
   const { top } = useSafeAreaInsets();
   const { captureDiagnosticsEvent, captureError } = useCustomDiagnosticsEvents();
-  const { handleTimeUpdate } = useWatchedDuration(duration);
+  const { handleTimeUpdate } = useWatchedDuration(duration, videoData?.uuid);
   const capturePlaybackEvent = (viewEvent: "watch" | "seek") => {
-    captureDiagnosticsEvent(CustomPostHogEvents.VideoPlayback, {
-      videoId: videoData?.uuid,
-      currentTime,
-      isFullscreen,
-      externalPlaybackState: castState,
-      captionsEnabled: isCCShown,
-      captionsLanguage: selectedCCLang,
-      viewEvent,
-    });
+    if (videoData?.uuid) {
+      captureDiagnosticsEvent(CustomPostHogEvents.VideoPlayback, {
+        videoUuid: videoData.uuid,
+        currentTime,
+        isFullscreen,
+        externalPlaybackState: castState,
+        captionsEnabled: isCCShown,
+        captionsLanguage: selectedCCLang,
+        viewEvent,
+        isMuted: muted,
+      });
+    }
   };
 
   const googleCastClient = Platform.isTV
@@ -129,12 +132,14 @@ const VideoView = ({
 
   const handleRW = (seconds: number) => {
     const updatedTime = currentTime - seconds;
-    captureDiagnosticsEvent(CustomPostHogEvents.Scrubbing, {
-      videoId: videoData?.uuid,
-      currentTime: getHumanReadableDuration((currentTime || 0) * 1000),
-      targetTime: getHumanReadableDuration((updatedTime || 0) * 1000),
-      targetPercentage: Math.trunc((updatedTime / duration) * 100),
-    });
+    if (videoData?.uuid) {
+      captureDiagnosticsEvent(CustomPostHogEvents.Scrubbing, {
+        videoUuid: videoData.uuid,
+        currentTime: getHumanReadableDuration((currentTime || 0) * 1000),
+        targetTime: getHumanReadableDuration((updatedTime || 0) * 1000),
+        targetPercentage: Math.trunc((updatedTime / duration) * 100),
+      });
+    }
     videoRef.current?.seek(updatedTime);
     googleCastClient?.seek({ position: currentTime - seconds, resumeState: isPlaying ? "play" : "pause" });
     postVideoView({ videoId: videoData?.uuid, currentTime: updatedTime, viewEvent: "seek" });
@@ -143,12 +148,14 @@ const VideoView = ({
 
   const handleFF = (seconds: number) => {
     const updatedTime = currentTime + seconds;
-    captureDiagnosticsEvent(CustomPostHogEvents.Scrubbing, {
-      videoId: videoData?.uuid,
-      currentTime: getHumanReadableDuration((currentTime || 0) * 1000),
-      targetTime: getHumanReadableDuration((updatedTime || 0) * 1000),
-      targetPercentage: Math.trunc((updatedTime / duration) * 100),
-    });
+    if (videoData?.uuid) {
+      captureDiagnosticsEvent(CustomPostHogEvents.Scrubbing, {
+        videoUuid: videoData.uuid,
+        currentTime: getHumanReadableDuration((currentTime || 0) * 1000),
+        targetTime: getHumanReadableDuration((updatedTime || 0) * 1000),
+        targetPercentage: Math.trunc((updatedTime / duration) * 100),
+      });
+    }
     videoRef.current?.seek(updatedTime);
     googleCastClient?.seek({ position: currentTime + seconds, resumeState: isPlaying ? "play" : "pause" });
     postVideoView({ videoId: videoData?.uuid, currentTime: updatedTime, viewEvent: "seek" });
@@ -168,12 +175,14 @@ const VideoView = ({
   };
 
   const handleJumpTo = async (position: number) => {
-    captureDiagnosticsEvent(CustomPostHogEvents.Scrubbing, {
-      videoId: videoData?.uuid,
-      currentTime: getHumanReadableDuration((currentTime || 0) * 1000),
-      targetTime: getHumanReadableDuration((position || 0) * 1000),
-      targetPercentage: Math.trunc((position / duration) * 100),
-    });
+    if (videoData?.uuid) {
+      captureDiagnosticsEvent(CustomPostHogEvents.Scrubbing, {
+        videoUuid: videoData?.uuid,
+        currentTime: getHumanReadableDuration((currentTime || 0) * 1000),
+        targetTime: getHumanReadableDuration((position || 0) * 1000),
+        targetPercentage: Math.trunc((position / duration) * 100),
+      });
+    }
     videoRef.current?.seek(position);
     googleCastClient?.seek({ position, resumeState: isPlaying ? "play" : "pause" });
     postVideoView({ videoId: videoData?.uuid, currentTime: position, viewEvent: "seek" });

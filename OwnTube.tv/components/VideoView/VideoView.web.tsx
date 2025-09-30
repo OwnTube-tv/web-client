@@ -90,17 +90,20 @@ const VideoView = ({
   const { top } = useSafeAreaInsets();
   const { getViewHistoryEntryByUuid } = useViewHistory();
   const { captureDiagnosticsEvent, captureError } = useCustomDiagnosticsEvents();
-  const { handleTimeUpdate } = useWatchedDuration(playbackStatus.duration);
+  const { handleTimeUpdate } = useWatchedDuration(playbackStatus.duration, videoData?.uuid);
   const capturePlaybackEvent = (viewEvent: "watch" | "seek") => {
-    captureDiagnosticsEvent(CustomPostHogEvents.VideoPlayback, {
-      videoId: videoData?.uuid,
-      currentTime: playbackStatus.position,
-      isFullscreen,
-      externalPlaybackState: isChromecastConnected ? "chromecast" : undefined,
-      captionsEnabled: isCCShown,
-      captionsLanguage: selectedCCLang,
-      viewEvent,
-    });
+    if (videoData?.uuid) {
+      captureDiagnosticsEvent(CustomPostHogEvents.VideoPlayback, {
+        videoUuid: videoData?.uuid,
+        currentTime: playbackStatus.position,
+        isFullscreen,
+        externalPlaybackState: isChromecastConnected ? "chromecast" : undefined,
+        captionsEnabled: isCCShown,
+        captionsLanguage: selectedCCLang,
+        viewEvent,
+        isMuted: playbackStatus.isMuted,
+      });
+    }
   };
 
   const { colors } = useTheme();
@@ -153,12 +156,14 @@ const VideoView = ({
     playerRef.current?.currentTime(updatedTime);
     postVideoView({ videoId: videoData?.uuid, currentTime: updatedTime, viewEvent: "seek" });
     handleChromeCastSeek(playbackStatus.position - seconds);
-    captureDiagnosticsEvent(CustomPostHogEvents.Scrubbing, {
-      videoId: videoData?.uuid,
-      currentTime: getHumanReadableDuration(currentTime * 1000),
-      targetTime: getHumanReadableDuration(updatedTime * 1000),
-      targetPercentage: Math.trunc((updatedTime / playbackStatus.duration) * 100),
-    });
+    if (videoData?.uuid) {
+      captureDiagnosticsEvent(CustomPostHogEvents.Scrubbing, {
+        videoUuid: videoData.uuid,
+        currentTime: getHumanReadableDuration(currentTime * 1000),
+        targetTime: getHumanReadableDuration(updatedTime * 1000),
+        targetPercentage: Math.trunc((updatedTime / playbackStatus.duration) * 100),
+      });
+    }
     capturePlaybackEvent("seek");
   };
 
@@ -168,12 +173,14 @@ const VideoView = ({
     handleChromeCastSeek(updatedTime);
     playerRef.current?.currentTime(updatedTime);
     postVideoView({ videoId: videoData?.uuid, currentTime: updatedTime, viewEvent: "seek" });
-    captureDiagnosticsEvent(CustomPostHogEvents.Scrubbing, {
-      videoId: videoData?.uuid,
-      currentTime: getHumanReadableDuration(currentTime * 1000),
-      targetTime: getHumanReadableDuration(updatedTime * 1000),
-      targetPercentage: Math.trunc((updatedTime / playbackStatus.duration) * 100),
-    });
+    if (videoData?.uuid) {
+      captureDiagnosticsEvent(CustomPostHogEvents.Scrubbing, {
+        videoUuid: videoData.uuid,
+        currentTime: getHumanReadableDuration(currentTime * 1000),
+        targetTime: getHumanReadableDuration(updatedTime * 1000),
+        targetPercentage: Math.trunc((updatedTime / playbackStatus.duration) * 100),
+      });
+    }
     capturePlaybackEvent("seek");
   };
 
@@ -199,12 +206,14 @@ const VideoView = ({
     const currentTime = playerRef.current?.currentTime() || 0;
     playerRef.current?.tech().setCurrentTime(position);
     postVideoView({ videoId: videoData?.uuid, currentTime: position, viewEvent: "seek" });
-    captureDiagnosticsEvent(CustomPostHogEvents.Scrubbing, {
-      videoId: videoData?.uuid,
-      currentTime: getHumanReadableDuration(currentTime * 1000),
-      targetTime: getHumanReadableDuration(position * 1000),
-      targetPercentage: Math.trunc((position / playbackStatus.duration) * 100),
-    });
+    if (videoData?.uuid) {
+      captureDiagnosticsEvent(CustomPostHogEvents.Scrubbing, {
+        videoUuid: videoData.uuid,
+        currentTime: getHumanReadableDuration(currentTime * 1000),
+        targetTime: getHumanReadableDuration(position * 1000),
+        targetPercentage: Math.trunc((position / playbackStatus.duration) * 100),
+      });
+    }
     capturePlaybackEvent("seek");
   };
 

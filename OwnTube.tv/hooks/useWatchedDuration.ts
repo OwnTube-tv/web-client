@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { useCustomDiagnosticsEvents } from "../diagnostics/useCustomDiagnosticEvents";
 import { CustomPostHogEvents } from "../diagnostics/constants";
 
-export const useWatchedDuration = (totalDuration?: number) => {
+export const useWatchedDuration = (totalDuration?: number, uuid?: string) => {
   const watchedSecondsTimestamps = useRef(new Set());
   const [watchedDuration, setWatchedDuration] = useState(0);
   const { captureDiagnosticsEvent } = useCustomDiagnosticsEvents();
@@ -20,9 +20,12 @@ export const useWatchedDuration = (totalDuration?: number) => {
       quarters.forEach((q) => {
         const threshold = Math.floor(totalDuration * q);
         if (watchedDuration === threshold || (watchedDuration > threshold && watchedDuration - 1 < threshold)) {
-          captureDiagnosticsEvent(CustomPostHogEvents.VideoPercentageComplete, {
-            percentageWatched: `${(q * 100).toFixed(0)}%`,
-          });
+          if (uuid) {
+            captureDiagnosticsEvent(CustomPostHogEvents.VideoPercentageComplete, {
+              videoUuid: uuid,
+              percentageWatched: `${(q * 100).toFixed(0)}%`,
+            });
+          }
         }
       });
     }

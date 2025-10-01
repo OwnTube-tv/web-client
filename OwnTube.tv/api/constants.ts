@@ -9,6 +9,7 @@ export const commonQueryParams: VideosCommonQuery = {
   isLocal: true,
   isLive: false,
   skipCount: false,
+  includeScheduledLive: true,
 };
 
 export enum QUERY_KEYS {

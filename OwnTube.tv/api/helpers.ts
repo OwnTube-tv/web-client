@@ -1,6 +1,7 @@
 import { GetVideosVideo, OwnTubeError } from "./models";
 import { QUERY_KEYS } from "./constants";
 import { UseQueryResult } from "@tanstack/react-query";
+import { Video } from "@peertube/peertube-types";
 
 const jsonPaths: Record<keyof typeof QUERY_KEYS, string> = {
   videos: require("./../assets/testResponse-videos.json"),
@@ -37,4 +38,27 @@ export const combineCollectionQueryResults = <T>(
     isLoading: result.filter(({ isLoading }) => isLoading).length > 1,
     isError: result.length > 0 && result.every(({ data }) => data?.isError),
   };
+};
+
+const _24HoursInSeconds = 24 * 60 * 60;
+
+export const filterScheduledLivestreams = (videosList: Array<Video>, scheduledLiveThreshold?: number): Video[] => {
+  const thresholdMs = (scheduledLiveThreshold || _24HoursInSeconds) * 1000;
+
+  if (!isNaN(thresholdMs) && thresholdMs > 0) {
+    const nowMs = new Date().getTime();
+
+    return videosList.filter((video) => {
+      const scheduledStart = video?.liveSchedules?.[0]?.startAt;
+      if (!scheduledStart) return true;
+
+      const scheduledMs = new Date(scheduledStart).getTime();
+
+      const msLeft = scheduledMs - nowMs;
+
+      return msLeft <= thresholdMs;
+    });
+  }
+
+  return videosList;
 };

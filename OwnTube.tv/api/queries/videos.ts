@@ -5,7 +5,7 @@ import { GetVideosVideo, OwnTubeError } from "../models";
 import { ApiServiceImpl } from "../peertubeVideosApi";
 import { VideosCommonQuery, Video, VideoCaption } from "@peertube/peertube-types";
 import { SOURCES } from "../../types";
-import { getLocalData, retry } from "../helpers";
+import { filterScheduledLivestreams, getLocalData, retry } from "../helpers";
 
 import { QUERY_KEYS } from "../constants";
 import Constants from "expo-constants";
@@ -170,7 +170,11 @@ export const useGetVideoCaptionsCollectionQuery = (videoIds: string[] = [], quer
   });
 };
 
-export const useGetVideoFullInfoCollectionQuery = (videoIds: string[] = [], queryKey: string) => {
+export const useGetVideoFullInfoCollectionQuery = (
+  videoIds: string[] = [],
+  queryKey: string,
+  scheduledLiveThreshold?: string | null,
+) => {
   const { backend } = useLocalSearchParams<RootStackParams["index"]>();
 
   return useQueries({
@@ -188,7 +192,13 @@ export const useGetVideoFullInfoCollectionQuery = (videoIds: string[] = [], quer
       enabled: !!backend && videoIds.length > 0,
     })),
     combine: (result) => {
-      return result.filter(({ data }) => !!data).map(({ data }) => data || ({} as Video));
+      const combinedList = result.filter(({ data }) => !!data).map(({ data }) => data || ({} as Video));
+
+      if (typeof scheduledLiveThreshold === "number" || scheduledLiveThreshold === undefined) {
+        return filterScheduledLivestreams(combinedList, scheduledLiveThreshold);
+      }
+
+      return combinedList;
     },
   });
 };

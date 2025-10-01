@@ -72,6 +72,7 @@ export interface VideoControlsOverlayProps {
   isDownloadAvailable?: boolean;
   isLoading: boolean;
   viewsCount?: number;
+  viewersCount?: number;
   publishedAt?: string | Date;
 }
 
@@ -122,6 +123,7 @@ const VideoControlsOverlay = ({
   isLoading,
   viewsCount,
   publishedAt,
+  viewersCount,
 }: PropsWithChildren<VideoControlsOverlayProps>) => {
   const {
     isSeekBarFocused,
@@ -195,7 +197,7 @@ const VideoControlsOverlay = ({
                     {title}
                   </Typography>
                   <Typography fontSize="sizeXS" color={colors.white80} fontWeight="Medium">
-                    {`${publishedAt ? format(new Date(publishedAt), "dd MMMM yyyy") : null} • ${t("views", { count: viewsCount })}`}
+                    {`${publishedAt ? format(new Date(publishedAt), "dd MMMM yyyy") : null} • ${isLiveVideo ? t("viewers", { count: viewersCount }) : t("views", { count: viewsCount })}`}
                   </Typography>
                   <View accessible={false} style={{ alignSelf: "flex-start" }}>
                     <TextLink text={t("details")} onPress={handleOpenDetails} isMobile={isMobile} />
@@ -339,6 +341,7 @@ const VideoControlsOverlay = ({
                       )}
                     </View>
                     <View style={styles.functionButtonsContainer}>
+                      {isMobile && <PlayerButton onPress={toggleMute} icon={`Volume${isMute ? "-Off" : ""}`} />}
                       {castState !== "airPlay" && (
                         <GoogleCastButton
                           isChromeCastAvailable={isChromeCastAvailable}

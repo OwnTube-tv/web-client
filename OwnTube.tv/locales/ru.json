@@ -197,5 +197,6 @@
   "viewsSortKey": "Просмотры",
   "sortOrder": "Порядок сортировки",
   "publishDateNewest": "Дата публикации (сначала новые)",
-  "publishDateOldest": "Дата публикации (сначала старые)"
+  "publishDateOldest": "Дата публикации (сначала старые)",
+  "liveScheduledFor": "Трансляция начнется {{date}}"
 }

@@ -1,4 +1,4 @@
-import { View, Image, StyleSheet } from "react-native";
+import { View, StyleSheet } from "react-native";
 import { useTheme } from "@react-navigation/native";
 import { FC, useState } from "react";
 import { ViewHistoryEntry } from "../hooks";
@@ -7,6 +7,8 @@ import { borderRadius, spacing } from "../theme";
 import { Typography } from "./Typography";
 import { getHumanReadableDuration } from "../utils";
 import { useTranslation } from "react-i18next";
+import { useTimeLeftUpdates } from "../hooks";
+import { Image } from "expo-image";
 
 interface VideoThumbnailProps {
   video: GetVideosVideo & Partial<ViewHistoryEntry>;
@@ -23,10 +25,16 @@ export const VideoThumbnail: FC<VideoThumbnailProps> = ({ video, backend, timest
   const [isError, setIsError] = useState(false);
   const { t } = useTranslation();
   const isVideoCurrentlyLive = video.state?.id === 1 && video.isLive;
+  const isVideoScheduledLive = Array.isArray(video.liveSchedules) && video.liveSchedules.length > 0;
 
   const percentageWatched = timestamp ? (timestamp / video.duration) * 100 : 0;
 
   const imageSource = video.previewPath ? { uri: video.previewPath } : fallback;
+  const defaultSource = video.thumbnailPath ? { uri: video.thumbnailPath } : undefined;
+
+  const scheduledLiveDate = isVideoScheduledLive ? video?.liveSchedules?.[0]?.startAt : null;
+
+  const formattedTimeLeft = useTimeLeftUpdates(scheduledLiveDate);
 
   if (!backend || !imageDimensions.width || !imageDimensions.height) {
     return null;
@@ -35,10 +43,10 @@ export const VideoThumbnail: FC<VideoThumbnailProps> = ({ video, backend, timest
   return (
     <View style={[styles.videoThumbnailContainer, { backgroundColor: colors.themeDesaturated500 }]}>
       <Image
-        {...imageDimensions}
-        resizeMode="cover"
         source={isError ? fallback : imageSource}
-        style={styles.videoImage}
+        placeholder={defaultSource}
+        placeholderContentFit="cover"
+        style={[styles.videoImage, { ...imageDimensions }]}
         onError={() => setIsError(true)}
       />
       {!!percentageWatched && percentageWatched > 0 && !video.isLive && (
@@ -46,7 +54,7 @@ export const VideoThumbnail: FC<VideoThumbnailProps> = ({ video, backend, timest
           <View style={{ backgroundColor: colors.theme500, width: `${percentageWatched}%`, height: spacing.xs }} />
         </View>
       )}
-      {video.isLive ? (
+      {video.isLive || isVideoScheduledLive ? (
         <View
           style={[
             styles.durationContainer,
@@ -56,6 +64,7 @@ export const VideoThumbnail: FC<VideoThumbnailProps> = ({ video, backend, timest
               alignItems: "center",
               gap: spacing.sm,
               paddingLeft: spacing.sm,
+              maxWidth: "75%",
             },
           ]}
         >
@@ -68,7 +77,13 @@ export const VideoThumbnail: FC<VideoThumbnailProps> = ({ video, backend, timest
             fontWeight="SemiBold"
             style={{ textTransform: "uppercase" }}
           >
-            {isVideoCurrentlyLive ? t("live") : t("offline")}
+            {isVideoCurrentlyLive
+              ? t("live")
+              : isVideoScheduledLive
+                ? t("liveScheduledFor", {
+                    date: scheduledLiveDate ? formattedTimeLeft : null,
+                  })
+                : t("offline")}
           </Typography>
         </View>
       ) : (

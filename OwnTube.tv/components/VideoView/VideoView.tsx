@@ -34,7 +34,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useCustomDiagnosticsEvents } from "../../diagnostics/useCustomDiagnosticEvents";
 import { CustomPostHogEvents, CustomPostHogExceptions } from "../../diagnostics/constants";
 import { getHumanReadableDuration } from "../../utils";
-import { useWatchedDuration } from "../../hooks";
+import { useTimeLeftUpdates, useWatchedDuration } from "../../hooks";
 
 export interface VideoViewProps {
   uri?: string;
@@ -95,6 +95,7 @@ const VideoView = ({
   const isMobile = Device.deviceType !== DeviceType.DESKTOP;
   const { backend } = useLocalSearchParams<RootStackParams[ROUTES.VIDEO]>();
   const { colors } = useTheme();
+  const isScheduledLive = Array.isArray(videoData?.liveSchedules) && videoData?.liveSchedules?.length > 0;
   const { t } = useTranslation();
   const { top } = useSafeAreaInsets();
   const { captureDiagnosticsEvent, captureError } = useCustomDiagnosticsEvents();
@@ -113,6 +114,8 @@ const VideoView = ({
       });
     }
   };
+  const scheduledLiveDate = isScheduledLive ? videoData?.liveSchedules?.[0]?.startAt : null;
+  const formattedTimeLeft = useTimeLeftUpdates(scheduledLiveDate);
 
   const googleCastClient = Platform.isTV
     ? null
@@ -164,10 +167,11 @@ const VideoView = ({
 
   const toggleMute = () => {
     googleCastClient?.setStreamMuted(!muted);
+    videoRef.current?.setVolume(Number(!muted));
     setMuted((prev) => !prev);
     captureDiagnosticsEvent(muted ? CustomPostHogEvents.UnmuteAudio : CustomPostHogEvents.MuteAudio);
   };
-
+  0;
   const handleReplay = () => {
     videoRef.current?.seek(0);
     videoRef.current?.resume();
@@ -420,7 +424,7 @@ const VideoView = ({
   return (
     <View collapsable={false} style={styles.container}>
       <VideoControlsOverlay
-        isLoading={isLoadingData}
+        isLoading={isLoadingData && !isScheduledLive}
         isLiveVideo={videoData?.isLive}
         videoLinkProps={{ backend, url: viewUrl }}
         handlePlayPause={handlePlayPause}
@@ -489,6 +493,18 @@ const VideoView = ({
               >
                 {t("liveStreamOffline")}
               </Typography>
+              {isScheduledLive && (
+                <Typography
+                  fontWeight="SemiBold"
+                  color={colors.theme50}
+                  fontSize="sizeXL"
+                  style={{ textAlign: "center" }}
+                >
+                  {t("liveScheduledFor", {
+                    date: videoData?.liveSchedules?.[0]?.startAt ? formattedTimeLeft : "",
+                  })}
+                </Typography>
+              )}
             </View>
           </View>
         ) : (

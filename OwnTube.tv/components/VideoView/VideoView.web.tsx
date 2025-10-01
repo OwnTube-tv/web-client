@@ -14,7 +14,7 @@ import { ROUTES, STORAGE } from "../../types";
 import { usePostVideoViewMutation } from "../../api";
 import { IcoMoonIcon } from "../IcoMoonIcon";
 import { useTheme } from "@react-navigation/native";
-import { useChromeCast, useViewHistory, useWatchedDuration } from "../../hooks";
+import { useChromeCast, useTimeLeftUpdates, useViewHistory, useWatchedDuration } from "../../hooks";
 import { useTranslation } from "react-i18next";
 import { useAppConfigContext } from "../../contexts";
 import { Typography } from "..";
@@ -105,6 +105,9 @@ const VideoView = ({
       });
     }
   };
+  const isScheduledLive = Array.isArray(videoData?.liveSchedules) && videoData?.liveSchedules?.length > 0;
+  const scheduledLiveDate = isScheduledLive ? videoData?.liveSchedules?.[0]?.startAt : null;
+  const formattedTimeLeft = useTimeLeftUpdates(scheduledLiveDate);
 
   const { colors } = useTheme();
 
@@ -642,7 +645,7 @@ const VideoView = ({
   return (
     <View style={styles.container}>
       <VideoControlsOverlay
-        isLoading={isLoadingData}
+        isLoading={isLoadingData && !isScheduledLive}
         isWaitingForLive={isWaitingForLive}
         isLiveVideo={videoData?.isLive}
         videoLinkProps={{ backend, url: viewUrl }}
@@ -684,6 +687,7 @@ const VideoView = ({
         hlsAutoQuality={hlsResolution}
         isDownloadAvailable={videoData?.downloadEnabled}
         viewsCount={videoData?.views}
+        viewersCount={videoData?.viewers}
         publishedAt={videoData?.publishedAt}
       >
         {isChromecastConnected && (
@@ -714,6 +718,18 @@ const VideoView = ({
               >
                 {t("liveStreamOffline")}
               </Typography>
+              {isScheduledLive && (
+                <Typography
+                  fontWeight="SemiBold"
+                  color={colors.theme50}
+                  fontSize="sizeXL"
+                  style={{ textAlign: "center" }}
+                >
+                  {t("liveScheduledFor", {
+                    date: videoData?.liveSchedules?.[0]?.startAt ? formattedTimeLeft : "",
+                  })}
+                </Typography>
+              )}
             </View>
           </View>
         ) : (

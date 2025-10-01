@@ -89,6 +89,7 @@ export class ChannelsApi extends AxiosInstanceBasedApi {
             publishedAt: video.publishedAt,
             originallyPublishedAt: video.originallyPublishedAt,
             views: video.views,
+            thumbnailPath: `https://${baseURL}${video.thumbnailPath}`,
             liveSchedules: video.liveSchedules,
           };
         }),

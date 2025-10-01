@@ -148,7 +148,7 @@ export const VideoGridContent = forwardRef<VideoGridContentHandle, VideoGridCont
             showsHorizontalScrollIndicator={false}
             removeClippedSubviews={false}
             disableVirtualization
-            key={numColumns}
+            key={[numColumns, isHorizontalScrollingEnabled].join("-")}
             numColumns={isHorizontalScrollingEnabled ? undefined : numColumns}
             data={listData}
             columnWrapperStyle={numColumns > 1 && !isHorizontalScrollingEnabled ? styles.listColumnWrapper : undefined}

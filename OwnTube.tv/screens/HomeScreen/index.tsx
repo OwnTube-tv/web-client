@@ -65,7 +65,11 @@ export const HomeScreen = () => {
     );
   }, [currentLiveVideos, currentInstanceConfig]);
 
-  const liveVideosData = useGetVideoFullInfoCollectionQuery(liveVideoIds, QUERY_KEYS.liveStreamsCollection);
+  const liveVideosData = useGetVideoFullInfoCollectionQuery(
+    liveVideoIds,
+    QUERY_KEYS.liveStreamsCollection,
+    currentInstanceConfig?.customizations?.homeDisplayScheduledLivesThreshold,
+  );
 
   const historyData = useMemo(() => {
     return (

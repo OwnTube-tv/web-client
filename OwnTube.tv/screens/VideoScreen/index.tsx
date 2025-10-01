@@ -77,7 +77,7 @@ export const VideoScreen = () => {
   useFocusEffect(
     useCallback(() => {
       captureDiagnosticsEvent(CustomPostHogEvents.VideoView, {
-        videoId: params?.id,
+        videoUuid: params?.id,
         backend: params?.backend,
       });
     }, [params?.id, params?.backend]),

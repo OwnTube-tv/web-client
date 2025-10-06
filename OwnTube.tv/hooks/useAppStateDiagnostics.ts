@@ -38,7 +38,7 @@ export const useAppStateDiagnostics = () => {
         window?.removeEventListener("blur", handleBlur);
       }
       appStateSubscription.remove();
-      outOfMemorySubscription.remove();
+      outOfMemorySubscription?.remove();
     };
   }, []);
 };

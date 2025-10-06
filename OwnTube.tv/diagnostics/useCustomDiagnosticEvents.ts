@@ -15,7 +15,7 @@ export const useCustomDiagnosticsEvents = () => {
       return;
     }
 
-    posthog.capture(event, properties as any);
+    posthog.capture(event, properties);
   };
 
   const captureError = (error: unknown, errorType: CustomPostHogExceptions) => {

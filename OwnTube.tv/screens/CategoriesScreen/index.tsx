@@ -21,6 +21,7 @@ export const CategoriesScreen = () => {
     data,
     isLoading: isLoadingCategoriesCollection,
     isError: isCollectionError,
+    error: collectionError,
   } = useGetCategoriesCollectionQuery(categories);
   const { backend } = useLocalSearchParams();
   const { t } = useTranslation();
@@ -39,7 +40,7 @@ export const CategoriesScreen = () => {
   }
 
   if (isError) {
-    const { title, description } = getErrorTextKeys(categoriesError);
+    const { title, description } = getErrorTextKeys(categoriesError || collectionError[0] || null);
 
     return (
       <ErrorPage

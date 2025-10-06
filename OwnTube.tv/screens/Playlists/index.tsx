@@ -32,6 +32,7 @@ export const Playlists = () => {
     data: playlistSections,
     isLoading: isLoadingPlaylistVideos,
     isError: isCollectionError,
+    error: collectionError,
   } = useGetPlaylistsCollectionQuery(playlists?.data);
   const isShowAllButtonVisible =
     currentInstanceConfig?.customizations?.playlistsShowHiddenButton && !showHiddenPlaylists;
@@ -50,7 +51,7 @@ export const Playlists = () => {
   }
 
   if (isError) {
-    const { title, description } = getErrorTextKeys(playlistsError);
+    const { title, description } = getErrorTextKeys(playlistsError || collectionError[0] || null);
 
     return (
       <ErrorPage

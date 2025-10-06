@@ -14,7 +14,7 @@ export const CategoryScreen = () => {
   const queryClient = useQueryClient();
   const { currentInstanceConfig } = useAppConfigContext();
   const { category } = useLocalSearchParams<RootStackParams[ROUTES.CATEGORY]>();
-  const { data: categories, isLoading: isLoadingCategories } = useGetCategoriesQuery({});
+  const { data: categories, isLoading: isLoadingCategories, isError } = useGetCategoriesQuery({});
   const { t } = useTranslation();
   const { top } = usePageContentTopPadding();
   useCustomFocusManager();
@@ -23,7 +23,14 @@ export const CategoryScreen = () => {
     return categories?.find(({ id }) => String(id) === category)?.name;
   }, [categories, category]);
 
-  const { fetchNextPage, data, hasNextPage, isLoading, isFetchingNextPage } = useInfiniteVideosQuery({
+  const {
+    fetchNextPage,
+    data,
+    hasNextPage,
+    isLoading,
+    isFetchingNextPage,
+    isError: isVideosError,
+  } = useInfiniteVideosQuery({
     uniqueQueryKey: QUERY_KEYS.categoryVideosView,
     queryParams: { categoryOneOf: [Number(category)] },
     pageSize: currentInstanceConfig?.customizations?.showMoreSize,
@@ -44,6 +51,8 @@ export const CategoryScreen = () => {
   return (
     <Screen onRefresh={refetchPageData} style={{ padding: 0, paddingTop: top }}>
       <VideoGrid
+        variant="category"
+        isError={isError || isVideosError}
         isLoading={isLoading}
         data={videos}
         title={categoryTitle}

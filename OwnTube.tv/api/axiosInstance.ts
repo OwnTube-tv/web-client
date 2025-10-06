@@ -60,7 +60,7 @@ axiosInstance.interceptors.request.use(async (config) => {
 
   const { session, updateSession } = useAuthSessionStore.getState();
 
-  if (!backend || !session) return config;
+  if (!backend) return config;
 
   const {
     basePath,
@@ -72,16 +72,21 @@ axiosInstance.interceptors.request.use(async (config) => {
     refreshTokenIssuedAt,
     refreshTokenExpiresIn,
     sessionExpired,
-  } = session;
+  } = session || {};
 
   const now = Math.floor(Date.now() / 1000);
-  const accessIssued = parseISOToEpoch(accessTokenIssuedAt);
-  const accessValidUntil = accessIssued + accessTokenExpiresIn - 10;
-  const accessTokenValid = accessIssued <= now && now < accessValidUntil;
 
-  const refreshIssued = parseISOToEpoch(refreshTokenIssuedAt);
-  const refreshValidUntil = refreshIssued + refreshTokenExpiresIn - 10;
-  const refreshTokenValid = refreshIssued <= now && now < refreshValidUntil;
+  // Normalize issuedAt timestamps and expiresIn values to safe numbers.
+  const accessIssued = accessTokenIssuedAt ? parseISOToEpoch(accessTokenIssuedAt) : 0;
+  const accessExpiresInNum = Number(accessTokenExpiresIn ?? 0);
+  const accessValidUntil = accessIssued && accessExpiresInNum ? accessIssued + accessExpiresInNum - 10 : 0;
+  const accessTokenValid = accessIssued > 0 && accessExpiresInNum > 0 && accessIssued <= now && now < accessValidUntil;
+
+  const refreshIssued = refreshTokenIssuedAt ? parseISOToEpoch(refreshTokenIssuedAt) : 0;
+  const refreshExpiresInNum = Number(refreshTokenExpiresIn ?? 0);
+  const refreshValidUntil = refreshIssued && refreshExpiresInNum ? refreshIssued + refreshExpiresInNum - 10 : 0;
+  const refreshTokenValid =
+    refreshIssued > 0 && refreshExpiresInNum > 0 && refreshIssued <= now && now < refreshValidUntil;
 
   const shouldAttachAccessToken = Boolean(
     session &&
@@ -95,9 +100,10 @@ axiosInstance.interceptors.request.use(async (config) => {
     config.headers.Authorization = `${tokenType} ${accessToken}`;
   }
 
-  const halfway = accessIssued + accessTokenExpiresIn * 0.5;
+  const halfway = accessIssued && accessExpiresInNum ? accessIssued + accessExpiresInNum * 0.5 : 0;
   if ((now > halfway && refreshToken && shouldAttachAccessToken) || (!accessTokenValid && refreshTokenValid)) {
     try {
+      if (!refreshToken) throw new Error("Missing refresh token");
       const refreshed = await refreshAccessToken(backend, refreshToken);
       if (refreshed) {
         const parsed = parseAuthSessionData(refreshed, backend);
@@ -111,7 +117,7 @@ axiosInstance.interceptors.request.use(async (config) => {
     }
   }
 
-  if (!accessTokenValid && !refreshTokenValid) {
+  if (!accessTokenValid && !refreshTokenValid && session) {
     await useAuthSessionStore.getState().updateSession(backend, { sessionExpired: true });
     controller.abort("Session expired, aborting request");
     postHogInstance.capture(CustomPostHogEvents.SessionExpired);
@@ -120,6 +126,31 @@ axiosInstance.interceptors.request.use(async (config) => {
 
   return config;
 });
+
+// Capture 401 and prompt the user to login again
+axiosInstance.interceptors.response.use(
+  (resp) => resp,
+  async (error) => {
+    try {
+      const status = error?.response?.status;
+      if (status === 401) {
+        const config = error?.config || {};
+        const backend = config.baseURL?.replace("/api/v1", "").replace("https://", "");
+
+        if (typeof backend === "string" && backend.length > 0) {
+          console.info("Session expired, aborting request");
+          await useAuthSessionStore.getState().updateSession(backend, { sessionExpired: true });
+        }
+
+        postHogInstance.capture(CustomPostHogEvents.SessionExpired);
+      }
+    } catch (e) {
+      console.error("Stale token handling frontend error:", e);
+    }
+
+    return Promise.reject(error);
+  },
+);
 
 export abstract class AxiosInstanceBasedApi {
   protected constructor(debugLogging: boolean = false) {

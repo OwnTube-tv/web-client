@@ -21,10 +21,14 @@ export const Playlist = () => {
   const { backend, playlist, channel } = useLocalSearchParams<
     RootStackParams[ROUTES.CHANNEL_PLAYLIST] & RootStackParams[ROUTES.PLAYLIST]
   >();
-  const { fetchNextPage, data, hasNextPage, isLoading, isFetchingNextPage } = useInfiniteGetPlaylistVideosQuery(
-    Number(playlist),
-    currentInstanceConfig?.customizations?.showMoreSize,
-  );
+  const {
+    fetchNextPage,
+    data,
+    hasNextPage,
+    isLoading,
+    isFetchingNextPage,
+    isError: isVideosError,
+  } = useInfiniteGetPlaylistVideosQuery(Number(playlist), currentInstanceConfig?.customizations?.showMoreSize);
   const { data: channelInfo } = useGetChannelInfoQuery(channel);
   const { data: playlistInfo, isLoading: isLoadingPlaylistInfo } = useGetPlaylistInfoQuery(Number(playlist));
   const videos = useMemo(() => {
@@ -54,6 +58,8 @@ export const Playlist = () => {
         linkHref={`https://${backend}/w/p/${playlistInfo?.uuid}`}
       />
       <VideoGrid
+        variant="playlist"
+        isError={isVideosError}
         presentation="list"
         isLoading={isLoading}
         data={videos}

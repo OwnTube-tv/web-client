@@ -25,13 +25,18 @@ export const useAuthSessionSync = () => {
     queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.myChannelSubscription] });
   }, [session]);
 
-  useEffect(() => {
+  const handleCheckSessionExistence = async () => {
     if (backend) {
-      selectSession(backend);
+      await selectSession(backend);
     } else {
       clearSession();
     }
-    setIsSessionDataLoaded(true);
+  };
+
+  useEffect(() => {
+    handleCheckSessionExistence().then(() => {
+      setIsSessionDataLoaded(true);
+    });
   }, [backend]);
 
   return { isSessionDataLoaded };

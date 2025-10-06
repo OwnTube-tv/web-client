@@ -22,7 +22,7 @@ export const PlaylistVideosView = ({ id, title, channel, location = "other" }: P
   const { currentInstanceConfig } = useAppConfigContext();
   const showHorizontalScrollableLists = currentInstanceConfig?.customizations?.homeUseHorizontalListsForMobilePortrait;
 
-  if ((!data?.data?.length || !data?.total) && !isLoading) {
+  if ((!data?.data?.length || !data?.total) && !isLoading && !isError) {
     return null;
   }
 

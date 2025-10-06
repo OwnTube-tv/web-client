@@ -1,6 +1,8 @@
 import { GetVideosVideo, OwnTubeError } from "./models";
 import { QUERY_KEYS } from "./constants";
 import { UseQueryResult } from "@tanstack/react-query";
+import { AxiosError } from "axios";
+import { JsonType } from "posthog-react-native/lib/posthog-core/src";
 import { Video } from "@peertube/peertube-types";
 
 const jsonPaths: Record<keyof typeof QUERY_KEYS, string> = {
@@ -37,6 +39,18 @@ export const combineCollectionQueryResults = <T>(
     data: result.filter((item) => item?.data?.isError || Number(item?.data?.total) > 0),
     isLoading: result.filter(({ isLoading }) => isLoading).length > 1,
     isError: result.length > 0 && result.every(({ data }) => data?.isError),
+    error: (result.filter(({ data }) => data?.isError)?.map(({ data }) => data?.error) as OwnTubeError[]) || null,
+  };
+};
+
+export const parseAxiosErrorDiagnosticsData = (error?: AxiosError): JsonType => {
+  return {
+    code: error?.code || null,
+    requestUrl: `${error?.config?.baseURL}/${error?.config?.url}`,
+    method: error?.config?.method || null,
+    params: error?.config?.params || null,
+    timeout: error?.config?.timeout || null,
+    status: error?.status || null,
   };
 };
 

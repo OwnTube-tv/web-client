@@ -129,6 +129,7 @@
     hostname: "peertube2.cpy.re",
     logoUrl: "https://owntube-tv.github.io/web-client/logos/peertube2.cpy.re.png",
     customizations: {
+      loginWithUsernameAndPassword: true,
       menuExternalLinks: [
         {
           label: "PeerTube Website",

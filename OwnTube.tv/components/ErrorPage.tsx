@@ -9,7 +9,7 @@ interface ErrorPageProps {
   title: string;
   description?: string;
   logo: JSX.Element;
-  button: { action: () => void; text: string };
+  button: { action: () => void; text: string; color?: string; backgroundColor?: string };
 }
 
 export const ErrorPage = ({ title, description, logo, button }: ErrorPageProps) => {
@@ -29,7 +29,13 @@ export const ErrorPage = ({ title, description, logo, button }: ErrorPageProps) 
         </Typography>
       )}
       <Spacer height={spacing.xl} />
-      <Button text={button.text} onPress={button.action} contrast="high" />
+      <Button
+        style={button.backgroundColor ? { backgroundColor: button.backgroundColor } : {}}
+        text={button.text}
+        onPress={button.action}
+        contrast="high"
+        textColor={button.color}
+      />
     </View>
   );
 };

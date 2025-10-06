@@ -14,6 +14,7 @@ interface ButtonProps extends PropsWithChildren<PressableProps> {
   text?: string;
   justifyContent?: ViewStyle["justifyContent"];
   isActive?: boolean;
+  textColor?: string;
 }
 
 export const Button = forwardRef<View, ButtonProps>(
@@ -26,6 +27,7 @@ export const Button = forwardRef<View, ButtonProps>(
       justifyContent = "center",
       isActive,
       disabled,
+      textColor,
       ...props
     },
     ref,
@@ -52,7 +54,8 @@ export const Button = forwardRef<View, ButtonProps>(
       [colors, isHovered, hoverColor, isActive, regularColor, disabled],
     );
 
-    const textColor = disabled ? colors.themeDesaturated500 : contrast === "high" ? colors.white94 : colors.theme900;
+    const calculatedTextColor =
+      textColor || (disabled ? colors.themeDesaturated500 : contrast === "high" ? colors.white94 : colors.theme900);
 
     return (
       <Pressable
@@ -86,7 +89,7 @@ export const Button = forwardRef<View, ButtonProps>(
           <IcoMoonIcon name={icon} size={24} color={contrast === "high" ? colors.white94 : colors.theme900} />
         )}
         {text && (
-          <Typography fontSize="sizeSm" fontWeight="SemiBold" color={textColor}>
+          <Typography fontSize="sizeSm" fontWeight="SemiBold" color={calculatedTextColor}>
             {text}
           </Typography>
         )}

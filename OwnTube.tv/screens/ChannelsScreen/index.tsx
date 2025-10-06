@@ -61,7 +61,7 @@ export const ChannelsScreen = () => {
         />
       );
     });
-  }, [isLoading, isLoadingChannels, channelSections, channels, backend, channelsError]);
+  }, [isLoading, isLoadingChannels, channelSections, channels, backend]);
 
   if (isError) {
     const { title, description } = getErrorTextKeys(channelsError || channelsCollectionError[0]);

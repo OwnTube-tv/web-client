@@ -104,58 +104,55 @@ const RootStack = () => {
     <>
       <StatusBar style={scheme === "dark" ? "light" : "dark"} />
       <ThemeProvider value={theme}>
-        <ErrorBoundary>
-          <Drawer
-            screenOptions={{
-              drawerType: breakpoints.isMobile ? "front" : "permanent",
-              drawerStyle: {
-                display: !backend ? "none" : "flex",
-                width:
-                  (!breakpoints.isDesktop && !breakpoints.isMobile ? CLOSED_DRAWER_WIDTH : OPEN_DRAWER_WIDTH) + left,
-                borderRightWidth: 0,
-              },
-              header: (props) => renderAppHeader(props),
-            }}
-            backBehavior="history"
-            drawerContent={(props) => <Sidebar {...props} backend={backend} />}
-          >
-            <Drawer.Screen
-              name={"(home)/index"}
-              options={{ drawerStyle: { display: "none" }, swipeEnabled: false, header: () => <></> }}
-            />
-            <Drawer.Screen name={"(home)/home"} />
-            <Drawer.Screen
-              name={`(home)/video`}
-              options={{ drawerStyle: { display: "none" }, swipeEnabled: false, header: () => <></> }}
-            />
-            <Drawer.Screen name={`(home)/${ROUTES.CHANNEL}`} />
-            <Drawer.Screen name={`(home)/${ROUTES.CHANNELS}`} />
-            <Drawer.Screen name={`(home)/${ROUTES.CHANNEL_CATEGORY}`} />
-            <Drawer.Screen name={`(home)/${ROUTES.CHANNEL_PLAYLIST}`} />
-            <Drawer.Screen name={`(home)/${ROUTES.CATEGORIES}`} />
-            <Drawer.Screen name={`(home)/${ROUTES.CATEGORY}`} />
-            <Drawer.Screen name={`(home)/${ROUTES.PLAYLISTS}`} />
-            <Drawer.Screen name={`(home)/${ROUTES.PLAYLIST}`} />
-            <Drawer.Screen name={`(home)/${ROUTES.SIGNIN}`} />
-            <Drawer.Screen name={`(home)/${ROUTES.OTP}`} />
-            <Drawer.Screen name={`(home)/${ROUTES.SEARCH}`} />
-          </Drawer>
-          <Toast
-            topOffset={top || undefined}
-            config={{
-              info: (props) => <InfoToast {...props} />,
-            }}
+        <Drawer
+          screenOptions={{
+            drawerType: breakpoints.isMobile ? "front" : "permanent",
+            drawerStyle: {
+              display: !backend ? "none" : "flex",
+              width: (!breakpoints.isDesktop && !breakpoints.isMobile ? CLOSED_DRAWER_WIDTH : OPEN_DRAWER_WIDTH) + left,
+              borderRightWidth: 0,
+            },
+            header: (props) => renderAppHeader(props),
+          }}
+          backBehavior="history"
+          drawerContent={(props) => <Sidebar {...props} backend={backend} />}
+        >
+          <Drawer.Screen
+            name={"(home)/index"}
+            options={{ drawerStyle: { display: "none" }, swipeEnabled: false, header: () => <></> }}
           />
-          <FullScreenModal
-            onBackdropPress={() => {
-              handleModalClose?.();
-              toggleModal?.(false);
-            }}
-            isVisible={isModalOpen}
-          >
-            {modalContent}
-          </FullScreenModal>
-        </ErrorBoundary>
+          <Drawer.Screen name={"(home)/home"} />
+          <Drawer.Screen
+            name={`(home)/video`}
+            options={{ drawerStyle: { display: "none" }, swipeEnabled: false, header: () => <></> }}
+          />
+          <Drawer.Screen name={`(home)/${ROUTES.CHANNEL}`} />
+          <Drawer.Screen name={`(home)/${ROUTES.CHANNELS}`} />
+          <Drawer.Screen name={`(home)/${ROUTES.CHANNEL_CATEGORY}`} />
+          <Drawer.Screen name={`(home)/${ROUTES.CHANNEL_PLAYLIST}`} />
+          <Drawer.Screen name={`(home)/${ROUTES.CATEGORIES}`} />
+          <Drawer.Screen name={`(home)/${ROUTES.CATEGORY}`} />
+          <Drawer.Screen name={`(home)/${ROUTES.PLAYLISTS}`} />
+          <Drawer.Screen name={`(home)/${ROUTES.PLAYLIST}`} />
+          <Drawer.Screen name={`(home)/${ROUTES.SIGNIN}`} />
+          <Drawer.Screen name={`(home)/${ROUTES.OTP}`} />
+          <Drawer.Screen name={`(home)/${ROUTES.SEARCH}`} />
+        </Drawer>
+        <Toast
+          topOffset={top || undefined}
+          config={{
+            info: (props) => <InfoToast {...props} />,
+          }}
+        />
+        <FullScreenModal
+          onBackdropPress={() => {
+            handleModalClose?.();
+            toggleModal?.(false);
+          }}
+          isVisible={isModalOpen}
+        >
+          {modalContent}
+        </FullScreenModal>
       </ThemeProvider>
     </>
   );
@@ -192,18 +189,20 @@ export default function RootLayout() {
   return (
     <SafeAreaProvider>
       <GestureHandlerRootView>
-        <PostHogProvider client={postHogInstance} autocapture={{ captureScreens: false }}>
-          <QueryClientProvider client={queryClient}>
-            <AppConfigContextProvider>
-              {isWeb && <ReactQueryDevtools initialIsOpen={false} />}
-              <ColorSchemeContextProvider>
-                <FullScreenModalContextProvider>
-                  <RootStack />
-                </FullScreenModalContextProvider>
-              </ColorSchemeContextProvider>
-            </AppConfigContextProvider>
-          </QueryClientProvider>
-        </PostHogProvider>
+        <ErrorBoundary>
+          <PostHogProvider client={postHogInstance} autocapture={{ captureScreens: false }}>
+            <QueryClientProvider client={queryClient}>
+              <AppConfigContextProvider>
+                {isWeb && <ReactQueryDevtools initialIsOpen={false} />}
+                <ColorSchemeContextProvider>
+                  <FullScreenModalContextProvider>
+                    <RootStack />
+                  </FullScreenModalContextProvider>
+                </ColorSchemeContextProvider>
+              </AppConfigContextProvider>
+            </QueryClientProvider>
+          </PostHogProvider>
+        </ErrorBoundary>
       </GestureHandlerRootView>
     </SafeAreaProvider>
   );

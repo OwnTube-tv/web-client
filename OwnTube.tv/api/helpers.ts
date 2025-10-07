@@ -37,16 +37,19 @@ export const combineCollectionQueryResults = <T>(
 ) => {
   return {
     data: result.filter((item) => item?.data?.isError || Number(item?.data?.total) > 0),
-    isLoading: result.filter(({ isLoading }) => isLoading).length > 1,
+    isLoading: result.some(({ isLoading }) => isLoading),
     isError: result.length > 0 && result.every(({ data }) => data?.isError),
     error: (result.filter(({ data }) => data?.isError)?.map(({ data }) => data?.error) as OwnTubeError[]) || null,
   };
 };
 
 export const parseAxiosErrorDiagnosticsData = (error?: AxiosError): JsonType => {
+  const requestUrl =
+    error?.config?.baseURL && error?.config?.url ? new URL(error.config.url, error.config.baseURL).toString() : null;
+
   return {
     code: error?.code || null,
-    requestUrl: `${error?.config?.baseURL}/${error?.config?.url}`,
+    requestUrl,
     method: error?.config?.method || null,
     params: error?.config?.params || null,
     timeout: error?.config?.timeout || null,

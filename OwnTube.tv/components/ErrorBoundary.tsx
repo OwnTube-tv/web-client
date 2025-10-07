@@ -27,7 +27,7 @@ export class ErrorBoundary extends Component<
     if (this.state.hasError) {
       return (
         <ErrorPage
-          title={`An error occured${(this.state.error as { message: string })?.message ? ": " + (this.state.error as { message: string }).message : ""}`}
+          title={`An error occurred${(this.state.error as { message: string })?.message ? ": " + (this.state.error as { message: string }).message : ""}`}
           description={this.state.info?.componentStack || ""}
           logo={<ErrorUnavailableLogo />}
           button={{

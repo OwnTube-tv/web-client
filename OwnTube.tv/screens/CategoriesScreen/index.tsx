@@ -40,7 +40,7 @@ export const CategoriesScreen = () => {
   }
 
   if (isError) {
-    const { title, description } = getErrorTextKeys(categoriesError || collectionError[0] || null);
+    const { title, description } = getErrorTextKeys(categoriesError || collectionError?.[0] || null);
 
     return (
       <ErrorPage

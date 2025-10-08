@@ -54,8 +54,11 @@ export const Button = forwardRef<View, ButtonProps>(
       [colors, isHovered, hoverColor, isActive, regularColor, disabled],
     );
 
-    const calculatedTextColor =
-      textColor || (disabled ? colors.themeDesaturated500 : contrast === "high" ? colors.white94 : colors.theme900);
+    const getTextColor = useCallback(() => {
+      if (textColor) return textColor;
+      if (disabled) return colors.themeDesaturated500;
+      return contrast === "high" ? colors.white94 : colors.theme900;
+    }, [textColor, disabled, contrast, colors]);
 
     return (
       <Pressable
@@ -89,7 +92,7 @@ export const Button = forwardRef<View, ButtonProps>(
           <IcoMoonIcon name={icon} size={24} color={contrast === "high" ? colors.white94 : colors.theme900} />
         )}
         {text && (
-          <Typography fontSize="sizeSm" fontWeight="SemiBold" color={calculatedTextColor}>
+          <Typography fontSize="sizeSm" fontWeight="SemiBold" color={getTextColor()}>
             {text}
           </Typography>
         )}

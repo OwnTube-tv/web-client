@@ -64,7 +64,7 @@ export const ChannelsScreen = () => {
   }, [isLoading, isLoadingChannels, channelSections, channels, backend]);
 
   if (isError) {
-    const { title, description } = getErrorTextKeys(channelsError || channelsCollectionError[0]);
+    const { title, description } = getErrorTextKeys(channelsError || channelsCollectionError?.[0] || null);
 
     return (
       <ErrorPage

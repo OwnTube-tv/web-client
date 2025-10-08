@@ -51,7 +51,7 @@ export const Playlists = () => {
   }
 
   if (isError) {
-    const { title, description } = getErrorTextKeys(playlistsError || collectionError[0] || null);
+    const { title, description } = getErrorTextKeys(playlistsError || collectionError?.[0] || null);
 
     return (
       <ErrorPage

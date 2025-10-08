@@ -7,6 +7,10 @@ import { postHogInstance } from "../diagnostics";
 import { CustomPostHogEvents, CustomPostHogExceptions } from "../diagnostics/constants";
 import { APP_IDENTIFIER } from "./sharedConstants";
 
+// Refresh tokens at a specified percentage of their lifetime to maximize login persistence
+// for intermittent users (users who visit every few weeks)
+const TOKEN_REFRESH_LIFETIME_PERCENTAGE = 0.5;
+
 export const axiosInstance = axios.create({
   withCredentials: false,
   headers: {
@@ -19,6 +23,17 @@ const controller = new AbortController();
 
 const REFRESH_LOCKS: Record<string, boolean> = {};
 
+/**
+ * Refreshes an access token using a refresh token.
+ *
+ * Uses a backend-specific lock to prevent concurrent refresh attempts.
+ * Typical use case: Proactively refresh tokens before they expire to keep
+ * intermittent users logged in (users who visit every few weeks).
+ *
+ * @param backend - The backend server hostname
+ * @param refreshToken - The refresh token to use
+ * @returns The new login response with fresh tokens, or null if locked
+ */
 const refreshAccessToken = async (backend: string, refreshToken: string) => {
   const lock = REFRESH_LOCKS[backend];
 
@@ -100,8 +115,16 @@ axiosInstance.interceptors.request.use(async (config) => {
     config.headers.Authorization = `${tokenType} ${accessToken}`;
   }
 
-  const halfway = accessIssued && accessExpiresInNum ? accessIssued + accessExpiresInNum * 0.5 : 0;
-  if ((now > halfway && refreshToken && shouldAttachAccessToken) || (!accessTokenValid && refreshTokenValid)) {
+  // Proactively refresh tokens at a specified percentage of their lifetime to maximize login
+  // persistence for intermittent users. For a typical 2-week token lifetime,
+  // this refreshes after ~1 week if set to 50%, ensuring the refresh token itself gets
+  // renewed before it expires.
+  const proactiveRefreshThreshold =
+    accessIssued && accessExpiresInNum ? accessIssued + accessExpiresInNum * TOKEN_REFRESH_LIFETIME_PERCENTAGE : 0;
+  if (
+    (now > proactiveRefreshThreshold && refreshToken && shouldAttachAccessToken) ||
+    (!accessTokenValid && refreshTokenValid)
+  ) {
     try {
       if (!refreshToken) throw new Error("Missing refresh token");
       const refreshed = await refreshAccessToken(backend, refreshToken);

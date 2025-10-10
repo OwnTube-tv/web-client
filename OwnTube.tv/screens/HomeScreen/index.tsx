@@ -9,7 +9,7 @@ import {
   useGetVideosQuery,
 } from "../../api";
 import { useMemo, useState } from "react";
-import { useCustomFocusManager, usePageContentTopPadding, useViewHistory } from "../../hooks";
+import { useBreakpoints, useCustomFocusManager, usePageContentTopPadding, useViewHistory } from "../../hooks";
 import { spacing } from "../../theme";
 import { ROUTES } from "../../types";
 import { Platform, RefreshControl, SectionList, StyleSheet, View } from "react-native";
@@ -38,6 +38,7 @@ export const HomeScreen = () => {
   useCustomFocusManager();
   const queryClient = useQueryClient();
   const { captureDiagnosticsEvent } = useCustomDiagnosticsEvents();
+  const { isMobile } = useBreakpoints();
 
   const { data: channels, refetch: refetchChannels } = useGetChannelsQuery({
     enabled: !currentInstanceConfig?.customizations?.homeHideChannelsOverview,
@@ -103,7 +104,7 @@ export const HomeScreen = () => {
         isVisible: true,
       },
       {
-        title: t("recentlyWatched"),
+        title: isMobile ? t("recentlyWatchedAbbr") : t("recentlyWatched"),
         link: { text: t("viewHistory"), route: `/${ROUTES.HISTORY}` },
         renderItem: () => (
           <VideoGrid
@@ -157,6 +158,7 @@ export const HomeScreen = () => {
     currentInstanceConfig,
     liveVideosData,
     showHorizontalScrollableLists,
+    isMobile,
   ]);
 
   const [refreshing, setRefreshing] = useState(false);

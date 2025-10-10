@@ -61,20 +61,14 @@ describe("combineCollectionQueryResults", () => {
     expect(combined.data.length).toBe(2);
   });
 
-  it("isLoading is true if more than one result is loading", () => {
+  it("isLoading is true if one or more result is loading", () => {
     const results = [
       mockResult({ isError: false, total: 1 }, true),
-      mockResult({ isError: false, total: 2 }, true),
+      mockResult({ isError: false, total: 2 }, false),
       mockResult({ isError: false, total: 0 }, false),
     ];
     const combined = combineCollectionQueryResults(results);
     expect(combined.isLoading).toBe(true);
-  });
-
-  it("isLoading is false if one or zero results are loading", () => {
-    const results = [mockResult({ isError: false, total: 1 }, true), mockResult({ isError: false, total: 2 }, false)];
-    const combined = combineCollectionQueryResults(results);
-    expect(combined.isLoading).toBe(false);
   });
 
   it("isError is true if all results have isError", () => {

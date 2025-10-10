@@ -200,5 +200,7 @@
   "publishDateOldest": "Дата публікації (спочатку старіші)",
   "liveScheduledFor": "Трансляція почнеться {{date}}",
   "copied": "Скопійовано!",
-  "pressedTooManyTimesError": "Ви натискали кнопку занадто багато разів!"
+  "pressedTooManyTimesError": "Ви натискали кнопку занадто багато разів!",
+  "viewFullPlaylistAbbr": "Переглянути все",
+  "recentlyWatchedAbbr": "Недавні"
 }

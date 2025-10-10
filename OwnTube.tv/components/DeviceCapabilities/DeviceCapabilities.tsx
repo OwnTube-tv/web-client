@@ -1,17 +1,17 @@
-import { Pressable, StyleSheet, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import { Typography } from "../Typography";
 import * as Clipboard from "expo-clipboard";
 import { useAppConfigContext } from "../../contexts";
 import { useTheme } from "@react-navigation/native";
 import { useTranslation } from "react-i18next";
-import { IcoMoonIcon } from "../IcoMoonIcon";
-import { borderRadius } from "../../theme";
+import { spacing } from "../../theme";
 import { BuildInfo } from "../BuildInfo";
 import build_info from "../../build-info.json";
 import { useAuthSessionStore } from "../../store";
 import { format } from "date-fns";
-import { useMemo } from "react";
+import { useMemo, useRef, useState, useEffect } from "react";
 import { useGlobalSearchParams } from "expo-router";
+import { Button } from "../shared";
 
 const CapabilityKeyValuePair = ({ label, value }: { label: string; value: string }) => {
   const { colors } = useTheme();
@@ -54,7 +54,38 @@ const DeviceCapabilities = () => {
     [session],
   );
 
+  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const [copyButtonText, setCopyButtonText] = useState<string | undefined>(undefined);
+  const pressCountRef = useRef<number>(0);
+  const pressResetRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const [shouldThrow, setShouldThrow] = useState<Error | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
+      if (pressResetRef.current) clearTimeout(pressResetRef.current);
+    };
+  }, []);
+
   const handleCopyToClipboard = async () => {
+    pressCountRef.current = (pressCountRef.current || 0) + 1;
+    if (pressCountRef.current >= 5) {
+      pressCountRef.current = 0;
+      if (pressResetRef.current) {
+        clearTimeout(pressResetRef.current);
+        pressResetRef.current = null;
+      }
+
+      setShouldThrow(new Error(t("pressedTooManyTimesError")));
+      return;
+    }
+    if (pressResetRef.current) clearTimeout(pressResetRef.current);
+    pressResetRef.current = setTimeout(() => {
+      pressCountRef.current = 0;
+      pressResetRef.current = null;
+    }, 2000);
+
     const buildInfo = process.env.EXPO_PUBLIC_HIDE_GIT_DETAILS
       ? { BUILD_TIMESTAMP: build_info.BUILD_TIMESTAMP }
       : build_info;
@@ -70,6 +101,11 @@ const DeviceCapabilities = () => {
         },
       }),
     );
+    setCopyButtonText(t("copied"));
+    if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    timeoutRef.current = setTimeout(() => {
+      setCopyButtonText(undefined);
+    }, 3_000);
   };
 
   const currentAuthText = useMemo(() => {
@@ -86,15 +122,25 @@ const DeviceCapabilities = () => {
     });
   }, [authInfo, t]);
 
+  if (shouldThrow) {
+    // This throw happens during render and will be caught by your ErrorBoundary
+    throw shouldThrow;
+  }
+
   return (
     <View style={{ backgroundColor: colors.theme50 }}>
       <View style={styles.modalHeader}>
         <Typography fontSize="sizeSm" fontWeight="SemiBold" color={colors.theme950}>
           {t("settingsPageDeviceCapabilityInfoHeading")}
         </Typography>
-        <Pressable onPress={handleCopyToClipboard} style={[styles.iconButton, { backgroundColor: colors.theme500 }]}>
-          <IcoMoonIcon color={colors.white94} name="Content-Copy" size={24} />
-        </Pressable>
+        <Button
+          onPress={handleCopyToClipboard}
+          text={copyButtonText}
+          icon={"Content-Copy"}
+          iconPosition="trailing"
+          contrast="high"
+          style={styles.iconButton}
+        />
       </View>
       <View style={styles.capabilitiesContainer}>
         <View style={styles.row}>
@@ -122,13 +168,7 @@ const styles = StyleSheet.create({
   capabilitiesContainer: {
     gap: 8,
   },
-  iconButton: {
-    alignItems: "center",
-    borderRadius: borderRadius.radiusMd,
-    height: 36,
-    justifyContent: "center",
-    width: 36,
-  },
+  iconButton: { height: 36, paddingHorizontal: spacing.sm },
   modalHeader: { flexDirection: "row", gap: 16, justifyContent: "space-between" },
   row: { flexWrap: "wrap", justifyContent: "space-between", width: "100%" },
 });

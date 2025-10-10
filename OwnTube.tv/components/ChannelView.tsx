@@ -20,7 +20,7 @@ export const ChannelView = ({ channel }: ChannelViewProps) => {
   const { currentInstanceConfig } = useAppConfigContext();
   const showHorizontalScrollableLists = currentInstanceConfig?.customizations?.homeUseHorizontalListsForMobilePortrait;
 
-  if (!data?.data?.length && !isLoading) {
+  if (!data?.data?.length && !isLoading && !isError) {
     return null;
   }
 

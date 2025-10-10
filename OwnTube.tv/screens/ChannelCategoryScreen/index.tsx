@@ -20,8 +20,15 @@ export const ChannelCategoryScreen = () => {
   const { isMobile } = useBreakpoints();
   const { channel, category } = useLocalSearchParams<RootStackParams[ROUTES.CHANNEL_CATEGORY]>();
   const { data: channelInfo } = useGetChannelInfoQuery(channel);
-  const { data: categories } = useGetCategoriesQuery({});
-  const { fetchNextPage, data, hasNextPage, isFetchingNextPage, isLoading } = useInfiniteGetChannelVideosQuery({
+  const { data: categories, isError } = useGetCategoriesQuery({});
+  const {
+    fetchNextPage,
+    data,
+    hasNextPage,
+    isFetchingNextPage,
+    isLoading,
+    isError: isVideosError,
+  } = useInfiniteGetChannelVideosQuery({
     channelHandle: channel,
     category: Number(category),
     uniqueQueryKey: "categoryView",
@@ -56,6 +63,8 @@ export const ChannelCategoryScreen = () => {
         {categoryTitle}
       </Typography>
       <VideoGrid
+        variant="category"
+        isError={isError || isVideosError}
         data={videos}
         isLoading={isLoading}
         isLoadingMore={isFetchingNextPage}

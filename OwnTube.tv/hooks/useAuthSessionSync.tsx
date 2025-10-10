@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useGlobalSearchParams } from "expo-router";
 import { useAuthSessionStore } from "../store";
 import { RootStackParams } from "../app/_layout";
@@ -25,14 +25,19 @@ export const useAuthSessionSync = () => {
     queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.myChannelSubscription] });
   }, [session]);
 
-  useEffect(() => {
+  const handleCheckSessionExistence = useCallback(async () => {
     if (backend) {
-      selectSession(backend);
+      await selectSession(backend);
     } else {
       clearSession();
     }
-    setIsSessionDataLoaded(true);
   }, [backend]);
+
+  useEffect(() => {
+    handleCheckSessionExistence().then(() => {
+      setIsSessionDataLoaded(true);
+    });
+  }, [handleCheckSessionExistence]);
 
   return { isSessionDataLoaded };
 };

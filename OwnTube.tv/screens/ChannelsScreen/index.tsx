@@ -27,6 +27,7 @@ export const ChannelsScreen = () => {
     data: channelSections,
     isLoading: isLoadingChannelsCollection,
     isError: isChannelsCollectionError,
+    error: channelsCollectionError,
   } = useGetChannelsCollectionQuery(channels?.map(({ name }) => name));
   const isError = isChannelsError || isChannelsCollectionError;
   const isLoading = isLoadingChannels || isLoadingChannelsCollection;
@@ -39,19 +40,6 @@ export const ChannelsScreen = () => {
   const renderScreenContent = useMemo(() => {
     if (isLoading) {
       return <Loader />;
-    }
-
-    if (isError) {
-      const { title, description } = getErrorTextKeys(channelsError);
-
-      return (
-        <ErrorPage
-          title={t(title)}
-          description={t(description)}
-          logo={<ErrorForbiddenLogo />}
-          button={{ text: t("tryAgain"), action: refetchPageData }}
-        />
-      );
     }
 
     return channelSections?.map(({ data, isLoading, refetch }) => {
@@ -74,6 +62,19 @@ export const ChannelsScreen = () => {
       );
     });
   }, [isLoading, isLoadingChannels, channelSections, channels, backend]);
+
+  if (isError) {
+    const { title, description } = getErrorTextKeys(channelsError || channelsCollectionError?.[0] || null);
+
+    return (
+      <ErrorPage
+        title={t(title)}
+        description={t(description)}
+        logo={<ErrorForbiddenLogo />}
+        button={{ text: t("tryAgain"), action: refetchPageData }}
+      />
+    );
+  }
 
   if (!channelSections.length) {
     return <EmptyPage text={t("noChannelsAvailable")} />;

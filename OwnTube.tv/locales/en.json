@@ -200,5 +200,7 @@
   "sortOrder": "Sort order",
   "publishDateNewest": "Published date (newest first)",
   "publishDateOldest": "Published date (oldest first)",
-  "liveScheduledFor": "Scheduled live {{date}}"
+  "liveScheduledFor": "Scheduled live {{date}}",
+  "copied": "Copied!",
+  "pressedTooManyTimesError": "You pressed the button too many times!"
 }

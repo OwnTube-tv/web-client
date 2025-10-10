@@ -26,13 +26,14 @@ export const CategoryView = ({ category }: CategoryViewProps) => {
   const { currentInstanceConfig } = useAppConfigContext();
   const showHorizontalScrollableLists = currentInstanceConfig?.customizations?.homeUseHorizontalListsForMobilePortrait;
 
-  if (!data?.data?.length && !isLoading) {
+  if (!data?.data?.length && !isLoading && !isError) {
     return null;
   }
 
   return (
     <>
       <VideoGrid
+        variant="category"
         scrollable={showHorizontalScrollableLists}
         reduceHeaderContrast
         refetch={refetch}

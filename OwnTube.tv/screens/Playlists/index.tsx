@@ -8,7 +8,7 @@ import { useLocalSearchParams } from "expo-router";
 import { useState } from "react";
 import { StyleSheet, View } from "react-native";
 import { spacing } from "../../theme";
-import { useCustomFocusManager, usePageContentTopPadding } from "../../hooks";
+import { useBreakpoints, useCustomFocusManager, usePageContentTopPadding } from "../../hooks";
 import { ErrorForbiddenLogo } from "../../components/Svg";
 import { useQueryClient } from "@tanstack/react-query";
 import { useAppConfigContext } from "../../contexts";
@@ -16,6 +16,7 @@ import { useAppConfigContext } from "../../contexts";
 export const Playlists = () => {
   const { currentInstanceConfig } = useAppConfigContext();
   const queryClient = useQueryClient();
+  const { isMobile } = useBreakpoints();
   const [showHiddenPlaylists, setShowHiddenPlaylists] = useState(false);
   const {
     data: playlists,
@@ -79,7 +80,7 @@ export const Playlists = () => {
           title={data?.displayName}
           data={data?.data}
           link={{
-            text: t("viewFullPlaylist") + getAvailableVidsString(data?.total),
+            text: (isMobile ? t("viewFullPlaylistAbbr") : t("viewFullPlaylist")) + getAvailableVidsString(data?.total),
             href: {
               pathname: `/${ROUTES.PLAYLIST}`,
               params: { backend, playlist: data?.id },

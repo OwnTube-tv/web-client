@@ -201,5 +201,7 @@
   "publishDateOldest": "Publiceringsdatum (äldst först)",
   "liveScheduledFor": "Schemalagd live i {{date}}",
   "copied": "Kopierad!",
-  "pressedTooManyTimesError": "Du tryckte på knappen för många gånger!"
+  "pressedTooManyTimesError": "Du tryckte på knappen för många gånger!",
+  "viewFullPlaylistAbbr": "Se alla",
+  "recentlyWatchedAbbr": "Senaste"
 }

@@ -55,7 +55,6 @@ const styles = StyleSheet.create({
   container: {
     alignItems: "center",
     flexDirection: "row",
-    flexWrap: "wrap",
     justifyContent: "space-between",
     paddingBottom: spacing.sm,
     rowGap: spacing.md,

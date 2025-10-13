@@ -173,7 +173,7 @@ export const useGetVideoCaptionsCollectionQuery = (videoIds: string[] = [], quer
 export const useGetVideoFullInfoCollectionQuery = (
   videoIds: string[] = [],
   queryKey: string,
-  scheduledLiveThreshold?: string | null,
+  scheduledLiveThreshold?: number | null,
 ) => {
   const { backend } = useLocalSearchParams<RootStackParams["index"]>();
 

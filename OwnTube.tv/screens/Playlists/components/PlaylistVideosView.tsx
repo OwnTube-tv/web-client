@@ -6,6 +6,7 @@ import { useTranslation } from "react-i18next";
 import { getAvailableVidsString } from "../../../utils";
 import { ListSeparator } from "../../HomeScreen/components";
 import { useAppConfigContext } from "../../../contexts";
+import { useBreakpoints } from "../../../hooks";
 
 interface PlaylistVideosViewProps {
   id: number;
@@ -18,6 +19,7 @@ export const PlaylistVideosView = ({ id, title, channel, location = "other" }: P
   const { backend } = useLocalSearchParams();
   const { data, isLoading, isError, refetch } = useGetPlaylistVideosQuery(id);
   const { t } = useTranslation();
+  const { isMobile } = useBreakpoints();
   const isOnHomePage = location === "home";
   const { currentInstanceConfig } = useAppConfigContext();
   const showHorizontalScrollableLists = currentInstanceConfig?.customizations?.homeUseHorizontalListsForMobilePortrait;
@@ -38,7 +40,7 @@ export const PlaylistVideosView = ({ id, title, channel, location = "other" }: P
         title={title}
         data={data?.data}
         link={{
-          text: t("viewFullPlaylist") + getAvailableVidsString(data?.total),
+          text: (isMobile ? t("viewFullPlaylistAbbr") : t("viewFullPlaylist")) + getAvailableVidsString(data?.total),
           href: {
             pathname: `/${channel ? ROUTES.CHANNEL_PLAYLIST : ROUTES.PLAYLIST}`,
             params: { backend, playlist: id, channel },

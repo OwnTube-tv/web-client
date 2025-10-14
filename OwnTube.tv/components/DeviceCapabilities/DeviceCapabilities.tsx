@@ -21,7 +21,7 @@ const CapabilityKeyValuePair = ({ label, value }: { label: string; value: string
       <Typography color={colors.themeDesaturated500} fontSize="sizeXS" fontWeight="Medium">
         {label}
       </Typography>
-      <Typography color={colors.themeDesaturated500} fontSize="sizeXS" fontWeight="Medium">
+      <Typography style={styles.row} color={colors.themeDesaturated500} fontSize="sizeXS" fontWeight="Medium">
         {value}
       </Typography>
     </View>
@@ -168,7 +168,7 @@ const styles = StyleSheet.create({
   capabilitiesContainer: {
     gap: 8,
   },
-  iconButton: { height: 36, paddingHorizontal: spacing.sm },
+  iconButton: { height: 36, paddingHorizontal: spacing.sm, paddingVertical: 6 },
   modalHeader: { flexDirection: "row", gap: 16, justifyContent: "space-between" },
   row: { flexWrap: "wrap", justifyContent: "space-between", width: "100%" },
 });

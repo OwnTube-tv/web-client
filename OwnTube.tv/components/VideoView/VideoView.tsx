@@ -167,11 +167,10 @@ const VideoView = ({
 
   const toggleMute = () => {
     googleCastClient?.setStreamMuted(!muted);
-    videoRef.current?.setVolume(Number(!muted));
-    setMuted((prev) => !prev);
+    videoRef.current?.setVolume(Number(muted));
     captureDiagnosticsEvent(muted ? CustomPostHogEvents.UnmuteAudio : CustomPostHogEvents.MuteAudio);
+    setMuted((prev) => !prev);
   };
-  0;
   const handleReplay = () => {
     videoRef.current?.seek(0);
     videoRef.current?.resume();

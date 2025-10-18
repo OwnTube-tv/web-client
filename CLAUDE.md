@@ -259,7 +259,7 @@ OwnTube uses PostHog for product diagnostics with an opt-out default (suitable f
 **User Control:**
 - Users can opt out via "Opt-out of diagnostics" checkbox in Settings
 - If opted out, no diagnostics data is sent
-- If `POSTHOG_API_KEY` is `null`, diagnostics are disabled for all users
+- If `EXPO_PUBLIC_POSTHOG_API_KEY` is `null`, diagnostics are disabled for all users
 
 **Events Captured:**
 - Backend server changes (instance switching)

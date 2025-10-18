@@ -337,12 +337,33 @@ The OwnTube-tv organization maintains 15+ repositories including:
   - Both deployed via GitHub Pages
 
 ### Example Branded Apps
+
 Production examples of apps built with OwnTube:
-- **Blender Tube:** Video content for Blender 3D software community ([video.blender.org](https://video.blender.org))
-- **XR Tube:** Extinction Rebellion's PeerTube platform ([tube.rebellion.global](https://tube.rebellion.global))
-- **Misha Tube:** Alpha/development version for testing ([cust-app-mishatube](https://github.com/OwnTube-tv/cust-app-mishatube))
+
+- **Blender Tube:** Videos presenting the evolutions of the 3D creation software, tutorials and animated films supported by the Blender Foundation
+  - PeerTube instance: [video.blender.org](https://video.blender.org)
+  - Repository: [cust-app-blender](https://github.com/OwnTube-tv/cust-app-blender)
+  - Web app: [cust-app-blender.owntube.tv](https://cust-app-blender.owntube.tv)
+
+- **XR Tube:** The PeerTube platform of Extinction Rebellion
+  - PeerTube instance: [tube.rebellion.global](https://tube.rebellion.global)
+  - Repository: [cust-app-xrtube](https://github.com/OwnTube-tv/cust-app-xrtube)
+  - Web app: [cust-app-xrtube.owntube.tv](https://cust-app-xrtube.owntube.tv)
+
+- **Privacy Tube:** Videos presenting excessive state and corporate surveillance issues and advices on how to increase security and freedom through better privacy
+  - PeerTube instance: [media.privacyinternational.org](https://media.privacyinternational.org)
+  - Repository: [cust-app-pitube](https://github.com/OwnTube-tv/cust-app-pitube)
+  - Web app: [cust-app-pitube.owntube.tv](https://cust-app-pitube.owntube.tv)
+
+- **Basspistol:** Video platform for the Underground Artists sharing their music under free license
+  - PeerTube instance: [v.basspistol.org](https://v.basspistol.org)
+  - Repository: [cust-app-basspistol](https://github.com/OwnTube-tv/cust-app-basspistol)
+  - Web app: [cust-app-basspistol.owntube.tv](https://cust-app-basspistol.owntube.tv)
+
+- **Misha Tube:** Alpha/development version for testing
+  - Repository: [cust-app-mishatube](https://github.com/OwnTube-tv/cust-app-mishatube)
   - Android: [Google Play](https://play.google.com/store/apps/details?id=com.mishadanilenko.mishatube)
   - iOS: [TestFlight](https://testflight.apple.com/join/PaM9r7AF)
-  - Web: [cust-app-mishatube.owntube.tv](https://cust-app-mishatube.owntube.tv/)
+  - Web: [cust-app-mishatube.owntube.tv](https://cust-app-mishatube.owntube.tv)
 
 For more branded app examples, visit [owntube.tv](https://www.owntube.tv).

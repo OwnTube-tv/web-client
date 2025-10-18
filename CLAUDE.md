@@ -11,9 +11,10 @@ OwnTube.tv is a simple and portable video client for the PeerTube video streamin
 **Key Philosophy:** This project aims to democratize video distribution by leveraging PeerTube's decentralized infrastructure. Rather than building a centralized YouTube-like app with many users, OwnTube enables many branded apps (one per content distributor) with relatively few users per application. The result is: "Your videos, your user experience, on your apps!" Each organization maintains their own app store presence, review processes, and content responsibility.
 
 **Repository Structure:**
-- **This repo (web-client):** Canonical development and testing environment, continuously auto-deployed
+- **This repo (web-client):** Canonical development and testing environment, continuously auto-deployed with vanilla branding
+- **Branded fork** ([mykhailodanilenko/web-client](https://github.com/mykhailodanilenko/web-client) - "Misha Tube"): Development fork that uses external customizations mechanism (`CLIENT_CUSTOMIZATIONS_REPO` + `CLIENT_CUSTOMIZATIONS_FILE`) to verify customizations work correctly with swift CI/CD before production branded apps adopt them
 - **Template repo** ([cust-app-template](https://github.com/OwnTube-tv/cust-app-template)): GitHub template for creating new branded apps with pre-configured CI/CD workflows and `.customizations` file
-- **Branded app repos** (e.g., [cust-app-blender](https://github.com/OwnTube-tv/cust-app-blender), [cust-app-xrtube](https://github.com/OwnTube-tv/cust-app-xrtube), [cust-app-basspistol](https://github.com/OwnTube-tv/cust-app-basspistol)): Production delivery mechanism that pulls code + CI/CD from this repo, applies branding via customizations, and deploys to their own GitHub Pages, TestFlight, and Google Play
+- **Branded app repos** (e.g., [cust-app-blender](https://github.com/OwnTube-tv/cust-app-blender), [cust-app-xrtube](https://github.com/OwnTube-tv/cust-app-xrtube), [cust-app-basspistol](https://github.com/OwnTube-tv/cust-app-basspistol)): Production delivery mechanism that pulls code + CI/CD from this repo, applies branding via `.customizations` file, and deploys to their own GitHub Pages, TestFlight, and Google Play with manual push-button releases
 
 ## Build/Test/Lint Commands
 
@@ -111,52 +112,92 @@ This approach satisfies Apple/Google content review requirements (single-instanc
 
 ## Branded App Architecture
 
-The OwnTube project uses a distributed architecture where:
+The OwnTube project uses a distributed architecture with three distinct branding approaches:
 
-1. **Main Repository (this repo):** Serves as the canonical development environment
-   - Continuous auto-deployment to GitHub Pages (web) and app stores (mobile/TV)
-   - Uses vanilla OwnTube.tv branding
-   - All feature development and testing happens here
-   - Main branch should always be production-ready
+### 1. Main Repository (this repo)
+Serves as the canonical development environment:
+- Continuous auto-deployment to GitHub Pages (web) and app stores (mobile/TV)
+- Uses vanilla OwnTube.tv branding (no customizations)
+- All feature development and testing happens here
+- Main branch should always be production-ready
 
-2. **Template Repository:** GitHub template for creating new branded apps
-   - Repository: [OwnTube-tv/cust-app-template](https://github.com/OwnTube-tv/cust-app-template)
-   - Contains pre-configured CI/CD workflows (pulled from main repo)
-   - Includes `.customizations` file template with all available options
-   - Use GitHub's "Use this template" button to create new branded app repos
-   - Assets folder structure for custom branding files
+### 2. Branded Fork (Development/Testing)
+Repository: [mykhailodanilenko/web-client](https://github.com/mykhailodanilenko/web-client) ("Misha Tube")
 
-3. **Branded App Repositories:** Separate repos for each content distributor
-   - Examples: `cust-app-blender`, `cust-app-xrtube`, `cust-app-basspistol`
-   - Created from the template repository
-   - Pull code and CI/CD workflows from main web-client repo
-   - Apply organization-specific branding via `.customizations` file
-   - Manual workflow_dispatch deployment model (push-button releases)
-   - Each maintains their own:
-     - GitHub Pages deployment with optional custom domain
-     - TestFlight and Google Play accounts
-     - App review processes
-     - Content responsibility and legal entity
+**Purpose:** Testing vehicle to verify external customizations mechanism works correctly before production branded apps adopt updates.
 
-4. **Customization Mechanism:**
-   - **For template-based repos:** `.customizations` file in repo root with `EXPO_PUBLIC_*` variables
-   - **For repos using external config:** External git repository specified in `CLIENT_CUSTOMIZATIONS_REPO` environment variable with file path in `CLIENT_CUSTOMIZATIONS_FILE`
-   - Environment variables with `EXPO_PUBLIC_*` prefix configure:
-     - App name, slug, and bundle identifiers
-     - Icons, splash screens, and branding assets (512x512 icon, 1152x1152 splash, TV-specific sizes)
-     - Legal entity information (for privacy policy)
-     - Primary backend instance (`EXPO_PUBLIC_PRIMARY_BACKEND`)
-     - PostHog diagnostics configuration
-     - Feature toggles (hide video site links, hide git details, etc.)
-   - Assets stored in `/assets` folder, referenced with `../customizations/assets/` paths
+**How it works:**
+- Fork of main repo maintaining same CI/CD workflows (continuous auto-deploy)
+- Uses environment variables in `owntube` GitHub environment:
+  - `CLIENT_CUSTOMIZATIONS_REPO`: Points to external git repo with customizations
+  - `CLIENT_CUSTOMIZATIONS_FILE`: Specifies which config file to use
+- Pulls customizations from [OwnTube-tv/client-customizations](https://github.com/OwnTube-tv/client-customizations)
+- Deployments: [Google Play](https://play.google.com/store/apps/details?id=com.mishadanilenko.mishatube), [TestFlight](https://testflight.apple.com/join/PaM9r7AF), [Web](https://cust-app-mishatube.owntube.tv)
 
-5. **Single-Instance UX (for branded apps):**
-   - `EXPO_PUBLIC_PRIMARY_BACKEND` sets the default instance
-   - `customizations.menuHideLeaveButton: true` in featured-instances.json5 hides instance switcher in UI
-   - Multi-instance architecture remains functional for deep links (note: can be bypassed via URL parameters)
-   - Satisfies Apple/Google content review requirements
+**Why this approach:** Maintains swift development velocity while testing that customizations work as intended. Catches issues before they affect production branded apps that deploy manually on their own schedules.
 
-**Getting Started:** To create a new branded app, use the [cust-app-template](https://github.com/OwnTube-tv/cust-app-template) repository and consult docs/customizations.md and docs/pipeline.md for detailed setup instructions.
+### 3. Template Repository
+Repository: [OwnTube-tv/cust-app-template](https://github.com/OwnTube-tv/cust-app-template)
+
+**Purpose:** GitHub template for creating new production branded apps.
+
+**Contains:**
+- Pre-configured CI/CD workflows (pulled from main repo)
+- `.customizations` file template with all available options
+- Assets folder structure for custom branding files
+- Use GitHub's "Use this template" button to create new branded app repos
+
+### 4. Branded App Repositories (Production)
+Examples: `cust-app-blender`, `cust-app-xrtube`, `cust-app-basspistol`, `cust-app-pitube`
+
+**Purpose:** Production delivery for content distributors with their own branding.
+
+**How they work:**
+- Created from cust-app-template repository
+- Pull code and CI/CD workflows from main web-client repo
+- Apply organization-specific branding via `.customizations` file in repo root
+- Manual workflow_dispatch deployment model (push-button releases)
+- Deploy **after** mainline updates, on their own schedule
+- Each maintains their own:
+  - GitHub Pages deployment with optional custom domain
+  - TestFlight and Google Play accounts
+  - App review processes
+  - Content responsibility and legal entity
+
+### Customization Mechanisms Compared
+
+**External Config (Branded Fork method):**
+- Uses `CLIENT_CUSTOMIZATIONS_REPO` + `CLIENT_CUSTOMIZATIONS_FILE` environment variables
+- Customizations stored in separate git repository
+- Enables swift CI/CD testing of customization mechanism
+- Example: Misha Tube (mykhailodanilenko/web-client)
+
+**Inline Config (Branded App method):**
+- Uses `.customizations` file in repo root
+- All branding contained within branded app repo
+- Manual deployment workflow for production control
+- Examples: Blender Tube, XR Tube, Privacy Tube, Basspistol
+
+**Both methods support:**
+- Environment variables with `EXPO_PUBLIC_*` prefix configure:
+  - App name, slug, and bundle identifiers
+  - Icons, splash screens, and branding assets (512x512 icon, 1152x1152 splash, TV-specific sizes)
+  - Legal entity information (for privacy policy)
+  - Primary backend instance (`EXPO_PUBLIC_PRIMARY_BACKEND`)
+  - PostHog diagnostics configuration
+  - Feature toggles (hide video site links, hide git details, etc.)
+- Assets stored in `/assets` folder (or external repo), referenced with appropriate paths
+
+### Single-Instance UX (for branded apps)
+- `EXPO_PUBLIC_PRIMARY_BACKEND` sets the default instance
+- `customizations.menuHideLeaveButton: true` in featured-instances.json5 hides instance switcher in UI
+- Multi-instance architecture remains functional for deep links (note: can be bypassed via URL parameters)
+- Satisfies Apple/Google content review requirements
+
+### Getting Started
+- **For production branded apps:** Use the [cust-app-template](https://github.com/OwnTube-tv/cust-app-template) repository
+- **For development/testing:** Fork main repo and configure external customizations
+- Consult docs/customizations.md and docs/pipeline.md for detailed setup instructions
 
 ## CI/CD & Deployment
 
@@ -360,10 +401,12 @@ Production examples of apps built with OwnTube:
   - Repository: [cust-app-basspistol](https://github.com/OwnTube-tv/cust-app-basspistol)
   - Web app: [cust-app-basspistol.owntube.tv](https://cust-app-basspistol.owntube.tv)
 
-- **Misha Tube:** Alpha/development version for testing
-  - Repository: [cust-app-mishatube](https://github.com/OwnTube-tv/cust-app-mishatube)
+- **Misha Tube:** Development/testing branded fork (not a production app)
+  - Repository: [mykhailodanilenko/web-client](https://github.com/mykhailodanilenko/web-client) (fork with external customizations)
+  - Customizations: [OwnTube-tv/client-customizations](https://github.com/OwnTube-tv/client-customizations)
   - Android: [Google Play](https://play.google.com/store/apps/details?id=com.mishadanilenko.mishatube)
   - iOS: [TestFlight](https://testflight.apple.com/join/PaM9r7AF)
   - Web: [cust-app-mishatube.owntube.tv](https://cust-app-mishatube.owntube.tv)
+  - **Purpose:** Verifies customization mechanism works before production branded apps adopt updates
 
 For more branded app examples, visit [owntube.tv](https://www.owntube.tv).

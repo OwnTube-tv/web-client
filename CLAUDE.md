@@ -392,7 +392,7 @@ Production examples of apps built with OwnTube:
   - Repository: [cust-app-xrtube](https://github.com/OwnTube-tv/cust-app-xrtube)
   - Web app: [cust-app-xrtube.owntube.tv](https://cust-app-xrtube.owntube.tv)
 
-- **Privacy Tube:** Videos presenting excessive state and corporate surveillance issues and advices on how to increase security and freedom through better privacy
+- **Privacy Tube:** Videos presenting excessive state and corporate surveillance issues and advice on how to increase security and freedom through better privacy
   - PeerTube instance: [media.privacyinternational.org](https://media.privacyinternational.org)
   - Repository: [cust-app-pitube](https://github.com/OwnTube-tv/cust-app-pitube)
   - Web app: [cust-app-pitube.owntube.tv](https://cust-app-pitube.owntube.tv)

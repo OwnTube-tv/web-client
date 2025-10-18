@@ -26,7 +26,8 @@ All commands should be run from the `OwnTube.tv/` directory unless otherwise not
 - Start development: `npm start`
 - Web development: `npm run web`
 - Mobile development: `npm run ios` or `npm run android`
-- TV development: `export EXPO_TV=1 && npx expo prebuild --clean && npx expo run:ios` (or android)
+- TV development (iOS): `export EXPO_TV=1 && npx expo prebuild --clean && npx expo run:ios`
+- TV development (Android): `export EXPO_TV=1 && npx expo prebuild --clean && npx expo run:android`
   - After TV development: `unset EXPO_TV && npx expo prebuild --clean` before returning to mobile
 - Lint: `npx eslint .`
 - Format check: `npx prettier --check ./`

@@ -11,6 +11,7 @@ OwnTube.tv is a simple and portable video client for the PeerTube video streamin
 **Key Philosophy:** This project aims to democratize video distribution by leveraging PeerTube's decentralized infrastructure. Rather than building a centralized YouTube-like app with many users, OwnTube enables many branded apps (one per content distributor) with relatively few users per application. The result is: "Your videos, your user experience, on your apps!" Each organization maintains their own app store presence, review processes, and content responsibility.
 
 **Repository Structure:**
+
 - **This repo (web-client):** Canonical development and testing environment, continuously auto-deployed with vanilla branding
 - **Branded fork** ([mykhailodanilenko/web-client](https://github.com/mykhailodanilenko/web-client) - "Misha Tube"): Development fork that uses external customizations mechanism (`CLIENT_CUSTOMIZATIONS_REPO` + `CLIENT_CUSTOMIZATIONS_FILE`) to verify customizations work correctly with swift CI/CD before production branded apps adopt them
 - **Template repo** ([cust-app-template](https://github.com/OwnTube-tv/cust-app-template)): GitHub template for creating new branded apps with pre-configured CI/CD workflows and `.customizations` file
@@ -79,6 +80,7 @@ All commands should be run from the `OwnTube.tv/` directory unless otherwise not
 **Instance Configuration System:** Multi-instance support with feature toggles and white-labeling via `public/featured-instances.json5`. Each instance config specifies hostname, branding, and customizations. Accessed via `useInstanceConfig()` hook which reads from `AppConfigContext`. Validated at test-time using Zod schema.
 
 For branded apps, the multi-instance architecture remains functional under the hood but is hidden from users through:
+
 1. `EXPO_PUBLIC_PRIMARY_BACKEND` env var sets the default/primary instance
 2. `customizations.menuHideLeaveButton: true` in featured-instances.json5 hides the instance switcher UI
 3. Deep links with different `backend` parameters still work (useful for testing and edge cases)
@@ -116,18 +118,22 @@ This approach satisfies Apple/Google content review requirements (single-instanc
 The OwnTube project uses a distributed architecture with three distinct branding approaches:
 
 ### 1. Main Repository (this repo)
+
 Serves as the canonical development environment:
+
 - Continuous auto-deployment to GitHub Pages (web) and app stores (mobile/TV)
 - Uses vanilla OwnTube.tv branding (no customizations)
 - All feature development and testing happens here
 - Main branch should always be production-ready
 
 ### 2. Branded Fork (Development/Testing)
+
 Repository: [mykhailodanilenko/web-client](https://github.com/mykhailodanilenko/web-client) ("Misha Tube")
 
 **Purpose:** Testing vehicle to verify external customizations mechanism works correctly before production branded apps adopt updates.
 
 **How it works:**
+
 - Fork of main repo maintaining same CI/CD workflows (continuous auto-deploy)
 - Uses environment variables in `owntube` GitHub environment:
   - `CLIENT_CUSTOMIZATIONS_REPO`: Points to external git repo with customizations
@@ -138,22 +144,26 @@ Repository: [mykhailodanilenko/web-client](https://github.com/mykhailodanilenko/
 **Why this approach:** Maintains swift development velocity while testing that customizations work as intended. Catches issues before they affect production branded apps that deploy manually on their own schedules.
 
 ### 3. Template Repository
+
 Repository: [OwnTube-tv/cust-app-template](https://github.com/OwnTube-tv/cust-app-template)
 
 **Purpose:** GitHub template for creating new production branded apps.
 
 **Contains:**
+
 - Pre-configured CI/CD workflows (pulled from main repo)
 - `.customizations` file template with all available options
 - Assets folder structure for custom branding files
 - Use GitHub's "Use this template" button to create new branded app repos
 
 ### 4. Branded App Repositories (Production)
+
 Examples: `cust-app-blender`, `cust-app-xrtube`, `cust-app-basspistol`, `cust-app-pitube`
 
 **Purpose:** Production delivery for content distributors with their own branding.
 
 **How they work:**
+
 - Created from cust-app-template repository
 - Pull code and CI/CD workflows from main web-client repo
 - Apply organization-specific branding via `.customizations` file in repo root
@@ -168,18 +178,21 @@ Examples: `cust-app-blender`, `cust-app-xrtube`, `cust-app-basspistol`, `cust-ap
 ### Customization Mechanisms Compared
 
 **External Config (Branded Fork method):**
+
 - Uses `CLIENT_CUSTOMIZATIONS_REPO` + `CLIENT_CUSTOMIZATIONS_FILE` environment variables
 - Customizations stored in separate git repository
 - Enables swift CI/CD testing of customization mechanism
 - Example: Misha Tube (mykhailodanilenko/web-client)
 
 **Inline Config (Branded App method):**
+
 - Uses `.customizations` file in repo root
 - All branding contained within branded app repo
 - Manual deployment workflow for production control
 - Examples: Blender Tube, XR Tube, Privacy Tube, Basspistol
 
 **Both methods support:**
+
 - Environment variables with `EXPO_PUBLIC_*` prefix configure:
   - App name, slug, and bundle identifiers
   - Icons, splash screens, and branding assets (512x512 icon, 1152x1152 splash, TV-specific sizes)
@@ -190,12 +203,14 @@ Examples: `cust-app-blender`, `cust-app-xrtube`, `cust-app-basspistol`, `cust-ap
 - Assets stored in `/assets` folder (or external repo), referenced with appropriate paths
 
 ### Single-Instance UX (for branded apps)
+
 - `EXPO_PUBLIC_PRIMARY_BACKEND` sets the default instance
 - `customizations.menuHideLeaveButton: true` in featured-instances.json5 hides instance switcher in UI
 - Multi-instance architecture remains functional for deep links (note: can be bypassed via URL parameters)
 - Satisfies Apple/Google content review requirements
 
 ### Getting Started
+
 - **For production branded apps:** Use the [cust-app-template](https://github.com/OwnTube-tv/cust-app-template) repository
 - **For development/testing:** Fork main repo and configure external customizations
 - Consult docs/customizations.md and docs/pipeline.md for detailed setup instructions
@@ -203,6 +218,7 @@ Examples: `cust-app-blender`, `cust-app-xrtube`, `cust-app-basspistol`, `cust-ap
 ## CI/CD & Deployment
 
 ### Main Repository (web-client)
+
 - **Trigger:** Automatic on push to `main` branch, or manual via workflow_dispatch
 - **Deployment Strategy:** Continuous deployment (every commit to main is production-ready)
 - **Platforms Built:**
@@ -212,6 +228,7 @@ Examples: `cust-app-blender`, `cust-app-xrtube`, `cust-app-basspistol`, `cust-ap
 - **Build Info:** Injects `build-info.json` with GitHub actor, commit SHA, timestamp, and web URL
 
 ### Branded App Repositories
+
 - **Trigger:** Manual workflow_dispatch only (push-button releases)
 - **Deployment Strategy:** Controlled releases by content distributors
 - **Customizations:** Pulled from external git repo during build
@@ -223,6 +240,7 @@ Examples: `cust-app-blender`, `cust-app-xrtube`, `cust-app-basspistol`, `cust-ap
 ### Environments
 
 1. **`owntube` environment:** Stores sensitive secrets for app builds
+
    - Apple API keys, certificates, provisioning profiles
    - Android keystore and signing credentials
    - Google Play service account JSON
@@ -234,7 +252,9 @@ Examples: `cust-app-blender`, `cust-app-xrtube`, `cust-app-basspistol`, `cust-ap
    - Deep linking configuration (Android fingerprint, package names, Apple bundle ID)
 
 ### Deep Linking Setup (Optional)
+
 For custom domain deployments, configure in `github-pages` environment:
+
 - `CUSTOM_DEPLOYMENT_URL`: Your custom domain
 - `ANDROID_FINGERPRINT`: SHA256 fingerprint from Google Play Console
 - `ANDROID_PACKAGE`: Android package name
@@ -248,6 +268,7 @@ For custom domain deployments, configure in `github-pages` environment:
 OwnTube uses PostHog for product diagnostics with an opt-out default (suitable for general audiences).
 
 **Configuration:**
+
 - `EXPO_PUBLIC_POSTHOG_API_KEY`: PostHog project key
   - Main repo: Uses OwnTube.tv PostHog project
   - Branded apps: Can specify their own key or set to `null` to disable
@@ -257,11 +278,13 @@ OwnTube uses PostHog for product diagnostics with an opt-out default (suitable f
   - Self-hosted: Your own PostHog instance URL
 
 **User Control:**
+
 - Users can opt out via "Opt-out of diagnostics" checkbox in Settings
 - If opted out, no diagnostics data is sent
 - If `EXPO_PUBLIC_POSTHOG_API_KEY` is `null`, diagnostics are disabled for all users
 
 **Events Captured:**
+
 - Backend server changes (instance switching)
 - Rate limit errors and HTTP request failures
 - Product usage patterns for improvement
@@ -275,6 +298,7 @@ The `patches/` directory contains temporary fixes for upstream library issues. T
 ### Current Patches
 
 1. **`@react-native-tvos/config-tv+0.1.1.patch`**
+
    - **Issue:** Plugin overwrites Android TV launcher icons even when `.webp` versions exist
    - **Fix:** Adds existence check before copying `.png` icons (prevents overwriting `.webp` files)
    - **Status:** Temporary workaround for upstream bug
@@ -292,6 +316,7 @@ The `patches/` directory contains temporary fixes for upstream library issues. T
 - **Document new patches:** Add entry here when creating new patches with `npx patch-package`
 
 **Note:** Patches are intentionally temporary. If a patch exists for >6 months, consider:
+
 - Contributing fix upstream
 - Finding alternative library
 - Accepting the issue as permanent (document why)
@@ -299,24 +324,28 @@ The `patches/` directory contains temporary fixes for upstream library issues. T
 ## Technical Notes
 
 ### Core Technologies
+
 - Project uses **react-native-tvos (0.76.9-0)** fork instead of standard React Native for TV support
 - **Metro bundler** extends asset extensions (json, json5, ttf, otf) and prioritizes `.tv.*` extensions when `EXPO_TV=1`
 - **Zod** is used for validation of instance configurations (`instanceConfigs.ts`) and other runtime type checks
 - **Icons** use IcoMoon format with custom font (assets/fonts/icomoon.ttf and selection.json)
 
 ### Environment Variables
+
 - Variables with `EXPO_PUBLIC_*` prefix are accessible in app.config.ts and throughout the app via `process.env`
 - Loaded at build time (not runtime), so changes require rebuild
 - Main repo uses defaults defined in app.config.ts
 - Branded apps override via external customizations file
 
 ### TV Development
+
 - Set `EXPO_TV=1` environment variable before running `npx expo prebuild --clean`
 - After TV development, **must clean up:** `unset EXPO_TV && npx expo prebuild --clean` before mobile development
 - Failing to clean up causes build errors on non-TV platforms
 - TV builds use platform-specific files (`.tv.tsx` extensions)
 
 ### Build System
+
 - **Build numbers:** Generated from UTC timestamp in app.config.ts
   - Format: `YYMMDDHHmm` (iOS keeps full, Android truncates last digit)
   - TV builds offset by 20 minutes for Android to avoid conflicts
@@ -327,24 +356,29 @@ The `patches/` directory contains temporary fixes for upstream library issues. T
   - Avoids 404 errors on page refresh unlike single-page export
 
 ### Expo Plugins
+
 Custom Expo config plugins in `plugins/` directory:
+
 - **withReleaseSigningConfig.js:** Injects Android release signing configuration from environment variables
 - **fixAndroidChromecastLib.js:** Fixes Chromecast library compatibility (enables Jetifier, increases heap size)
 - **withAndroidNotificationControls.js:** Adds foreground service permissions for media playback controls
 
 ### Video Playback
+
 - **Mobile/TV:** expo-av (native player) - older but TV-supported
 - **Web:** video.js with HLS.js - required because Chrome/Firefox don't natively support HLS
 - **Keyboard shortcuts:** F (fullscreen), M (mute), arrows (skip 10s), space (play/pause)
 - **Casting:** Google Cast SDK integration for Chromecast support
 
 ### Deep Linking
+
 - All routes accept `backend` parameter (PeerTube instance hostname)
 - Additional parameters vary by route (e.g., video ID, timestamp, playlist ID)
 - Custom domains require configuration in GitHub Pages environment
 - Associated domains configured in app.config.ts for iOS/Android
 
 ### Testing
+
 - Tests run against **real PeerTube nightly instance** without mocking API responses
 - Ensures compatibility with actual PeerTube behavior
 - Shared mocks in `__mocks__/` for native modules that can't render in test environment
@@ -352,6 +386,7 @@ Custom Expo config plugins in `plugins/` directory:
 ## Project & Community
 
 ### Organization
+
 - **GitHub Organization:** [OwnTube-tv](https://github.com/OwnTube-tv)
 - **Project Website:** [www.owntube.tv](https://www.owntube.tv)
 - **Company:** OwnTube Nordic AB (Swedish org. number: 559517-7196)
@@ -362,13 +397,16 @@ Custom Expo config plugins in `plugins/` directory:
 - **Year Founded:** 2024
 
 ### Contributing
+
 - **Process:** Use the Forking workflow (see README.md for details)
 - **PR Requirements:** Squash commits, sign commits, reference issues, pass linters
 - **Reviewers:** Request reviews from @mykhailodanilenko, @ar9708, and @mblomdahl
 - **Getting Involved:** Contact @ar9708 for contribution opportunities
 
 ### Other Repositories
+
 The OwnTube-tv organization maintains 15+ repositories including:
+
 - **web-client** (this repo): Main client codebase (React Native/Expo)
 - **cust-app-template**: Template for creating branded apps
 - **Branded apps**: cust-app-blender, cust-app-xrtube, cust-app-privacytube, cust-app-basspistol
@@ -383,21 +421,25 @@ The OwnTube-tv organization maintains 15+ repositories including:
 Production examples of apps built with OwnTube:
 
 - **Blender Tube:** Videos presenting the evolutions of the 3D creation software, tutorials and animated films supported by the Blender Foundation
+
   - PeerTube instance: [video.blender.org](https://video.blender.org)
   - Repository: [cust-app-blender](https://github.com/OwnTube-tv/cust-app-blender)
   - Web app: [cust-app-blender.owntube.tv](https://cust-app-blender.owntube.tv)
 
 - **XR Tube:** The PeerTube platform of Extinction Rebellion
+
   - PeerTube instance: [tube.rebellion.global](https://tube.rebellion.global)
   - Repository: [cust-app-xrtube](https://github.com/OwnTube-tv/cust-app-xrtube)
   - Web app: [cust-app-xrtube.owntube.tv](https://cust-app-xrtube.owntube.tv)
 
 - **Privacy Tube:** Videos presenting excessive state and corporate surveillance issues and advice on how to increase security and freedom through better privacy
+
   - PeerTube instance: [media.privacyinternational.org](https://media.privacyinternational.org)
   - Repository: [cust-app-pitube](https://github.com/OwnTube-tv/cust-app-pitube)
   - Web app: [cust-app-pitube.owntube.tv](https://cust-app-pitube.owntube.tv)
 
 - **Basspistol:** Video platform for the Underground Artists sharing their music under free license
+
   - PeerTube instance: [v.basspistol.org](https://v.basspistol.org)
   - Repository: [cust-app-basspistol](https://github.com/OwnTube-tv/cust-app-basspistol)
   - Web app: [cust-app-basspistol.owntube.tv](https://cust-app-basspistol.owntube.tv)

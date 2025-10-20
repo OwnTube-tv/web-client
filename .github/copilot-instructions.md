@@ -18,8 +18,8 @@ All commands should be run from the `OwnTube.tv/` directory unless otherwise not
 - **Test all:** `npm test`
 - **Test single file:** `npm test -- path/to/file.test.tsx`
 - **Lint:** `npx eslint .`
-- **Format check:** `npx prettier --check ./`
-- **Format write:** `npx prettier --write ./`
+- **Format check:** `npx prettier --check ../`
+- **Format write:** `npx prettier --write ../`
 
 ### Development Commands
 
@@ -39,7 +39,7 @@ All commands should be run from the `OwnTube.tv/` directory unless otherwise not
 - **Testing:** Jest with React Testing Library, tests run against real PeerTube nightly instance
 - **i18n:** react-i18next with locale files in `locales/`
 - **Validation:** Zod for runtime type checking and instance config validation
-- **TV Support:** react-native-tvos fork instead of standard React Native
+- **TV Support:** react-native-tvos@0.76.9-0 fork instead of standard React Native
 
 ## Project Structure
 

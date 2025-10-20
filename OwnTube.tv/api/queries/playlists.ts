@@ -52,7 +52,7 @@ export const useGetPlaylistsQuery = ({
       let data = Array.from(groups.values()).flat();
 
       // Apply count limit if provided
-      if (count && count > 0) {
+      if (count !== undefined) {
         data = data.slice(0, count);
       }
 

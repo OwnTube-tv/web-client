@@ -199,6 +199,7 @@
           url: "https://butik.swebbtv.se/",
         },
       ],
+      playlistsHidden: [],
       playlistsShowHiddenButton: true,
       homeUseHorizontalListsForMobilePortrait: true,
       homeLatestPublishedVideoCount: 24,

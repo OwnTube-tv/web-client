@@ -42,6 +42,7 @@ export const HomeScreen = () => {
 
   const { data: channels, refetch: refetchChannels } = useGetChannelsQuery({
     enabled: !currentInstanceConfig?.customizations?.homeHideChannelsOverview,
+    count: currentInstanceConfig?.customizations?.homeChannelsOverviewMaxLimit,
   });
   const { data: categories, refetch: refetchCategories } = useGetCategoriesQuery({
     enabled: !currentInstanceConfig?.customizations?.homeHideCategoriesOverview,
@@ -49,6 +50,7 @@ export const HomeScreen = () => {
   const { data: playlistsData, refetch: refetchPlaylists } = useGetPlaylistsQuery({
     enabled: !currentInstanceConfig?.customizations?.homeHidePlaylistsOverview,
     hiddenPlaylists: currentInstanceConfig?.customizations?.playlistsHidden,
+    count: currentInstanceConfig?.customizations?.homePlaylistsOverviewMaxLimit,
   });
   const { data: currentLiveVideos } = useGetVideosQuery({
     uniqueQueryKey: QUERY_KEYS.liveVideos,

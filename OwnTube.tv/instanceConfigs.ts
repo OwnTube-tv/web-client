@@ -10,6 +10,8 @@ const customizationsSchema = z
     homeHideChannelsOverview: z.boolean(),
     homeHideCategoriesOverview: z.boolean(),
     homeHidePlaylistsOverview: z.boolean(),
+    homePlaylistsOverviewMaxLimit: z.number().min(0).optional(),
+    homeChannelsOverviewMaxLimit: z.number().min(0).optional(),
     homeUseHorizontalListsForMobilePortrait: z.boolean(),
     homeDisplayScheduledLivesThreshold: z.number().optional().nullable(),
     pageDefaultTheme: colorSchemeNameSchema,

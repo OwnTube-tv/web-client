@@ -12,9 +12,11 @@ import semver from "semver";
 export const useGetPlaylistsQuery = ({
   enabled = true,
   hiddenPlaylists,
+  count,
 }: {
   enabled?: boolean;
   hiddenPlaylists?: string[];
+  count?: number;
 }) => {
   const { backend } = useLocalSearchParams<RootStackParams["index"]>();
   const { currentInstanceServerConfig } = useAppConfigContext();
@@ -47,7 +49,12 @@ export const useGetPlaylistsQuery = ({
         }
       }
 
-      const data = Array.from(groups.values()).flat();
+      let data = Array.from(groups.values()).flat();
+
+      // Apply count limit if provided
+      if (count && count > 0) {
+        data = data.slice(0, count);
+      }
 
       return { ...queryData, data };
     },

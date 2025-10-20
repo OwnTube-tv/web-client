@@ -11,6 +11,7 @@
       homeHideChannelsOverview: false,
       homeHideCategoriesOverview: false,
       homeHidePlaylistsOverview: true,
+      homeChannelsOverviewMaxLimit: 4,
       menuExternalLinks: [
         {
           label: "What is XR?",
@@ -249,6 +250,7 @@
       homeHideChannelsOverview: true,
       homeHideCategoriesOverview: true,
       homeHidePlaylistsOverview: false,
+      homePlaylistsOverviewMaxLimit: 4,
       homeFeaturedLives: ["c25424b3-a077-42a1-9b1e-eb47729f1450"],
       showMoreSize: 24,
       premiumContentAds: ["80d0b6ee-df38-4119-9234-a79b0909bd34"],

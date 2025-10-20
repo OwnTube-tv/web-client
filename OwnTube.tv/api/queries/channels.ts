@@ -34,7 +34,7 @@ export const useGetChannelsQuery = ({ enabled = true, count }: { enabled?: boole
       let filteredData = data.filter(({ isLocal }) => isLocal);
 
       // Apply count limit if provided
-      if (count && count > 0) {
+      if (count !== undefined) {
         filteredData = filteredData.slice(0, count);
       }
 

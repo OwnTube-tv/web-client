@@ -22,7 +22,7 @@ export const useGetChannelInfoQuery = (channelHandle?: string) => {
   });
 };
 
-export const useGetChannelsQuery = ({ enabled = true }: { enabled?: boolean }) => {
+export const useGetChannelsQuery = ({ enabled = true, count }: { enabled?: boolean; count?: number }) => {
   const { backend } = useLocalSearchParams<RootStackParams["index"]>();
 
   return useQuery({
@@ -30,7 +30,16 @@ export const useGetChannelsQuery = ({ enabled = true }: { enabled?: boolean }) =
     queryFn: async () => {
       return await ChannelsApiImpl.getChannels(backend!);
     },
-    select: ({ data }) => data.filter(({ isLocal }) => isLocal),
+    select: ({ data }) => {
+      let filteredData = data.filter(({ isLocal }) => isLocal);
+
+      // Apply count limit if provided
+      if (count !== undefined) {
+        filteredData = filteredData.slice(0, count);
+      }
+
+      return filteredData;
+    },
     enabled: !!backend && enabled,
     retry,
   });

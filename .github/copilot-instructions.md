@@ -120,7 +120,7 @@ Group imports in this order:
 ### Formatting
 
 - All code must pass Prettier checks
-- Run `npx prettier --write ./` before submitting PRs
+- Run `npx prettier --write ../` before submitting PRs
 - Code must also pass ESLint checks
 
 ### Platform Support

@@ -33,7 +33,7 @@ All commands should be run from the `OwnTube.tv/` directory unless otherwise not
 ## Core Technologies
 
 - **Framework:** Expo (React Native) with file-based routing via expo-router
-- **State Management:** TanStack Query (React Query) for server state, React Context for global state (ColorScheme, AppConfig, FullScreenModal), Zustand for some local state
+- **State Management:** TanStack Query (React Query) for server state, React Context for global state (ColorScheme, AppConfig, FullScreenModal), Zustand for global and local state
 - **Data Fetching:** Axios with custom error handling, wrapped in React Query hooks
 - **Navigation:** expo-router (file-based routing built on react-navigation)
 - **Testing:** Jest with React Testing Library, tests run against real PeerTube nightly instance
@@ -59,7 +59,7 @@ All commands should be run from the `OwnTube.tv/` directory unless otherwise not
 - `theme/`: Design tokens (colors, typography)
 - `__mocks__/`: Shared mocks for Jest tests
 - `public/featured-instances.json5`: Instance configuration file
-- `patches/`: Temporary fixes for upstream library issues (applied by patch-package)
+- `patches/`: Temporary fixes for third-party library issues (applied by patch-package)
 
 ## Code Style Guidelines
 
@@ -208,7 +208,7 @@ Use platform extensions (`.tv.tsx`, `.web.tsx`, `.ios.tsx`, `.android.tsx`) for 
 
 ## Patches & Dependencies
 
-- The `patches/` directory contains temporary fixes for upstream library issues
+- The `patches/` directory contains temporary fixes for third-party library issues
 - Patches are applied automatically by `patch-package` during `npm install`
 - When upgrading dependencies, check if patches still apply cleanly
 - Document new patches when creating them with `npx patch-package`

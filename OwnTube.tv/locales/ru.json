@@ -202,7 +202,7 @@
   "sortOrder": "Порядок сортировки",
   "publishDateNewest": "Дата публикации (сначала новые)",
   "publishDateOldest": "Дата публикации (сначала старые)",
-  "liveScheduledFor": "Трансляция начнется, {{date}}",
+  "liveScheduledFor": "Трансляция начнется {{date}}",
   "copied": "Скопировано!",
   "pressedTooManyTimesError": "Вы нажали кнопку слишком много раз!"
 }

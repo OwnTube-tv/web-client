@@ -202,7 +202,7 @@
   "sortOrder": "Sortering",
   "publishDateNewest": "Publiceringsdatum (nyast först)",
   "publishDateOldest": "Publiceringsdatum (äldst först)",
-  "liveScheduledFor": "Schemalagd live, {{date}}",
+  "liveScheduledFor": "Schemalagt live, {{date}}",
   "copied": "Kopierad!",
   "pressedTooManyTimesError": "Du tryckte på knappen för många gånger!"
 }

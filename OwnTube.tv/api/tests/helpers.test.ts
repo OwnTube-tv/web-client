@@ -85,9 +85,11 @@ describe("combineCollectionQueryResults", () => {
 });
 
 describe("filterScheduledLivestreams", () => {
+  const now = Date.now();
+
   const videoWithSchedule = (offsetMs: number, id: number) => ({
     id,
-    liveSchedules: [{ startAt: new Date(Date.now() + offsetMs).toISOString() }],
+    liveSchedules: [{ startAt: new Date(now + offsetMs).toISOString() }],
   });
 
   const videoWithoutSchedule = () => ({

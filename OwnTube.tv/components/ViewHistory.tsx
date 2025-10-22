@@ -1,4 +1,4 @@
-import { useBreakpoints, useViewHistory, ViewHistoryEntry } from "../hooks";
+import { useBreakpoints, usePageContentTopPadding, useViewHistory, ViewHistoryEntry } from "../hooks";
 import { SectionList, StyleSheet, View } from "react-native";
 import { Loader } from "./Loader";
 import { Spacer } from "./shared/Spacer";
@@ -32,6 +32,7 @@ export const ViewHistory = () => {
   const { isMobile } = useBreakpoints();
   const { colors } = useTheme();
   const { currentInstanceConfig } = useAppConfigContext();
+  const { top } = usePageContentTopPadding();
 
   const { toggleModal, setContent } = useFullScreenModalContext();
 
@@ -97,6 +98,7 @@ export const ViewHistory = () => {
       style={{
         paddingHorizontal: isMobile ? spacing.sm : spacing.xl,
         ...styles.screenContainer,
+        paddingTop: styles.screenContainer.paddingVertical + top,
       }}
     >
       <View style={styles.headerContainer}>

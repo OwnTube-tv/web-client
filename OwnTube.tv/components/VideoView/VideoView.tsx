@@ -35,6 +35,7 @@ import { useCustomDiagnosticsEvents } from "../../diagnostics/useCustomDiagnosti
 import { CustomPostHogEvents, CustomPostHogExceptions } from "../../diagnostics/constants";
 import { getHumanReadableDuration } from "../../utils";
 import { useTimeLeftUpdates, useWatchedDuration } from "../../hooks";
+import { activateKeepAwakeAsync, deactivateKeepAwake } from "expo-keep-awake";
 
 export interface VideoViewProps {
   uri?: string;
@@ -399,6 +400,16 @@ const VideoView = ({
     }, [isCCAvailable, sessionCCLocale]),
   );
 
+  useEffect(() => {
+    if (isWaitingForLive) {
+      activateKeepAwakeAsync();
+
+      return () => {
+        deactivateKeepAwake();
+      };
+    }
+  }, [isWaitingForLive]);
+
   const [hlsResolution, setHlsResolution] = useState<number | undefined>();
   const handleBandwidthUpdate = (event: OnBandwidthUpdateData) => {
     if (Platform.OS !== "android") {
@@ -465,6 +476,7 @@ const VideoView = ({
         hlsAutoQuality={hlsResolution}
         isDownloadAvailable={videoData?.downloadEnabled}
         viewsCount={videoData?.views}
+        viewersCount={videoData?.viewers}
         publishedAt={videoData?.publishedAt}
       >
         {googleCastClient ? (

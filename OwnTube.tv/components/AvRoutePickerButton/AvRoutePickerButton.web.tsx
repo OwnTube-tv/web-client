@@ -1,3 +1,4 @@
+import { useBreakpoints } from "../../hooks";
 import PlayerButton from "../VideoControlsOverlay/components/PlayerButton";
 
 export interface AvRoutePickerButtonProps {
@@ -5,6 +6,7 @@ export interface AvRoutePickerButtonProps {
 }
 
 const AvRoutePickerButton = ({ isWebAirPlayAvailable }: AvRoutePickerButtonProps) => {
+  const { isMobile } = useBreakpoints();
   const handleButtonPress = () => {
     const video = document.getElementsByTagName("video")[0];
     video.webkitShowPlaybackTargetPicker();
@@ -14,7 +16,7 @@ const AvRoutePickerButton = ({ isWebAirPlayAvailable }: AvRoutePickerButtonProps
     return <></>;
   }
 
-  return <PlayerButton icon={"AirPlay"} onPress={handleButtonPress} />;
+  return <PlayerButton reducedWidth={isMobile} icon={"AirPlay"} onPress={handleButtonPress} />;
 };
 
 export default AvRoutePickerButton;

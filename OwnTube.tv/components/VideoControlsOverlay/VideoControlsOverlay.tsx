@@ -341,7 +341,9 @@ const VideoControlsOverlay = ({
                       )}
                     </View>
                     <View style={styles.functionButtonsContainer}>
-                      {isMobile && <PlayerButton onPress={toggleMute} icon={`Volume${isMute ? "-Off" : ""}`} />}
+                      {isMobile && (
+                        <PlayerButton reducedWidth onPress={toggleMute} icon={`Volume${isMute ? "-Off" : ""}`} />
+                      )}
                       {castState !== "airPlay" && (
                         <GoogleCastButton
                           isChromeCastAvailable={isChromeCastAvailable}
@@ -353,13 +355,22 @@ const VideoControlsOverlay = ({
                       )}
                       {isCCAvailable && (
                         <PlayerButton
+                          reducedWidth={isMobile}
                           color={isCCVisible ? undefined : colors.white25}
                           icon="Closed-Captions"
                           onPress={handleToggleCC}
                         />
                       )}
-                      <PlayerButton icon="Settings" onPress={() => setIsSettingsMenuVisible((cur) => !cur)} />
-                      <PlayerButton onPress={toggleFullscreen} icon={`Fullscreen${isFullscreen ? "-Exit" : ""}`} />
+                      <PlayerButton
+                        reducedWidth={isMobile}
+                        icon="Settings"
+                        onPress={() => setIsSettingsMenuVisible((cur) => !cur)}
+                      />
+                      <PlayerButton
+                        reducedWidth={isMobile}
+                        onPress={toggleFullscreen}
+                        icon={`Fullscreen${isFullscreen ? "-Exit" : ""}`}
+                      />
                     </View>
                   </View>
                 </>

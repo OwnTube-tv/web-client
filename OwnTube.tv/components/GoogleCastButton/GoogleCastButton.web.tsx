@@ -1,3 +1,4 @@
+import { useBreakpoints } from "../../hooks";
 import PlayerButton from "../VideoControlsOverlay/components/PlayerButton";
 
 export interface GoogleCastButtonProps {
@@ -6,11 +7,12 @@ export interface GoogleCastButtonProps {
 }
 
 const GoogleCastButton = ({ isChromeCastAvailable, handleLoadGoogleCastMedia }: GoogleCastButtonProps) => {
+  const { isMobile } = useBreakpoints();
   if (!isChromeCastAvailable) {
     return null;
   }
 
-  return <PlayerButton icon="Chromecast" onPress={handleLoadGoogleCastMedia} />;
+  return <PlayerButton reducedWidth={isMobile} icon="Chromecast" onPress={handleLoadGoogleCastMedia} />;
 };
 
 export default GoogleCastButton;

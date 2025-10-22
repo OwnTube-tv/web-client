@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { useCustomDiagnosticsEvents } from "../diagnostics/useCustomDiagnosticEvents";
 import { CustomPostHogEvents, CustomPostHogExceptions } from "../diagnostics/constants";
 import { AppState, Platform } from "react-native";
-import { usePostHog } from "posthog-react-native/lib/posthog-react-native/src/hooks/usePostHog";
+import { usePostHog } from "posthog-react-native";
 
 export const useAppStateDiagnostics = () => {
   const { captureDiagnosticsEvent } = useCustomDiagnosticsEvents();

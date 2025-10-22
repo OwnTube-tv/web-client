@@ -10,41 +10,45 @@ export interface PlayerButtonProps extends PressableProps {
   onHoverOut?: () => void;
   scale?: number;
   color?: string;
+  reducedWidth?: boolean;
 }
 
-const PlayerButton = forwardRef<View, PlayerButtonProps>(({ onPress, icon, onHoverIn, onHoverOut, color }, ref) => {
-  const { colors } = useTheme();
-  const [isHovered, setIsHovered] = useState(false);
+const PlayerButton = forwardRef<View, PlayerButtonProps>(
+  ({ onPress, icon, onHoverIn, onHoverOut, color, reducedWidth = false }, ref) => {
+    const { colors } = useTheme();
+    const [isHovered, setIsHovered] = useState(false);
 
-  const handleHoverIn = () => {
-    onHoverIn?.();
-    setIsHovered(true);
-  };
+    const handleHoverIn = () => {
+      onHoverIn?.();
+      setIsHovered(true);
+    };
 
-  const handleHoverOut = () => {
-    onHoverOut?.();
-    setIsHovered(false);
-  };
+    const handleHoverOut = () => {
+      onHoverOut?.();
+      setIsHovered(false);
+    };
 
-  return (
-    <Pressable
-      ref={ref}
-      onHoverIn={handleHoverIn}
-      onHoverOut={handleHoverOut}
-      onPress={onPress}
-      style={({ focused }) => [
-        styles.container,
-        {
-          padding: focused ? -2 : 0,
-          borderWidth: focused ? 2 : 0,
-          borderColor: colors.white94,
-        },
-      ]}
-    >
-      <IcoMoonIcon name={icon} size={spacing.xl} color={isHovered ? colors.white94 : color || colors.white80} />
-    </Pressable>
-  );
-});
+    return (
+      <Pressable
+        ref={ref}
+        onHoverIn={handleHoverIn}
+        onHoverOut={handleHoverOut}
+        onPress={onPress}
+        style={({ focused }) => [
+          styles.container,
+          {
+            padding: focused ? -2 : 0,
+            borderWidth: focused ? 2 : 0,
+            borderColor: colors.white94,
+            width: styles.container.width - 6 * Number(reducedWidth),
+          },
+        ]}
+      >
+        <IcoMoonIcon name={icon} size={spacing.xl} color={isHovered ? colors.white94 : color || colors.white80} />
+      </Pressable>
+    );
+  },
+);
 
 const styles = StyleSheet.create({
   container: {

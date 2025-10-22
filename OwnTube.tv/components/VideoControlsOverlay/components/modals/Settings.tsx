@@ -17,9 +17,8 @@ import Constants from "expo-constants";
 import DeviceCapabilities from "../../../DeviceCapabilities";
 import Picker from "../../../shared/Picker";
 import { useGetInstanceInfoQuery } from "../../../../api";
-import { usePostHog } from "posthog-react-native/lib/posthog-react-native/src/hooks/usePostHog";
 import { useState } from "react";
-import { PostHogPersistedProperty } from "posthog-react-native/lib/posthog-core/src/types";
+import { PostHogPersistedProperty, usePostHog } from "posthog-react-native";
 
 interface SettingsProps {
   onClose: () => void;

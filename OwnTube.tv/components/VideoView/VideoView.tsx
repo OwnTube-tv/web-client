@@ -400,15 +400,17 @@ const VideoView = ({
     }, [isCCAvailable, sessionCCLocale]),
   );
 
-  useEffect(() => {
-    if (isWaitingForLive) {
-      activateKeepAwakeAsync();
+  useFocusEffect(
+    useCallback(() => {
+      if (isWaitingForLive) {
+        activateKeepAwakeAsync();
+      }
 
       return () => {
         deactivateKeepAwake();
       };
-    }
-  }, [isWaitingForLive]);
+    }, [isWaitingForLive]),
+  );
 
   const [hlsResolution, setHlsResolution] = useState<number | undefined>();
   const handleBandwidthUpdate = (event: OnBandwidthUpdateData) => {

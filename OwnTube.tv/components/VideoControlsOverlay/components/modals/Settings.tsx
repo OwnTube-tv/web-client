@@ -18,8 +18,7 @@ import DeviceCapabilities from "../../../DeviceCapabilities";
 import Picker from "../../../shared/Picker";
 import { useGetInstanceInfoQuery } from "../../../../api";
 import { useState } from "react";
-import { usePostHog } from "posthog-react-native";
-import { PostHogPersistedProperty } from "posthog-react-native/lib/posthog-core/src/types";
+import { PostHogPersistedProperty, usePostHog } from "posthog-react-native";
 
 interface SettingsProps {
   onClose: () => void;

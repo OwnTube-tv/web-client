@@ -47,11 +47,13 @@ jobs:
       - name: Create .env File
         if: ${{ inputs.customizations_env_content != '' }}
         run: |
+          set -e
           echo "${{ inputs.customizations_env_content }}" > ./OwnTube.tv/.env
 
       - name: Overwrite Manifest file for PWA customization
         if: ${{ inputs.customizations_env_content != '' }}
         run: |
+          set -e
           # Source the environment variables
           source ./OwnTube.tv/.env
 
@@ -103,6 +105,7 @@ jobs:
 
       - name: Create association files for deeplinking
         run: |
+          set -e
           mkdir -p ./OwnTube.tv/public/.well-known
 
           cat > ./OwnTube.tv/public/.well-known/apple-app-site-association << 'EOF'
@@ -135,6 +138,7 @@ jobs:
 
       - name: Inject Build Info
         run: |
+          set -e
           cat > ./OwnTube.tv/build-info.json << 'EOF'
           ${{ inputs.build_info }}
           EOF

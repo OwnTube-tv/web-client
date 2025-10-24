@@ -27,6 +27,7 @@ jobs:
     steps:
       - name: Check for Anthropic API key
         run: |
+          set -e
           if [ -z "${{ secrets.ANTHROPIC_API_KEY }}" ] && [ -z "${{ vars.ANTHROPIC_API_KEY }}" ]; then
             echo "No ANTHROPIC_API_KEY found - skipping Claude Code action"
             echo "SKIP_CLAUDE=true" >> $GITHUB_OUTPUT

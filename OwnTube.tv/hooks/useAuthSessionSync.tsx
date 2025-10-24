@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { useGlobalSearchParams } from "expo-router";
-import { useAuthSessionStore } from "../store";
+import { AUTH_SESSION_OBJECT_LENGTH, useAuthSessionStore } from "../store";
 import { RootStackParams } from "../app/_layout";
 import { ROUTES } from "../types";
 import { useFullScreenModalContext } from "../contexts";
@@ -16,6 +16,13 @@ export const useAuthSessionSync = () => {
   const queryClient = useQueryClient();
 
   useEffect(() => {
+    // clear invalid session data if present
+    if (session && Object.keys(session).length < AUTH_SESSION_OBJECT_LENGTH) {
+      console.info("Clearing invalid auth session data");
+      clearSession(backend);
+      return;
+    }
+
     if (session?.sessionExpired) {
       toggleModal(true);
       setContent(<SignedOutModal handleClose={() => toggleModal(false)} />);
@@ -29,7 +36,7 @@ export const useAuthSessionSync = () => {
     if (backend) {
       await selectSession(backend);
     } else {
-      clearSession();
+      clearSession(backend);
     }
   }, [backend]);
 

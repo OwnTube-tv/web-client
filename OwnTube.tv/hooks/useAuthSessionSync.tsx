@@ -36,7 +36,7 @@ export const useAuthSessionSync = () => {
     if (backend) {
       await selectSession(backend);
     } else {
-      clearSession(backend);
+      clearSession();
     }
   }, [backend]);
 

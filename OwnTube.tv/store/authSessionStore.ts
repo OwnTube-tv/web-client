@@ -29,7 +29,7 @@ interface AuthSessionStore {
   updateSession: (backend: string, session: Partial<AuthSession>) => Promise<void>;
   removeSession: (backend: string) => Promise<void>;
   selectSession: (backend: string) => Promise<void>;
-  clearSession: (backend: string) => Promise<void>;
+  clearSession: (backend?: string) => Promise<void>;
 }
 
 export const useAuthSessionStore = create<AuthSessionStore>((set, get) => ({
@@ -65,6 +65,9 @@ export const useAuthSessionStore = create<AuthSessionStore>((set, get) => ({
 
   clearSession: async (backend) => {
     set({ session: undefined });
-    await deleteFromAsyncStorage([`${backend}/auth`]);
+
+    if (backend) {
+      await deleteFromAsyncStorage([`${backend}/auth`]);
+    }
   },
 }));

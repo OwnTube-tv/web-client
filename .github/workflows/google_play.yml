@@ -71,6 +71,7 @@ jobs:
         id: create_env
         if: ${{ inputs.customizations_env_content != '' }}
         run: |
+          set -e
           echo "BUNDLE_ID=$(echo "${{ inputs.customizations_env_content }}" | grep '^EXPO_PUBLIC_IOS_BUNDLE_IDENTIFIER=' | cut -d'=' -f2)" >> $GITHUB_OUTPUT
           echo "${{ inputs.customizations_env_content }}" > ./OwnTube.tv/.env
 
@@ -80,6 +81,7 @@ jobs:
           EXPO_PUBLIC_ANDROID_RELEASE_SIGNING_KEY_ALIAS: ${{ secrets.SIGNING_KEY_ALIAS }}
           EXPO_PUBLIC_ANDROID_RELEASE_SIGNING_KEY_PASSWORD: ${{ secrets.SIGNING_KEY_PASSWORD }}
         run: |
+          set -e
           if [ "${{ inputs.isTV }}" == "true" ]; then
             export EXPO_TV=1
           fi
@@ -107,6 +109,7 @@ jobs:
 
       - name: Build app artifact
         run: |
+          set -e
           if [ "${{ inputs.isTV }}" == "true" ]; then
             export EXPO_TV=1
           fi

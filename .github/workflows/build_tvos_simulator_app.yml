@@ -65,6 +65,7 @@ jobs:
 
       - name: Build release tvOS .app for simulators by @${{ github.actor }}
         run: |
+          set -e
           export EXPO_TV=1 &&
           cd OwnTube.tv/ios/ &&
           WORKSPACE_FILE=$(find . -maxdepth 1 -name "*.xcworkspace")
@@ -81,6 +82,7 @@ jobs:
       - name: Find .app artifact path
         id: find_app
         run: |
+          set -e
           TVOS_APP_ARTIFACT_PATH=$(find ./OwnTube.tv/ios/build-simulator/Build/Products/Release-appletvsimulator -maxdepth 1 -name "*.app" | head -n 1)
           echo "TVOS_APP_ARTIFACT_PATH=$TVOS_APP_ARTIFACT_PATH" >> $GITHUB_OUTPUT
 

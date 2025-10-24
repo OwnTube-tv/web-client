@@ -81,12 +81,14 @@ jobs:
         id: create_env
         if: ${{ inputs.customizations_env_content != '' }}
         run: |
+          set -e
           echo "BUNDLE_ID=$(echo "${{ inputs.customizations_env_content }}" | grep '^EXPO_PUBLIC_IOS_BUNDLE_IDENTIFIER=' | cut -d'=' -f2)" >> $GITHUB_OUTPUT
           echo "APP_NAME=$(echo "${{ inputs.customizations_env_content }}" | grep '^EXPO_PUBLIC_APP_NAME=' | cut -d'=' -f2 | sed "s/['\"]//g")" >> $GITHUB_OUTPUT
           echo "${{ inputs.customizations_env_content }}" > ./OwnTube.tv/.env
 
       - name: Expo Prebuild assets
         run: |
+          set -e
           if [ "${{ inputs.target }}" == "appletvos" ]; then
             export EXPO_TV=1
           fi
@@ -106,6 +108,7 @@ jobs:
           KEYCHAIN_PASSWORD: "CI_PASSWORD"
           P12_PASSWORD: ${{ secrets.P12_PASSWORD }}
         run: |
+          set -e
           # create variables
           CERTIFICATE_PATH=$RUNNER_TEMP/build_certificate.p12
           PP_PATH=$RUNNER_TEMP/build_pp.mobileprovision
@@ -139,6 +142,7 @@ jobs:
           APPLE_DEVELOPMENT_TEAM: ${{ secrets.APPLE_DEVELOPMENT_TEAM }}
           PROVISIONING_PROFILE_SPECIFIER: ${{ secrets.PROVISIONING_PROFILE_SPECIFIER }}
         run: |
+          set -e
           if [ "${{ inputs.target }}" == "appletvos" ]; then
             export EXPO_TV=1
           fi
@@ -172,6 +176,7 @@ jobs:
           APPLE_DEVELOPMENT_TEAM: ${{ secrets.APPLE_DEVELOPMENT_TEAM }}
           PROVISIONING_PROFILE_SPECIFIER: ${{ secrets.PROVISIONING_PROFILE_SPECIFIER }}
         run: |
+          set -e
           cd OwnTube.tv/ios
           echo "<?xml version="1.0" encoding="UTF-8"?>
           <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
@@ -206,6 +211,7 @@ jobs:
           APPLE_API_PRIVATE_KEY: ${{ secrets.APPLE_API_PRIVATE_KEY }}
           APPLE_API_KEY: ${{ secrets.APPLE_API_KEY }}
         run: |
+          set -e
           mkdir -p ~/private_keys
           echo -n "$APPLE_API_PRIVATE_KEY" | base64 --decode --output ~/private_keys/AuthKey_$APPLE_API_KEY.p8
 
@@ -214,6 +220,7 @@ jobs:
           APPLE_API_KEY: ${{ secrets.APPLE_API_KEY }}
           APPLE_API_KEY_ISSUER: ${{ secrets.APPLE_API_KEY_ISSUER }}
         run: |
+          set -e
           IPA_NAME="${{ steps.create_env.outputs.APP_NAME }}"
           IPA_NAME="${IPA_NAME// /}"
           cd OwnTube.tv/ios
@@ -226,6 +233,7 @@ jobs:
       - name: Clean up keychain and provisioning profile
         if: ${{ always() }}
         run: |
+          set -e
           security delete-keychain $RUNNER_TEMP/app-signing.keychain-db
           rm ~/Library/MobileDevice/Provisioning\ Profiles/build_pp.mobileprovision
           rm -rf ~/private_keys

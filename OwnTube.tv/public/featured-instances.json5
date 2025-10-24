@@ -174,7 +174,7 @@
     logoUrl: "https://owntube-tv.github.io/web-client/logos/swebbtv.se.png",
     customizations: {
       loginWithUsernameAndPassword: true,
-      pageTitle: "Swebbtv Play (beta)",
+      pageTitle: "Swebbtv Play",
       pageDefaultTheme: "light",
       menuHideHistoryButton: false,
       menuHideChannelsButton: true,
@@ -229,7 +229,7 @@
         "16633",
         "15549",
       ],
-      playlistsShowHiddenButton: true,
+      playlistsShowHiddenButton: false,
       homeUseHorizontalListsForMobilePortrait: true,
       homeLatestPublishedVideoCount: 24,
       homeRecentlyWatchedVideoCount: 4,

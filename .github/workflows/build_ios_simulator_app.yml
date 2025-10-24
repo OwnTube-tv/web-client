@@ -65,6 +65,7 @@ jobs:
 
       - name: Build release .app for simulators by @${{ github.actor }}
         run: |
+          set -e
           cd OwnTube.tv/ios/ &&
           WORKSPACE_FILE=$(find . -maxdepth 1 -name "*.xcworkspace")
           SCHEME=$(xcodebuild -list | sed -n '/Schemes:/,$p' | tail -n +2 | head -n 1 | xargs)
@@ -80,6 +81,7 @@ jobs:
       - name: Find .app artifact path
         id: find_app
         run: |
+          set -e
           IOS_APP_ARTIFACT_PATH=$(find ./OwnTube.tv/ios/build-simulator/Build/Products/Release-iphonesimulator -maxdepth 1 -name "*.app" | head -n 1)
           echo "IOS_APP_ARTIFACT_PATH=$IOS_APP_ARTIFACT_PATH" >> $GITHUB_OUTPUT
 

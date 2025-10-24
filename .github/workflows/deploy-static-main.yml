@@ -65,6 +65,7 @@ jobs:
       - id: create
         name: "@${{ github.actor }} initiated GitHub Pages deployment, prepare build info"
         run: |
+          set -e
           # Builder username on GitHub
           echo "GITHUB_ACTOR=${{ github.actor }}" && echo "GITHUB_ACTOR=${{ github.actor }}" >> "$GITHUB_OUTPUT"
 
@@ -94,6 +95,7 @@ jobs:
 
       - id: write
         run: |
+          set -e
           echo "BUILD_INFO<<EOF" >> $GITHUB_OUTPUT
           echo "{
             \"GITHUB_ACTOR\": \"${{ steps.create.outputs.GITHUB_ACTOR }}\",
@@ -115,6 +117,7 @@ jobs:
       - name: Check for Customization Variables
         id: check_customizations
         run: |
+          set -e
           if [[ -n "${{ vars.CLIENT_CUSTOMIZATIONS_REPO }}" && -n "${{ vars.CLIENT_CUSTOMIZATIONS_FILE }}" ]]; then
             echo "should_run_customizations=true" >> $GITHUB_OUTPUT
           else
@@ -130,6 +133,7 @@ jobs:
         id: read_customization_file
         if: steps.check_customizations.outputs.should_run_customizations == 'true'
         run: |
+          set -e
           CUSTOMIZATION_FILE_PATH="customizations-repo/${{ vars.CLIENT_CUSTOMIZATIONS_FILE }}"
           if [[ -f "$CUSTOMIZATION_FILE_PATH" ]]; then
             echo "$(cat "$CUSTOMIZATION_FILE_PATH")"

@@ -40,6 +40,7 @@ export const useGetVideosQuery = <TResult = GetVideosVideo[]>({
     enabled: enabled && !!backend,
     select,
     refetchInterval,
+    refetchIntervalInBackground: true,
     retry,
   });
 };
@@ -100,6 +101,7 @@ export const useGetVideoQuery = <TResult = Video>({
       return await ApiServiceImpl.getVideo(backend!, id!);
     },
     enabled: !!backend && !!id && enabled,
+    refetchIntervalInBackground: true,
     refetchInterval: (query: Query<Video, OwnTubeError, Video, QueryKey>) => {
       return query.state.data?.isLive ? LIVE_REFETCH_INTERVAL : 0;
     },
@@ -174,12 +176,15 @@ export const useGetVideoFullInfoCollectionQuery = (
   videoIds: string[] = [],
   queryKey: string,
   scheduledLiveThreshold?: number | null,
+  refetchInterval?: number,
 ) => {
   const { backend } = useLocalSearchParams<RootStackParams["index"]>();
 
   return useQueries({
     queries: videoIds.map((videoId) => ({
       queryKey: [queryKey, videoId],
+      refetchInterval,
+      refetchIntervalInBackground: true,
       queryFn: async () => {
         try {
           const res = await ApiServiceImpl.getVideo(backend!, videoId!);

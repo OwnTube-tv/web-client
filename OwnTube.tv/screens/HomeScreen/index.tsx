@@ -72,6 +72,7 @@ export const HomeScreen = () => {
     liveVideoIds,
     QUERY_KEYS.liveStreamsCollection,
     currentInstanceConfig?.customizations?.homeDisplayScheduledLivesThreshold,
+    isFocused ? LIVE_STREAM_LIST_REFETCH_INTERVAL : 0,
   );
 
   const historyData = useMemo(() => {
@@ -174,6 +175,7 @@ export const HomeScreen = () => {
     await queryClient.refetchQueries({ queryKey: [QUERY_KEYS.videos], type: "active" });
     await queryClient.refetchQueries({ queryKey: [QUERY_KEYS.playlistVideos], type: "active" });
     await queryClient.refetchQueries({ queryKey: [QUERY_KEYS.channelVideos], type: "active" });
+    await queryClient.refetchQueries({ queryKey: [QUERY_KEYS.liveStreamsCollection], type: "active" });
 
     setRefreshing(false);
     captureDiagnosticsEvent(CustomPostHogEvents.PullToRefresh);

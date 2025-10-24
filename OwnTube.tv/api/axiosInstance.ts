@@ -162,7 +162,11 @@ axiosInstance.interceptors.response.use(
 
         if (typeof backend === "string" && backend.length > 0) {
           console.info("Session expired, aborting request");
-          await useAuthSessionStore.getState().updateSession(backend, { sessionExpired: true });
+          const existingSession = useAuthSessionStore.getState().session;
+
+          if (existingSession && existingSession.backend === backend) {
+            await useAuthSessionStore.getState().updateSession(backend, { sessionExpired: true });
+          }
         }
 
         postHogInstance.capture(CustomPostHogEvents.SessionExpired);

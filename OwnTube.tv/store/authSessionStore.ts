@@ -5,7 +5,7 @@ import { readFromAsyncStorage, writeToAsyncStorage, deleteFromAsyncStorage } fro
 export interface AuthSession {
   backend: string;
   basePath: string;
-  email: string;
+  email?: string;
   twoFactorEnabled: boolean;
   sessionCreatedAt: string;
   sessionUpdatedAt: string;
@@ -17,11 +17,11 @@ export interface AuthSession {
   accessToken: string;
   accessTokenIssuedAt: string;
   accessTokenExpiresIn: number;
-  userInfoResponse: User;
-  userInfoUpdatedAt: string;
-  authTokenRefreshInitiatedAt?: string;
-  authTokenRefreshExpiresIn?: number;
+  userInfoResponse?: User;
+  userInfoUpdatedAt?: string;
 }
+
+export const AUTH_SESSION_OBJECT_LENGTH = 13; // Number of keys in a valid AuthSession object
 
 interface AuthSessionStore {
   session?: AuthSession;
@@ -29,7 +29,7 @@ interface AuthSessionStore {
   updateSession: (backend: string, session: Partial<AuthSession>) => Promise<void>;
   removeSession: (backend: string) => Promise<void>;
   selectSession: (backend: string) => Promise<void>;
-  clearSession: () => void;
+  clearSession: (backend?: string) => Promise<void>;
 }
 
 export const useAuthSessionStore = create<AuthSessionStore>((set, get) => ({
@@ -63,7 +63,11 @@ export const useAuthSessionStore = create<AuthSessionStore>((set, get) => ({
     }
   },
 
-  clearSession: () => {
+  clearSession: async (backend) => {
     set({ session: undefined });
+
+    if (backend) {
+      await deleteFromAsyncStorage([`${backend}/auth`]);
+    }
   },
 }));

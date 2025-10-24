@@ -97,7 +97,6 @@ jobs:
 
       - name: Inject Build Info
         run: |
-          set -e
           cat > ./OwnTube.tv/build-info.json << 'EOF'
           ${{ inputs.build_info }}
           EOF

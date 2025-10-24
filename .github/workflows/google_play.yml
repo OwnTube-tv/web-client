@@ -99,14 +99,12 @@ jobs:
 
       - name: Inject Build Info
         run: |
-          set -e
           cat > ./OwnTube.tv/build-info.json << 'EOF'
           ${{ inputs.build_info }}
           EOF
 
       - name: Add keystore file
         run: |
-          set -e
           echo "${{ secrets.RELEASE_KEYSTORE_CONTENT_BASE64 }}" | base64 --decode > ./OwnTube.tv/android/app/release-key.jks
 
       - name: Build app artifact

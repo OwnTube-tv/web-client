@@ -112,7 +112,6 @@ jobs:
       - name: Clone customizations repository
         if: steps.check_customizations.outputs.should_run_customizations == 'true'
         run: |
-          set -e
           git clone "${{ vars.CLIENT_CUSTOMIZATIONS_REPO }}" customizations-repo
 
       - name: Find and read the customization file
@@ -174,7 +173,6 @@ jobs:
 
       - name: Inject Build Info
         run: |
-          set -e
           cat > ./OwnTube.tv/build-info.json << 'EOF'
           ${{ needs.build_info.outputs.BUILD_INFO }}
           EOF
@@ -219,7 +217,6 @@ jobs:
 
       - name: Add keystore file
         run: |
-          set -e
           echo "${{ secrets.ANDROID_RELEASE_KEYSTORE_CONTENT_BASE64 }}" | base64 --decode > ./OwnTube.tv/android/app/release-key.jks
 
       - name: Build artifact

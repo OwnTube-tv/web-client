@@ -44,7 +44,6 @@ jobs:
       - name: Create .env File
         if: ${{ inputs.customizations_env_content != '' }}
         run: |
-          set -e
           echo "${{ inputs.customizations_env_content }}" > ./OwnTube.tv/.env
 
       - name: Expo Prebuild Android TV Assets
@@ -70,7 +69,6 @@ jobs:
 
       - name: Inject Build Info
         run: |
-          set -e
           cat > ./OwnTube.tv/build-info.json << 'EOF'
           ${{ inputs.build_info }}
           EOF

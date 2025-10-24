@@ -54,7 +54,6 @@ jobs:
       - name: Set macos runner
         id: set-macos-runner
         run: |
-          set -e
           echo "runner-label=${{ vars.PREFERRED_MACOS_RUNNER || 'macos-latest' }}" >> $GITHUB_OUTPUT
 
   build_info:
@@ -128,7 +127,6 @@ jobs:
       - name: Clone customizations repository
         if: steps.check_customizations.outputs.should_run_customizations == 'true'
         run: |
-          set -e
           git clone "${{ vars.CLIENT_CUSTOMIZATIONS_REPO }}" customizations-repo
 
       - name: Find and read the customization file

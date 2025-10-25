@@ -129,7 +129,7 @@ axiosInstance.interceptors.request.use(async (config) => {
       if (!refreshToken) throw new Error("Missing refresh token");
       const refreshed = await refreshAccessToken(backend, refreshToken);
       if (refreshed) {
-        const parsed = parseAuthSessionData(refreshed, backend);
+        const parsed = parseAuthSessionData(refreshed, backend, true);
         await updateSession(backend, parsed);
         config.headers.Authorization = `${parsed.tokenType} ${parsed.accessToken}`;
         return config;

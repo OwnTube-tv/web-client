@@ -237,7 +237,7 @@
       homeHideCategoriesOverview: true,
       homeHidePlaylistsOverview: false,
       homeMaxPlaylistsOverviewLimit: 12,
-      homeFeaturedLives: ["c25424b3-a077-42a1-9b1e-eb47729f1450"],
+      homeFeaturedLives: [],
       showMoreSize: 24,
       premiumContentAds: ["abe16c4c-d654-42e2-bf84-6cd4a236f62d"],
       searchPageSize: 24,

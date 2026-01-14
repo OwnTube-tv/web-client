@@ -45,3 +45,5 @@ There are a number of branded native apps based on this code project in testing.
 - _Misha Tube_ for Android: https://play.google.com/store/apps/details?id=com.mishadanilenko.mishatube
 - _Misha Tube_ for iPhone: https://testflight.apple.com/join/PaM9r7AF
 - _Misha Tube_ for web browser or PWA installation: https://cust-app-mishatube.owntube.tv/
+
+![Umami tracking pixel](https://cloud.umami.is/p/7pYMzfBPt)

@@ -17,7 +17,7 @@ on:
         description: Upload iOS (iphoneos) or tvOS (appletvos) app
       runner-label:
         type: string
-        default: "macos-latest"
+        default: "macos-15"
       customizations_env_content:
         required: false
         type: string
@@ -135,7 +135,7 @@ jobs:
       - name: Setup Xcode
         uses: maxim-lobanov/setup-xcode@v1
         with:
-          xcode-version: latest-stable
+          xcode-version: 16.4
 
       - name: Build and archive app for upload to Testflight by @${{ github.actor }}
         env:

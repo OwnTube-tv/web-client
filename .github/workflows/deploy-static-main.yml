@@ -54,7 +54,7 @@ jobs:
       - name: Set macos runner
         id: set-macos-runner
         run: |
-          echo "runner-label=${{ vars.PREFERRED_MACOS_RUNNER || 'macos-latest' }}" >> $GITHUB_OUTPUT
+          echo "runner-label=${{ vars.PREFERRED_MACOS_RUNNER || 'macos-15' }}" >> $GITHUB_OUTPUT
 
   build_info:
     runs-on: ubuntu-latest

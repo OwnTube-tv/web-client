@@ -237,6 +237,16 @@ Examples: `cust-app-blender`, `cust-app-xrtube`, `cust-app-basspistol`, `cust-ap
   - App Store Connect and Google Play accounts
   - Certificate/signing keys in GitHub Secrets
 
+### macOS Runner & Xcode Version
+
+iOS/tvOS build workflows pin both the macOS runner image and Xcode version to ensure compatibility with Expo SDK 52 / React Native 0.76:
+
+- **Xcode:** Pinned to `16.4` via `maxim-lobanov/setup-xcode@v1`. Do NOT use `latest-stable` — the `macos-15` runner now ships both Xcode 16.x and Xcode 26.3 RC, and `latest-stable` resolves to 26.x which is incompatible with React Native 0.76. Apple skipped versions 17–25 (jumped from 16 to 26).
+- **Runner:** `macos-15` (default in reusable workflow inputs). Do NOT use `macos-latest` — it resolves to macOS 26.
+- **Override:** The main repo can override the runner via `PREFERRED_MACOS_RUNNER` variable in the `owntube` environment. Downstream branded app repos use the default from the reusable workflow inputs.
+
+When upgrading Expo SDK or React Native, re-evaluate whether newer Xcode/runner versions are compatible and update the pins accordingly.
+
 ### Environments
 
 1. **`owntube` environment:** Stores sensitive secrets for app builds

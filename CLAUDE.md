@@ -326,6 +326,8 @@ The `patches/` directory contains temporary fixes for upstream library issues. T
 ### Core Technologies
 
 - Project uses **react-native-tvos (0.76.9-0)** fork instead of standard React Native for TV support
+- **Kotlin version:** 2.0.21 (overridden via `expo-build-properties` in `app.config.ts`; RN 0.76 default is 1.9.25). Upgrading to Kotlin 2.2+ is blocked by the React Native Gradle plugin (`com.facebook.react`) being compiled against Kotlin 1.9.x — would require RN 0.77+ / Expo SDK 53+.
+- **Google Cast:** `react-native-google-cast` (^4.9.1) with `play-services-cast-framework` pinned to 22.2.0 via the plugin's `androidPlayServicesCastFrameworkVersion` prop. Without pinning, Gradle resolves `+` to the latest version which may be compiled with an incompatible Kotlin version.
 - **Metro bundler** extends asset extensions (json, json5, ttf, otf) and prioritizes `.tv.*` extensions when `EXPO_TV=1`
 - **Zod** is used for validation of instance configurations (`instanceConfigs.ts`) and other runtime type checks
 - **Icons** use IcoMoon format with custom font (assets/fonts/icomoon.ttf and selection.json)

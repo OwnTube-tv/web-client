@@ -108,7 +108,7 @@ export default {
       },
     ],
     "expo-asset",
-    "react-native-google-cast",
+    ["react-native-google-cast", { androidPlayServicesCastFrameworkVersion: "22.2.0" }],
     [
       "./plugins/withReleaseSigningConfig.js",
       {

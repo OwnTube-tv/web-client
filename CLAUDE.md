@@ -111,7 +111,7 @@ This approach satisfies Apple/Google content review requirements (single-instanc
 - **Customization:** Use the instance config system for feature toggles and white-labeling via `public/featured-instances.json5`.
 - **Platform Support:** Test changes across all platforms: Web (desktop/mobile), iOS, Android, tvOS, Android TV.
 - **Commit Messages:** NEVER mention AI agents, Claude, or AI assistance in commit messages. Write commits as if they were written by a human developer.
-- **PR Guidelines:** Squash changes into descriptive commits. Reference GitHub issues. Sign your commits. Code must pass ESLint and Prettier checks. Request reviews from @mxl24 and @mblomdahl.
+- **PR Guidelines:** Squash changes into descriptive commits. Reference GitHub issues. Sign your commits. Code must pass ESLint and Prettier checks. Request reviews from @okaziya, @mxl24 and @mblomdahl.
 
 ## Branded App Architecture
 
@@ -412,7 +412,7 @@ Custom Expo config plugins in `plugins/` directory:
 
 - **Process:** Use the Forking workflow (see README.md for details)
 - **PR Requirements:** Squash commits, sign commits, reference issues, pass linters
-- **Reviewers:** Request reviews from @mxl24 and @mblomdahl
+- **Reviewers:** Request reviews from @okaziya, @mxl24 and @mblomdahl
 - **Getting Involved:** Contact @mxl24 for contribution opportunities
 
 ### Other Repositories

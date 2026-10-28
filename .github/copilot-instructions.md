@@ -170,7 +170,7 @@ Use platform extensions (`.tv.tsx`, `.web.tsx`, `.ios.tsx`, `.android.tsx`) for 
 4. Ensure code passes ESLint: `npx eslint .`
 5. Ensure code passes Prettier: `npx prettier --check ../`
 6. Include links and illustrations in PR to make it easy to review
-7. Request reviews from @mykhailodanilenko, @ar9708, and @mblomdahl
+7. Request reviews from @danilenk01, @mxl24, and @mblomdahl
 
 ## Security Practices
 
